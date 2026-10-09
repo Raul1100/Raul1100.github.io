@@ -1076,7 +1076,7 @@ $('#themeBtn').addEventListener('click', e => {
   batch('.sk', { y: 30, opacity: 0 });
   batch('.job', { x: -20, opacity: 0 });
   gsap.from('.contact', { scale: .95, opacity: 0, duration: 1, ease, scrollTrigger: { trigger: '.contact', start: 'top 85%' } });
-  gsap.from('#contactBtns > *', { y: 16, opacity: 0, duration: .6, stagger: .08, ease, scrollTrigger: { trigger: '.contact', start: 'top 70%' } });
+  gsap.from('#contactBtns > *', { y: 16, opacity: 0, duration: .6, stagger: .08, ease, scrollTrigger: { trigger: '#contactBtns', start: 'top 98%' } });
 
   // re-animate cards whenever a filter swaps them
   new MutationObserver(() => gsap.fromTo('#featGrid .pcard', { y: 26, opacity: 0, scale: .97 }, { y: 0, opacity: 1, scale: 1, duration: .6, stagger: .05, ease, overwrite: true }))
