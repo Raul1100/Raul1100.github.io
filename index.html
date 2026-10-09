@@ -1014,7 +1014,7 @@ $('#themeBtn').addEventListener('click', e => {
     .from('.status', { y: 14, opacity: 0, duration: .6 })
     .from(h1Words, { yPercent: 115, rotate: 5, duration: 1.1, stagger: .045 }, '-=.35')
     .from('#heroLead', { y: 18, opacity: 0, duration: .8 }, '-=.75')
-    .from('.hero-ctas .btn', { y: 18, opacity: 0, duration: .6, stagger: .08 }, '-=.6')
+    .from('.hero .hero-ctas .btn', { y: 18, opacity: 0, duration: .6, stagger: .08 }, '-=.6')
     .from('.hero-tags span', { x: -12, opacity: 0, duration: .5, stagger: .07 }, '-=.45')
     .from('.term', { y: 50, opacity: 0, rotateX: 14, transformPerspective: 1000, duration: 1.2 }, .35);
   gsap.to('.term', { yPercent: -10, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
