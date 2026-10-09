@@ -708,7 +708,7 @@ $('#profile').innerHTML = `
 function renderFeatured(filter){
   $('#featGrid').innerHTML = FEATURED.map((p,i) => ({p,i})).filter(({p}) => filter==='All' || p.cat===filter).map(({p,i}) => `
     <article class="pcard reveal in">
-      <div class="top"><span class="cat">${esc(p.cat)}${p.personal ? ' <span class="pv-hint" style="color:var(--ok);border-style:solid;margin-left:6px">personal project · sample data</span>' : ''}</span><span style="display:flex;gap:8px;align-items:center"><span class="pv-hint">hover · preview</span><span class="num">${String(i+1).padStart(2,'0')}</span></span></div>
+      <div class="top"><span class="cat">${esc(p.cat)}</span><span style="display:flex;gap:8px;align-items:center"><span class="pv-hint">hover · preview</span><span class="num">${String(i+1).padStart(2,'0')}</span></span></div>
       <h3>${esc(p.title)}</h3>
       ${p.metric ? `<div class="metric"><strong>${esc(p.metric[0])}</strong><span>${esc(p.metric[1])}</span></div>` : ''}
       <div class="pbr">
