@@ -8,7 +8,7 @@
   function simulate(seed, n) {
     const r = g.rng(seed || 11), custs = [];
     for (let c = 0; c < (n || 520); c++) {
-      const start = Math.floor(r() * 560), mu = 10 + r() * 50, val = 15000 + r() ** 2 * 260000;
+      const start = Math.floor(r() * 560), mu = 10 + r() * 50, val = (15000 + r() ** 2 * 260000) * 0.25; // ₹3.7k–₹69k per order; exact scaling keeps every result identical
       const churnAt = r() < .45 ? start + 120 + Math.floor(r() * (DAYS - start)) : Infinity;
       const lumpy = r() < .18; // occasional long gaps without churning: the 60-day rule's false alarms
       const orders = []; let t = start;

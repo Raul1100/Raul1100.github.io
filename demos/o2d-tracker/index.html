@@ -7,7 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../_shared/demo.css">
-<script>window.APP={"name": "Orderline", "short": "Ol", "tagline": "Order to delivery", "accent": "#0891b2", "workspace": "Domestic orders", "nav": [{"id": "orders", "title": "Orders", "icon": "list", "desc": "Every order with its current stage, next due date and timeline."}, {"id": "board", "title": "Board", "icon": "kanban", "desc": "Open orders grouped by the stage they are in."}, {"id": "new", "title": "New order", "icon": "plus", "desc": "Create an order; planned dates are calculated automatically."}, {"id": "method", "title": "Methodology", "icon": "book", "desc": "How planned dates and slips are calculated."}], "notifications": [["Orders past planned date", "Check the Late filter"], ["Payment follow-ups due", "Invoiced orders nearing terms"], ["Board updated", "Stages recalculated today"]]};</script>
+<script>window.APP={"skin": "orderline", "layout": "topnav", "defaultTheme": "light", "name": "Orderline", "short": "Ol", "tagline": "Order to delivery", "accent": "#6d28d9", "workspace": "Domestic orders", "nav": [{"id": "orders", "title": "Orders", "icon": "list", "desc": "Every order with its current stage, next due date and timeline."}, {"id": "board", "title": "Board", "icon": "kanban", "desc": "Open orders grouped by the stage they are in."}, {"id": "new", "title": "New order", "icon": "plus", "desc": "Create an order; planned dates are calculated automatically."}, {"id": "method", "title": "Methodology", "icon": "book", "desc": "How planned dates and slips are calculated."}], "notifications": [["Orders past planned date", "Check the Late filter"], ["Payment follow-ups due", "Invoiced orders nearing terms"], ["Board updated", "Stages recalculated today"]]};</script>
+<script src="../_shared/sample-data.js"></script>
 <script src="../_shared/demo.js"></script>
 <style>
 .steps{display:flex;gap:3px}
@@ -40,46 +41,62 @@ form.new{display:grid;grid-template-columns:repeat(5,1fr) auto;gap:8px;align-ite
   <div data-view="orders board" class="grid g4" id="kpis"></div>
   <div data-view="new" class="card"><h2>New order</h2>
     <form class="new" id="newForm">
-      <label class="f">Customer<input name="cust" required placeholder="e.g. Leaf & Ladle"></label>
+      <label class="f">Customer<input name="cust" required list="acctList" placeholder="Start typing an account" autocomplete="off"><datalist id="acctList"></datalist></label>
+      <label class="f">Customer PO<input name="po" placeholder="e.g. BT/PO/26-27/0412"></label>
       <label class="f">Product<select name="prod"></select></label>
       <label class="f">Qty (ctn)<input name="qty" type="number" min="1" value="40" required></label>
-      <label class="f">Payment terms<select name="terms"><option value="0">Advance</option><option value="15">15 days</option><option value="30" selected>30 days</option></select></label>
+      <label class="f">Payment terms<select name="terms"><option value="0">Advance</option><option value="15">15 days</option><option value="30" selected>30 days</option><option value="45">45 days</option><option value="60">LC 60 days</option></select></label>
       <label class="f">Production days<input name="prodDays" type="number" min="1" max="20" value="5"></label>
       <button class="primary">Add order</button>
     </form></div>
   <div data-view="orders" id="listView" class="grid g-side">
-    <div class="card"><h2><span class="tabs" id="filters"></span><small><input id="search" placeholder="Search order / customer" style="width:190px"></small></h2><table id="orders"></table></div>
+    <div class="card"><h2><span class="tabs" id="filters"></span><small><input id="search" placeholder="Search order, customer, PO, city" style="width:190px"></small></h2><table id="orders"></table></div>
     <div class="card" id="detail"></div>
   </div>
   <div data-view="board" id="boardView" class="card"><h2>Orders by current stage <small>red = past its planned date</small></h2><div class="board" id="board"></div></div>
-  <div data-view="method" class="card"><h2>How it works</h2><p class="note">each order gets planned dates by adding each stage's SLA in working days (Sundays skipped) to the previous stage's actual date, or its planned date if not done yet, so a slip ripples forward. Marking a stage done stamps today's date. Orders are saved in localStorage; "Reset demo" restores the sample set.</p></div>
+  <div data-view="method" class="card"><h2>How it works</h2><p class="note">each order gets planned dates by adding each stage's SLA in working days (Sundays skipped) to the previous stage's actual date, or its planned date if not done yet, so a slip ripples forward. Marking a stage done stamps today's date. Orders are saved in localStorage; "Reset sample data" restores the starting set of 36 orders from cafés, QSR chains, caterers, distributors and three export buyers.</p></div>
 </main>
 <script>
 const STAGES = [['Confirmed', 0], ['Planned', 1], ['Production', 5], ['QC passed', 1], ['Packed', 1], ['Dispatched', 1], ['Invoiced', 1], ['Payment received', 30]];
-const PRODUCTS = ['160MM Wooden Fork', '160MM Wooden Spoon', '95MM Ice Cream Scoop', '8MM Paper Straw', '12MM Bubble Tea Straw', 'Cutlery Kit 3-in-1'];
-const CUSTS = ['Café Aroma Chain', 'Spice Route Restaurants', 'GreenBowl Foods', 'Urban Chai Co.', 'FrostBite Ice Creams', 'Coastal Kitchens', 'Daily Brew Cafés', 'Berry Swirl Gelato', 'Metro Caterers', 'Leaf & Ladle'];
+const PRODUCTS = SAMPLE.SKUS.map(k => `${k[0]} · ${k[1]}`), PRICE = Object.fromEntries(SAMPLE.SKUS.map(k => [`${k[0]} · ${k[1]}`, k[4]]));
+const ACCTS = SAMPLE.ACCOUNTS, acct = n => ACCTS.find(a => a.name === n);
+const PO_PREFIX = n => n.split(/[ ,&.]+/).filter(w => /^[A-Z]/.test(w)).slice(0, 2).map(w => w[0]).join('');
+const BUYS = { 'Café chain': [9, 6, 1, 10], QSR: [0, 1, 10, 7], 'Cloud kitchen': [10, 0, 1, 2], 'Bubble tea': [8, 9], 'Ice cream': [4, 5], 'Juice bar': [7, 6], Catering: [0, 1, 2, 10], Institutional: [0, 1, 10],
+  Hotels: [7, 9, 0, 1], Inflight: [10, 0, 1, 2], Distributor: [0, 1, 2, 3, 6, 7, 9], Export: [0, 1, 2, 7, 8] };
+const TERMS = { '15 days': 15, '30 days': 30, '45 days': 45, 'LC 60 days': 60 };
+const TRANSPORT = ['Shree Ganesh Roadlines', 'Om Sai Transport', 'Express Cargo Movers', 'Own tempo (MH-04)'];
+const STAGE_OWNER = o => [o.rep, 'PPC · Planning desk', 'S. Khan · Cutter / R. Iyer · Automatic', 'R. Iyer · QC', 'V. Gupta · Packing', 'N. Das · Dispatch', 'Accounts', 'Accounts · ' + o.rep];
+const NOTES = ['Customer wants their logo sticker on outer cartons.', 'Deliver before 11 am, outlet has no storage after lunch rush.', 'Part of monthly standing order, same specs as last time.', 'Asked for FSC certificate copy with the invoice.',
+  'Split delivery: half now, half next week.', 'Price revised +3% from this order (pulp cost).', 'Trial order for new outlet, sample approved last week.', 'Fumigation certificate and COO needed for shipment.'];
 const T0 = new Date(); T0.setHours(0, 0, 0, 0);
 const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`, fromIso = s => new Date(s + 'T00:00:00'), fmt = s => s ? fromIso(s).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '—';
 function addWork(d, n) { const x = new Date(d); while (n > 0) { x.setDate(x.getDate() + 1); if (x.getDay() !== 0) n--; } return x; }
 const sla = (o, i) => i === 2 ? o.prodDays : i === 7 ? o.terms : STAGES[i][1];
 
 function seed() {
-  const r = rng(77), out = [];
-  for (let k = 0; k < 18; k++) {
-    const start = addWork(T0, 0); start.setDate(T0.getDate() - Math.floor(4 + r() * 50));
-    const o = { id: 'ORD-' + (2431 + k), cust: CUSTS[k % CUSTS.length], prod: PRODUCTS[Math.floor(r() * PRODUCTS.length)], qty: 20 + Math.floor(r() * 140), terms: [0, 15, 30][Math.floor(r() * 3)], prodDays: 3 + Math.floor(r() * 5), actual: [] };
+  const r = rng(77), out = [], pool = ACCTS.filter(a => a.segment !== 'Export' || r() < .9);
+  for (let k = 0; k < 36; k++) {
+    const a = pool[Math.floor(r() * pool.length)], start = new Date(T0); start.setDate(T0.getDate() - Math.floor(2 + r() ** 1.3 * 55));
+    const exp = a.segment === 'Export', buys = BUYS[a.segment] || [0, 1, 6, 7], sku = SAMPLE.SKUS[buys[Math.floor(r() * buys.length)]], prod = `${sku[0]} · ${sku[1]}`;
+    const qty = Math.max(5, Math.round(a.typical * (.6 + r() * .8) / 5) * 5), prodDays = exp ? 10 + Math.floor(r() * 5) : Math.ceil(qty / 60) + 2 + Math.floor(r() * 2);
+    const yr = start.getMonth() >= 3 ? start.getFullYear() % 100 : start.getFullYear() % 100 - 1;
+    const o = { id: 'ORD-' + (2431 + k), cust: a.name, city: a.locality === 'Warehouse' || a.locality === 'Head office' || a.locality === 'Airport unit' || exp ? a.city : `${a.locality}, ${a.city}`, rep: a.rep, prod, qty, price: Math.round(sku[4] * (exp ? 1.08 : 1 - Math.floor(r() * 3) / 100)),
+      terms: TERMS[a.terms] ?? 30, prodDays, priority: exp || a.segment === 'Inflight' || r() < .15 ? 'High' : 'Normal', po: `${PO_PREFIX(a.brand)}/PO/${yr}-${yr + 1}/${String(300 + Math.floor(r() * 600)).padStart(4, '0')}`,
+      transporter: exp ? 'Container via JNPT (FOB)' : TRANSPORT[Math.floor(r() * TRANSPORT.length)], lr: 'LR ' + (48000 + Math.floor(r() * 2000)), inv: 'INV/' + yr + '-' + (yr + 1) + '/' + String(1200 + k * 7), note: r() < .55 ? NOTES[Math.floor(r() * NOTES.length)] : '', actual: [] };
+    if (exp && !o.note) o.note = NOTES[7];
     let cur = start;
     for (let i = 0; i < STAGES.length; i++) {
       const due = i ? addWork(cur, sla(o, i)) : start, slip = r() < .25 ? Math.floor(r() * 4) : r() < .5 ? -1 : 0, done = addWork(due, Math.max(0, slip));
-      if (done > T0 || (i > 0 && i < 7 && r() < .05)) break; // some orders stall mid-way, like real ones
+      if (done > T0 || (i > 0 && i < 6 && T0 - due < 6 * 864e5 && r() < .12)) break; // a few recent orders stall for a few days, like real ones
       o.actual.push(iso(done)); cur = done;
     }
     out.push(o);
   }
   return out;
 }
-let orders = store.get('o2d-orders', null) || seed(), sel = orders.find(o => o.actual.length < STAGES.length)?.id, filter = 'Open';
-const save = () => store.set('o2d-orders', orders);
+let orders = store.get('o2d-orders-v2', null) || seed(), sel = orders.find(o => o.actual.length < STAGES.length)?.id, filter = 'Open';
+const save = () => store.set('o2d-orders-v2', orders);
+const val = o => o.qty * (o.price || PRICE[o.prod] || 1200);
 
 function plan(o) { // planned dates, rippling from actuals
   const p = []; let prev = o.actual[0] ? fromIso(o.actual[0]) : T0;
@@ -97,14 +114,14 @@ const stepper = (o, s) => `<div class="steps">${STAGES.map((_, i) => `<i class="
 function render() {
   const S = orders.map(o => [o, state(o)]), open = S.filter(([, s]) => !s.done);
   const ot = S.reduce((a, [, s]) => [a[0] + s.onTime, a[1] + s.total], [0, 0]);
-  $('#kpis').innerHTML = [['Open orders', open.length, ''], ['Late (past planned date)', open.filter(([, s]) => s.late).length, 'bad'], ['Due today', open.filter(([, s]) => s.dueToday).length, 'acc'],
+  $('#kpis').innerHTML = [['Open orders', `${open.length} <small style="font-size:13px;color:var(--dim);font-weight:500">${inr(open.reduce((a, [o]) => a + val(o), 0))}</small>`, ''], ['Late (past planned date)', open.filter(([, s]) => s.late).length, 'bad'], ['Due today', open.filter(([, s]) => s.dueToday).length, 'acc'],
     ['Stages done on time', ot[1] ? pct(ot[0] / ot[1], 0) : '—', 'ok']].map(([l, v, c]) => `<div class="card kpi ${c}"><b>${v}</b><span>${l}</span></div>`).join('');
   const F = { Open: s => !s.done, Late: s => s.late, 'Due today': s => s.dueToday, Completed: s => s.done, All: () => true };
   $('#filters').innerHTML = Object.keys(F).map(f => `<button class="${f === filter ? 'on' : ''}" data-f="${f}">${f} <span class="mono" style="opacity:.6">${S.filter(([, s]) => F[f](s)).length}</span></button>`).join('');
   const q = $('#search').value.toLowerCase();
-  const rows = S.filter(([o, s]) => F[filter](s) && (!q || (o.id + o.cust).toLowerCase().includes(q))).sort((a, b) => (b[1].late - a[1].late) || (b[1].lateBy - a[1].lateBy) || a[0].id.localeCompare(b[0].id));
+  const rows = S.filter(([o, s]) => F[filter](s) && (!q || (o.id + o.cust + (o.po || '') + (o.city || '')).toLowerCase().includes(q))).sort((a, b) => (b[1].late - a[1].late) || (b[1].lateBy - a[1].lateBy) || a[0].id.localeCompare(b[0].id));
   $('#orders').innerHTML = '<tr><th>Order</th><th>Customer</th><th>Stage</th><th>Progress</th><th class="num">Next due</th></tr>' + (rows.length ? rows.map(([o, s]) =>
-    `<tr class="row ${o.id === sel ? 'sel' : ''}" data-id="${o.id}"><td class="mono">${o.id}</td><td>${esc(o.cust)}<small style="display:block;color:var(--dim)">${esc(o.prod)} · ${o.qty} ctn</small></td>
+    `<tr class="row ${o.id === sel ? 'sel' : ''}" data-id="${o.id}"><td class="mono">${o.id}</td><td>${o.priority === 'High' ? '<span class="pill bad" style="font-size:10px;padding:1px 6px;margin-right:4px">HIGH</span>' : ''}<b>${esc(o.cust)}</b><small style="display:block;color:var(--dim)">${esc(o.prod)} · ${o.qty} ctn · ${inr(val(o))}</small></td>
      <td>${s.done ? '<span class="pill ok">Complete</span>' : `<span class="pill ${s.late ? 'bad' : s.dueToday ? 'warn' : 'mute'}">${STAGES[s.n][0]}</span>`}</td><td>${stepper(o, s)}</td>
      <td class="num">${s.done ? '—' : s.late ? `<b style="color:var(--bad)">${s.lateBy}d late</b>` : s.dueToday ? '<b style="color:var(--accent)">today</b>' : fmt(s.due)}</td></tr>`).join('') : '<tr><td colspan="5" class="note">No orders match.</td></tr>');
   renderDetail(); renderBoard(S);
@@ -112,23 +129,30 @@ function render() {
 function renderDetail() {
   const o = orders.find(x => x.id === sel); if (!o) { $('#detail').innerHTML = '<p class="note">Select an order to see its timeline.</p>'; return; }
   const s = state(o);
-  $('#detail').innerHTML = `<h2>${o.id} <small>${esc(o.cust)}</small></h2><p class="note">${esc(o.prod)} · ${o.qty} ctn · ${o.terms ? o.terms + '-day terms' : 'advance payment'} · ${o.prodDays} production days</p>
+  const own = STAGE_OWNER(o);
+  $('#detail').innerHTML = `<h2>${o.id} <small>${o.priority === 'High' ? '<span class="pill bad">High priority</span>' : ''}</small></h2>
+    <div style="font:700 17px var(--font-head, inherit);margin:-4px 0 2px">${esc(o.cust)}</div><div style="font-size:12px;color:var(--dim);margin-bottom:10px">${esc(o.city || '')}${o.po ? ' · PO ' + esc(o.po) : ''}${o.rep ? ' · owner ' + o.rep : ''}</div>
+    <div class="grid g2" style="gap:8px;margin-bottom:10px">${[['Order value', inr(val(o))], ['Quantity', o.qty + ' ctn'], ['Terms', o.terms === 60 ? 'LC 60 days' : o.terms ? o.terms + ' days credit' : 'Advance'], ['Production', o.prodDays + ' working days']].map(([l, v]) => `<div style="background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px 10px"><div style="font-size:11px;color:var(--dim)">${l}</div><b>${v}</b></div>`).join('')}</div>
+    <p class="note" style="margin-bottom:6px">${esc(o.prod)}${o.actual.length > 5 && o.transporter ? ` · ${esc(o.transporter)}${o.transporter.startsWith('Container') ? '' : ', ' + o.lr}` : ''}${o.actual.length > 6 && o.inv ? ' · ' + o.inv : ''}</p>
+    ${o.note ? `<div style="border-left:3px solid var(--accent);padding:6px 10px;margin-bottom:10px;font-size:13px;background:var(--panel-2);border-radius:0 6px 6px 0">${esc(o.note)}</div>` : ''}
     <div class="tl">${STAGES.map(([n], i) => { const a = o.actual[i], p = s.p[i], cls = i < s.n ? 'd' : i === s.n ? (s.late ? 'l' : 'c') : '';
       const diff = a ? Math.round((fromIso(a) - fromIso(p)) / 864e5) : null;
-      return `<div class="${cls}"><span></span><span><b>${n}</b><small>planned ${fmt(p)}${a ? ' · done ' + fmt(a) : ''}</small></span><span>${a ? (diff > 0 ? `<span class="pill bad">+${diff}d</span>` : '<span class="pill ok">on time</span>') : i === s.n ? `<button class="primary" id="markDone">Mark done</button>` : ''}</span></div>`; }).join('')}</div>`;
+      return `<div class="${cls}"><span></span><span><b>${n}</b><small>${own[i]} · planned ${fmt(p)}${a ? ' · done ' + fmt(a) : ''}</small></span><span>${a ? (diff > 0 ? `<span class="pill bad">+${diff}d</span>` : '<span class="pill ok">on time</span>') : i === s.n ? `<button class="primary" id="markDone">Mark done</button>` : ''}</span></div>`; }).join('')}</div>`;
   const b = $('#markDone'); if (b) b.onclick = () => { o.actual.push(iso(T0)); save(); render(); toast(o.id + ': ' + STAGES[o.actual.length - 1][0] + ' marked done'); };
 }
 function renderBoard(S) {
   $('#board').innerHTML = STAGES.map(([n], i) => { const here = S.filter(([, s]) => !s.done && s.n === i);
-    return `<div class="col"><h4>${n}<span>${here.length}</span></h4>${here.map(([o, s]) => `<div class="tile ${s.late ? 'late' : ''}" data-id="${o.id}"><b class="mono">${o.id}</b><small>${esc(o.cust)}</small><small style="color:${s.late ? 'var(--bad)' : 'var(--dim)'}">${s.late ? s.lateBy + 'd late' : 'due ' + fmt(s.due)}</small></div>`).join('')}</div>`; }).join('');
+    return `<div class="col"><h4>${n}<span>${here.length}</span></h4>${here.map(([o, s]) => `<div class="tile ${s.late ? 'late' : ''}" data-id="${o.id}"><b class="mono">${o.id}</b><small>${esc(o.cust)}</small><small style="color:var(--dim)">${o.qty} ctn · ${inr(val(o))}</small><small style="color:${s.late ? 'var(--bad)' : 'var(--dim)'}">${s.late ? s.lateBy + 'd late' : 'due ' + fmt(s.due)}</small></div>`).join('')}</div>`; }).join('');
 }
 $('#orders').onclick = e => { const tr = e.target.closest('tr.row'); if (tr) { sel = tr.dataset.id; render(); } };
 $('#board').onclick = e => { const t = e.target.closest('.tile'); if (t) { sel = t.dataset.id; location.hash = '#/orders'; render(); } };
 $('#filters').onclick = e => { const b = e.target.closest('button'); if (b) { filter = b.dataset.f; render(); } };
 $('#search').oninput = render;
 $('#newForm').prod.innerHTML = PRODUCTS.map(p => `<option>${p}</option>`).join('');
+$('#acctList').innerHTML = ACCTS.map(a => `<option value="${esc(a.name)}">`).join('');
 $('#newForm').onsubmit = e => { e.preventDefault(); const f = e.target, id = 'ORD-' + (Math.max(...orders.map(o => +o.id.slice(4))) + 1);
-  orders.push({ id, cust: f.cust.value.trim(), prod: f.prod.value, qty: +f.qty.value, terms: +f.terms.value, prodDays: +f.prodDays.value || 5, actual: [iso(T0)] }); save(); sel = id; filter = 'Open'; f.cust.value = ''; render(); toast(id + ' created'); location.hash = '#/orders'; };
+  const a = acct(f.cust.value.trim()) || {};
+  orders.push({ id, cust: f.cust.value.trim(), city: a.city || '', rep: a.rep || 'Priya Nair', po: f.po.value.trim(), prod: f.prod.value, qty: +f.qty.value, price: PRICE[f.prod.value], terms: +f.terms.value, prodDays: +f.prodDays.value || 5, priority: 'Normal', transporter: TRANSPORT[0], lr: 'LR ' + (50000 + orders.length), inv: 'INV/26-27/' + (1500 + orders.length), note: '', actual: [iso(T0)] }); save(); sel = id; filter = 'Open'; f.cust.value = ''; f.po.value = ''; render(); toast(id + ' created'); location.hash = '#/orders'; };
 $('#reset').onclick = () => { orders = seed(); save(); sel = orders.find(o => o.actual.length < STAGES.length)?.id; render(); };
 render();
 </script>

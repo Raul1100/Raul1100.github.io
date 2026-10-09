@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Manrope:wght@400;500;600;700;800&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap');
 /* ======================================================================
    App design system + shell for the personal-project apps.
    Light by default, dark via [data-theme="dark"]. Accent comes from
@@ -70,7 +71,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .page-head h1{font:600 22px 'Space Grotesk',Inter,sans-serif;letter-spacing:-.02em}
 .page-head p{color:var(--muted);font-size:13.5px;margin-top:2px}
 .page-head .actions{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-[data-view]{display:none}
+#page > [data-view]:not(.show){display:none !important}
 [data-view].show{display:grid}
 @media (max-width:980px){
   .shell{grid-template-columns:1fr}
@@ -145,3 +146,145 @@ label.f{display:grid;gap:5px;font-size:12px;font-weight:500;color:var(--muted)}
 .boot.done{opacity:0;pointer-events:none}
 .boot div{width:38px;height:38px;border-radius:11px;background:var(--accent);animation:pulse 1s ease-in-out infinite}
 @keyframes pulse{50%{transform:scale(.85);opacity:.7}}
+
+
+/* ======================================================================
+   LAYOUTS
+   ====================================================================== */
+.top-brand,.topnav{display:none}
+[data-layout="rail"]{--side:72px}
+[data-layout="rail"] .side{padding:14px 10px;align-items:center}
+[data-layout="rail"] .brand{padding:4px 0 14px}
+[data-layout="rail"] .brand>div:last-child,[data-layout="rail"] .ws,[data-layout="rail"] .nav-label,[data-layout="rail"] .nav a span,[data-layout="rail"] .user>div:last-child{display:none}
+[data-layout="rail"] .nav a{justify-content:center;width:46px;height:42px;padding:0}
+[data-layout="rail"] .nav a svg{width:19px;height:19px}
+[data-layout="rail"] .user{padding:8px 0;justify-content:center}
+[data-layout="topnav"] .shell{grid-template-columns:1fr}
+[data-layout="topnav"] .side{display:none}
+[data-layout="topnav"] .menu-btn,[data-layout="topnav"] .crumbs{display:none}
+[data-layout="topnav"] .top-brand{display:flex;align-items:center;gap:10px;margin-right:18px;white-space:nowrap}
+[data-layout="topnav"] .top-brand .logo{width:28px;height:28px;border-radius:7px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font:700 12px var(--font-display,Inter)}
+[data-layout="topnav"] .top-brand b{font:600 15px var(--font-display,Inter)}
+[data-layout="topnav"] .topnav{display:flex;gap:2px;overflow-x:auto;height:100%;align-items:stretch}
+[data-layout="topnav"] .topnav a{display:flex;align-items:center;gap:7px;padding:0 12px;color:var(--muted);font-weight:500;font-size:13px;border-bottom:2px solid transparent;white-space:nowrap}
+[data-layout="topnav"] .topnav a svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8}
+[data-layout="topnav"] .topnav a:hover{color:var(--text)}
+[data-layout="topnav"] .topnav a.on{color:var(--text);border-bottom-color:var(--accent)}
+[data-layout="topnav"] .search{width:200px;margin-left:12px}
+@media (max-width:980px){[data-layout="topnav"] .search{display:none}[data-layout="topnav"] .top-brand b{display:none}}
+
+/* ======================================================================
+   SKIN 1 · Forecast Studio — dark quant terminal
+   ====================================================================== */
+[data-skin="forecast"]{--accent:#2dd4bf;--accent-ink:#04201c;--accent-soft:rgba(45,212,191,.12);--radius:4px;--font-display:'IBM Plex Sans'}
+[data-skin="forecast"][data-theme="dark"]{--bg:#0a0f14;--panel:#0f161d;--panel-2:#131c25;--hover:#16212b;--line:#1d2a36;--line-2:#28394a;--text:#dbe7f0;--muted:#8aa0b3;--dim:#5d7385;--ok:#34d399;--bad:#f87171;--warn:#fbbf24}
+[data-skin="forecast"] body{font-family:'IBM Plex Sans',sans-serif;background-image:linear-gradient(color-mix(in srgb,var(--line) 55%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--line) 55%,transparent) 1px,transparent 1px);background-size:56px 56px;background-attachment:fixed}
+[data-skin="forecast"] .topbar{background:color-mix(in srgb,var(--panel) 92%,transparent)}
+[data-skin="forecast"] .card{box-shadow:none;border-radius:4px;background:color-mix(in srgb,var(--panel) 94%,transparent)}
+[data-skin="forecast"] .card h2{font:600 11px 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+[data-skin="forecast"] .page-head h1{font:600 20px 'IBM Plex Sans';letter-spacing:-.01em}
+[data-skin="forecast"] .kpi{padding-left:20px}
+[data-skin="forecast"] .kpi b{font:500 24px 'IBM Plex Mono',monospace;letter-spacing:-.02em}
+[data-skin="forecast"] .kpi::after{left:0;right:auto;top:0;bottom:0;width:3px;height:auto;border-radius:0}
+[data-skin="forecast"] td{font-family:'IBM Plex Mono',monospace;font-size:12px}
+[data-skin="forecast"] th{background:transparent;text-transform:uppercase;letter-spacing:.06em;font:500 10.5px 'IBM Plex Mono',monospace}
+[data-skin="forecast"] button.primary{border-radius:3px}
+[data-skin="forecast"] .env{color:var(--accent);background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
+
+/* ======================================================================
+   SKIN 2 · Retain — friendly CRM, navy sidebar
+   ====================================================================== */
+[data-skin="retain"]{--accent:#16a34a;--accent-ink:#fff;--accent-soft:rgba(22,163,74,.10);--radius:16px;--font-display:'DM Sans'}
+[data-skin="retain"][data-theme="light"]{--bg:#f3f5fa;--panel-2:#f6f8fc;--line:#e5e9f2}
+[data-skin="retain"] body{font-family:'DM Sans',Inter,sans-serif}
+[data-skin="retain"] .side{background:#0f1d3a;border-right:0;color:#c9d3e8}
+[data-skin="retain"] .side .brand b{color:#fff}
+[data-skin="retain"] .side .brand small,[data-skin="retain"] .side .nav-label{color:#7f8db0}
+[data-skin="retain"] .side .ws{background:#16284d;border-color:#22365f;color:#c9d3e8}
+[data-skin="retain"] .side .nav a{color:#aab6d3}
+[data-skin="retain"] .side .nav a:hover{background:#18294d;color:#fff}
+[data-skin="retain"] .side .nav a.on{background:#16a34a;color:#fff}
+[data-skin="retain"] .side .nav a.on svg{color:#fff}
+[data-skin="retain"] .side-foot{border-color:#22365f}
+[data-skin="retain"] .user b{color:#fff}
+[data-skin="retain"] .card{border:0;box-shadow:0 1px 2px rgba(16,24,40,.04),0 8px 24px -12px rgba(16,24,40,.12)}
+[data-skin="retain"] .page-head h1{font:700 26px 'DM Sans';letter-spacing:-.02em}
+[data-skin="retain"] .kpi{padding:20px 20px 22px}
+[data-skin="retain"] .kpi b{font:700 30px 'DM Sans'}
+[data-skin="retain"] .kpi::after{left:20px;right:auto;width:36px;height:4px;bottom:auto;top:16px;border-radius:4px}
+[data-skin="retain"] .kpi span{margin-top:14px}
+[data-skin="retain"] th{background:transparent;border-bottom:2px solid var(--line)}
+[data-skin="retain"] .pill{border-radius:8px}
+
+/* ======================================================================
+   SKIN 3 · Pulse Sales — bright BI, icon rail, gradient header
+   ====================================================================== */
+[data-skin="pulse"]{--accent:#2563eb;--accent-ink:#fff;--accent-soft:rgba(37,99,235,.10);--radius:14px;--font-display:'Manrope'}
+[data-skin="pulse"][data-theme="light"]{--bg:#eef2fb;--line:#e2e8f5}
+[data-skin="pulse"] body{font-family:'Manrope',Inter,sans-serif}
+[data-skin="pulse"] .side{background:linear-gradient(180deg,#1e3a8a,#2563eb);border:0}
+[data-skin="pulse"] .side .brand .logo{background:#fff;color:#1e3a8a;box-shadow:none}
+[data-skin="pulse"] .side .nav a{color:rgba(255,255,255,.72);border-radius:12px}
+[data-skin="pulse"] .side .nav a:hover{background:rgba(255,255,255,.12);color:#fff}
+[data-skin="pulse"] .side .nav a.on{background:#fff;color:#1e3a8a}
+[data-skin="pulse"] .side .nav a.on svg{color:#1e3a8a}
+[data-skin="pulse"] .side-foot{border-color:rgba(255,255,255,.18)}
+[data-skin="pulse"] .avatar{background:#fff;color:#1e3a8a}
+[data-skin="pulse"] .page-head{background:linear-gradient(120deg,#1e3a8a 0%,#2563eb 55%,#7c3aed 100%);color:#fff;border-radius:18px;padding:26px 26px 24px;margin-bottom:6px;box-shadow:0 18px 40px -20px rgba(37,99,235,.6)}
+[data-skin="pulse"] .page-head h1{font:800 26px 'Manrope';color:#fff}
+[data-skin="pulse"] .page-head p{color:rgba(255,255,255,.82)}
+[data-skin="pulse"] .page-head .actions select,[data-skin="pulse"] .page-head .actions button{background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.3)}
+[data-skin="pulse"] .page-head .actions option{color:#111}
+[data-skin="pulse"] .card{border:0;box-shadow:0 2px 10px -4px rgba(30,58,138,.15)}
+[data-skin="pulse"] .kpi b{font:800 28px 'Manrope'}
+[data-skin="pulse"] .kpi::after{display:none}
+[data-skin="pulse"] .kpi{border-top:4px solid var(--accent)}
+[data-skin="pulse"] .kpi.ok{border-top-color:var(--ok)}
+[data-skin="pulse"] .kpi.bad{border-top-color:var(--bad)}
+[data-skin="pulse"] .kpi.acc{border-top-color:#7c3aed}
+
+/* ======================================================================
+   SKIN 4 · Shopfloor — industrial MES, amber on slate
+   ====================================================================== */
+[data-skin="shop"]{--accent:#f59e0b;--accent-ink:#1a1206;--accent-soft:rgba(245,158,11,.14);--radius:6px;--font-display:'Barlow Condensed'}
+[data-skin="shop"][data-theme="dark"]{--bg:#121417;--panel:#1a1d21;--panel-2:#202429;--hover:#24282e;--line:#2a2f36;--line-2:#363c45;--text:#eceff3;--muted:#a3abb7;--dim:#6f7884;--ok:#22c55e;--bad:#ef4444;--warn:#f59e0b}
+[data-skin="shop"] body{font-family:'Barlow',Inter,sans-serif}
+[data-skin="shop"] .side{background:#0d0f11;border-color:#22262b}
+[data-skin="shop"][data-theme="light"] .side{background:#1a1d21;color:#eceff3}
+[data-skin="shop"] .brand .logo{border-radius:4px;background:repeating-linear-gradient(135deg,#f59e0b 0 6px,#1a1206 6px 12px);color:transparent;box-shadow:none}
+[data-skin="shop"] .brand b,[data-skin="shop"] .page-head h1{font-family:'Barlow Condensed';text-transform:uppercase;letter-spacing:.04em}
+[data-skin="shop"] .page-head h1{font-size:30px;font-weight:700}
+[data-skin="shop"] .nav a{border-radius:4px;text-transform:uppercase;font:600 13px 'Barlow';letter-spacing:.05em}
+[data-skin="shop"] .nav a.on{background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
+[data-skin="shop"] .card{box-shadow:none;border-radius:6px}
+[data-skin="shop"] .card h2{font:700 15px 'Barlow Condensed';text-transform:uppercase;letter-spacing:.06em}
+[data-skin="shop"] .kpi{padding-top:24px}
+[data-skin="shop"] .kpi b{font:700 38px 'Barlow Condensed';letter-spacing:.01em}
+[data-skin="shop"] .kpi span{text-transform:uppercase;letter-spacing:.06em;font-size:11.5px}
+[data-skin="shop"] .kpi::after{left:0;right:0;bottom:auto;top:0;height:5px;border-radius:6px 6px 0 0;background:repeating-linear-gradient(135deg,var(--line-2) 0 8px,transparent 8px 16px)}
+[data-skin="shop"] .kpi.ok::after{background:var(--ok)}
+[data-skin="shop"] .kpi.bad::after{background:repeating-linear-gradient(135deg,var(--bad) 0 8px,#7f1d1d 8px 16px)}
+[data-skin="shop"] .kpi.acc::after{background:var(--accent)}
+[data-skin="shop"] .pill{border-radius:3px;text-transform:uppercase;letter-spacing:.05em;font-size:10.5px}
+[data-skin="shop"] th{text-transform:uppercase;letter-spacing:.06em}
+[data-skin="shop"] button.primary{border-radius:4px;text-transform:uppercase;letter-spacing:.05em}
+
+/* ======================================================================
+   SKIN 5 · Orderline — minimal, Linear-like
+   ====================================================================== */
+[data-skin="orderline"]{--accent:#6d28d9;--accent-ink:#fff;--accent-soft:rgba(109,40,217,.08);--radius:8px;--font-display:'Inter'}
+[data-skin="orderline"][data-theme="light"]{--bg:#ffffff;--panel:#ffffff;--panel-2:#fafafb;--hover:#f6f6f8;--line:#ececf0;--line-2:#e0e0e6;--text:#16161d;--muted:#62626e;--dim:#9a9aa6}
+[data-skin="orderline"] .topbar{background:var(--panel);border-bottom:1px solid var(--line);height:52px}
+[data-skin="orderline"] .page{max-width:1240px}
+[data-skin="orderline"] .page-head h1{font:600 18px Inter;letter-spacing:-.01em}
+[data-skin="orderline"] .card{box-shadow:none;border-radius:8px}
+[data-skin="orderline"] .card h2{font-size:13px}
+[data-skin="orderline"] .kpi{padding:14px 16px}
+[data-skin="orderline"] .kpi b{font:600 22px Inter}
+[data-skin="orderline"] .kpi::after{display:none}
+[data-skin="orderline"] .kpi.bad b{color:var(--bad)}
+[data-skin="orderline"] .kpi.ok b{color:var(--text)}
+[data-skin="orderline"] td{padding:7px 10px;font-size:12.5px}
+[data-skin="orderline"] th{font-size:11px;padding:7px 10px}
+[data-skin="orderline"] .pill{border-radius:4px;font-weight:500}
+[data-skin="orderline"] button{font-size:12.5px;padding:6px 10px}

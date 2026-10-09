@@ -8,7 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../_shared/demo.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script>window.APP={"name": "Shopfloor", "short": "Sf", "tagline": "Production tracking", "accent": "#7c3aed", "workspace": "Plant 1 · 5 departments", "nav": [{"id": "today", "title": "Today", "icon": "factory", "desc": "Plan vs actual for every department, pro-rated to the time of day."}, {"id": "trends", "title": "Trends", "icon": "chart", "desc": "Plan vs actual and 14-day attainment."}, {"id": "machines", "title": "Machines & labour", "icon": "cog", "desc": "Downtime, availability and output per head."}, {"id": "handover", "title": "Shift handover", "icon": "clipboard", "desc": "Notes passed between Day and Night shifts."}, {"id": "method", "title": "Methodology", "icon": "book", "desc": "How plans, actuals and status are calculated."}], "notifications": [["Cutlery kits behind plan", "Below 95% of the pro-rated target"], ["CUT-03 downtime", "Blade change logged on Day shift"], ["Night shift handover due", "At 20:00"]]};</script>
+<script>window.APP={"skin": "shop", "layout": "sidebar", "defaultTheme": "dark", "name": "Shopfloor", "short": "Sf", "tagline": "Production tracking", "accent": "#f59e0b", "workspace": "Plant 1 · 5 departments", "nav": [{"id": "today", "title": "Today", "icon": "factory", "desc": "Plan vs actual for every department, pro-rated to the time of day."}, {"id": "trends", "title": "Trends", "icon": "chart", "desc": "Plan vs actual and 14-day attainment."}, {"id": "machines", "title": "Machines & labour", "icon": "cog", "desc": "Downtime with reasons, operators, quality rejects and output per head."}, {"id": "handover", "title": "Shift handover", "icon": "clipboard", "desc": "Notes passed between Day and Night shifts."}, {"id": "method", "title": "Methodology", "icon": "book", "desc": "How plans, actuals and status are calculated."}], "notifications": [["Cutlery kits behind plan", "Below 95% of the pro-rated target"], ["CUT-03 downtime", "Blade change logged on Day shift"], ["Night shift handover due", "At 20:00"]]};</script>
+<script src="../_shared/sample-data.js"></script>
 <script src="../_shared/demo.js"></script>
 <style>
 .dept{display:grid;gap:8px}
@@ -45,9 +46,14 @@ textarea{width:100%;min-height:70px;resize:vertical}
     <div class="card"><h2>Machines <small id="mNote"></small></h2><table id="machines"></table></div>
     <div class="card"><h2>Labour <small>planned vs present</small></h2><table id="labour"></table></div>
   </div>
-  <div data-view="handover" class="card"><h2>Shift handover <small>saved in your browser</small></h2>
+  <div data-view="machines" class="grid g2">
+    <div class="card"><h2>Quality rejects <small>both shifts · counted at each department's QC table</small></h2><table id="quality"></table></div>
+    <div class="card"><h2>Downtime by reason <small>minutes, both shifts</small></h2><div class="chart sm"><canvas id="downChart"></canvas></div></div>
+  </div>
+  <div data-view="today" class="card"><h2>Quality rejects today <small>reject % of output · top defect</small></h2><table id="qualityToday"></table></div>
+  <div data-view="handover" class="card"><h2>Shift handover <small>supervisor notes · yours are saved in this browser</small></h2>
     <div class="grid g-side">
-      <div><textarea id="noteTxt" placeholder="e.g. Cutter line 2 blade changed at 14:10, running 15 min behind. Night shift: finish GRN-5121 first."></textarea>
+      <div><textarea id="noteTxt" placeholder="e.g. Cutter line 2 blade changed at 14:10, running 15 min behind. Night shift: finish the Bean Theory WS-160 order first."></textarea>
         <div style="display:flex;gap:8px;margin-top:8px"><select id="noteShift"><option>Day → Night</option><option>Night → Day</option></select><select id="noteDept"></select><button class="primary" id="saveNote">Save handover</button></div></div>
       <div class="notes" id="notes"></div>
     </div>
@@ -56,11 +62,11 @@ textarea{width:100%;min-height:70px;resize:vertical}
 </main>
 <script>
 const DEPTS = [
-  { k: 'sel', name: 'Selection', unit: 'kg', plan: 900, machines: ['SEL-01', 'SEL-02'], crew: 16 },
-  { k: 'cut', name: 'Cutter', unit: 'kg', plan: 760, machines: ['CUT-01', 'CUT-02', 'CUT-03', 'CUT-04'], crew: 10 },
-  { k: 'aut', name: 'Automatic', unit: 'kg', plan: 640, machines: ['AUTO-01', 'AUTO-02', 'AUTO-03'], crew: 9 },
-  { k: 'pck', name: 'Packing', unit: 'ctn', plan: 120, machines: ['PACK-L1', 'PACK-L2'], crew: 14 },
-  { k: 'ctl', name: 'Cutlery kits', unit: 'boxes', plan: 30, machines: ['KIT-01'], crew: 6 },
+  { k: 'sel', name: 'Selection', unit: 'kg', plan: 900, machines: ['SEL-01', 'SEL-02'], crew: 16, runs: 'Birch veneer sheets, grade A/B sort', sup: 'A. Patil', defects: ['Knots', 'Cracked veneer', 'Moisture stain'] },
+  { k: 'cut', name: 'Cutter', unit: 'kg', plan: 760, machines: ['CUT-01', 'CUT-02', 'CUT-03', 'CUT-04'], crew: 10, runs: 'WF-160 / WS-160 blanks', sup: 'S. Khan', defects: ['Burr on edge', 'Short blank', 'Splinter'] },
+  { k: 'aut', name: 'Automatic', unit: 'kg', plan: 640, machines: ['AUTO-01', 'AUTO-02', 'AUTO-03'], crew: 9, runs: 'IS-095 scoops, TS-065 tasting spoons', sup: 'R. Iyer', defects: ['Mis-pressed', 'Rough finish', 'Wrong size'] },
+  { k: 'pck', name: 'Packing', unit: 'ctn', plan: 120, machines: ['PACK-L1', 'PACK-L2'], crew: 14, runs: 'WF-160, WS-160, PS-008 cartons', sup: 'V. Gupta', defects: ['Short count', 'Torn carton', 'Label mismatch'] },
+  { k: 'ctl', name: 'Cutlery kits', unit: 'ctn', plan: 30, machines: ['KIT-01'], crew: 6, runs: 'CK-003 kits for cloud kitchens', sup: 'N. Das', defects: ['Napkin missing', 'Seal not closed', 'Short count'] },
 ];
 const today = new Date(); today.setHours(0, 0, 0, 0);
 const DATES = Array.from({ length: 15 }, (_, i) => { const d = new Date(today); d.setDate(d.getDate() - i); return d; });
@@ -68,13 +74,19 @@ const key = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')
 const plans = store.get('pp-plans', {}), notes = store.get('pp-notes', []);
 const planOf = (d, dep) => plans[key(d) + dep.k] ?? dep.plan;
 
+const DOWN_BIG = ['Blade change', 'Power cut (MSEB)', 'WAIT', 'Die adjustment', 'Motor overheating', 'Planned maintenance'];
+const DOWN_SMALL = ['Jam / mis-feed', 'Belt slip', 'Material changeover', 'Shift changeover'];
+const WAIT = { sel: 'Veneer lorry unloading late', cut: 'Waiting for veneer from Selection', aut: 'Waiting for blanks from Cutter', pck: 'Waiting for cartons from store', ctl: 'Waiting for napkins from store' };
+const OPS = SAMPLE.TEAM.operators, opFor = (di, mi, sh) => OPS[(di * 3 + mi * 2 + (sh === 'Night' ? 5 : 0)) % OPS.length];
 // Seeded per (date, dept): 2 shifts, each machine contributes, with occasional downtime.
 function shifts(d, dep) {
   const r = rng(+key(d).replace(/-/g, '') * 7 + dep.k.charCodeAt(0));
   return ['Day', 'Night'].map(sh => dep.machines.map(m => {
     const down = r() < .12 ? Math.round(30 + r() * 120) : Math.round(r() * 15);
     const out = dep.plan / 2 / dep.machines.length * (0.82 + r() * 0.3) * (1 - down / 480); // capacity-driven, independent of the plan typed in
-    return { sh, m, down, out };
+    const reason = down >= 30 ? DOWN_BIG[Math.floor(r() * DOWN_BIG.length)].replace('WAIT', WAIT[dep.k]) : down > 0 ? DOWN_SMALL[Math.floor(r() * DOWN_SMALL.length)] : '–';
+    const rej = out * (dep.k === 'sel' ? .04 + r() * .05 : .006 + r() * .02), defect = dep.defects[Math.floor(r() ** 1.5 * 3)];
+    return { sh, m, down, out, reason, rej, defect };
   }));
 }
 // Fraction of each shift elapsed (Day 08–20, Night 20–08) for the live "today" view.
@@ -92,7 +104,7 @@ function day(d) {
   });
 }
 const pill = s => `<span class="pill ${s === 'On track' ? 'ok' : s === 'Behind' ? 'warn' : s === 'Critical' ? 'bad' : 'mute'}">${s}</span>`;
-let pva, trend;
+let pva, trend, downChart;
 function render() {
   const d = DATES[+$('#date').value], rows = day(d), isToday = key(d) === key(today);
   $('#live').className = 'badge ' + (isToday ? 'ok' : ''); $('#live').textContent = isToday ? `● live · ${new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}` : 'closed day';
@@ -103,6 +115,7 @@ function render() {
     .map(([l, v, c]) => `<div class="card kpi ${c}"><b style="font-size:${String(v).length > 12 ? 16 : 26}px">${v}</b><span>${l}</span></div>`).join('');
   $('#depts').innerHTML = rows.map(r => `<div class="card dept"><div class="top"><h3>${r.dep.name}</h3>${pill(r.status)}</div>
     <div class="nums"><span>Actual<br><b>${num(r.act)}</b> ${r.dep.unit}</span><span style="text-align:right">${isToday ? 'Due so far' : 'Plan'}<br><b>${num(r.due)}</b></span></div>
+    <div style="font-size:11.5px;color:var(--dim)">Running: ${r.dep.runs}</div>
     <div class="att"><i style="width:${Math.min(100, r.att * 100)}%;background:${r.status === 'On track' ? 'var(--ok)' : r.status === 'Behind' ? 'var(--warn)' : 'var(--bad)'}"></i></div>
     <label class="f">Day plan (${r.dep.unit})<input type="number" min="0" data-k="${r.dep.k}" value="${r.plan}"></label></div>`).join('');
   $('#depts').querySelectorAll('input').forEach(inp => inp.onchange = () => { plans[key(d) + inp.dataset.k] = Math.max(0, +inp.value || 0); store.set('pp-plans', plans); render(); });
@@ -117,19 +130,34 @@ function render() {
   trend = new Chart($('#trend'), { type: 'line', data: { labels: hist.map(label), datasets: DEPTS.map((dep, i) => ({ label: dep.name, borderColor: C[i], backgroundColor: C[i], pointRadius: 2, tension: .3,
     data: hist.map(h => { const r = day(h)[i]; return r.due ? Math.round(r.att * 100) : null; }) })) },
     options: { maintainAspectRatio: false, scales: { y: { suggestedMin: 60, suggestedMax: 115, ticks: { callback: v => v + '%' } } } } });
-  const ms = rows.flatMap(r => r.dep.machines.map((m, j) => { const a = r.s.map(sh => sh[j]); const out = a.reduce((x, s, i) => x + s.out * r.ef[i], 0), down = a.reduce((x, s) => x + s.down, 0);
-    return { dept: r.dep.name, m, out, down, unit: r.dep.unit, eff: Math.max(0, 1 - down / 960) }; })).sort((a, b) => b.down - a.down);
+  const ms = rows.flatMap((r, di) => r.dep.machines.map((m, j) => { const a = r.s.map(sh => sh[j]); const out = a.reduce((x, s, i) => x + s.out * r.ef[i], 0), down = a.reduce((x, s) => x + s.down, 0), worst = a.slice().sort((x, y) => y.down - x.down)[0];
+    return { dept: r.dep.name, m, out, down, unit: r.dep.unit, eff: Math.max(0, 1 - down / 960), reason: worst.reason, op: opFor(di, j, 'Day') + ' / ' + opFor(di, j, 'Night') }; })).sort((a, b) => b.down - a.down);
   $('#mNote').textContent = 'sorted by downtime';
-  $('#machines').innerHTML = '<tr><th>Machine</th><th>Dept</th><th class="num">Output</th><th class="num">Downtime</th><th>Availability</th></tr>' + ms.map(m =>
-    `<tr><td class="mono">${m.m}</td><td>${m.dept}</td><td class="num">${num(m.out)} ${m.unit}</td><td class="num" style="color:${m.down > 60 ? 'var(--bad)' : 'inherit'}">${m.down} min</td><td style="width:22%"><div class="bar"><i class="${m.eff > .95 ? 'ok' : m.eff < .85 ? 'bad' : ''}" style="width:${m.eff * 100}%"></i></div></td></tr>`).join('');
+  $('#machines').innerHTML = '<tr><th>Machine</th><th>Operators (Day / Night)</th><th class="num">Output</th><th class="num">Downtime</th><th>Main reason</th><th>Availability</th></tr>' + ms.map(m =>
+    `<tr><td class="mono">${m.m}<div style="font:11px Inter,sans-serif;color:var(--dim)">${m.dept}</div></td><td style="font-size:12.5px">${m.op}</td><td class="num">${num(m.out)} ${m.unit}</td><td class="num" style="color:${m.down > 60 ? 'var(--bad)' : 'inherit'}">${m.down} min</td><td style="font-size:12.5px;color:${m.down >= 30 ? 'var(--text)' : 'var(--dim)'}">${m.reason}</td><td style="width:22%"><div class="bar"><i class="${m.eff > .95 ? 'ok' : m.eff < .85 ? 'bad' : ''}" style="width:${m.eff * 100}%"></i></div></td></tr>`).join('');
   const lr = rng(+key(d).replace(/-/g, ''));
-  $('#labour').innerHTML = '<tr><th>Dept</th><th class="num">Planned</th><th class="num">Present</th><th class="num">Output / head</th></tr>' + rows.map(r => {
-    const present = Math.max(1, r.dep.crew - Math.floor(lr() * 3)); return `<tr><td>${r.dep.name}</td><td class="num">${r.dep.crew}</td><td class="num" style="color:${present < r.dep.crew ? 'var(--accent)' : 'var(--ok)'}">${present}</td><td class="num">${(r.act / present).toFixed(1)} ${r.dep.unit}</td></tr>`; }).join('');
+  $('#labour').innerHTML = '<tr><th>Dept</th><th>Supervisor</th><th class="num">Planned</th><th class="num">Present</th><th class="num">Output / head</th></tr>' + rows.map(r => {
+    const present = Math.max(1, r.dep.crew - Math.floor(lr() * 3)); return `<tr><td>${r.dep.name}</td><td>${r.dep.sup}</td><td class="num">${r.dep.crew}</td><td class="num" style="color:${present < r.dep.crew ? 'var(--accent)' : 'var(--ok)'}">${present}</td><td class="num">${(r.act / present).toFixed(1)} ${r.dep.unit}</td></tr>`; }).join('');
+  const qrows = rows.map(r => { const all = r.s.flat().map((m, i) => ({ ...m, w: r.ef[Math.floor(i / r.dep.machines.length)] })), out = all.reduce((x, m) => x + m.out * m.w, 0), rej = all.reduce((x, m) => x + m.rej * m.w, 0);
+    const by = {}; all.forEach(m => by[m.defect] = (by[m.defect] || 0) + m.rej * m.w); const top = Object.entries(by).sort((a, b) => b[1] - a[1])[0];
+    return { r, out, rej, rate: out ? rej / out : 0, top: top ? top[0] : '–' }; });
+  const qhtml = '<tr><th>Department</th><th class="num">Output</th><th class="num">Rejected</th><th class="num">Reject %</th><th>Top defect</th></tr>' + qrows.map(q =>
+    `<tr><td>${q.r.dep.name}</td><td class="num">${num(q.out)} ${q.r.dep.unit}</td><td class="num">${q.rej < 10 ? q.rej.toFixed(1) : num(q.rej)} ${q.r.dep.unit}</td><td class="num"><span class="pill ${q.rate > (q.r.dep.k === 'sel' ? .08 : .02) ? 'bad' : q.rate > (q.r.dep.k === 'sel' ? .06 : .012) ? 'warn' : 'ok'}">${pct(q.rate, 1)}</span></td><td>${q.top}</td></tr>`).join('') +
+    '<tr><td colspan="5" class="note">Selection rejects are veneer graded out before cutting (target under 8%); every other line targets under 2%.</td></tr>';
+  $('#quality').innerHTML = qhtml; $('#qualityToday').innerHTML = qhtml;
+  const dr = {}; rows.forEach(r => r.s.flat().forEach(m => { if (m.down) dr[m.reason] = (dr[m.reason] || 0) + m.down; }));
+  const de = Object.entries(dr).sort((a, b) => b[1] - a[1]);
+  downChart?.destroy();
+  downChart = new Chart($('#downChart'), { type: 'bar', data: { labels: de.map(x => x[0]), datasets: [{ data: de.map(x => x[1]), backgroundColor: de.map((x, i) => i < 2 ? '#ef4444' : '#f59e0b'), borderRadius: 4 }] },
+    options: { indexAxis: 'y', maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { callback: v => v + ' min' } } } } });
   renderNotes();
 }
 function renderNotes() {
-  const d = key(DATES[+$('#date').value]), list = notes.filter(n => n.date === d);
-  $('#notes').innerHTML = list.length ? list.slice().reverse().map(n => `<div class="note-item"><small>${n.shift} · ${n.dept} · ${n.time}</small>${esc(n.text)}</div>`).join('') : '<p class="note">No handover notes for this date yet.</p>';
+  const dd = DATES[+$('#date').value], d = key(dd), list = notes.filter(n => n.date === d), rows = day(dd), auto = [];
+  rows.forEach((r, di) => r.s.forEach((sh, si) => { if (si === 1 && key(dd) === key(today)) return; sh.forEach((m, mi) => { if (m.down >= 30) auto.push({ shift: si ? 'Night → Day' : 'Day → Night', dept: r.dep.name, time: si ? '08:00' : '20:00', by: r.dep.sup,
+    text: `${m.m}: ${m.reason}, ${m.down} min lost (operator ${opFor(di, mi, m.sh)}). ${r.att < .95 ? `Line is at ${pct(r.att, 0)} of plan, next shift to catch up on ${r.dep.runs.split(',')[0]}.` : 'Back to normal speed, plan still on track.'}` }); }); }));
+  const all = [...list.slice().reverse().map(n => ({ ...n, by: 'You' })), ...auto];
+  $('#notes').innerHTML = all.length ? all.map(n => `<div class="note-item"><small>${n.shift} · ${n.dept} · ${n.time} · ${n.by}</small>${esc(n.text)}</div>`).join('') : '<p class="note">Quiet day: no breakdowns over 30 minutes, nothing to hand over.</p>';
 }
 $('#date').innerHTML = DATES.map((d, i) => `<option value="${i}">${i ? label(d) : 'Today · ' + label(d)}</option>`).join('');
 $('#noteDept').innerHTML = DEPTS.map(d => `<option>${d.name}</option>`).join('');

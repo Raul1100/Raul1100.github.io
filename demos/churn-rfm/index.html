@@ -8,9 +8,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../_shared/demo.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script>window.APP={"name": "Retain", "short": "Re", "tagline": "Churn intelligence", "accent": "#16a34a", "workspace": "B2B accounts · 520 customers", "nav": [{"id": "overview", "title": "Overview", "icon": "home", "desc": "How well the model finds customers who are about to stop ordering."}, {"id": "calls", "title": "Call list", "icon": "phone", "desc": "Highest-risk active customers, with the reasons behind each score."}, {"id": "segments", "title": "RFM segments", "icon": "pie", "desc": "Recency, frequency and spend segments with their actual churn."}, {"id": "method", "title": "Methodology", "icon": "book", "desc": "Simulation, features, labels and the time-based split."}], "notifications": [["Model retrained", "Logistic regression on monthly snapshots"], ["High-risk accounts flagged", "See the call list"], ["RFM refreshed", "Segments recomputed for the test snapshot"]]};</script>
+<script>window.APP={"skin": "retain", "layout": "sidebar", "defaultTheme": "light", "name": "Retain", "short": "Re", "tagline": "Churn intelligence", "accent": "#16a34a", "workspace": "B2B accounts · 520 customers", "nav": [{"id": "overview", "title": "Overview", "icon": "home", "desc": "How well the model finds customers who are about to stop ordering."}, {"id": "accounts", "title": "Accounts", "icon": "users", "desc": "Every active account with its risk score, owner and spend. Click a row for details."}, {"id": "calls", "title": "Call list", "icon": "phone", "desc": "Highest-risk active customers, with the reasons behind each score."}, {"id": "segments", "title": "RFM segments", "icon": "pie", "desc": "Recency, frequency and spend segments with their actual churn."}, {"id": "method", "title": "Methodology", "icon": "book", "desc": "Simulation, features, labels and the time-based split."}], "notifications": [["Model retrained", "Logistic regression on monthly snapshots"], ["High-risk accounts flagged", "See the call list"], ["RFM refreshed", "Segments recomputed for the test snapshot"]]};</script>
+<script src="../_shared/sample-data.js"></script>
 <script src="../_shared/demo.js"></script>
 <script src="core.js"></script>
+<style>.drawer{position:fixed;inset:0;z-index:90}.dr-bg{position:absolute;inset:0;background:rgba(15,29,58,.35);backdrop-filter:blur(2px)}.drawer aside{position:absolute;right:0;top:0;bottom:0;width:min(460px,100vw);background:var(--bg);padding:22px;overflow-y:auto;box-shadow:-20px 0 50px -20px rgba(0,0,0,.35);animation:drin .25s ease}.dr-x{position:absolute;right:16px;top:16px;width:32px;height:32px;padding:0;border-radius:50%}@keyframes drin{from{transform:translateX(30px);opacity:0}}</style>
 </head>
 <body>
 <header class="top">
@@ -26,6 +28,8 @@
     <div class="card"><h2>Compared with simpler approaches <small>same 20% call budget</small></h2><table id="compare"></table>
       <h2 style="margin-top:18px">What the model learned <small>logistic weights, standardised</small></h2><table id="weights"></table></div>
   </div>
+  <div data-view="overview" class="card"><h2>Revenue at risk by account manager <small>active accounts with risk above 50%</small></h2><table id="mgrs"></table></div>
+  <div data-view="accounts" class="card"><h2><span>Accounts</span><small style="display:flex;gap:8px"><input id="acSearch" placeholder="Search account or city" style="width:200px"><select id="acMgr"><option value="">All managers</option></select><select id="acRisk"><option value="">All risk</option><option value="high">High risk (&gt;60%)</option><option value="med">Medium (30-60%)</option><option value="low">Low (&lt;30%)</option></select></small></h2><div style="overflow-x:auto"><table id="accounts"></table></div></div>
   <div data-view="calls" class="card"><h2>Highest churn risk <small>with the top reasons</small></h2><table id="list"></table></div>
   <div data-view="segments" class="card"><h2>RFM segments <small>actual 90-day churn</small></h2><table id="segs"></table>
     <p class="note" style="margin-top:12px">RFM scores recency, frequency and spend against <em>everyone else</em>. The model also compares each customer with <em>their own</em> rhythm and order size, which is where most of its extra lift comes from.</p></div>
@@ -35,6 +39,7 @@
 let seed = 11, chart;
 function render() {
   const r = Churn.run(seed);
+  assignProfiles(r.custs);
   $('#sub').textContent = `${r.custs.length} customers · ${num(r.trainRows)} training rows from ${r.trainSnapshots} snapshots · tested on ${r.test.length} active customers`;
   $('#kpis').innerHTML = [
     ['Churners reached in top 20%', pct(r.capture.model, 0), 'ok'], ['Revenue at risk covered', pct(r.revenue.model, 0), 'acc'],
@@ -47,19 +52,81 @@ function render() {
   const ws = r.model.w.map((w, j) => [r.FEATS[j], w]).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])), mx = Math.max(...ws.map(x => Math.abs(x[1])));
   $('#weights').innerHTML = ws.map(([n, w]) => `<tr><td>${n}</td><td class="num mono" style="color:${w > 0 ? 'var(--bad)' : 'var(--ok)'}">${w > 0 ? '+' : ''}${w.toFixed(2)}</td><td style="width:40%"><div class="bar"><i class="${w > 0 ? 'bad' : 'ok'}" style="width:${Math.abs(w) / mx * 100}%"></i></div></td></tr>`).join('') +
     '<tr><td colspan="3" class="note">Red raises churn risk, green lowers it.</td></tr>';
+  R = r; assignProfiles(r.custs); renderAccounts(); renderManagers();
   const reason = c => c.contrib.map((v, j) => [v, j]).filter(x => x[0] > 0).sort((a, b) => b[0] - a[0]).slice(0, 2).map(([, j]) => {
     const x = c.x[j]; return j === 0 ? `${Math.round(x)} days quiet` : j === 3 ? `gap ${x.toFixed(1)}× their usual` : j === 4 ? `gaps getting longer (${x.toFixed(1)}×)` : j === 5 ? `orders ${Math.round((1 - x) * 100)}% smaller` : j === 1 ? `only ${x} orders in 180d` : r.FEATS[j]; });
   $('#list').innerHTML = '<tr><th>Customer</th><th class="num">Risk</th><th>Why</th><th>RFM</th><th>Outcome</th></tr>' + r.ranked.slice(0, 12).map(c =>
-    `<tr><td>${esc(c.name)} <span class="mono" style="color:var(--dim);font-size:11px">${c.id}</span></td><td class="num"><b style="color:${c.p > .6 ? 'var(--bad)' : 'var(--accent)'}">${pct(c.p, 0)}</b></td><td style="font-size:12px;color:var(--muted)">${reason(c).join(' · ')}</td><td><span class="pill mute">${c.seg}</span></td><td>${c.y ? '<span class="pill bad">left</span>' : '<span class="pill ok">stayed</span>'}</td></tr>`).join('');
+    `<tr><td><a href="#/accounts" onclick="setTimeout(()=>openAcct('${c.id}'),50)" style="font-weight:600">${esc(prof(c.id).name)}</a> <span style="color:var(--dim);font-size:11.5px">${prof(c.id).city}</span></td><td class="num"><b style="color:${c.p > .6 ? 'var(--bad)' : 'var(--accent)'}">${riskPct(c.p)}</b></td><td style="font-size:12px;color:var(--muted)">${reason(c).join(' · ')}</td><td><span class="pill mute">${c.seg}</span></td><td>${c.y ? '<span class="pill bad">left</span>' : '<span class="pill ok">stayed</span>'}</td></tr>`).join('');
   const order = ['Champions', 'Loyal', 'Promising', 'Needs Attention', 'At Risk', 'Hibernating'];
   $('#segs').innerHTML = '<tr><th>Segment</th><th class="num">Customers</th><th class="num">Churned</th><th></th></tr>' + order.filter(s => r.segs[s]).map(s => {
     const v = r.segs[s], rate = v.churn / v.n; return `<tr><td>${s}</td><td class="num">${v.n}</td><td class="num">${pct(rate, 0)}</td><td style="width:35%"><div class="bar"><i class="${rate > .3 ? 'bad' : rate < .1 ? 'ok' : ''}" style="width:${rate * 100}%"></i></div></td></tr>`; }).join('');
   chart?.destroy();
   chart = new Chart($('#curve'), { type: 'line', data: { labels: r.curve.map(c => Math.round(c[0] * 100) + '%'), datasets: [
-    { label: 'Churn model', data: r.curve.map(c => +(c[1] * 100).toFixed(1)), borderColor: '#7bd88f', backgroundColor: 'rgba(123,216,143,.12)', fill: true, tension: .3, pointRadius: 0 },
-    { label: 'Days since last order', data: r.curve.map(c => +(c[2] * 100).toFixed(1)), borderColor: '#ffb547', tension: .3, pointRadius: 0 },
-    { label: 'Random', data: r.curve.map(c => +(c[0] * 100).toFixed(1)), borderColor: '#6f675c', borderDash: [5, 5], pointRadius: 0 }] },
+    { label: 'Churn model', data: r.curve.map(c => +(c[1] * 100).toFixed(1)), borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,.10)', fill: true, tension: .3, pointRadius: 0 },
+    { label: 'Days since last order', data: r.curve.map(c => +(c[2] * 100).toFixed(1)), borderColor: '#f59e0b', tension: .3, pointRadius: 0 },
+    { label: 'Random', data: r.curve.map(c => +(c[0] * 100).toFixed(1)), borderColor: '#94a3b8', borderDash: [5, 5], pointRadius: 0 }] },
     options: { maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, scales: { x: { title: { display: true, text: '% of customers called (highest risk first)' } }, y: { max: 100, ticks: { callback: v => v + '%' } } } } });
+}
+/* ---- account profiles (names, industry, city, owner): derived from the id, so the model's data is untouched ---- */
+/* ---- account profiles: derived from the id, so the model's data is untouched.
+   The first accounts are the shared chain outlets; the rest are the everyday food businesses a
+   distributor-led manufacturer sells to (generic names, real localities). ---- */
+const LOCAL_A = ['Shree Krishna', 'Sai', 'Om', 'Annapurna', 'Sagar', 'Royal', 'New Hindustan', 'Ganesh', 'Laxmi', 'Balaji', 'Shiv Sagar', 'Mahalaxmi', 'Gokul', 'Shivam', 'Vrindavan', 'Swami Samarth', 'Jai Ambe', 'Hotel Sai Palace', 'Udupi', 'Punjab'];
+const LOCAL_B = [['Sweets', 'Sweets & snacks'], ['Caterers', 'Catering'], ['Restaurant', 'Restaurant'], ['Bakery', 'Bakery'], ['Snacks Centre', 'Sweets & snacks'], ['Juice Centre', 'Juice bar'],
+  ['Ice Cream Parlour', 'Ice cream'], ['Pure Veg', 'Restaurant'], ['Canteen', 'Institutional'], ['Café', 'Café'], ['Food Court', 'Food court'], ['Dhaba', 'Restaurant']];
+const LOCALITIES = [['Thane', 'Mumbai'], ['Dombivli', 'Mumbai'], ['Borivali', 'Mumbai'], ['Vashi', 'Navi Mumbai'], ['Panvel', 'Navi Mumbai'], ['Kalyan', 'Mumbai'], ['Kothrud', 'Pune'], ['Hadapsar', 'Pune'],
+  ['Pimpri', 'Pune'], ['Nashik Road', 'Nashik'], ['Sitabuldi', 'Nagpur'], ['Maninagar', 'Ahmedabad'], ['Vadodara', 'Vadodara'], ['Surat', 'Surat'], ['Margao', 'Goa'], ['Belagavi', 'Belagavi']];
+const MGRS = SAMPLE.TEAM.sales.map(x => x[0]).filter(n => n !== 'Sneha Kulkarni');
+const _prof = {};
+const riskPct = p => p > .99 ? '99%' : pct(p, 0);
+// Names follow account size: the biggest average orders get the chain outlets, caterers and
+// distributors; smaller ones get local food businesses. Every name is unique.
+function assignProfiles(custs) {
+  for (const k in _prof) delete _prof[k];
+  const big = SAMPLE.ACCOUNTS.filter(a => a.segment !== 'Export').slice().sort((x, y) => y.typical - x.typical);
+  const avg = c => c.orders.reduce((s, o) => s + o.value, 0) / Math.max(1, c.orders.length);
+  custs.slice().sort((x, y) => avg(y) - avg(x)).forEach((c, rank) => {
+    if (rank < big.length) { const a = big[rank]; _prof[c.id] = { name: a.name, industry: a.segment, city: a.city, mgr: a.rep, since: 2018 + (rank % 7) }; return; }
+    const j = rank - big.length, A = LOCAL_A[j % 20], B = LOCAL_B[Math.floor(j / 20) % 12], L = LOCALITIES[(Math.floor(j / 240) + j) % 16];
+    _prof[c.id] = { name: `${A} ${B[0]}, ${L[0]}`, industry: B[1], city: L[1], mgr: MGRS[(j * 3 + Math.floor(j / 9)) % MGRS.length], since: 2019 + (j % 6) };
+  });
+}
+const prof = id => _prof[id];
+let R, achart;
+function renderManagers() {
+  const by = {}; R.test.forEach(c => { const m = prof(c.id).mgr, o = by[m] ??= { n: 0, risk: 0, rev: 0 }; o.n++; if (c.p > .5) { o.risk++; o.rev += c.monetary; } });
+  const mx = Math.max(...Object.values(by).map(o => o.rev));
+  $('#mgrs').innerHTML = '<tr><th>Account manager</th><th class="num">Accounts</th><th class="num">At risk</th><th class="num">Revenue at risk (180d)</th><th></th></tr>' +
+    Object.entries(by).sort((a, b) => b[1].rev - a[1].rev).map(([m, o]) => `<tr><td><b>${m}</b></td><td class="num">${o.n}</td><td class="num">${o.risk}</td><td class="num"><b>${inr(o.rev)}</b></td><td style="width:30%"><div class="bar"><i class="bad" style="width:${o.rev / mx * 100}%"></i></div></td></tr>`).join('');
+}
+function renderAccounts() {
+  if (!$('#acMgr').options[1]) $('#acMgr').innerHTML += MGRS.map(m => `<option>${m}</option>`).join('');
+  const q = $('#acSearch').value.toLowerCase(), mg = $('#acMgr').value, rk = $('#acRisk').value;
+  const list = R.ranked.filter(c => { const p = prof(c.id); return (!q || (p.name + ' ' + p.city).toLowerCase().includes(q)) && (!mg || p.mgr === mg) && (!rk || (rk === 'high' ? c.p > .6 : rk === 'med' ? c.p >= .3 && c.p <= .6 : c.p < .3)); });
+  $('#accounts').innerHTML = '<tr><th>Account</th><th>Industry</th><th>City</th><th>Owner</th><th class="num">Spend 180d</th><th class="num">Last order</th><th class="num">Risk</th><th>Segment</th></tr>' +
+    list.slice(0, 60).map(c => { const p = prof(c.id); return `<tr style="cursor:pointer" onclick="openAcct('${c.id}')"><td><b>${esc(p.name)}</b></td><td>${p.industry}</td><td>${p.city}</td><td>${p.mgr}</td><td class="num">${inr(c.monetary)}</td><td class="num">${c.recency} d ago</td><td class="num"><span class="pill ${c.p > .6 ? 'bad' : c.p > .3 ? 'warn' : 'ok'}">${riskPct(c.p)}</span></td><td><span class="pill mute">${c.seg}</span></td></tr>`; }).join('') +
+    (list.length > 60 ? `<tr><td colspan="8" class="note">Showing 60 of ${list.length} accounts. Narrow with search or filters.</td></tr>` : '');
+}
+['acSearch', 'acMgr', 'acRisk'].forEach(id => $('#' + id).addEventListener(id === 'acSearch' ? 'input' : 'change', renderAccounts));
+function openAcct(id) {
+  const c = R.test.find(x => x.id === id), cu = R.custs.find(x => x.id === id), p = prof(id); if (!c) return;
+  document.querySelector('.drawer')?.remove();
+  const months = 18, end = 810, buckets = Array(months).fill(0);
+  cu.orders.forEach(o => { const m = Math.floor((o.day - (end - months * 30)) / 30); if (m >= 0 && m < months) buckets[m] += o.value; });
+  const why = c.contrib.map((v, j) => [v, j]).filter(x => x[0] > 0).sort((a, b) => b[0] - a[0]).slice(0, 3).map(([, j]) => R.FEATS[j]);
+  const action = c.p > .6 ? `Call this week: ${p.mgr} to review pricing and the recent drop in order size; offer samples of the new range.` : c.p > .3 ? 'Check in this month to confirm the next order date and any service issues.' : 'Healthy account. Keep the regular cadence and look for upsell.';
+  const d = document.createElement('div'); d.className = 'drawer';
+  d.innerHTML = `<div class="dr-bg"></div><aside><button class="dr-x" aria-label="Close">✕</button>
+    <div style="font-size:12px;color:var(--dim)">${p.industry} · ${p.city} · customer since ${p.since}</div><h2 style="font:700 22px 'DM Sans';margin:4px 0 14px">${esc(p.name)}</h2>
+    <div class="grid g2" style="gap:10px;margin-bottom:14px">${[['Churn risk', riskPct(c.p), c.p > .6 ? 'bad' : c.p > .3 ? '' : 'ok'], ['Spend, 180 days', inr(c.monetary), ''], ['Orders, 180 days', String(c.freq), ''], ['Last order', c.recency + ' days ago', '']].map(([l, v, k]) => `<div class="card kpi ${k}" style="padding:12px 14px"><b style="font-size:20px">${v}</b><span>${l}</span></div>`).join('')}</div>
+    <div class="card" style="margin-bottom:14px"><h2>Monthly order value <small>last 4 months in amber</small></h2><div class="chart sm"><canvas id="acChart"></canvas></div></div>
+    <div class="card" style="margin-bottom:14px"><h2>What drives the score</h2>${why.length ? why.map(w => `<div style="padding:6px 0;border-bottom:1px solid var(--line)">▲ ${w}</div>`).join('') : '<p class="note">No risk drivers above average.</p>'}</div>
+    <div class="card"><h2>Suggested next step <small>owner: ${p.mgr}</small></h2><p style="margin-bottom:12px">${action}</p><button class="primary" id="logCall">Log a call</button></div></aside>`;
+  document.body.appendChild(d);
+  const close = () => d.remove(); d.querySelector('.dr-bg').onclick = close; d.querySelector('.dr-x').onclick = close;
+  d.querySelector('#logCall').onclick = () => { toast(`Call logged for ${p.name}`); close(); };
+  achart = new Chart(d.querySelector('#acChart'), { type: 'bar', data: { labels: buckets.map((_, i) => 'M' + (i + 1)), datasets: [{ data: buckets.map(v => Math.round(v)), backgroundColor: buckets.map((_, i) => i >= months - 4 ? '#f59e0b' : '#16a34a'), borderRadius: 4 }] },
+    options: { maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: x => inr(x.raw) } } }, scales: { y: { ticks: { callback: v => inr(v) } } } } });
 }
 $('#regen').onclick = () => { seed = Math.floor(Math.random() * 1e6); render(); };
 render();

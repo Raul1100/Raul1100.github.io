@@ -16,7 +16,9 @@
 
   /* ---------- theme before first paint ---------- */
   const root = document.documentElement;
-  try { root.dataset.theme = localStorage.getItem('app-theme') || 'light'; } catch (e) { root.dataset.theme = 'light'; }
+  const APPCFG = g.APP || {}, THEME_KEY = 'app-theme-' + (APPCFG.short || 'x');
+  try { root.dataset.theme = localStorage.getItem(THEME_KEY) || APPCFG.defaultTheme || 'light'; } catch (e) { root.dataset.theme = APPCFG.defaultTheme || 'light'; }
+  root.dataset.skin = APPCFG.skin || 'base'; root.dataset.layout = APPCFG.layout || 'sidebar';
 
   const ICONS = {
     home: '<path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
@@ -42,6 +44,11 @@
     moon: '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
     menu: '<path d="M3 6h18M3 12h18M3 18h18"/>',
     back: '<path d="m15 18-6-6 6-6"/>',
+    bolt: '<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>',
+    flag: '<path d="M4 22V4M4 4h13l-2 4 2 4H4"/>',
+    user: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+    map: '<path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3z"/><path d="M9 3v15M15 6v15"/>',
+    alert: '<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
     target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
   };
   const svg = n => `<svg viewBox="0 0 24 24">${ICONS[n] || ICONS.grid}</svg>`;
@@ -65,7 +72,7 @@
     /* build shell around the page's <main> */
     const main = document.querySelector('main'), oldHead = document.querySelector('header.top');
     const shell = document.createElement('div'); shell.className = 'shell';
-    const navHtml = A.nav.map(n => `<a href="#/${n.id}" data-id="${n.id}">${svg(n.icon)}<span>${esc(n.title)}</span>${n.count ? `<span class="count">${n.count}</span>` : ''}</a>`).join('');
+    const navHtml = A.nav.map(n => `<a href="#/${n.id}" data-id="${n.id}" title="${esc(n.title)}">${svg(n.icon)}<span>${esc(n.title)}</span>${n.count ? `<span class="count">${n.count}</span>` : ''}</a>`).join('');
     shell.innerHTML = `
       <aside class="side" id="side">
         <div class="brand"><div class="logo">${esc(A.short || A.name.slice(0, 2))}</div><div><b>${esc(A.name)}</b><small>${esc(A.tagline || '')}</small></div></div>
@@ -74,15 +81,17 @@
         <div class="side-foot">
           <nav class="nav"><a href="#" id="themeBtn">${svg(root.dataset.theme === 'dark' ? 'sun' : 'moon')}<span>${root.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode'}</span></a>
           <a href="../../#work">${svg('back')}<span>Back to portfolio</span></a></nav>
-          <div class="user"><div class="avatar">RG</div><div><b>Rahul Gurav</b><small>Builder · sample workspace</small></div></div>
+          <div class="user"><div class="avatar">RG</div><div><b>Rahul Gurav</b><small>Admin</small></div></div>
         </div>
       </aside>
       <div class="main">
         <header class="topbar">
           <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu">${svg('menu')}</button>
+          <div class="top-brand"><div class="logo">${esc(A.short || A.name.slice(0, 2))}</div><b>${esc(A.name)}</b></div>
+          <nav class="topnav">${A.nav.map(n => `<a href="#/${n.id}" data-id="${n.id}">${svg(n.icon)}<span>${esc(n.title)}</span></a>`).join('')}</nav>
           <div class="crumbs"><span>${esc(A.name)}</span><span>/</span><b id="crumb"></b></div>
           <label class="search">${svg('search').replace('<svg', '<svg width="15" height="15" style="stroke:currentColor;fill:none;stroke-width:1.8"')}<input id="appSearch" placeholder="Jump to…" autocomplete="off"><kbd>/</kbd></label>
-          <div class="top-actions" id="topActions"><span class="env" title="This workspace runs on generated sample data">Sandbox · sample data</span>
+          <div class="top-actions" id="topActions">
             <button class="icon-btn" id="bellBtn" aria-label="Notifications">${svg('bell')}${(A.notifications || []).length ? '<span class="dot"></span>' : ''}</button></div>
         </header>
         <div class="page" id="page"><div class="page-head"><div><h1 id="viewTitle"></h1><p id="viewDesc"></p></div><div class="actions" id="viewActions"></div></div></div>
@@ -101,7 +110,7 @@
     function go(id) {
       const n = A.nav.find(x => x.id === id) || A.nav[0]; if (!n) return;
       views.forEach(v => v.classList.toggle('show', v.dataset.view.split(/\s+/).includes(n.id)));
-      shell.querySelectorAll('.side .nav a[data-id]').forEach(a => a.classList.toggle('on', a.dataset.id === n.id));
+      shell.querySelectorAll('.side .nav a[data-id], .topnav a[data-id]').forEach(a => a.classList.toggle('on', a.dataset.id === n.id));
       $('#crumb').textContent = n.title; $('#viewTitle').textContent = n.title; $('#viewDesc').textContent = n.desc || '';
       document.title = n.title + ' · ' + A.name; $('#side').classList.remove('open'); window.scrollTo(0, 0);
       document.dispatchEvent(new CustomEvent('viewchange', { detail: n.id }));
@@ -111,7 +120,7 @@
 
     /* chrome interactions */
     $('#menuBtn').onclick = () => $('#side').classList.toggle('open');
-    $('#themeBtn').onclick = e => { e.preventDefault(); try { localStorage.setItem('app-theme', root.dataset.theme === 'dark' ? 'light' : 'dark'); } catch (x) {} location.reload(); };
+    $('#themeBtn').onclick = e => { e.preventDefault(); try { localStorage.setItem(THEME_KEY, root.dataset.theme === 'dark' ? 'light' : 'dark'); } catch (x) {} location.reload(); };
     const sIn = $('#appSearch');
     addEventListener('keydown', e => { if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') { e.preventDefault(); sIn.focus(); } });
     sIn.onkeydown = e => { if (e.key === 'Enter') { const q = sIn.value.toLowerCase(), hit = A.nav.find(n => (n.title + ' ' + (n.desc || '')).toLowerCase().includes(q)); if (hit) { location.hash = '#/' + hit.id; sIn.value = ''; sIn.blur(); } else toast('No page matches "' + sIn.value + '"'); } };
