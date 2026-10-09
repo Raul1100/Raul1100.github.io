@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BioPapro Design Hub · Export planner</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<style>
+:root{
+  --bg:#f5f6f2; --surface:#ffffff; --surface-2:#f8f9f6; --line:#e4e7e0; --line-2:#d3d8cf;
+  --ink:#17211b; --muted:#66706a; --soft:#8b948e;
+  --brand:#1f7a3a; --brand-d:#17602d; --brand-l:#e7f3ea; --brand-ll:#f3f9f4;
+  --warn:#9a6700; --warn-l:#fff6dd; --blue:#1d5fd1; --r:14px; --sh:0 1px 2px rgba(16,24,20,.05),0 6px 20px rgba(16,24,20,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:14px/1.45 Poppins,'Segoe UI',Arial,sans-serif}
+button{font-family:inherit}
+svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.top{height:64px;display:flex;align-items:center;gap:16px;padding:0 20px;background:var(--surface);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;white-space:nowrap}
+.logo img{height:48px;margin:-4px 0}
+.logo .vsep{width:1px;height:30px;background:var(--line-2)}
+.logo b{font-size:16px;font-weight:700;display:block;line-height:1.1}
+.logo small{font-size:11.5px;color:var(--muted)}
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:3px;gap:2px}
+.seg a,.seg button{border:0;background:transparent;padding:7px 14px;border-radius:9px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.seg a:hover,.seg button:hover{color:var(--ink)}
+.seg .on{background:var(--surface);color:var(--brand);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.grow{flex:1}
+.btn{border:1px solid var(--line-2);background:var(--surface);padding:9px 15px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink);white-space:nowrap;display:inline-flex;align-items:center;gap:7px;justify-content:center}
+.btn:hover{background:var(--surface-2)}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 3px 10px rgba(31,122,58,.25)}
+.btn.pri:hover{background:var(--brand-d)}
+.btn.sm{padding:5px 10px;font-size:12px;border-radius:8px}
+.wrap{display:flex;height:calc(100% - 64px)}
+aside{width:420px;min-width:420px;background:var(--surface);border-right:1px solid var(--line);overflow:auto;padding:16px 20px 40px}
+h2{font-size:18px;margin:14px 0 4px}
+.sub{color:var(--muted);margin:0 0 12px;font-size:13px}
+h3{font-size:13.5px;font-weight:700;margin:20px 0 10px;display:flex;align-items:center;gap:8px}
+h3 small{font-weight:500;color:var(--muted);font-size:12px}
+.f{margin-bottom:10px}
+.f label{display:block;font-size:12.5px;font-weight:600;margin-bottom:4px}
+.f label small{font-weight:400;color:var(--soft)}
+input[type=text],input[type=number],select{width:100%;border:1.5px solid var(--line);border-radius:9px;padding:8px 10px;font:500 13.5px Poppins,sans-serif;color:var(--ink);background:var(--surface)}
+input:focus,select:focus{outline:0;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-l)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;cursor:pointer;font-size:13px;font-weight:500}
+.switch input{appearance:none;width:40px;height:23px;border-radius:20px;background:var(--line-2);position:relative;cursor:pointer;transition:.2s;flex:none;margin:0}
+.switch input:after{content:"";position:absolute;width:17px;height:17px;border-radius:50%;background:#fff;top:3px;left:3px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.switch input:checked{background:var(--brand)}
+.switch input:checked:after{left:20px}
+.hint{font-size:12px;color:var(--muted);margin:4px 0 0}
+.card{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:12px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tab{border:1.5px solid var(--line);border-radius:12px;background:var(--surface);padding:10px 12px;cursor:pointer;text-align:left;display:flex;gap:10px;align-items:center}
+.tab.on{border-color:var(--brand);background:var(--brand-ll);box-shadow:0 0 0 3px var(--brand-l)}
+.tab .ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;flex:none;background:var(--brand-l);color:var(--brand)}
+.tab b{display:block;font-size:12.5px;line-height:1.25}
+.tab small{display:block;font-size:11px;color:var(--muted);line-height:1.3}
+.pane{display:none}.pane.on{display:block}
+main{flex:1;display:flex;flex-direction:column;min-width:0}
+#view{position:relative;flex:1;min-height:300px;background:radial-gradient(ellipse at 50% 30%,#ffffff 0%,#eef0ec 55%,#dfe3dc 100%)}
+#view canvas{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
+.float{position:absolute;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh)}
+.cams{top:12px;left:12px;display:flex;gap:2px;padding:4px}
+.cams button{border:0;background:none;padding:5px 10px;border-radius:8px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer}
+.cams button:hover{background:var(--surface-2);color:var(--ink)}
+.legend{bottom:12px;right:12px;padding:6px 12px;font-size:12px;color:var(--muted);display:flex;gap:12px;align-items:center}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+#nogl{position:absolute;inset:0;display:none;align-items:center;justify-content:center;color:var(--muted);text-align:center;padding:30px}
+#results{background:var(--surface);border-top:1px solid var(--line);padding:14px 18px;max-height:46%;overflow:auto}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.kpi small{display:block;font-size:11.5px;color:var(--muted)}
+.kpi b{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.kpi em{display:block;font-style:normal;font-size:11.5px;color:var(--soft)}
+.kpi.big{background:var(--brand-ll);border-color:#bfe0c7}
+.kpi.big b{color:var(--brand-d);font-size:26px}
+.bar{height:7px;border-radius:5px;background:var(--line);overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--brand)}
+.bar.w i{background:#d98c00}
+.note{font-size:12.5px;border-radius:9px;padding:8px 11px;margin-top:10px}
+.note.warn{color:var(--warn);background:var(--warn-l);border:1px solid #f0d58a}
+.note.ok{color:var(--brand-d);background:var(--brand-ll);border:1px solid #bfe0c7}
+table{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums;margin-top:12px}
+th{text-align:left;font-weight:600;color:var(--muted);font-size:11.5px;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+tr.sel td{background:var(--brand-ll)}
+tr.pick{cursor:pointer}
+tr.pick:hover td{background:var(--surface-2)}
+tr.cur td{color:var(--muted);font-style:italic}
+.tag{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:20px;background:var(--brand-l);color:var(--brand-d);margin-left:6px}
+.tag.b{background:#e8eefc;color:var(--blue)}
+.tag.g{background:#f1f1f1;color:var(--muted)}
+.tw{overflow-x:auto}
+#toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,10px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:12px;font-size:13px;opacity:0;transition:.25s;pointer-events:none;z-index:99}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+@media (max-width:980px){.wrap{flex-direction:column;height:auto}aside{width:100%;min-width:0}main{min-height:90vh}#results{max-height:none}.top{overflow-x:auto}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo"><img src="data:image/png;base64,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" alt="BioPapro"><span class="vsep"></span><div><b>Design Hub</b><small>Packaging · 3D mockups · product documents</small></div></div>
+  <nav class="seg" style="margin-left:18px">
+    <a href="index.html"><svg class="i" viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7M12 11v10"/></svg>Packaging</a>
+    <a href="documents.html"><svg class="i" viewBox="0 0 24 24"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M8 13h8M8 17h5"/></svg>Product documents</a>
+    <a class="on" href="planner.html"><svg class="i" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="11" rx="1"/><path d="M6 7v11M10 7v11M14 7v11M18 7v11"/></svg>Export planner</a>
+  </nav>
+  <div class="grow"></div>
+  <button class="btn" id="exportBtn"><svg class="i" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Loading plan (PDF)</button>
+</header>
+
+<div class="wrap">
+<aside>
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-tab="load"><span class="ic"><svg class="i" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="11" rx="1"/><path d="M6 7v11M10 7v11M14 7v11M18 7v11"/></svg></span><span><b>Container loading</b><small>How many cartons fit</small></span></button>
+    <button class="tab" data-tab="opt"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></svg></span><span><b>Carton optimiser</b><small>Best carton size</small></span></button>
+  </div>
+
+  <!-- CONTAINER LOADING -->
+  <section class="pane on" id="p-load">
+    <h2>Container loading</h2>
+    <p class="sub">Pick a carton and a container. The 3D view shows exactly how it loads.</p>
+    <h3>Carton</h3>
+    <div class="f"><label>From your products <small>real box sizes from the TDS folder</small></label><select id="lProd"></select></div>
+    <div class="row3">
+      <div class="f"><label>Length <small>mm</small></label><input type="number" id="cL" min="10"></div>
+      <div class="f"><label>Width <small>mm</small></label><input type="number" id="cW" min="10"></div>
+      <div class="f"><label>Height <small>mm</small></label><input type="number" id="cH" min="10"></div>
+    </div>
+    <div class="row">
+      <div class="f"><label>Gross weight <small>kg per carton</small></label><input type="number" id="cKg" step="0.01" min="0"></div>
+      <div class="f"><label>Pieces <small>per carton</small></label><input type="number" id="cPcs" min="0"></div>
+    </div>
+    <label class="switch">This side up <small style="color:var(--muted);font-weight:400">(only turn cartons flat)</small><input type="checkbox" id="upright" checked></label>
+    <div class="f"><label>Bulge allowance <small>mm added to each side, cartons swell when packed</small></label><input type="number" id="allow" min="0" max="30" value="5"></div>
+
+    <h3>Loading method</h3>
+    <div class="seg" id="modeSeg" style="display:grid;grid-template-columns:1fr 1fr;width:100%">
+      <button data-mode="loose" class="on">Loose cartons</button>
+      <button data-mode="pallet">On pallets</button>
+    </div>
+    <div class="card" id="palBox" style="margin-top:10px;display:none">
+      <div class="f"><label>Pallet</label><select id="palSel"></select></div>
+      <div class="row3">
+        <div class="f"><label>Length <small>mm</small></label><input type="number" id="paL" min="100"></div>
+        <div class="f"><label>Width <small>mm</small></label><input type="number" id="paW" min="100"></div>
+        <div class="f"><label>Pallet height <small>mm</small></label><input type="number" id="paH" min="0"></div>
+      </div>
+      <div class="row">
+        <div class="f"><label>Pallet weight <small>kg</small></label><input type="number" id="paKg" min="0" step="0.5"></div>
+        <div class="f"><label>Max loaded height <small>mm, incl. pallet</small></label><input type="number" id="paMaxH" min="200"></div>
+      </div>
+      <div class="row3">
+        <div class="f"><label>Max weight <small>kg/pallet</small></label><input type="number" id="paMaxKg" min="50"></div>
+        <div class="f"><label>Overhang <small>mm/side</small></label><input type="number" id="paOh" min="0" max="100"></div>
+        <div class="f"><label>Gap <small>mm between</small></label><input type="number" id="paGap" min="0" max="200"></div>
+      </div>
+      <label class="switch">Stack pallets 2 high <small style="color:var(--muted);font-weight:400">(only if cartons can take the weight)</small><input type="checkbox" id="paStack"></label>
+      <p class="hint">Export pallets must be heat-treated (ISPM-15 stamp). Pallets always keep cartons upright.</p>
+    </div>
+
+    <h3>Container / truck</h3>
+    <div class="f"><select id="ctSel"></select></div>
+    <div class="card">
+      <div class="row3">
+        <div class="f"><label>Inside L <small>mm</small></label><input type="number" id="kL"></div>
+        <div class="f"><label>Inside W <small>mm</small></label><input type="number" id="kW"></div>
+        <div class="f"><label>Inside H <small>mm</small></label><input type="number" id="kH"></div>
+      </div>
+      <div class="f" style="margin:0"><label>Max cargo weight <small>kg</small></label><input type="number" id="kKg"></div>
+      <p class="hint">Standard inside sizes. Check the booking: payload limits vary by line and road rules.</p>
+    </div>
+
+    <h3>Order <small>optional</small></h3>
+    <div class="f"><label>Order quantity <small>pieces</small></label><input type="number" id="orderPcs" min="0" placeholder="e.g. 1000000"></div>
+  </section>
+
+  <!-- CARTON OPTIMISER -->
+  <section class="pane" id="p-opt">
+    <h2>Carton optimiser</h2>
+    <p class="sub">Tell it what goes in the carton. It tries every packing arrangement and suggests the best carton sizes.</p>
+    <h3>Product</h3>
+    <div class="f"><label>From your products <small>fills pieces per packet & current carton</small></label><select id="oProd"></select></div>
+    <h3>Packet <small>the unit that goes into the carton</small></h3>
+    <div class="row3">
+      <div class="f"><label>Length <small>mm</small></label><input type="number" id="pL" min="1"></div>
+      <div class="f"><label>Width <small>mm</small></label><input type="number" id="pW" min="1"></div>
+      <div class="f"><label>Height <small>mm</small></label><input type="number" id="pH" min="1"></div>
+    </div>
+    <div class="row">
+      <div class="f"><label>Pieces per packet</label><input type="number" id="pPcs" min="1"></div>
+      <div class="f"><label>Packet weight <small>g</small></label><input type="number" id="pG" min="1"></div>
+    </div>
+    <button class="btn sm" id="estPkt">Estimate packet size from the current carton</button>
+    <p class="hint" id="estNote">Best: measure one real packet with a scale.</p>
+    <h3>Carton</h3>
+    <div class="row">
+      <div class="f"><label>Pieces per carton</label><input type="number" id="tPcs" min="1"></div>
+      <div class="f"><label>Board</label><select id="ply"><option value="3">3-ply</option><option value="5" selected>5-ply</option><option value="7">7-ply</option></select></div>
+    </div>
+    <div class="row3">
+      <div class="f"><label>Clearance <small>mm</small></label><input type="number" id="clr" value="5" min="0"></div>
+      <div class="f"><label>Max weight <small>kg</small></label><input type="number" id="maxKg" value="30" min="1"></div>
+      <div class="f"><label>Max length <small>mm</small></label><input type="number" id="maxLen" value="750" min="100"></div>
+    </div>
+    <div class="f"><label>Rank by</label><select id="rank"><option value="cont">Most pieces per 40 ft HC container</option><option value="board">Least cardboard per 1,000 pieces</option><option value="shape">Sturdiest shape (closest to a cube)</option></select></div>
+    <h3>Current carton <small>for comparison</small></h3>
+    <div class="row3">
+      <div class="f"><label>L <small>mm</small></label><input type="number" id="xL"></div>
+      <div class="f"><label>W <small>mm</small></label><input type="number" id="xW"></div>
+      <div class="f"><label>H <small>mm</small></label><input type="number" id="xH"></div>
+    </div>
+  </section>
+</aside>
+<main>
+  <div id="view">
+    <div class="float cams"><button data-cam="iso">Angle</button><button data-cam="top">Top</button><button data-cam="side">Side</button><button data-cam="door">Door</button></div>
+    <div class="float legend" id="legend"></div>
+    <div id="nogl">The 3D view needs a browser with graphics support. Numbers below still work.</div>
+  </div>
+  <div id="results"></div>
+</main>
+</div>
+<div id="toast"></div>
+
+<script src="library.js"></script>
+<script>
+/* ============================================================
+   BioPapro Design Hub – Export planner
+   Container loading (guillotine packing with gap filling) and
+   carton optimiser (all packet arrangements, ranked).
+   ============================================================ */
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const fmt = (n, d = 0) => isFinite(n) ? n.toLocaleString('en-IN', { minimumFractionDigits: d, maximumFractionDigits: d }) : '–';
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const LIB = (window.BPP_LIBRARY && window.BPP_LIBRARY.fg || []).filter(r => r[5]);
+function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('on'), 2600); }
+function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
+
+/* standard inside dimensions (mm) and typical max cargo (kg) */
+const CONTAINERS = [
+  { id: '20gp', name: "20 ft container (20' GP)", L: 5898, W: 2352, H: 2393, kg: 28200 },
+  { id: '40gp', name: "40 ft container (40' GP)", L: 12032, W: 2352, H: 2393, kg: 26700 },
+  { id: '40hc', name: "40 ft high cube (40' HC)", L: 12032, W: 2352, H: 2698, kg: 26500 },
+  { id: 't32', name: '32 ft truck (MXL, closed body)', L: 9750, W: 2400, H: 2400, kg: 15000 },
+  { id: 't19', name: '19 ft truck (LCV, closed body)', L: 5800, W: 2200, H: 2150, kg: 7000 },
+  { id: 'custom', name: 'Custom size', L: 6000, W: 2400, H: 2400, kg: 20000 }
+];
+const PLY = { 3: { t: 4, gsm: 450 }, 5: { t: 7, gsm: 820 }, 7: { t: 11, gsm: 1150 } }; // 5-ply 820 g/m² matches the Magnus carton (330×200×290 mm, 0.44 kg)
+
+/* ============================================================
+   PACKING – guillotine: fill a space with the best block of one
+   orientation, then fill the three leftover slabs recursively.
+   ============================================================ */
+function orients(d, upright) {
+  const [l, w, h] = d;
+  const all = upright ? [[l, w, h], [w, l, h]] : [[l, w, h], [w, l, h], [l, h, w], [h, l, w], [w, h, l], [h, w, l]];
+  const seen = new Set(); return all.filter(o => { const k = o.join(); if (seen.has(k)) return false; seen.add(k); return true; });
+}
+function makePacker(d, upright) {
+  const O = orients(d, upright), minD = Math.min(...d), memo = new Map();
+  function best(L, W, H, depth) {
+    if (L < minD || W < minD || H < minD) return { n: 0 };
+    const key = `${Math.floor(L)}|${Math.floor(W)}|${Math.floor(H)}|${depth}`;
+    if (memo.has(key)) return memo.get(key);
+    let b = { n: 0 };
+    for (const o of O) {
+      const nl = Math.floor(L / o[0]), nw = Math.floor(W / o[1]), nh = Math.floor(H / o[2]), n = nl * nw * nh; if (!n) continue;
+      const bl = nl * o[0], bw = nw * o[1], bh = nh * o[2];
+      let extra = 0, variant = 0;
+      if (depth > 0) {
+        const v1 = best(L - bl, W, H, depth - 1).n + best(bl, W - bw, H, depth - 1).n + best(bl, bw, H - bh, depth - 1).n;
+        const v2 = best(L - bl, W, H, depth - 1).n + best(bl, W, H - bh, depth - 1).n + best(bl, W - bw, bh, depth - 1).n;
+        if (v2 > v1) { extra = v2; variant = 1; } else extra = v1;
+      }
+      if (n + extra > b.n) b = { n: n + extra, o, nl, nw, nh, bl, bw, bh, variant };
+    }
+    memo.set(key, b); return b;
+  }
+  function place(x, y, z, L, W, H, depth, out) { // x = length, y = height, z = width
+    const b = best(L, W, H, depth); if (!b.n) return;
+    for (let i = 0; i < b.nl; i++) for (let k = 0; k < b.nh; k++) for (let j = 0; j < b.nw; j++) out.push([x + i * b.o[0], y + k * b.o[2], z + j * b.o[1], b.o[0], b.o[2], b.o[1]]);
+    if (depth <= 0) return;
+    place(x + b.bl, y, z, L - b.bl, W, H, depth - 1, out);
+    if (b.variant === 0) { place(x, y, z + b.bw, b.bl, W - b.bw, H, depth - 1, out); place(x, y + b.bh, z, b.bl, b.bw, H - b.bh, depth - 1, out); }
+    else { place(x, y + b.bh, z, b.bl, W, H - b.bh, depth - 1, out); place(x, y, z + b.bw, b.bl, W - b.bw, b.bh, depth - 1, out); }
+  }
+  return { count: (L, W, H) => best(L, W, H, 3).n, main: (L, W, H) => best(L, W, H, 3), place: (L, W, H) => { const out = []; place(0, 0, 0, L, W, H, 3, out); return out; } };
+}
+
+/* ============================================================
+   CONTAINER LOADING
+   ============================================================ */
+const PALLETS = [
+  { id: '1200x1000', name: 'Standard 1200 × 1000 mm', L: 1200, W: 1000, H: 150, kg: 25 },
+  { id: '1200x800', name: 'Euro 1200 × 800 mm', L: 1200, W: 800, H: 144, kg: 22 },
+  { id: '1219x1016', name: 'US 48 × 40 in (1219 × 1016 mm)', L: 1219, W: 1016, H: 140, kg: 23 },
+  { id: '1100x1100', name: 'Asia 1100 × 1100 mm', L: 1100, W: 1100, H: 150, kg: 24 },
+  { id: 'custom', name: 'Custom pallet', L: 1200, W: 1000, H: 150, kg: 25 }
+];
+const LS = { L: 610, W: 330, H: 380, kg: 28.5, pcs: 10000, upright: true, allow: 5, ct: '40hc', k: { ...CONTAINERS[2] }, order: '', mode: 'loose',
+  pal: { id: '1200x1000', L: 1200, W: 1000, H: 150, kg: 25, maxH: 1800, maxKg: 1000, oh: 0, gap: 20, stack: false } };
+function loadCalc(s = LS, withPlacements = true) {
+  const d = [s.L + s.allow, s.W + s.allow, s.H + s.allow];
+  const P = makePacker(d, s.upright), k = s.k;
+  const byVol = P.count(k.L, k.W, k.H);
+  const byKg = s.kg > 0 ? Math.floor(k.kg / s.kg) : Infinity;
+  const n = Math.min(byVol, byKg);
+  const main = P.main(k.L, k.W, k.H);
+  let pl = [];
+  if (withPlacements) { pl = P.place(k.L, k.W, k.H); pl.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]); pl = pl.slice(0, n); }
+  const cbm1 = s.L * s.W * s.H / 1e9;
+  return { n, byVol, byKg, limit: byKg < byVol ? 'weight' : 'space', main, pl, cbm1, used: n * cbm1 / (k.L * k.W * k.H / 1e9), kg: n * s.kg, pcs: n * s.pcs };
+}
+/* ---------- PALLETS: carton pattern per layer → layers → pallets in the container ---------- */
+function palletCalc(s = LS, withPlacements = true) {
+  const c = [s.L + s.allow, s.W + s.allow, s.H + s.allow], p = s.pal, k = s.k;
+  const FL = p.L + 2 * p.oh, FW = p.W + 2 * p.oh;
+  const LP = makePacker(c, true);                        // cartons stay upright on pallets
+  const layer = LP.place(FL, FW, c[2] + .5);
+  const perLayer = layer.length;
+  if (!perLayer) return { err: 'The carton is bigger than the pallet (plus overhang).' };
+  const turned = layer.filter(q => Math.abs(q[3] - layer[0][3]) > .5).length;
+  const extL = Math.max(...layer.map(q => q[0] + q[3])), extW = Math.max(...layer.map(q => q[2] + q[5]));
+  const layersH = Math.floor((p.maxH - p.H) / c[2]);
+  const layersKg = s.kg > 0 ? Math.floor((p.maxKg - p.kg) / (perLayer * s.kg)) : Infinity;
+  const layers = Math.max(0, Math.min(layersH, layersKg));
+  if (!layers) return { err: layersH < 1 ? 'Max loaded height is lower than pallet + one layer of cartons.' : 'One layer of cartons is heavier than the max pallet weight.' };
+  const uL = Math.max(p.L, extL), uW = Math.max(p.W, extW), uH = p.H + layers * c[2];
+  const perPal = layers * perLayer, uKg = p.kg + perPal * s.kg;
+  if (uH > k.H) return { err: `A loaded pallet (${Math.round(uH)} mm) is taller than the container (${k.H} mm). Lower the max loaded height.`, perLayer, layers };
+  const UP = makePacker([uL + p.gap, uW + p.gap, uH], true);
+  const tiers = p.stack ? Math.floor(k.H / uH) : 1;
+  const byVol = UP.count(k.L + p.gap, k.W + p.gap, tiers * uH + .5);
+  const byKg = uKg > 0 ? Math.floor(k.kg / uKg) : Infinity;
+  const n = Math.min(byVol, byKg);
+  let pl = [];
+  if (withPlacements) { pl = UP.place(k.L + p.gap, k.W + p.gap, tiers * uH + .5); pl.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]); pl = pl.slice(0, n); }
+  const cartons = n * perPal, cbm1 = s.L * s.W * s.H / 1e9;
+  return { n, byVol, byKg, limit: byKg < byVol ? 'weight' : 'space', perLayer, turned, layers, layersH, layersKg, perPal, uL, uW, uH, uKg, tiers, layer, extL, extW, pl,
+    cartons, pcs: cartons * s.pcs, kg: n * uKg, cbm1, used: cartons * cbm1 / (k.L * k.W * k.H / 1e9) };
+}
+function layerSVG(r, w = 260) {
+  const p = LS.pal, a = LS.allow, FL = p.L + 2 * p.oh, FW = p.W + 2 * p.oh, sc = w / FL, h = FW * sc;
+  const q0 = r.layer[0], cx = (FL - r.extL) / 2, cz = (FW - r.extW) / 2;
+  return `<svg viewBox="-4 -4 ${w + 8} ${h + 8}" width="${w + 8}" height="${h + 8}" style="max-width:100%;height:auto">
+    <rect x="${p.oh * sc}" y="${p.oh * sc}" width="${p.L * sc}" height="${p.W * sc}" fill="#e8d3b4" stroke="#a0764a" stroke-width="1.5"/>
+    ${p.oh ? `<rect x="0" y="0" width="${FL * sc}" height="${FW * sc}" fill="none" stroke="#a0764a" stroke-dasharray="4 3"/>` : ''}
+    ${r.layer.map(q => { const turned = Math.abs(q[3] - q0[3]) > .5; return `<rect x="${(cx + q[0] + a / 2) * sc}" y="${(cz + q[2] + a / 2) * sc}" width="${(q[3] - a) * sc}" height="${(q[5] - a) * sc}" rx="1.5" fill="${turned ? '#e0b25a' : '#c9a176'}" stroke="#7a5634" stroke-width=".8"/>`; }).join('')}
+  </svg>`;
+}
+function renderPallet() {
+  const r = palletCalc(); LAST.load = r;
+  const k = LS.k, p = LS.pal;
+  if (r.err) { $('#results').innerHTML = `<div class="note warn">${esc(r.err)}</div>`; drawPallets(null); return; }
+  const loose = loadCalc({ ...LS }, false);
+  const order = parseFloat(LS.order), containers = order > 0 && r.pcs > 0 ? Math.ceil(order / r.pcs) : null;
+  let h = `<div class="kpis">
+    <div class="kpi big"><small>Pallets per ${esc(shortCt(LS.ct))}</small><b>${fmt(r.n)}</b><em>${r.limit === 'weight' ? `limited by weight (space fits ${fmt(r.byVol)})` : 'limited by space'}${r.tiers > 1 ? ' · 2 high' : ''}</em></div>
+    <div class="kpi"><small>Cartons</small><b>${fmt(r.cartons)}</b><em>${fmt(r.perPal)} per pallet</em></div>
+    <div class="kpi"><small>Pieces</small><b>${fmt(r.pcs)}</b><em>${fmt(LS.pcs)} per carton</em></div>
+    <div class="kpi"><small>Cargo weight</small><b>${fmt(r.kg / 1000, 2)} t</b><div class="bar${r.kg / k.kg > .9 ? ' w' : ''}"><i style="width:${clamp(r.kg / k.kg * 100, 0, 100)}%"></i></div><em>incl. ${fmt(r.n * p.kg)} kg of pallets</em></div>
+    <div class="kpi"><small>Space used by cartons</small><b>${fmt(r.used * 100, 0)}%</b><div class="bar"><i style="width:${clamp(r.used * 100, 0, 100)}%"></i></div><em>${fmt(r.cartons * r.cbm1, 1)} of ${fmt(k.L * k.W * k.H / 1e9, 1)} m³</em></div>
+    ${containers ? `<div class="kpi"><small>Containers for the order</small><b>${fmt(containers)}</b><em>${fmt(order)} pcs</em></div>` : ''}
+  </div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin-top:12px">
+    <div class="card" style="flex:0 1 auto"><b style="font-size:13px">Layer pattern</b><div class="hint" style="margin:2px 0 8px">${r.perLayer} cartons per layer${r.turned ? ` (${r.turned} turned)` : ''} · turn every other layer 180° to lock the stack</div>${layerSVG(r)}</div>
+    <div class="card" style="flex:1 1 240px"><b style="font-size:13px">One loaded pallet</b>
+      <table style="margin-top:6px"><tr><td>Layers</td><td><b>${r.layers}</b> × ${r.perLayer} = <b>${r.perPal} cartons</b></td></tr>
+      <tr><td>Size</td><td>${fmt(r.uL)} × ${fmt(r.uW)} × ${fmt(r.uH)} mm</td></tr>
+      <tr><td>Weight</td><td>${fmt(r.uKg, 1)} kg <span class="hint">(pallet ${p.kg} kg)</span></td></tr>
+      <tr><td>Layers limited by</td><td>${r.layersKg < r.layersH ? `weight (${p.maxKg} kg max)` : `height (${p.maxH} mm max)`}</td></tr>
+      <tr><td>Pieces</td><td>${fmt(r.perPal * LS.pcs)}</td></tr></table></div>
+  </div>`;
+  const diff = loose.n ? (r.cartons / loose.n - 1) : 0;
+  h += `<div class="note ${diff < -0.001 ? 'warn' : 'ok'}">Loose loading in this ${esc(shortCt(LS.ct))} fits <b>${fmt(loose.n)}</b> cartons; on pallets <b>${fmt(r.cartons)}</b> (${diff < 0 ? '' : '+'}${fmt(diff * 100, 0)}%). Pallets load and unload much faster and protect the cartons; loose fills more space.</div>`;
+  const spare = k.H - r.uH * r.tiers;
+  if (spare > r.uH * .45 && !p.stack) h += `<div class="note warn">About ${fmt(spare)} mm of height is empty above the pallets. Raise the max loaded height (up to about ${fmt(k.H - 60)} mm here), or turn on "Stack pallets 2 high" with a max loaded height of about ${fmt(Math.floor((k.H - 60) / 2))} mm.</div>`;
+  if (p.stack && r.tiers > 1) h += `<div class="note warn">Two-high stacking puts ${fmt(r.uKg, 0)} kg on the bottom pallet's cartons. Only do this if the cartons are strong enough (5-ply and above) and the customer accepts it.</div>`;
+  h += `<div class="tw"><table><tr><th>Container / truck</th><th>Pallets</th><th>Cartons</th><th>Pieces</th><th>Weight</th><th>Loose cartons</th></tr>` +
+    CONTAINERS.filter(c => c.id !== 'custom').map(c => {
+      const rr = palletCalc({ ...LS, k: c }, false), lo = loadCalc({ ...LS, k: c }, false);
+      return `<tr class="pick${c.id === LS.ct ? ' sel' : ''}" data-ct="${c.id}"><td>${esc(c.name)}</td><td>${rr.err ? '–' : fmt(rr.n)}</td><td>${rr.err ? '–' : fmt(rr.cartons)}</td><td>${rr.err ? '–' : fmt(rr.pcs)}</td><td>${rr.err ? '–' : fmt(rr.kg / 1000, 2) + ' t'}</td><td>${fmt(lo.n)}</td></tr>`;
+    }).join('') + `</table></div>`;
+  $('#results').innerHTML = h;
+  $$('#results tr[data-ct]').forEach(tr => tr.onclick = () => { setCt(tr.dataset.ct); update(); });
+  drawPallets(r);
+}
+function renderLoad() {
+  if (LS.mode === 'pallet') return renderPallet();
+  const r = loadCalc(); LAST.load = r;
+  const k = LS.k, m = r.main;
+  const order = parseFloat(LS.order);
+  const containers = order > 0 && r.pcs > 0 ? Math.ceil(order / r.pcs) : null;
+  const layout = m.n ? `${m.nl} along × ${m.nw} across × ${m.nh} high` : '—';
+  const extra = r.byVol - (m.nl * m.nw * m.nh || 0);
+  let h = `<div class="kpis">
+    <div class="kpi big"><small>Cartons per ${esc(shortCt(LS.ct))}</small><b>${fmt(r.n)}</b><em>${r.limit === 'weight' ? `limited by weight (space fits ${fmt(r.byVol)})` : `limited by space`}</em></div>
+    <div class="kpi"><small>Pieces</small><b>${fmt(r.pcs)}</b><em>${fmt(LS.pcs)} per carton</em></div>
+    <div class="kpi"><small>Cargo weight</small><b>${fmt(r.kg / 1000, 2)} t</b><div class="bar${r.kg / k.kg > .9 ? ' w' : ''}"><i style="width:${clamp(r.kg / k.kg * 100, 0, 100)}%"></i></div><em>of ${fmt(k.kg / 1000, 1)} t max</em></div>
+    <div class="kpi"><small>Space used</small><b>${fmt(r.used * 100, 0)}%</b><div class="bar"><i style="width:${clamp(r.used * 100, 0, 100)}%"></i></div><em>${fmt(r.n * r.cbm1, 1)} of ${fmt(k.L * k.W * k.H / 1e9, 1)} m³</em></div>
+    ${containers ? `<div class="kpi"><small>Containers for the order</small><b>${fmt(containers)}</b><em>${fmt(order)} pcs · last one ${fmt((order - (containers - 1) * r.pcs) / r.pcs * 100, 0)}% full</em></div>` : ''}
+  </div>`;
+  h += `<p class="hint" style="margin-top:10px">Main block: <b>${layout}</b>${extra > 0 ? ` · plus <b>${fmt(extra)}</b> cartons turned to fill the gaps` : ''} · carton ${fmt(r.cbm1, 3)} m³ (${LS.L}×${LS.W}×${LS.H} mm, +${LS.allow} mm allowance)</p>`;
+  if (r.limit === 'weight') h += `<div class="note warn">The container is full by weight before it's full by space. Lighter cartons or a smaller container won't change the count; check the payload on your booking.</div>`;
+  if (r.used < .75 && r.limit === 'space') h += `<div class="note warn">Only ${fmt(r.used * 100, 0)}% of the space is used. Try the Carton optimiser for a carton size that fills this container better.</div>`;
+  // comparison across all containers
+  h += `<div class="tw"><table><tr><th>Container / truck</th><th>Cartons</th><th>Pieces</th><th>Weight</th><th>Space used</th><th>Limited by</th></tr>` +
+    CONTAINERS.filter(c => c.id !== 'custom').map(c => {
+      const rr = loadCalc({ ...LS, k: c }, false);
+      return `<tr class="pick${c.id === LS.ct ? ' sel' : ''}" data-ct="${c.id}"><td>${esc(c.name)}</td><td>${fmt(rr.n)}</td><td>${fmt(rr.pcs)}</td><td>${fmt(rr.kg / 1000, 2)} t</td><td>${fmt(rr.used * 100, 0)}%</td><td>${rr.limit}</td></tr>`;
+    }).join('') + `</table></div>`;
+  $('#results').innerHTML = h;
+  $$('#results tr[data-ct]').forEach(tr => tr.onclick = () => { setCt(tr.dataset.ct); update(); });
+  drawContainer(r);
+}
+const shortCt = id => ({ '20gp': "20' container", '40gp': "40' container", '40hc': "40' HC container", t32: '32 ft truck', t19: '19 ft truck', custom: 'container' }[id]);
+
+/* ============================================================
+   CARTON OPTIMISER
+   ============================================================ */
+const OS = { pL: 170, pW: 75, pH: 60, pPcs: 100, pG: 285, tPcs: 10000, ply: 5, clr: 5, maxKg: 30, maxLen: 750, rank: 'cont', xL: 610, xW: 330, xH: 380 };
+function cartonMetrics(inner, s, pk) {
+  const t = PLY[s.ply].t, L = inner[0] + 2 * t, W = inner[1] + 2 * t, H = inner[2] + 2 * t;
+  const blank = (2 * L + 2 * W + 35) * (H + W) / 1e6; // RSC blank m²
+  const board = blank * PLY[s.ply].gsm / 1000; // kg
+  const gross = pk * s.pG / 1000 + board;
+  const hc = CONTAINERS[2];
+  const fit = makePacker([L + 5, W + 5, H + 5], true).count(hc.L, hc.W, hc.H);
+  const perCont = Math.min(fit, Math.floor(hc.kg / gross));
+  const pcs = pk * s.pPcs;
+  const dims = [L, W, H].sort((a, b) => b - a), cube = dims[2] / dims[0];
+  return { L, W, H, board, gross, perCont, pcsCont: perCont * pcs, boardPer1000: board / pcs * 1000, cube, pcs };
+}
+function optimise(s = OS) {
+  const pk = Math.max(1, Math.ceil(s.tPcs / s.pPcs));
+  const p = [s.pL, s.pW, s.pH], res = [], seen = new Set();
+  const packetO = orients(p, false);
+  // all a×b×c with a*b*c between pk and pk+10% (few empty slots allowed)
+  for (let total = pk; total <= Math.ceil(pk * 1.1); total++) {
+    for (let a = 1; a <= total; a++) { if (total % a) continue; const r1 = total / a;
+      for (let b = 1; b <= r1; b++) { if (r1 % b) continue; const c = r1 / b;
+        for (const o of packetO) {
+          const inner = [a * o[0] + s.clr, b * o[1] + s.clr, c * o[2] + s.clr];
+          if (inner[0] < inner[1]) continue; // L ≥ W convention; the swapped version is covered by another a/b
+          const key = inner.map(v => Math.round(v)).join('x'); if (seen.has(key)) continue; seen.add(key);
+          const m = cartonMetrics(inner, s, total);
+          if (m.L > s.maxLen || m.W > s.maxLen || m.H > s.maxLen || m.gross > s.maxKg) continue;
+          res.push({ a, b, c, o, total, empty: total - pk, inner, ...m });
+        }
+      }
+    }
+    if (res.length > 400) break;
+  }
+  const score = { cont: r => -r.pcsCont, board: r => r.boardPer1000, shape: r => -r.cube };
+  res.sort((x, y) => (score[s.rank](x) - score[s.rank](y)) || (x.empty - y.empty) || (x.boardPer1000 - y.boardPer1000));
+  return { pk, list: res.slice(0, 10) };
+}
+let OPT_SEL = 0;
+function renderOpt() {
+  const s = OS, r = optimise(s); LAST.opt = r;
+  let cur = null;
+  if (s.xL && s.xW && s.xH) { const t = PLY[s.ply].t; cur = cartonMetrics([s.xL - 2 * t, s.xW - 2 * t, s.xH - 2 * t], s, r.pk); }
+  let h = '';
+  if (!r.list.length) {
+    h = `<div class="note warn">No carton fits these limits. Increase the max weight or max length, or lower the pieces per carton.</div>`;
+    $('#results').innerHTML = h; drawCarton(null); return;
+  }
+  OPT_SEL = clamp(OPT_SEL, 0, r.list.length - 1);
+  const b = r.list[OPT_SEL], best = r.list[0];
+  const gain = cur ? (best.pcsCont / cur.pcsCont - 1) : null, boardGain = cur ? (1 - best.boardPer1000 / cur.boardPer1000) : null;
+  h += `<div class="kpis">
+    <div class="kpi big"><small>Suggested carton (outside)</small><b>${fmt(b.L)} × ${fmt(b.W)} × ${fmt(b.H)}</b><em>mm · ${b.a}×${b.b}×${b.c} = ${b.total} packets${b.empty ? ` (${b.empty} empty slot${b.empty > 1 ? 's' : ''})` : ''}</em></div>
+    <div class="kpi"><small>Carton weight</small><b>${fmt(b.gross, 2)} kg</b><em>board ${fmt(b.board, 2)} kg · ${s.ply}-ply</em></div>
+    <div class="kpi"><small>Per 40' HC container</small><b>${fmt(b.pcsCont)}</b><em>pieces · ${fmt(b.perCont)} cartons</em></div>
+    <div class="kpi"><small>Cardboard</small><b>${fmt(b.boardPer1000 * 1000, 0)} g</b><em>per 1,000 pieces</em></div>
+  </div>`;
+  if (b.perCont === Math.floor(CONTAINERS[2].kg / b.gross)) h += `<div class="note warn">This product is heavy: a 40' HC fills up by <b>weight</b> (${fmt(CONTAINERS[2].kg / 1000, 1)} t) before it fills by space. A different carton size can't add pieces per container; it can only save cardboard or make cartons easier to handle.</div>`;
+  if (cur) {
+    const better = gain > .005;
+    h += `<div class="note ${better ? 'ok' : 'warn'}">Current carton ${s.xL}×${s.xW}×${s.xH} mm: ${fmt(cur.pcsCont)} pcs per 40' HC, ${fmt(cur.boardPer1000 * 1000)} g board per 1,000 pcs. `
+      + (better ? `The top suggestion loads <b>${fmt(gain * 100, 1)}% more pieces</b> per container${boardGain > .005 ? ` and uses <b>${fmt(boardGain * 100, 1)}% less cardboard</b>` : ''}.` : `Your current carton is already about as good as it gets for these packets.`) + `</div>`;
+  }
+  h += `<div class="tw"><table><tr><th>#</th><th>Packets (L×W×H)</th><th>Outside size mm</th><th>Gross kg</th><th>Pcs / 40' HC</th><th>Board g / 1,000 pcs</th><th>Shape</th></tr>` +
+    r.list.map((x, i) => `<tr class="pick${i === OPT_SEL ? ' sel' : ''}" data-i="${i}"><td>${i + 1}${i === 0 ? '<span class="tag">best</span>' : ''}</td><td>${x.a} × ${x.b} × ${x.c}${x.empty ? `<span class="tag g">${x.empty} empty</span>` : ''}</td><td>${fmt(x.L)} × ${fmt(x.W)} × ${fmt(x.H)}</td><td>${fmt(x.gross, 2)}</td><td>${fmt(x.pcsCont)}</td><td>${fmt(x.boardPer1000 * 1000)}</td><td>${x.cube > .6 ? '<span class="tag">sturdy</span>' : x.cube > .35 ? '<span class="tag b">ok</span>' : '<span class="tag g">flat</span>'}</td></tr>`).join('')
+    + (cur ? `<tr class="cur"><td>now</td><td>current carton</td><td>${s.xL} × ${s.xW} × ${s.xH}</td><td>${fmt(cur.gross, 2)}</td><td>${fmt(cur.pcsCont)}</td><td>${fmt(cur.boardPer1000 * 1000)}</td><td></td></tr>` : '') + `</table></div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn pri sm" id="useCarton">Use carton ${OPT_SEL + 1} in container loading →</button><span class="hint" style="align-self:center">Weights include the ${s.ply}-ply board (${PLY[s.ply].gsm} g/m²). Check a sample carton before ordering.</span></div>`;
+  $('#results').innerHTML = h;
+  $$('#results tr[data-i]').forEach(tr => tr.onclick = () => { OPT_SEL = +tr.dataset.i; renderOpt(); });
+  $('#useCarton').onclick = () => {
+    Object.assign(LS, { L: Math.round(b.L), W: Math.round(b.W), H: Math.round(b.H), kg: +b.gross.toFixed(2), pcs: b.total * s.pPcs, upright: true });
+    $('#lProd').value = ''; switchTab('load'); syncLoadInputs(); update(); toast('Carton sent to container loading');
+  };
+  drawCarton(b);
+}
+
+/* ============================================================
+   3D VIEW
+   ============================================================ */
+let R = null, scene, cam, grp = null, DIRTY = true;
+const orb = { theta: -0.75, phi: 1.05, zoom: 1 }, FR = { t: [0, 0, 0], r: 5000 };
+const mark = () => { DIRTY = true; };
+function init3D() {
+  if (!window.THREE) { $('#nogl').style.display = 'flex'; return; }
+  try { R = new THREE.WebGLRenderer({ antialias: true, alpha: true }); } catch (e) { $('#nogl').style.display = 'flex'; return; }
+  if (!R.getContext()) { $('#nogl').style.display = 'flex'; R = null; return; }
+  const weak = (navigator.hardwareConcurrency || 8) <= 4 || /Mobi|Android/i.test(navigator.userAgent);
+  R.setPixelRatio(weak ? 1 : Math.min(2, devicePixelRatio || 1)); R.outputEncoding = THREE.sRGBEncoding; R.setClearColor(0, 0);
+  const host = $('#view'); host.insertBefore(R.domElement, host.firstChild);
+  R.domElement.addEventListener('webglcontextlost', e => { e.preventDefault(); setTimeout(() => { const o = R; R = null; try { o.dispose(); } catch (x) { } o.domElement.remove(); init3D(); update(); }, 1000); });
+  scene = new THREE.Scene(); cam = new THREE.PerspectiveCamera(35, 1, 10, 200000);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xcfc9bd, .75));
+  const sun = new THREE.DirectionalLight(0xffffff, .55); sun.position.set(-1, 2, 1.4); scene.add(sun);
+  const f2 = new THREE.DirectionalLight(0xffffff, .25); f2.position.set(1, .8, -1); scene.add(f2);
+  const ptrs = new Map(); let pinch = 0; const cv = R.domElement;
+  cv.addEventListener('pointerdown', e => { ptrs.set(e.pointerId, [e.clientX, e.clientY]); cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener('pointermove', e => {
+    if (!ptrs.has(e.pointerId)) return; const [px, py] = ptrs.get(e.pointerId);
+    if (ptrs.size === 2) { ptrs.set(e.pointerId, [e.clientX, e.clientY]); const [a, b] = [...ptrs.values()]; const d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (pinch) orb.zoom = clamp(orb.zoom * pinch / d, .3, 4); pinch = d; mark(); return; }
+    orb.theta -= (e.clientX - px) * .008; orb.phi = clamp(orb.phi - (e.clientY - py) * .008, .05, 1.6); ptrs.set(e.pointerId, [e.clientX, e.clientY]); mark();
+  });
+  const up = e => { ptrs.delete(e.pointerId); pinch = 0; };
+  cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  cv.addEventListener('wheel', e => { e.preventDefault(); orb.zoom = clamp(orb.zoom * Math.exp(e.deltaY * .001), .3, 4); mark(); }, { passive: false });
+  new ResizeObserver(resize).observe(host); resize(); requestAnimationFrame(loop);
+}
+function resize() { if (!R) return; const h = $('#view'), w = h.clientWidth, hh = h.clientHeight; if (!w || !hh) return; R.setSize(w, hh, false); R.domElement.style.width = w + 'px'; R.domElement.style.height = hh + 'px'; cam.aspect = w / hh; cam.updateProjectionMatrix(); mark(); }
+function loop() {
+  requestAnimationFrame(loop); if (!R || !DIRTY) return; DIRTY = false;
+  const vf = cam.fov * Math.PI / 180, hf = 2 * Math.atan(Math.tan(vf / 2) * cam.aspect);
+  const rad = FR.r / Math.sin(Math.min(vf, hf) / 2) * 1.05 * orb.zoom, T = FR.t;
+  cam.position.set(T[0] + rad * Math.sin(orb.phi) * Math.sin(orb.theta), T[1] + rad * Math.cos(orb.phi), T[2] + rad * Math.sin(orb.phi) * Math.cos(orb.theta));
+  cam.lookAt(T[0], T[1], T[2]); R.render(scene, cam);
+}
+function clearGrp() { if (!grp) return; scene.remove(grp); grp.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose()); }); grp = null; }
+const SRGB = hex => new THREE.Color(hex).convertSRGBToLinear();
+function boxEdges(L, H, W, color, op) {
+  const g = new THREE.EdgesGeometry(new THREE.BoxGeometry(L, H, W));
+  return new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: SRGB(color), transparent: op < 1, opacity: op }));
+}
+function instBoxes(list, colorFn, gap) { // list: [x,y,z,l,h,w]
+  const geo = new THREE.BoxGeometry(1, 1, 1), mat = new THREE.MeshStandardMaterial({ roughness: .85 });
+  const m = new THREE.InstancedMesh(geo, mat, Math.max(1, list.length)), M = new THREE.Matrix4(), c = new THREE.Color();
+  list.forEach((p, i) => {
+    M.makeScale(Math.max(1, p[3] - gap), Math.max(1, p[4] - gap), Math.max(1, p[5] - gap)); M.setPosition(p[0] + p[3] / 2, p[1] + p[4] / 2, p[2] + p[5] / 2);
+    m.setMatrixAt(i, M); c.copy(SRGB(colorFn(p, i))); m.setColorAt(i, c);
+  });
+  if (!list.length) m.count = 0;
+  return m;
+}
+function drawContainer(r) {
+  if (!R) return; clearGrp(); grp = new THREE.Group();
+  const k = LS.k, a = LS.allow;
+  const floor = new THREE.Mesh(new THREE.BoxGeometry(k.L, 30, k.W), new THREE.MeshStandardMaterial({ color: SRGB('#9aa19b'), roughness: 1 })); floor.position.set(k.L / 2, -15, k.W / 2); grp.add(floor);
+  const back = new THREE.Mesh(new THREE.PlaneGeometry(k.W, k.H), new THREE.MeshStandardMaterial({ color: SRGB('#c9d0ca'), side: THREE.DoubleSide, transparent: true, opacity: .55 })); back.rotation.y = Math.PI / 2; back.position.set(0, k.H / 2, k.W / 2); grp.add(back);
+  const side = new THREE.Mesh(new THREE.PlaneGeometry(k.L, k.H), new THREE.MeshStandardMaterial({ color: SRGB('#c9d0ca'), side: THREE.DoubleSide, transparent: true, opacity: .35 })); side.position.set(k.L / 2, k.H / 2, 0); grp.add(side);
+  const e = boxEdges(k.L, k.H, k.W, '#2c3a31', .9); e.position.set(k.L / 2, k.H / 2, k.W / 2); grp.add(e);
+  const main = r.main, nMain = main.n ? main.nl * main.nw * main.nh : 0;
+  const cols = ['#c9a176', '#bf966a', '#d2ac83', '#b98f64'];
+  // cartons drawn at real size (allowance removed) inside their slot
+  const list = r.pl.map(p => [p[0] + a / 2, p[1] + a / 2, p[2] + a / 2, p[3] - a, p[4] - a, p[5] - a]);
+  const mainKey = main.o ? main.o.join() : '';
+  grp.add(instBoxes(list, (p, i) => { const turned = [p[3] + a, p[5] + a, p[4] + a].join() !== mainKey; return turned ? '#e0b25a' : cols[Math.floor(p[1] / (main.o ? main.o[2] : 1)) % 4]; }, Math.min(8, a + 4)));
+  scene.add(grp);
+  FR.t = [k.L / 2, k.H * .4, k.W / 2]; FR.r = Math.hypot(k.L, k.W, k.H) / 2;
+  $('#legend').innerHTML = `<span><i style="background:#c9a176"></i>Main block</span><span><i style="background:#e0b25a"></i>Turned to fill gaps</span>`;
+  mark();
+}
+function containerShell(k) {
+  const floor = new THREE.Mesh(new THREE.BoxGeometry(k.L, 30, k.W), new THREE.MeshStandardMaterial({ color: SRGB('#9aa19b'), roughness: 1 })); floor.position.set(k.L / 2, -15, k.W / 2); grp.add(floor);
+  const back = new THREE.Mesh(new THREE.PlaneGeometry(k.W, k.H), new THREE.MeshStandardMaterial({ color: SRGB('#c9d0ca'), side: THREE.DoubleSide, transparent: true, opacity: .55 })); back.rotation.y = Math.PI / 2; back.position.set(0, k.H / 2, k.W / 2); grp.add(back);
+  const side = new THREE.Mesh(new THREE.PlaneGeometry(k.L, k.H), new THREE.MeshStandardMaterial({ color: SRGB('#c9d0ca'), side: THREE.DoubleSide, transparent: true, opacity: .35 })); side.position.set(k.L / 2, k.H / 2, 0); grp.add(side);
+  const e = boxEdges(k.L, k.H, k.W, '#2c3a31', .9); e.position.set(k.L / 2, k.H / 2, k.W / 2); grp.add(e);
+}
+function drawPallets(r) {
+  if (!R) return; clearGrp(); grp = new THREE.Group();
+  const k = LS.k, p = LS.pal, a = LS.allow, g = p.gap;
+  containerShell(k);
+  if (r && !r.err) {
+    const bases = [], boxes = [];
+    r.pl.forEach(pp => {
+      const rot = Math.abs(pp[3] - (r.uL + g)) > 1;               // pallet turned 90°
+      const uL = rot ? r.uW : r.uL, uW = rot ? r.uL : r.uW;
+      const X = pp[0], Y = pp[1], Z = pp[2];
+      const bL = rot ? p.W : p.L, bW = rot ? p.L : p.W;
+      bases.push([X + (uL - bL) / 2, Y, Z + (uW - bW) / 2, bL, p.H, bW]);
+      const offL = (r.uL - r.extL) / 2, offW = (r.uW - r.extW) / 2;
+      for (let j = 0; j < r.layers; j++) r.layer.forEach(q => {
+        let lx = offL + q[0], lz = offW + q[2], ll = q[3], lw = q[5];
+        if (rot) { [lx, lz] = [lz, lx]; [ll, lw] = [lw, ll]; }
+        boxes.push([X + lx + a / 2, Y + p.H + j * q[4] + a / 2, Z + lz + a / 2, ll - a, q[4] - a, lw - a, j]);
+      });
+    });
+    grp.add(instBoxes(bases, () => '#9c7248', 6));
+    const cols = ['#c9a176', '#bf966a', '#d2ac83', '#b98f64'];
+    grp.add(instBoxes(boxes, q => cols[q[6] % 4], Math.min(8, a + 4)));
+  }
+  scene.add(grp);
+  FR.t = [k.L / 2, k.H * .4, k.W / 2]; FR.r = Math.hypot(k.L, k.W, k.H) / 2;
+  $('#legend').innerHTML = `<span><i style="background:#9c7248"></i>Pallets</span><span><i style="background:#c9a176"></i>Cartons (one colour per layer)</span>`;
+  mark();
+}
+function drawCarton(b) {
+  if (!R) return; clearGrp(); grp = new THREE.Group();
+  $('#legend').innerHTML = b ? `<span><i style="background:#f4f2ea;border:1px solid #bbb"></i>Packets</span><span><i style="background:#c9a176"></i>Carton</span>` : '';
+  if (!b) { scene.add(grp); mark(); return; }
+  const t = PLY[OS.ply].t, s = OS.clr / 2;
+  const e = boxEdges(b.L, b.H, b.W, '#8a6a45', 1); e.position.set(b.L / 2, b.H / 2, b.W / 2); grp.add(e);
+  const bottom = new THREE.Mesh(new THREE.BoxGeometry(b.L, t, b.W), new THREE.MeshStandardMaterial({ color: SRGB('#c9a176'), roughness: .9 })); bottom.position.set(b.L / 2, t / 2, b.W / 2); grp.add(bottom);
+  const wallM = new THREE.MeshStandardMaterial({ color: SRGB('#c9a176'), roughness: .9, transparent: true, opacity: .35, side: THREE.DoubleSide });
+  const w1 = new THREE.Mesh(new THREE.PlaneGeometry(b.L, b.H), wallM); w1.position.set(b.L / 2, b.H / 2, 0); grp.add(w1);
+  const w2 = new THREE.Mesh(new THREE.PlaneGeometry(b.W, b.H), wallM); w2.rotation.y = Math.PI / 2; w2.position.set(0, b.H / 2, b.W / 2); grp.add(w2);
+  const list = []; const o = b.o, n = b.total - b.empty;
+  for (let k = 0, c = 0; k < b.c; k++) for (let j = 0; j < b.b; j++) for (let i = 0; i < b.a; i++) { if (c++ >= n) break; list.push([t + s + i * o[0], t + s + k * o[2], t + s + j * o[1], o[0], o[2], o[1]]); }
+  grp.add(instBoxes(list, (p, i) => ['#f4f2ea', '#e9f3ec', '#eef1f7'][(Math.round(p[1] / o[2])) % 3], Math.min(3, Math.min(...o) * .06)));
+  scene.add(grp);
+  FR.t = [b.L / 2, b.H * .45, b.W / 2]; FR.r = Math.hypot(b.L, b.W, b.H) / 2;
+  mark();
+}
+function setCam(v) { const V = { iso: [-0.75, 1.05], top: [0, .06], side: [0, 1.52], door: [Math.PI / 2, 1.35] }[v]; if (V) { orb.theta = V[0]; orb.phi = V[1]; orb.zoom = 1; mark(); } }
+
+/* ============================================================
+   UI
+   ============================================================ */
+let TAB = 'load'; const LAST = {};
+function switchTab(t) { TAB = t; $$('#tabs .tab').forEach(b => b.classList.toggle('on', b.dataset.tab === t)); $$('.pane').forEach(p => p.classList.toggle('on', p.id === 'p-' + t)); $('#exportBtn').style.display = t === 'load' ? '' : 'none'; update(); }
+function setCt(id) { const c = CONTAINERS.find(x => x.id === id) || CONTAINERS[2]; LS.ct = c.id; LS.k = { ...c }; $('#ctSel').value = c.id; ['L', 'W', 'H'].forEach(d => $('#k' + d).value = c[d]); $('#kKg').value = c.kg; }
+function syncPal() {
+  const p = LS.pal; $('#palSel').value = p.id; $('#paL').value = p.L; $('#paW').value = p.W; $('#paH').value = p.H; $('#paKg').value = p.kg;
+  $('#paMaxH').value = p.maxH; $('#paMaxKg').value = p.maxKg; $('#paOh').value = p.oh; $('#paGap').value = p.gap; $('#paStack').checked = !!p.stack;
+  $$('#modeSeg button').forEach(b => b.classList.toggle('on', b.dataset.mode === LS.mode)); $('#palBox').style.display = LS.mode === 'pallet' ? '' : 'none';
+}
+function syncLoadInputs() { syncPal(); $('#cL').value = LS.L; $('#cW').value = LS.W; $('#cH').value = LS.H; $('#cKg').value = LS.kg; $('#cPcs').value = LS.pcs; $('#upright').checked = LS.upright; $('#allow').value = LS.allow; }
+function syncOptInputs() { ['pL', 'pW', 'pH', 'pPcs', 'pG', 'tPcs', 'clr', 'maxKg', 'maxLen', 'xL', 'xW', 'xH'].forEach(k => $('#' + k).value = OS[k] ?? ''); $('#ply').value = OS.ply; $('#rank').value = OS.rank; }
+let uT = 0; function update() { clearTimeout(uT); uT = setTimeout(() => { TAB === 'load' ? renderLoad() : renderOpt(); save(); }, 60); }
+function save() { try { localStorage.setItem('bpp_planner', JSON.stringify({ LS, OS, TAB })); } catch (e) { } }
+function restore() { try { const s = JSON.parse(localStorage.getItem('bpp_planner') || 'null'); if (s && s.LS && s.OS) { const pal = { ...LS.pal, ...(s.LS.pal || {}) }; Object.assign(LS, s.LS); LS.pal = pal; LS.mode = LS.mode || 'loose'; Object.assign(OS, s.OS); TAB = s.TAB || 'load'; } } catch (e) { } }
+function estimatePacket() {
+  if (!(OS.xL && OS.xW && OS.xH && OS.pPcs && OS.tPcs)) return toast('Fill in the current carton size and pieces first.');
+  const t = PLY[OS.ply].t, pk = Math.ceil(OS.tPcs / OS.pPcs);
+  const vol = (OS.xL - 2 * t) * (OS.xW - 2 * t) * (OS.xH - 2 * t) / pk;
+  const len = OS.lenHint || Math.round(Math.cbrt(vol) * 2);
+  const area = vol / len, h = Math.sqrt(area / 1.3), w = area / h;
+  OS.pL = Math.round(len); OS.pW = Math.round(w); OS.pH = Math.round(h);
+  syncOptInputs(); update();
+  $('#estNote').innerHTML = `Estimated: ${OS.pL} × ${OS.pW} × ${OS.pH} mm per packet, from the current carton holding ${pk} packets. <b>Measure a real packet for a reliable answer.</b>`;
+}
+async function exportPlan() {
+  const r = LAST.load; if (!r) return; if (r.err) return toast(r.err);
+  try { await (window.jspdf ? Promise.resolve() : loadScript('vendor/jspdf.umd.min.js').catch(() => loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'))); }
+  catch (e) { return toast('Could not load the PDF maker. Check your internet connection.'); }
+  const { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+  const k = LS.k; doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.text('Container loading plan', 14, 16);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(90);
+  doc.text(`${k.name || shortCt(LS.ct)} · inside ${k.L} × ${k.W} × ${k.H} mm · max cargo ${fmt(k.kg)} kg · ${new Date().toLocaleDateString('en-IN')}`, 14, 22);
+  const prod = $('#lProd').selectedOptions[0]; doc.setTextColor(20);
+  if (LS.mode === 'pallet' && !r.err) {
+    const p = LS.pal;
+    const pr = [['Product', prod && prod.value !== '' ? prod.textContent : 'Custom carton'], ['Carton (outside)', `${LS.L} × ${LS.W} × ${LS.H} mm, ${LS.kg} kg, ${fmt(LS.pcs)} pcs`],
+      ['Pallet', `${p.L} × ${p.W} × ${p.H} mm, ${p.kg} kg${p.oh ? `, overhang ${p.oh} mm` : ''}`], ['Per layer', `${r.perLayer} cartons${r.turned ? ` (${r.turned} turned)` : ''}`],
+      ['Per pallet', `${r.layers} layers = ${r.perPal} cartons, ${fmt(r.uL)} × ${fmt(r.uW)} × ${fmt(r.uH)} mm, ${fmt(r.uKg, 1)} kg`],
+      ['Pallets per container', fmt(r.n) + (r.tiers > 1 ? ' (2 high)' : '') + (r.limit === 'weight' ? ` (limited by weight; space fits ${fmt(r.byVol)})` : '')],
+      ['Cartons per container', fmt(r.cartons)], ['Pieces per container', fmt(r.pcs)], ['Cargo weight', `${fmt(r.kg, 0)} kg incl. pallets`]];
+    if (+LS.order > 0 && r.pcs) pr.push(['Order', `${fmt(+LS.order)} pcs → ${fmt(Math.ceil(LS.order / r.pcs))} containers`]);
+    let yy = 32; pr.forEach(([a, b]) => { doc.setFont('helvetica', 'bold'); doc.text(a, 14, yy); doc.setFont('helvetica', 'normal'); doc.text(doc.splitTextToSize(String(b), 66), 56, yy); yy += 6.5; });
+    // layer pattern drawing
+    const FL = p.L + 2 * p.oh, FW = p.W + 2 * p.oh, sc = Math.min(110 / FL, 70 / FW), ox = 14, oy = yy + 6, a0 = LS.allow;
+    doc.setFont('helvetica', 'bold'); doc.text('Layer pattern (top view)', ox, oy - 2);
+    doc.setDrawColor(160, 118, 74); doc.setFillColor(232, 211, 180); doc.rect(ox + p.oh * sc, oy + p.oh * sc, p.L * sc, p.W * sc, 'FD');
+    const q0 = r.layer[0];
+    r.layer.forEach(q => { const t = Math.abs(q[3] - q0[3]) > .5; if (t) doc.setFillColor(224, 178, 90); else doc.setFillColor(201, 161, 118); doc.setDrawColor(122, 86, 52); doc.rect(ox + ((FL - r.extL) / 2 + q[0] + a0 / 2) * sc, oy + ((FW - r.extW) / 2 + q[2] + a0 / 2) * sc, (q[3] - a0) * sc, (q[5] - a0) * sc, 'FD'); });
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(110); doc.text('Turn every other layer 180° to lock the stack. Export pallets must carry the ISPM-15 stamp.', ox, oy + FW * sc + 5);
+  } else {
+  const rows = [['Product', prod && prod.value !== '' ? prod.textContent : 'Custom carton'], ['Carton (outside)', `${LS.L} × ${LS.W} × ${LS.H} mm (+${LS.allow} mm allowance)`], ['Carton gross weight', `${LS.kg} kg`], ['Pieces per carton', fmt(LS.pcs)], ['This side up', LS.upright ? 'Yes' : 'No'],
+    ['Cartons per container', fmt(r.n) + (r.limit === 'weight' ? ` (limited by weight; space fits ${fmt(r.byVol)})` : '')], ['Pieces per container', fmt(r.pcs)], ['Cargo weight', `${fmt(r.kg, 0)} kg`], ['Space used', `${fmt(r.used * 100, 0)}%`],
+    ['Main block', r.main.n ? `${r.main.nl} along × ${r.main.nw} across × ${r.main.nh} high` : '-']];
+  if (+LS.order > 0 && r.pcs) rows.push(['Order', `${fmt(+LS.order)} pcs → ${fmt(Math.ceil(LS.order / r.pcs))} containers`]);
+  let y = 32; rows.forEach(([a, b]) => { doc.setFont('helvetica', 'bold'); doc.text(a, 14, y); doc.setFont('helvetica', 'normal'); doc.text(String(b), 62, y); y += 6.5; });
+  }
+  if (R) { R.render(scene, cam); const src = R.domElement, c = document.createElement('canvas'); c.width = src.width; c.height = src.height; const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(src, 0, 0); const img = c.toDataURL('image/jpeg', .9); const ar = c.width / c.height; const w = 150, h = w / ar; doc.addImage(img, 'JPEG', 135, 28, w, Math.min(h, 165)); }
+  doc.setFontSize(8); doc.setTextColor(120); doc.text(`BioPapro Design Hub · Export planner. ${LS.mode === 'pallet' ? 'Palletised loading.' : 'Cartons loaded loose (no pallets).'} All cartons the same size. Confirm payload with the shipping line.`, 14, 200);
+  const a = document.createElement('a'); a.href = URL.createObjectURL(doc.output('blob')); a.download = `Loading plan ${LS.L}x${LS.W}x${LS.H} ${shortCt(LS.ct)}${LS.mode === 'pallet' ? ' pallets' : ''}.pdf`.replace(/[\\/:*?"<>|']+/g, ''); document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  toast('Loading plan downloaded');
+}
+(async function init() {
+  restore();
+  $('#lProd').innerHTML = '<option value="">Custom carton…</option>' + LIB.map((r, i) => `<option value="${i}">${esc(r[0])} · ${r[5]}×${r[6]}×${r[7]} mm</option>`).join('');
+  $('#oProd').innerHTML = '<option value="">Choose a product…</option>' + LIB.map((r, i) => `<option value="${i}">${esc(r[0])}</option>`).join('');
+  $('#ctSel').innerHTML = CONTAINERS.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
+  $('#ctSel').value = LS.ct; ['L', 'W', 'H'].forEach(d => $('#k' + d).value = LS.k[d]); $('#kKg').value = LS.k.kg; $('#orderPcs').value = LS.order || '';
+  syncLoadInputs(); syncOptInputs();
+  $$('#tabs .tab').forEach(b => b.onclick = () => switchTab(b.dataset.tab));
+  $('#lProd').onchange = e => { const r = LIB[+e.target.value]; if (!r) return; Object.assign(LS, { L: r[5], W: r[6], H: r[7], kg: parseFloat(r[3]) || 0, pcs: parseInt(r[4]) || 0 }); syncLoadInputs(); update(); };
+  [['cL', 'L'], ['cW', 'W'], ['cH', 'H'], ['cKg', 'kg'], ['cPcs', 'pcs'], ['allow', 'allow']].forEach(([id, k]) => $('#' + id).addEventListener('input', e => { const v = parseFloat(e.target.value); if (!(v >= 0)) return; if (['L', 'W', 'H'].includes(k) && v < 10) return; LS[k] = v; if (id !== 'allow' && id !== 'cPcs' && id !== 'cKg') $('#lProd').value = ''; update(); }));
+  $('#upright').onchange = e => { LS.upright = e.target.checked; update(); };
+  $('#palSel').innerHTML = PALLETS.map(x => `<option value="${x.id}">${esc(x.name)}</option>`).join('');
+  $$('#modeSeg button').forEach(b => b.onclick = () => { LS.mode = b.dataset.mode; syncPal(); update(); });
+  $('#palSel').onchange = e => { const x = PALLETS.find(q => q.id === e.target.value); Object.assign(LS.pal, { id: x.id, L: x.L, W: x.W, H: x.H, kg: x.kg }); syncPal(); update(); };
+  [['paL', 'L'], ['paW', 'W'], ['paH', 'H'], ['paKg', 'kg'], ['paMaxH', 'maxH'], ['paMaxKg', 'maxKg'], ['paOh', 'oh'], ['paGap', 'gap']].forEach(([id, key]) => $('#' + id).addEventListener('input', e => {
+    const v = parseFloat(e.target.value); if (!(v >= 0)) return; LS.pal[key] = v;
+    if (['L', 'W', 'H', 'kg'].includes(key) && LS.pal.id !== 'custom') { LS.pal.id = 'custom'; $('#palSel').value = 'custom'; }
+    update();
+  }));
+  $('#paStack').onchange = e => { LS.pal.stack = e.target.checked; update(); };
+  $('#ctSel').onchange = e => { setCt(e.target.value); update(); };
+  [['kL', 'L'], ['kW', 'W'], ['kH', 'H'], ['kKg', 'kg']].forEach(([id, k]) => $('#' + id).addEventListener('input', e => { const v = parseFloat(e.target.value); if (!(v > 0)) return; LS.k[k] = v; if (LS.ct !== 'custom' && k !== 'kg') { LS.ct = 'custom'; $('#ctSel').value = 'custom'; LS.k.name = 'Custom size'; } update(); }));
+  $('#orderPcs').addEventListener('input', e => { LS.order = e.target.value; update(); });
+  $('#oProd').onchange = e => { const r = LIB[+e.target.value]; if (!r) return; const pp = parseInt(r[2]) || OS.pPcs, bp = parseInt(r[4]) || OS.tPcs, kg = parseFloat(r[3]);
+    Object.assign(OS, { pPcs: pp, tPcs: bp, xL: r[5], xW: r[6], xH: r[7], lenHint: (parseInt(r[0]) || 0) + 12 });
+    if (kg && bp) OS.pG = Math.round((kg - 0.9) * 1000 / (bp / pp)); // box weight minus ≈0.9 kg carton, spread over packets
+    OPT_SEL = 0; syncOptInputs(); estimatePacket(); };
+  ['pL', 'pW', 'pH', 'pPcs', 'pG', 'tPcs', 'clr', 'maxKg', 'maxLen', 'xL', 'xW', 'xH'].forEach(k => $('#' + k).addEventListener('input', e => { const v = parseFloat(e.target.value); if (!(v >= 0)) return; OS[k] = v; OPT_SEL = 0; update(); }));
+  $('#ply').onchange = e => { OS.ply = +e.target.value; update(); };
+  $('#rank').onchange = e => { OS.rank = e.target.value; OPT_SEL = 0; update(); };
+  $('#estPkt').onclick = estimatePacket;
+  $$('[data-cam]').forEach(b => b.onclick = () => setCam(b.dataset.cam));
+  $('#exportBtn').onclick = exportPlan;
+  try { await loadScript('vendor/three.min.js'); } catch (e) { try { await loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'); } catch (e2) { } }
+  init3D();
+  switchTab(TAB);
+})();
+</script>
+<a href="../../#work" style="position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:99999;background:#1c1712;color:#ffb547;font:500 12px/1 Inter,system-ui,sans-serif;padding:9px 14px;border-radius:999px;box-shadow:0 6px 24px rgba(0,0,0,.25);text-decoration:none;white-space:nowrap">Portfolio demo · ← back to portfolio</a></body>
+</html>

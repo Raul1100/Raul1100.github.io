@@ -1,0 +1,558 @@
+/*
+ * Shared stylesheet — Phase 3.3 cleanup.
+ *
+ * Extracted ONLY the rules that were byte-identical (or a strict, non-visual superset) across
+ * index.html, sales.html, production.html, and gross-margin.html. This is deliberately narrow:
+ * these four pages currently use three different design systems (index.html's --bg/--surface/
+ * --ink CSS variables + sidebar SPA shell; gross-margin.html's own differently-named --brand/
+ * --hdr/--txt variables; sales.html/production.html's fully hardcoded hex with no variables at
+ * all, top-header layout). Unifying those into one shared design language is a real redesign
+ * decision, not "housekeeping" — explicitly out of scope here. Only genuine duplication with
+ * zero visual risk was moved here; nothing was renamed, merged, or "improved" in the process.
+ *
+ * Loaded via <link> in each page's <head>, before that page's own <style> block, so page-specific
+ * rules always still apply on top of this.
+ */
+
+/* Identical in all 4 files (index.html's version already included ::before/::after as a
+   no-visual-difference superset — pseudo-elements without content render at zero size
+   regardless, so standardizing on the superset changes nothing observable). */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* The page background/text color were identical hex values in all 4 files (some as literal
+   #f4f3ef/#191917, some via a CSS variable that resolved to the same value) — font-size,
+   height, overflow, and min-height were deliberately NOT included here since those differ
+   per page's own layout needs (index.html is a fixed-viewport sidebar shell; the other three
+   scroll normally) and pulling them out would change real behavior, not just deduplicate. */
+body { font-family: 'DM Sans', sans-serif; background: #f4f3ef; color: #191917; }
+
+/* Byte-identical in all 4 files' own <style> blocks. */
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Byte-identical between production.html and gross-margin.html (both named "pulse", both used
+   for a small live-status dot). index.html's own pulse-dot (box-shadow glow) and sales.html's
+   own "blink" (opacity .4, not .3) are different enough that merging them would be a visual
+   change, not deduplication — left as page-specific rules. */
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+
+/* ════════════════════════════════════════════════════════════════════════════════════════
+ * UNIFIED DESIGN SYSTEM v2 — Step 1 of the design-unification pass (see MIGRATION_NOTES.md).
+ *
+ * Everything below this line is NEW and ADDITIVE ONLY: no existing rule above this line, and
+ * no rule in any page's own <style> block, was modified to produce this diff. That's
+ * deliberate — this step is "write the system," not "apply the system." Zero pages change
+ * appearance from this commit alone.
+ *
+ * Why this is actually safe to guarantee, not just intended: every class name below is
+ * prefixed `.ds-` (design-system) and every custom property below is either brand new (no
+ * pre-existing page defines it) or — for the handful of names that DO already exist per-page
+ * with legacy values (--bg, --surface, --ink, --ink-2, --ink-3, --ink-4) — each page's own
+ * `<style>` block still defines its own `:root` with those same names AFTER this stylesheet
+ * loads, so the page's legacy value wins the cascade until that page's own migration step
+ * removes its local override. No existing page markup references any `.ds-*` class yet
+ * either, so the new component rules currently match nothing. Confirmed empty match is not
+ * just assumed — this is why classes are freshly named rather than reusing `.page-header`,
+ * `.kpi-card`, etc., which WOULD partially bleed through immediately on any property the
+ * legacy per-page rule doesn't happen to also override.
+ *
+ * As each page is migrated (Sales Dashboard → Production → Gross Margin → the reference pages
+ * → CEO AI, per the agreed order), that page's own markup switches to these `.ds-*` classes
+ * and its own conflicting legacy `:root`/`.page-header`/`.kpi-card`/etc. rules are deleted —
+ * at which point these tokens and components become the page's real, live styling. Until then
+ * this whole block is inert by construction.
+ * ════════════════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Color tokens ── */
+  --bg:             #faf8f3;
+  --surface:        #ffffff;
+  --surface-raised: #ffffff;
+  --ink:            #191917;
+  --ink-2:          #4a4844;
+  --ink-3:          #857f75;
+  --ink-4:          #b8b2a6;
+  --hairline:       rgba(25,25,23,0.08);
+  --hairline-2:     rgba(25,25,23,0.14);
+  --navy:           #0d1f3c;   /* sidebar, primary buttons, links ONLY — never a page-header
+                                   or card background again; see the "what to remove" list in
+                                   MIGRATION_NOTES.md's Phase 3 v2 section. */
+  /* v3 "wow factor" pass, Step 1: --brand is a semantic alias for --navy, not a new color —
+     v2 already settled on #0d1f3c as the app's one primary accent, v3's spec just gives it a
+     second name for chart/hero-number contexts. Aliased (var(--navy)), not duplicated, so the
+     two names can never drift apart. --brand-light/--brand-glow are genuinely new. */
+  --brand:          var(--navy);
+  --brand-light:    #2d4a7a;
+  --brand-glow:     rgba(13,31,60,0.08);
+  --shadow-sm:      0 1px 2px rgba(25,25,23,0.06);
+  --shadow-md:      0 4px 16px rgba(25,25,23,0.08);
+  --shadow-lift:    0 8px 28px rgba(25,25,23,0.12);   /* hover state */
+
+  /* Department accents — used ONLY as: icon-chip background (12% opacity)/icon color (full),
+     a 3px card left-border, chart/bar fill, and small status-pill backgrounds. Never a card or
+     header background fill — that's the exact "four different products" problem this system
+     exists to fix. */
+  --stock-accent:      #16a34a;
+  --os-accent:         #dc2626;
+  --po-accent:         #7c3aed;
+  --pipeline-accent:   #0ea5e9;
+  --production-accent: #ea580c;
+  --gm-accent:         #059669;
+
+  /* Status semantics — distinct from department accents (a status pill's color means
+     danger/warning/success/info regardless of which department's page it's on). */
+  --status-danger:  #dc2626;
+  --status-warning: #d97706;
+  --status-success: #16a34a;
+  --status-info:    #0ea5e9;
+  --status-neutral: #857f75;
+
+  /* ── Typography ── */
+  --font-display: 'Playfair Display', serif;  /* HERO MOMENTS ONLY — see comment below */
+  --font-body:    'DM Sans', sans-serif;
+  --font-mono:    'DM Mono', monospace;       /* every number, no exceptions */
+
+  --text-2xs:     10px;
+  --text-xs:      12px;
+  --text-sm:      13px;
+  --text-base:    14px;
+  --text-lg:      18px;
+  --text-xl:      24px;
+  --text-2xl:     32px;
+  --text-display: 40px;
+}
+
+/* --font-display (Playfair Display) is reserved for hero moments only — the Command Center
+   greeting line, the CEO AI page name. Every page title, card label, nav item, and body of
+   text uses --font-body. Overusing serif everywhere kills the impact of the few places it's
+   meant to stand out — do not apply --font-display to page titles, KPI labels, or table text
+   when migrating a page onto this system. */
+
+.ds-eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* DM Mono numbers at --text-xl and above get tight negative tracking — reads as intentional
+   design, not loose/cheap. Apply .ds-num-lg to any --text-xl/2xl/display mono figure. */
+.ds-num, .ds-num-lg {
+  font-family: var(--font-mono);
+}
+.ds-num-lg {
+  letter-spacing: -0.02em;
+}
+
+/* ── Component: Page Header ──────────────────────────────────────────────────────────────
+   [icon chip]  Page Title                              [right-aligned controls]
+                Subtitle / description text
+   White background, hairline bottom border only — no navy, no gradient, no color fill. */
+.ds-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--hairline);
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ds-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ds-header-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+  /* Wow Factor v2, Technique 2 — white chip, saturated icon. `color` is still set per-department
+     via inline style at the point of use (e.g. color: var(--stock-accent)) — only the tinted
+     `background` wash that used to go with it was dropped in favor of this shared white chip. */
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.07);
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+}
+.ds-header-title {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  color: var(--ink);
+  line-height: 1.3;
+}
+.ds-header-sub {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+  margin-top: 2px;
+}
+.ds-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+/* At most one primary (filled navy) button per header; everything else should be
+   .ds-btn-ghost. Enforced by convention, not CSS — flag in review if a header ever has two
+   .ds-btn-primary buttons. */
+.ds-btn-primary {
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background .15s ease;
+}
+.ds-btn-primary:hover { background: #16305a; }
+.ds-btn-ghost {
+  background: var(--surface);
+  color: var(--ink-2);
+  border: 1px solid var(--hairline-2);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .15s ease;
+}
+.ds-btn-ghost:hover { background: var(--bg); border-color: var(--ink-4); }
+
+/* ── Component: Stat Card — THE one card style, used for KPI tiles, department cards,
+   everything. Department identity is a 3px left border, never a background fill. ── */
+.ds-stat {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-left: 3px solid var(--ink-4);   /* overridden per department via inline
+                                             border-left-color, or a .ds-stat--{dept} modifier */
+  border-radius: 14px;
+  position: relative;   /* Wow Factor v2 — anchors .ds-stat-ghost-icon */
+  overflow: hidden;
+  /* v3 "wow factor" pass, Step 5: +22-25% over the original 18px/20px — premium layouts breathe
+     more around their content than a spreadsheet does. Cascades to every page using .ds-stat
+     (Sales Dashboard, Production, Gross Margin, CEO AI) from this one definition. */
+  padding: 22px 25px;
+  box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,0.5);
+  transition: transform .15s ease, box-shadow .15s ease;
+  opacity: 0;
+  animation: ds-card-in .35s ease forwards;
+}
+.ds-stat:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.5);
+}
+.ds-stat--stock      { border-left-color: var(--stock-accent); }
+.ds-stat--os         { border-left-color: var(--os-accent); }
+.ds-stat--po         { border-left-color: var(--po-accent); }
+.ds-stat--pipeline   { border-left-color: var(--pipeline-accent); }
+.ds-stat--production { border-left-color: var(--production-accent); }
+.ds-stat--gm         { border-left-color: var(--gm-accent); }
+.ds-stat-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  margin-bottom: 10px;
+  /* Wow Factor v2, Technique 2 — saturated icon-on-white: the chip itself is always a plain
+     white card, never a tinted background; per-variant classes (.ds-stat--{x} .ds-stat-icon)
+     set only the icon's own `color`, at full saturation, not a wash behind it. */
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.07);
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+}
+/* Wow Factor v2, Technique 1 — faint decorative icon in the card's back corner. Only cards that
+   render a real .ds-stat-icon get a matching ghost (Production/Gross Margin's label-only cards
+   have no icon to echo, and stay simple per the spec's single-number-card carve-out). */
+.ds-stat-ghost-icon {
+  position: absolute;
+  right: -10px;
+  bottom: -14px;
+  font-size: 64px;
+  line-height: 1;
+  opacity: .06;
+  pointer-events: none;
+  transform: rotate(-8deg);
+}
+.ds-stat-label {
+  font-family: var(--font-body);
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 4px;
+}
+.ds-stat-value {
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.ds-stat-value.ds-stat-value--2xl { font-size: var(--text-2xl); }
+/* v3 "wow factor" pass, Step 3: the ONE number per page that gets to be genuinely huge — at
+   least 1.5x every other number on that same page. Apply to exactly one .ds-stat-value (or
+   equivalent) per page; using it twice on one page defeats the point. */
+.ds-stat-value.ds-stat-value--hero { font-size: var(--text-display); letter-spacing: -0.02em; }
+.ds-stat-caption {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+  margin-top: 4px;
+}
+.ds-stat-row {
+  display: grid;
+  /* 180px -> 200px: the Step 5 padding increase above (18/20px -> 22/25px) ate ~10px of a
+     card's usable width — confirmed via screenshot as a real regression, "Cr" wrapping onto
+     its own line on Sales Dashboard's Total Revenue hero. 200px restores the margin. */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 17px; /* v3 Step 5: +21% over 14px, matches the .ds-stat padding increase */
+}
+/* Entrance stagger — ~40ms per card via nth-child, up to 10 cards. Beyond that, remaining
+   cards just share the last delay rather than adding an unbounded selector list. */
+.ds-stat:nth-child(1)  { animation-delay: 0ms;   }
+.ds-stat:nth-child(2)  { animation-delay: 40ms;  }
+.ds-stat:nth-child(3)  { animation-delay: 80ms;  }
+.ds-stat:nth-child(4)  { animation-delay: 120ms; }
+.ds-stat:nth-child(5)  { animation-delay: 160ms; }
+.ds-stat:nth-child(6)  { animation-delay: 200ms; }
+.ds-stat:nth-child(7)  { animation-delay: 240ms; }
+.ds-stat:nth-child(8)  { animation-delay: 280ms; }
+.ds-stat:nth-child(9)  { animation-delay: 320ms; }
+.ds-stat:nth-child(n+10) { animation-delay: 360ms; }
+@keyframes ds-card-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Component: Table — one style for every data table in the app ── */
+.ds-table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  overflow: auto;
+  box-shadow: var(--shadow-sm);
+}
+.ds-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+}
+.ds-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.ds-table thead th {
+  /* Wow Factor v2, Technique 3 — borderless: header drops its tinted box + hairline in favor of
+     the card's own surface color and whitespace doing the separating. Not literally `transparent`
+     — this header is `position:sticky`, so it still needs to be opaque enough to hide body rows
+     scrolling underneath it; var(--surface) matches the card background exactly, so it reads as
+     "no box" while staying functionally opaque. */
+  background: var(--surface);
+  padding: 9px 14px 10px;
+  text-align: left;
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.ds-table thead th.ds-r { text-align: right; }
+.ds-table tbody tr {
+  height: 44px;
+  transition: background .1s ease;
+}
+.ds-table tbody tr:last-child { border-bottom: none; }
+.ds-table tbody tr:hover { background: var(--bg); }
+.ds-table tbody td {
+  padding: 0 14px;
+  color: var(--ink-2);
+  vertical-align: middle;
+}
+.ds-table td.ds-r, .ds-table th.ds-r {
+  text-align: right;
+  font-family: var(--font-mono);
+}
+/* Deliberately no zebra-striping — calm/editorial, not spreadsheet-dense. */
+
+/* ── Component: Table, grouped-header variant — for tables whose columns are organized into
+   labeled groups via a two-row header (a real, deliberate structure — see Gross Margin's
+   line-item and product-wise tables), which .ds-table's single-row header doesn't fit. Same
+   visual language as .ds-table (hairline borders, ink-tone palette, uppercase labels, DM Mono
+   numeric columns, no zebra-striping, var(--bg) hover tint) adapted to that shape, rather than
+   forcing the .ds-table structure where it doesn't belong. Deliberately does NOT fix row height
+   at 44px like .ds-table — grouped tables tend to be dense financial data where that would waste
+   space; row density stays a per-page call via padding on td/th. */
+.ds-table--grouped {
+  width: 100%;
+  border-collapse: collapse;
+}
+.ds-table--grouped thead th {
+  position: sticky;
+  top: 0;
+  /* Wow Factor v2, Technique 3 — borderless, same var(--surface)-not-literal-transparent
+     reasoning as .ds-table above (this header is sticky too). This is the table the spec named
+     specifically as needing care — dense financial data leaning on hairlines to stay scannable —
+     so the group-tier row directly below keeps its own tint (see .ds-grp-row) as the one
+     remaining structural cue, instead of removing every visual separator at once. */
+  background: var(--surface);
+  padding: 7px 10px;
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+  z-index: 2;
+}
+.ds-table--grouped thead th.ds-r { text-align: right; }
+/* The group-label row above the column-header row — a visually distinct, slightly darker tone
+   so the two header rows read as separate tiers, same hairline-derived palette as the rest.
+   Kept intentionally (not flattened to transparent) — on a dense, grouped-column table this tint
+   is load-bearing for scanning which columns belong to which group, not decorative boxing. */
+.ds-table--grouped .ds-grp-row th {
+  background: var(--hairline-2);
+  padding: 4px 10px;
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.ds-table--grouped .ds-g0 { color: var(--ink-3); }
+.ds-table--grouped .ds-g1 { color: var(--status-success); }
+.ds-table--grouped .ds-g2 { color: var(--status-warning); }
+.ds-table--grouped .ds-g3 { color: var(--status-info); }
+.ds-table--grouped tbody tr {
+  transition: background .1s ease;
+}
+.ds-table--grouped tbody tr:last-child { border-bottom: none; }
+.ds-table--grouped tbody tr:hover td { background: var(--bg); }
+.ds-table--grouped td { vertical-align: middle; }
+.ds-table--grouped td.ds-r, .ds-table--grouped th.ds-r {
+  text-align: right;
+  font-family: var(--font-mono);
+}
+/* Deliberately no zebra-striping, matching .ds-table. */
+
+/* ── Component: Status pill — one component for every status column app-wide (Pending
+   Orders' Overdue, OS Ageing's Critical/High/Medium/Low, Stock's OK, etc). Color = semantic
+   status, not department accent. ── */
+.ds-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-family: var(--font-body);
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.ds-pill--danger  { background: rgba(220,38,38,0.12);  color: var(--status-danger); }
+.ds-pill--warning { background: rgba(217,119,6,0.12);  color: var(--status-warning); }
+.ds-pill--success { background: rgba(22,163,74,0.12);  color: var(--status-success); }
+.ds-pill--info    { background: rgba(14,165,233,0.12); color: var(--status-info); }
+.ds-pill--neutral { background: rgba(133,127,117,0.12);color: var(--status-neutral); }
+
+/* ── Component: Progress / comparison bar — the default for every comparative breakdown
+   app-wide (category values, ageing buckets, sales-by-product, etc). ── */
+.ds-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ds-bar-label {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--ink-2);
+  min-width: 110px;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ds-bar-track {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--bg);
+  overflow: hidden;
+  min-width: 40px;
+}
+.ds-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width .6s cubic-bezier(.4,0,.2,1);
+}
+.ds-bar-value {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--ink-2);
+  min-width: 70px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ── Component: Hero number — headline number with context (Overall Health today; template
+   for any future "big number + status" moment). ── */
+.ds-hero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  padding: 16px 22px;
+  box-shadow: var(--shadow-sm);
+}
+.ds-hero-value {
+  font-family: var(--font-mono);
+  font-size: var(--text-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.ds-hero-track {
+  flex: 1;
+  height: 10px;
+  border-radius: 5px;
+  background: var(--bg);
+  overflow: hidden;
+}
+.ds-hero-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width .6s ease;
+}
+.ds-hero-status {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  min-width: 70px;
+  text-align: right;
+}

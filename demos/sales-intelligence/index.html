@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sales Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/demo.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>window.APP={"name": "Pulse Sales", "short": "PS", "tagline": "Sales analytics", "accent": "#2563eb", "workspace": "Domestic B2B · 24 months", "nav": [{"id": "overview", "title": "Overview", "icon": "home", "desc": "Revenue trend, 3-month forecast and customer segments."}, {"id": "ask", "title": "Ask the data", "icon": "chat", "desc": "Plain-English questions mapped to exact queries."}, {"id": "products", "title": "Products & customers", "icon": "box", "desc": "Product growth and the biggest accounts."}, {"id": "method", "title": "Methodology", "icon": "book", "desc": "Data, forecast model and how questions are answered."}], "notifications": [["Forecast updated", "Next 3 months with an 80% band"], ["2 customers moved to At Risk", "RFM segments refreshed"], ["Bubble tea straws trending up", "Fastest-growing product"]]};</script>
+<script src="../_shared/demo.js"></script>
+<style>
+.ask{display:flex;gap:8px}.ask input{flex:1}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.chips button{font-weight:500;font-size:12px;color:var(--muted);padding:5px 9px}
+.answer{margin-top:14px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:12px;min-height:60px}
+.answer b{color:var(--text)}
+.answer .q{font:500 11px 'JetBrains Mono',monospace;color:var(--dim);margin-bottom:6px}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Sales Intelligence</h1>
+  <span class="sub" id="sub"></span>
+  <span class="spacer"></span>
+  <select id="state"><option value="">All states</option></select>
+</header>
+<main>
+  <div data-view="overview" class="grid g4" id="kpis"></div>
+  <div data-view="ask" class="card">
+    <h2>Ask the data <small>rule-based query engine · no LLM in this demo</small></h2>
+    <div class="ask"><input id="q" placeholder="e.g. top 5 customers last 3 months" autocomplete="off"><button class="primary" id="go">Ask</button></div>
+    <div class="chips" id="chips"></div>
+    <div class="answer" id="ans"><span class="note">Ask about revenue, top customers/products, growth, a state, a month, the forecast, or customers at risk.</span></div>
+  </div>
+  <div data-view="overview" class="grid g-side">
+    <div class="card"><h2>Monthly revenue + 3-month forecast <small id="fcNote"></small></h2><div class="chart"><canvas id="rev"></canvas></div></div>
+    <div class="card"><h2>RFM segments <small>customers · revenue share</small></h2><table id="rfm"></table></div>
+  </div>
+  <div data-view="products" class="grid g2">
+    <div class="card"><h2>Products <small>last 3 months vs previous 3</small></h2><table id="prods"></table></div>
+    <div class="card"><h2>Top customers <small>last 12 months</small></h2><table id="custs"></table></div>
+  </div>
+  <div data-view="method" class="card"><h2>How it works</h2><p class="note">24 months of simulated B2B orders (60 customers, 10 products, 8 states) with seasonality, growth and churn. Revenue is aggregated monthly; the forecast is additive Holt-Winters (12-month season, α/β/γ grid-searched on one-step error) with a ±1.28σ band from in-sample residuals. RFM uses quintile scores. The question box is a small keyword parser that maps a question to a query over the same data. It is deliberately not an LLM, so every answer is exact.</p></div>
+</main>
+<script>
+/* ---------- data ---------- */
+const R = rng(21), MONTHS = 24, START = new Date(2024, 9, 1);
+const PRODUCTS = [['160MM Wooden Fork', 1450], ['160MM Wooden Spoon', 1480], ['160MM Wooden Knife', 1420], ['95MM Ice Cream Scoop', 980], ['140MM Wooden Spork', 1380],
+  ['6MM Paper Straw', 820], ['8MM Paper Straw', 900], ['12MM Bubble Tea Straw', 1350], ['Cutlery Kit 3-in-1', 2100], ['140MM Coffee Stirrer', 760]];
+const STATES = ['Maharashtra', 'Karnataka', 'Gujarat', 'Delhi', 'Tamil Nadu', 'Telangana', 'Kerala', 'Goa'];
+const PRE = ['Aroma', 'Urban', 'Green', 'Coastal', 'Metro', 'Royal', 'Sunrise', 'Leaf', 'Spice', 'Berry', 'Frost', 'Daily'], SUF = ['Cafés', 'Foods', 'Caterers', 'Kitchens', 'Hotels'];
+const CUSTS = Array.from({ length: 60 }, (_, i) => ({ name: `${PRE[i % 12]} ${SUF[(i * 7) % 5]}${i >= 12 ? ' ' + (Math.floor(i / 12) + 1) : ''}`, state: STATES[Math.floor(R() ** 1.4 * 8)],
+  size: .3 + R() ** 2 * 3, joins: R() < .8 ? 0 : 1 + Math.floor(R() * 20), leaves: R() < .2 ? 10 + Math.floor(R() * 14) : 99, fav: [Math.floor(R() * 10), Math.floor(R() * 10)] }));
+const TX = [];
+for (let m = 0; m < MONTHS; m++) {
+  const moy = (START.getMonth() + m) % 12, season = 1 + .25 * Math.cos(2 * Math.PI * (moy - 4) / 12) + (moy === 9 || moy === 10 ? .2 : 0), growth = 1 + m * .012;
+  CUSTS.forEach((c, ci) => {
+    if (m < c.joins || m >= c.leaves) return;
+    const n = R() < .75 ? 1 + Math.floor(R() * 2) : 0;
+    for (let k = 0; k < n; k++) {
+      const p = R() < .7 ? c.fav[k % 2] : Math.floor(R() * 10), qty = Math.max(5, Math.round(c.size * 40 * season * growth * (.6 + R() * .8)));
+      const day = 1 + Math.floor(R() * 27), d = new Date(START.getFullYear(), START.getMonth() + m, day);
+      TX.push({ m, date: d, cust: ci, prod: p, qty, amt: qty * PRODUCTS[p][1] * (.95 + R() * .1) });
+    }
+  });
+}
+const MNAME = m => new Date(START.getFullYear(), START.getMonth() + m, 1).toLocaleString('en-IN', { month: 'short', year: '2-digit' });
+
+/* ---------- analytics ---------- */
+let STATE = '';
+const tx = () => STATE ? TX.filter(t => CUSTS[t.cust].state === STATE) : TX;
+const sum = (a, f) => a.reduce((s, x) => s + f(x), 0);
+const monthly = list => Array.from({ length: MONTHS }, (_, m) => sum(list.filter(t => t.m === m), t => t.amt));
+function holtWinters(y, h) {
+  const m = 12, mean = a => a.reduce((s, v) => s + v, 0) / a.length; let best;
+  for (const a of [.2, .4, .6]) for (const b of [.05, .15, .3]) for (const c of [.1, .3, .5]) {
+    const L1 = mean(y.slice(0, m)), L2 = mean(y.slice(m, 2 * m)); let L = L1, T = (L2 - L1) / m; const S = y.slice(0, m).map((v, i) => ((v - L1) + (y[i + m] - L2)) / 2), res = []; // seasonal start from both years
+    for (let t = m; t < y.length; t++) { const f = L + T + S[t % m]; res.push(y[t] - f); const Lp = L; L = a * (y[t] - S[t % m]) + (1 - a) * (L + T); T = b * (L - Lp) + (1 - b) * T; S[t % m] = c * (y[t] - L) + (1 - c) * S[t % m]; }
+    const sse = res.reduce((s, e) => s + e * e, 0); if (!best || sse < best.sse) best = { sse, L, T, S: S.slice(), sd: Math.sqrt(sse / res.length), a, b, c };
+  }
+  return { fc: Array.from({ length: h }, (_, i) => Math.max(0, best.L + (i + 1) * best.T + best.S[(y.length + i) % m])), sd: best.sd, params: best };
+}
+function rfm(list) {
+  const last = MONTHS - 1, by = {};
+  list.forEach(t => { const c = by[t.cust] ??= { cust: t.cust, last: -1, f: 0, mon: 0 }; c.last = Math.max(c.last, t.m); if (t.m > last - 12) { c.f++; c.mon += t.amt; } });
+  const rows = Object.values(by).map(c => ({ ...c, rec: last - c.last })), q = (arr, v, desc) => { const s = [...arr].sort((a, b) => a - b); let k = 1; for (let i = 1; i < 5; i++) if (v > s[Math.floor(i * (s.length - 1) / 5)]) k++; return desc ? 6 - k : k; };
+  return rows.map(c => { const rs = q(rows.map(x => x.rec), c.rec, true), fs = q(rows.map(x => x.f), c.f);
+    return { ...c, seg: rs >= 4 && fs >= 4 ? 'Champions' : fs >= 4 ? 'Loyal' : rs >= 4 ? 'Promising' : rs <= 2 && fs >= 3 ? 'At Risk' : rs <= 2 ? 'Lost / Hibernating' : 'Needs Attention' }; });
+}
+function topBy(list, key, n, from) { const by = {}; list.filter(t => t.m >= (from ?? 0)).forEach(t => by[t[key]] = (by[t[key]] || 0) + t.amt); return Object.entries(by).sort((a, b) => b[1] - a[1]).slice(0, n); }
+
+/* ---------- render ---------- */
+let chart;
+function render() {
+  const L = tx(), mon = monthly(L), last12 = sum(mon.slice(12), v => v), prev12 = sum(mon.slice(0, 12), v => v);
+  const hw = holtWinters(mon, 3), active = new Set(L.filter(t => t.m >= MONTHS - 3).map(t => t.cust)).size;
+  $('#sub').textContent = `${num(TX.length)} orders · ${MNAME(0)} – ${MNAME(MONTHS - 1)}${STATE ? ' · ' + STATE : ''}`;
+  $('#kpis').innerHTML = [['Revenue, last 12 months', inr(last12), 'acc'], ['Year-on-year growth', (last12 >= prev12 ? '+' : '') + pct(last12 / prev12 - 1), last12 >= prev12 ? 'ok' : 'bad'],
+    ['Forecast, next 3 months', inr(sum(hw.fc, v => v)), ''], ['Active customers (90 days)', String(active), '']].map(([l, v, c]) => `<div class="card kpi ${c}"><b>${v}</b><span>${l}</span></div>`).join('');
+  $('#fcNote').textContent = `HW α=${hw.params.a} β=${hw.params.b} γ=${hw.params.c}`;
+  chart?.destroy();
+  const labels = [...Array(MONTHS + 3)].map((_, m) => MNAME(m)), z = 1.28;
+  chart = new Chart($('#rev'), { data: { labels, datasets: [
+    { type: 'bar', label: 'Revenue', data: [...mon, null, null, null].map(v => v && Math.round(v)), backgroundColor: 'rgba(165,156,143,.45)', borderRadius: 4 },
+    { type: 'line', label: 'Forecast', data: [...Array(MONTHS - 1).fill(null), mon[MONTHS - 1], ...hw.fc].map(v => v && Math.round(v)), borderColor: '#ffb547', borderDash: [6, 4], pointRadius: 3, tension: .3 },
+    { type: 'line', label: 'Upper (80%)', data: [...Array(MONTHS).fill(null), ...hw.fc.map(v => Math.round(v + z * hw.sd))], borderColor: 'transparent', backgroundColor: 'rgba(255,181,71,.15)', fill: '+1', pointRadius: 0 },
+    { type: 'line', label: 'Lower (80%)', data: [...Array(MONTHS).fill(null), ...hw.fc.map(v => Math.round(Math.max(0, v - z * hw.sd)))], borderColor: 'transparent', pointRadius: 0 }] },
+    options: { maintainAspectRatio: false, plugins: { legend: { labels: { filter: i => !/Upper|Lower/.test(i.text) } }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + inr(c.raw) } } }, scales: { y: { ticks: { callback: v => inr(v) } } } } });
+  const segs = rfm(L), tot = sum(segs, s => s.mon), order = ['Champions', 'Loyal', 'Promising', 'Needs Attention', 'At Risk', 'Lost / Hibernating'];
+  $('#rfm').innerHTML = '<tr><th>Segment</th><th class="num">Cust.</th><th class="num">Revenue</th><th></th></tr>' + order.map(sg => { const s = segs.filter(x => x.seg === sg), sh = sum(s, x => x.mon) / tot;
+    return `<tr><td>${sg}</td><td class="num">${s.length}</td><td class="num">${pct(sh, 0)}</td><td style="width:35%"><div class="bar"><i class="${sg === 'Champions' ? 'ok' : sg === 'At Risk' ? 'bad' : ''}" style="width:${sh * 100}%"></i></div></td></tr>`; }).join('');
+  const pr = PRODUCTS.map((p, i) => { const a = sum(L.filter(t => t.prod === i && t.m >= MONTHS - 3), t => t.amt), b = sum(L.filter(t => t.prod === i && t.m >= MONTHS - 6 && t.m < MONTHS - 3), t => t.amt); return { n: p[0], a, g: b ? a / b - 1 : 0 }; }).sort((x, y) => y.a - x.a);
+  $('#prods').innerHTML = '<tr><th>Product</th><th class="num">Last 3 mo</th><th class="num">Growth</th></tr>' + pr.map(p => `<tr><td>${p.n}</td><td class="num">${inr(p.a)}</td><td class="num" style="color:${p.g >= 0 ? 'var(--ok)' : 'var(--bad)'}">${p.g >= 0 ? '▲' : '▼'} ${pct(Math.abs(p.g), 0)}</td></tr>`).join('');
+  $('#custs').innerHTML = '<tr><th>Customer</th><th>State</th><th class="num">Revenue</th><th>Segment</th></tr>' + topBy(L, 'cust', 10, MONTHS - 12).map(([c, v]) => `<tr><td>${esc(CUSTS[c].name)}</td><td>${CUSTS[c].state}</td><td class="num">${inr(v)}</td><td><span class="pill mute">${segs.find(s => s.cust == c)?.seg || ''}</span></td></tr>`).join('');
+}
+
+/* ---------- rule-based question answering ---------- */
+const EX = ['top 5 customers last 3 months', 'revenue in Diwali month', 'which product grew most', 'forecast next quarter', 'customers at risk', 'revenue in Karnataka last 6 months', 'top products this year'];
+function answer(qRaw) {
+  const q = qRaw.toLowerCase(), L = TX, nMatch = q.match(/top\s+(\d+)/), n = nMatch ? +nMatch[1] : 5;
+  const per = q.match(/last\s+(\d+)\s+months?/) ? +q.match(/last\s+(\d+)\s+months?/)[1] : /quarter/.test(q) ? 3 : /this year|last year|12 months|year/.test(q) ? 12 : null;
+  const from = per ? MONTHS - per : 0, st = STATES.find(s => q.includes(s.toLowerCase())), list = st ? L.filter(t => CUSTS[t.cust].state === st) : L;
+  const scope = `${st ? st + ', ' : ''}${per ? 'last ' + per + ' months' : 'all 24 months'}`;
+  const table = (rows, h) => `<table style="margin-top:8px"><tr>${h.map(x => `<th>${x}</th>`).join('')}</tr>${rows.map(r => `<tr>${r.map((c, i) => `<td class="${i ? 'num' : ''}">${c}</td>`).join('')}</tr>`).join('')}</table>`;
+  if (/forecast|next (month|quarter)|predict/.test(q)) { const hw = holtWinters(monthly(list), 3); return `<b>Forecast for the next 3 months${st ? ' in ' + st : ''}: ${inr(sum(hw.fc, v => v))}</b>` + table(hw.fc.map((v, i) => [MNAME(MONTHS + i), inr(v)]), ['Month', 'Forecast']); }
+  if (/risk|churn|lost|losing/.test(q)) { const s = rfm(list).filter(x => x.seg === 'At Risk' || x.seg === 'Lost / Hibernating').sort((a, b) => b.mon - a.mon).slice(0, n); return `<b>${s.length} customers worth chasing</b> (RFM "At Risk" or "Lost", sorted by 12-month spend)` + table(s.map(x => [esc(CUSTS[x.cust].name), x.rec + ' mo ago', inr(x.mon)]), ['Customer', 'Last order', 'Spend 12m']); }
+  if (/grew|growth|growing|declin|drop/.test(q)) { const g = PRODUCTS.map((p, i) => { const a = sum(list.filter(t => t.prod === i && t.m >= MONTHS - 3), t => t.amt), b = sum(list.filter(t => t.prod === i && t.m >= MONTHS - 6 && t.m < MONTHS - 3), t => t.amt); return [p[0], b ? a / b - 1 : 0]; }).sort((a, b) => /declin|drop/.test(q) ? a[1] - b[1] : b[1] - a[1]);
+    return `<b>${g[0][0]}</b> ${g[0][1] >= 0 ? 'grew' : 'fell'} the most: ${pct(Math.abs(g[0][1]))} (last 3 months vs the 3 before)` + table(g.slice(0, n).map(([p, v]) => [p, (v >= 0 ? '+' : '−') + pct(Math.abs(v))]), ['Product', 'Change']); }
+  if (/top|best|biggest|largest/.test(q)) { const key = /product|item|sku/.test(q) ? 'prod' : 'cust', rows = topBy(list, key, n, from);
+    return `<b>Top ${rows.length} ${key === 'prod' ? 'products' : 'customers'}</b> · ${scope}` + table(rows.map(([k, v]) => [esc(key === 'prod' ? PRODUCTS[k][0] : CUSTS[k].name), inr(v)]), [key === 'prod' ? 'Product' : 'Customer', 'Revenue']); }
+  if (/diwali|festiv/.test(q)) { const m = [...Array(MONTHS).keys()].filter(m => (START.getMonth() + m) % 12 === 10); return '<b>Festive month (November) revenue</b>' + table(m.map(x => [MNAME(x), inr(sum(list.filter(t => t.m === x), t => t.amt))]), ['Month', 'Revenue']); }
+  const mo = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'].findIndex(x => new RegExp('\\b' + x).test(q));
+  if (mo >= 0) { const ms = [...Array(MONTHS).keys()].filter(m => (START.getMonth() + m) % 12 === mo); return `<b>Revenue in ${new Date(2000, mo).toLocaleString('en', { month: 'long' })}</b>${st ? ' · ' + st : ''}` + table(ms.map(x => [MNAME(x), inr(sum(list.filter(t => t.m === x), t => t.amt))]), ['Month', 'Revenue']); }
+  if (/revenue|sales|turnover|how much/.test(q)) { const v = sum(list.filter(t => t.m >= from), t => t.amt), o = list.filter(t => t.m >= from).length; return `<b>${inr(v)}</b> revenue from ${num(o)} orders · ${scope} (average order ${inr(v / o)})`; }
+  return `<span class="note">I couldn't map that to a query. I understand: top N customers/products, revenue (by state, month or "last N months"), growth or decline, forecast, and customers at risk.</span>`;
+}
+function ask(q) { $('#q').value = q; $('#ans').innerHTML = `<div class="q">› ${esc(q)}</div>${answer(q)}`; }
+$('#chips').innerHTML = EX.map(e => `<button>${e}</button>`).join('');
+$('#chips').onclick = e => e.target.tagName === 'BUTTON' && ask(e.target.textContent);
+$('#go').onclick = () => $('#q').value.trim() && ask($('#q').value.trim());
+$('#q').onkeydown = e => e.key === 'Enter' && $('#go').click();
+$('#state').innerHTML += STATES.map(s => `<option>${s}</option>`).join('');
+$('#state').onchange = e => { STATE = e.target.value; render(); };
+render(); ask(EX[0]);
+</script>
+</body>
+</html>

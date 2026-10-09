@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>if(location.hash==='#shot'){try{localStorage.setItem('bpps_welcome','1')}catch(e){}}</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BioPapro Design Hub</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<style>
+:root{
+  --bg:#f5f6f2; --surface:#ffffff; --surface-2:#f8f9f6; --line:#e4e7e0; --line-2:#d3d8cf;
+  --ink:#17211b; --muted:#66706a; --soft:#8b948e;
+  --brand:#1f7a3a; --brand-d:#17602d; --brand-l:#e7f3ea; --brand-ll:#f3f9f4;
+  --cut:#e0262b; --crease:#1f6feb;
+  --r:14px; --sh:0 1px 2px rgba(16,24,20,.05),0 6px 20px rgba(16,24,20,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:14px/1.45 Poppins,'Segoe UI',Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* ---------- top bar ---------- */
+.top{height:64px;display:flex;align-items:center;gap:16px;padding:0 20px;background:var(--surface);border-bottom:1px solid var(--line);position:relative;z-index:5}
+.logo{display:flex;align-items:center;gap:10px;white-space:nowrap}
+.logo .brandlogo{height:48px;width:auto;display:block;margin:-4px 0}
+.logo .vsep{width:1px;height:30px;background:var(--line-2)}
+.logo b{font-size:16px;font-weight:700;display:block;line-height:1.1}
+.logo small{font-size:11.5px;color:var(--muted)}
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;padding:7px 14px;border-radius:9px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.seg button:hover{color:var(--ink)}
+.seg button.on{background:var(--surface);color:var(--brand);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.top .seg{margin-left:18px}
+.grow{flex:1}
+.btn{border:1px solid var(--line-2);background:var(--surface);padding:9px 15px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink);white-space:nowrap;display:inline-flex;align-items:center;gap:7px;transition:.15s}
+.btn:hover{border-color:var(--soft);background:var(--surface-2)}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 3px 10px rgba(31,122,58,.25)}
+.btn.pri:hover{background:var(--brand-d)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--muted)}
+.btn.ghost:hover{background:var(--surface-2);color:var(--ink)}
+.btn.sm{padding:6px 11px;font-size:12px;border-radius:9px}
+.btn.block{width:100%;justify-content:center}
+
+/* ---------- layout ---------- */
+.wrap{display:flex;height:calc(100% - 64px)}
+aside{width:390px;min-width:390px;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:14px 16px 12px;border-bottom:1px solid var(--line)}
+.steps button{border:0;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;padding:4px 0;color:var(--soft);font-size:11.5px;font-weight:600;position:relative}
+.steps button b{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);border:1.5px solid var(--line-2);font-size:13px;color:var(--muted);transition:.2s}
+.steps button:not(:last-child):after{content:"";position:absolute;top:19px;left:calc(50% + 20px);right:calc(-50% + 20px);height:2px;background:var(--line)}
+.steps button.done b{background:var(--brand-l);border-color:var(--brand);color:var(--brand)}
+.steps button.done:after{background:var(--brand)}
+.steps button.on{color:var(--ink)}
+.steps button.on b{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 0 0 4px var(--brand-l)}
+.panes{flex:1;overflow:auto;padding:20px 20px 30px}
+.pane{display:none;animation:fade .25s ease}
+.pane.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+h2{font-size:19px;margin:0 0 4px;font-weight:700}
+.sub{color:var(--muted);margin:0 0 18px;font-size:13px}
+h3{font-size:13.5px;font-weight:700;margin:22px 0 10px;display:flex;align-items:center;gap:7px}
+h3 .tag{font-size:10.5px;font-weight:600;color:var(--brand);background:var(--brand-l);padding:2px 8px;border-radius:20px}
+.stepnav{display:flex;gap:10px;padding:14px 20px;border-top:1px solid var(--line);background:var(--surface)}
+.stepnav .btn{flex:1;justify-content:center;padding:11px}
+.stepnav .btn.back{flex:0 0 auto}
+
+/* ---------- form ---------- */
+.f{margin-bottom:12px}
+.f label,.flabel{display:block;font-size:12.5px;font-weight:600;color:var(--ink);margin-bottom:5px}
+.f label small{font-weight:400;color:var(--soft)}
+input[type=text],input[type=number],select,textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;font:500 14px Poppins,sans-serif;color:var(--ink);background:var(--surface);transition:.15s}
+textarea{resize:vertical;min-height:64px;font-size:13px;line-height:1.45}
+input:hover,select:hover,textarea:hover{border-color:var(--line-2)}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-l)}
+.unit{position:relative}
+.unit input{padding-right:40px}
+.unit:after{content:"mm";position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--soft);pointer-events:none}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.row-2-1{display:grid;grid-template-columns:2fr 1fr;gap:10px}
+.hint{font-size:12px;color:var(--muted);margin:6px 0 0;display:flex;gap:6px;align-items:flex-start}
+.hint svg{width:15px;height:15px;margin-top:1px;color:var(--brand)}
+input[type=color]{width:100%;height:40px;border:1.5px solid var(--line);border-radius:10px;padding:3px;background:#fff;cursor:pointer}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;cursor:pointer;font-size:13px;font-weight:500}
+.switch input{appearance:none;width:40px;height:23px;border-radius:20px;background:var(--line-2);position:relative;cursor:pointer;transition:.2s;flex:none;margin:0}
+.switch input:after{content:"";position:absolute;width:17px;height:17px;border-radius:50%;background:#fff;top:3px;left:3px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.switch input:checked{background:var(--brand)}
+.switch input:checked:after{left:20px}
+.card{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.card + .card{margin-top:12px}
+details.more{border:1px solid var(--line);border-radius:var(--r);margin-top:12px;background:var(--surface)}
+details.more summary{cursor:pointer;list-style:none;padding:12px 14px;font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary:after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid var(--soft);border-bottom:2px solid var(--soft);transform:rotate(45deg);transition:.2s}
+details.more[open] summary:after{transform:rotate(-135deg)}
+details.more .in{padding:2px 14px 14px}
+
+/* ---------- step 1 : products ---------- */
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:20px;padding:5px 12px;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer}
+.chip:hover{border-color:var(--line-2);color:var(--ink)}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.plist{display:flex;flex-direction:column;gap:8px}
+.pcard{display:flex;align-items:center;gap:12px;padding:11px 12px;border:1.5px solid var(--line);border-radius:var(--r);background:var(--surface);cursor:pointer;text-align:left;transition:.15s;width:100%}
+.pcard:hover{border-color:var(--line-2);box-shadow:var(--sh)}
+.pcard.on{border-color:var(--brand);background:var(--brand-ll);box-shadow:0 0 0 3px var(--brand-l)}
+.pcard .ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;flex:none}
+.pcard .ic svg{width:26px;height:26px}
+.pcard .t{flex:1;min-width:0}
+.pcard .t b{display:block;font-size:13.5px;font-weight:600;line-height:1.3}
+.pcard .t small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.pcard .ok{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line-2);flex:none;display:grid;place-items:center;color:#fff}
+.pcard.on .ok{background:var(--brand);border-color:var(--brand)}
+.pcard .ok svg{width:13px;height:13px;stroke-width:3}
+.c-straw{background:#e7f3ea;color:#1f7a3a}.c-cutlery{background:#f6ecdf;color:#8a5a2b}.c-display{background:#e8eefc;color:#2d5bd1}.c-carton{background:#f3ece4;color:#7a5634}
+
+/* ---------- step 2 ---------- */
+.types{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.types.four{grid-template-columns:repeat(2,1fr)}
+#wrapWork{display:none;height:calc(100% - 64px);flex-direction:column;background:var(--bg)}
+body.wrapmode #wrapWork{display:flex}
+body.wrapmode .wrap,body.wrapmode #viewSeg,body.wrapmode #dlTop{display:none}
+#wrapWork .wbar{display:flex;align-items:center;gap:12px;padding:8px 16px;background:var(--surface);border-bottom:1px solid var(--line);font-size:13px;font-weight:600}
+#wrapWork .wbar span{color:var(--muted);font-weight:500}
+#wrapFrame{flex:1;width:100%;border:0;background:var(--bg)}
+.tcard{border:1.5px solid var(--line);border-radius:var(--r);background:var(--surface);padding:12px 8px 10px;cursor:pointer;text-align:center;transition:.15s}
+.tcard:hover{border-color:var(--line-2);box-shadow:var(--sh)}
+.tcard.on{border-color:var(--brand);background:var(--brand-ll);box-shadow:0 0 0 3px var(--brand-l)}
+.tcard svg{width:52px;height:44px;display:block;margin:0 auto 6px}
+.tcard b{display:block;font-size:12.5px;font-weight:600;line-height:1.25}
+.tcard small{display:block;font-size:11px;color:var(--muted);margin-top:2px;line-height:1.3}
+.dimfig{display:flex;justify-content:center;margin:2px 0 10px}
+.dimfig svg{width:190px;height:auto}
+.fitres{margin-top:10px;background:var(--surface);border:1px dashed var(--brand);border-radius:10px;padding:9px 11px;font-size:12.5px;color:var(--brand-d);display:none}
+.fitres.on{display:block}
+
+/* ---------- step 3 ---------- */
+.themes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.theme{border:1.5px solid var(--line);border-radius:12px;background:var(--surface);cursor:pointer;padding:6px 6px 7px;transition:.15s}
+.theme:hover{border-color:var(--line-2)}
+.theme.on{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-l)}
+.theme .sw{height:34px;border-radius:8px;position:relative;overflow:hidden;border:1px solid rgba(0,0,0,.06)}
+.theme .sw i{position:absolute;left:0;right:0;bottom:0;height:11px}
+.theme .sw em{position:absolute;right:6px;top:6px;width:13px;height:13px;border-radius:50%}
+.theme span{display:block;font-size:10.5px;font-weight:600;text-align:center;margin-top:5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seg.full{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;width:100%}
+.seg.full button{justify-content:center;padding:8px 6px}
+.drop{border:1.5px dashed var(--line-2);border-radius:var(--r);padding:16px;text-align:center;cursor:pointer;background:var(--surface-2);transition:.15s;display:flex;align-items:center;gap:12px}
+.drop:hover,.drop.over{border-color:var(--brand);background:var(--brand-ll)}
+.drop .th{width:56px;height:56px;border-radius:10px;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;flex:none;overflow:hidden;color:var(--soft)}
+.drop .th img{max-width:100%;max-height:100%}
+.drop .tx{text-align:left;flex:1}
+.drop .tx b{display:block;font-size:13px}
+.drop .tx small{color:var(--muted);font-size:12px}
+
+/* ---------- step 4 ---------- */
+.dl{display:flex;flex-direction:column;gap:8px}
+.dlc{display:flex;align-items:center;gap:12px;padding:12px;border:1.5px solid var(--line);border-radius:var(--r);background:var(--surface);cursor:pointer;text-align:left;width:100%;transition:.15s}
+.dlc:hover{border-color:var(--brand);box-shadow:var(--sh)}
+.dlc .ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;flex:none}
+.dlc .ic svg{width:21px;height:21px}
+.dlc .t{flex:1}
+.dlc .t b{display:block;font-size:13.5px;font-weight:600}
+.dlc .t small{display:block;font-size:12px;color:var(--muted)}
+.dlc .fmt{font-size:10.5px;font-weight:700;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 7px}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fact{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.fact small{display:block;font-size:11.5px;color:var(--muted)}
+.fact b{font-size:15px;font-weight:700}
+.fact em{display:block;font-style:normal;font-size:11px;color:var(--soft)}
+
+/* ---------- main views ---------- */
+main{flex:1;display:flex;min-width:0;position:relative}
+.view{flex:1;position:relative;min-width:0;display:none}
+.view.on{display:block}
+#v3d{background:radial-gradient(ellipse at 50% 28%,#ffffff 0%,#eff1ec 55%,#e0e4dc 100%)}
+#v3d.white{background:#fff} #v3d.dark{background:radial-gradient(ellipse at 50% 30%,#2b322d 0%,#171b18 100%)}
+#v3d canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.float{position:absolute;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh);backdrop-filter:blur(8px)}
+.cams{top:16px;left:16px;display:flex;gap:2px;padding:4px}
+.cams button{border:0;background:none;padding:6px 10px;border-radius:9px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:5px}
+.cams button:hover{background:var(--surface-2);color:var(--ink)}
+.scene{top:16px;right:16px;display:flex;align-items:center;gap:8px;padding:6px 8px 6px 12px;font-size:12px;font-weight:600;color:var(--muted)}
+.dots{display:flex;gap:5px}
+.dots button{width:20px;height:20px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line-2);cursor:pointer;padding:0}
+.dots button.on{box-shadow:0 0 0 2px var(--brand)}
+.scene .sep{width:1px;height:18px;background:var(--line)}
+.scene .btn{padding:5px 9px;font-size:11.5px;border-radius:8px}
+.scene .btn.on{background:var(--brand-l);border-color:var(--brand);color:var(--brand)}
+.ctl{left:50%;transform:translateX(-50%);bottom:18px;display:flex;gap:14px;align-items:center;padding:10px 14px;width:min(640px,calc(100% - 32px))}
+.ctl .lab{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
+.ctl .rng{flex:1;display:flex;align-items:center;gap:10px;min-width:120px}
+input[type=range]{width:100%;accent-color:var(--brand);cursor:pointer}
+.ctl .btn.on{background:var(--brand-l);border-color:var(--brand);color:var(--brand)}
+.drag-hint{left:50%;transform:translateX(-50%);bottom:84px;padding:6px 14px;font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center;transition:opacity .5s;pointer-events:none}
+.drag-hint.gone{opacity:0}
+.status{top:70px;left:50%;transform:translateX(-50%);padding:6px 14px 6px 12px;font-size:12px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:8px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:3}
+.status.on{opacity:1}
+.status i{width:12px;height:12px;border-radius:50%;border:2px solid var(--brand-l);border-top-color:var(--brand);animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#nogl{position:absolute;inset:0;display:none;align-items:center;justify-content:center;color:var(--muted);text-align:center;padding:30px}
+#vdie{background:#f3f4f1}
+#vdie.on{display:flex;flex-direction:column}
+#dieBox{flex:1;min-height:0;cursor:grab;margin:14px 14px 0;background:#fff;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+#dieBox svg{width:100%;height:100%;display:block}
+.legend{top:26px;right:28px;display:flex;gap:14px;align-items:center;font-size:12px;padding:7px 8px 7px 14px;z-index:2}
+.legend i{display:inline-block;width:22px;border-top:2.5px solid var(--cut);vertical-align:middle;margin-right:6px}
+.legend i.c{border-top:2.5px dashed var(--crease)}
+.legend .btn{padding:4px 9px;font-size:11.5px}
+#info{display:flex;gap:10px;flex-wrap:wrap;padding:12px 14px 14px}
+#info .fact{background:#fff;flex:1;min-width:150px}
+.split .view{display:block}
+.split #vdie{display:flex;flex-direction:column;border-left:1px solid var(--line)}
+.split .cams span,.split .bgl{display:none}
+
+/* welcome */
+.welcome{position:absolute;inset:0;background:rgba(23,33,27,.35);display:none;align-items:center;justify-content:center;z-index:20;padding:20px;backdrop-filter:blur(2px)}
+.welcome.on{display:flex}
+.wcard{background:var(--surface);border-radius:20px;padding:28px;max-width:520px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:fade .3s ease}
+.wcard h2{font-size:22px}
+.wsteps{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 22px}
+.wsteps div{background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:12px}
+.wsteps b{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--brand);color:#fff;font-size:12px;margin-bottom:6px}
+.wsteps strong{display:block;font-size:13.5px}
+.wsteps small{color:var(--muted);font-size:12px}
+#toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,10px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:12px;font-size:13px;font-weight:500;opacity:0;transition:.25s;pointer-events:none;z-index:99;display:flex;gap:8px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+@media (max-width:980px){
+  .wrap{flex-direction:column-reverse;height:auto}
+  aside{width:100%;min-width:0}
+  main{height:62vh;min-height:420px}
+  .top{overflow-x:auto}.top .logo small{display:none}
+  .cams span{display:none}
+  .split .view{display:none}.split #v3d{display:block}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo">
+    <img class="brandlogo" src="data:image/png;base64,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" alt="BioPapro">
+    <span class="vsep"></span>
+    <div><b>Design Hub</b><small>Packaging · 3D mockups · product documents</small></div>
+  </div>
+  <div class="seg" id="viewSeg">
+    <button data-v="3d" class="on"><svg class="i" viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7M12 11v10"/></svg>3D preview</button>
+    <button data-v="die"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="7" width="6" height="10"/><rect x="9" y="7" width="6" height="10"/><rect x="15" y="7" width="6" height="10"/><path d="M9 7V3h6v4M9 17v4h6v-4"/></svg>Flat print layout</button>
+    <button data-v="split"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/></svg>Both</button>
+  </div>
+  <div class="grow"></div>
+  <a class="btn ghost" href="documents.html" style="text-decoration:none"><svg class="i" viewBox="0 0 24 24"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M8 13h8M8 17h5"/></svg>Product documents</a>
+  <!-- HIDDEN for now (unhide when ready): <a class="btn ghost" href="planner.html" style="text-decoration:none"><svg class="i" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="11" rx="1"/><path d="M6 7v11M10 7v11M14 7v11M18 7v11"/></svg>Export planner</a> -->
+  <a class="btn ghost" href="guide.html" target="_blank" rel="noopener" style="text-decoration:none"><svg class="i" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M8 7h7M8 11h7"/></svg>Guide</a>
+  <button class="btn ghost" id="helpBtn"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.5v.01"/></svg>How it works</button>
+  <button class="btn pri" id="dlTop"><svg class="i" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Download</button>
+</header>
+
+<div class="wrap">
+<aside>
+  <nav class="steps" id="steps">
+    <button data-s="1" class="on"><b>1</b>Product</button>
+    <button data-s="2"><b>2</b>Box size</button>
+    <button data-s="3"><b>3</b>Design</button>
+    <button data-s="4"><b>4</b>Download</button>
+  </nav>
+  <div class="panes" id="panes">
+
+    <!-- STEP 1 -->
+    <section class="pane on" id="s1">
+      <h2>What are you packing?</h2>
+      <p class="sub">Pick a product. The box, size and artwork are set up for you, and you can change anything later.</p>
+      <div class="chips" id="catChips"></div>
+      <div class="plist" id="presetCards"></div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section class="pane" id="s2">
+      <h2>Box type &amp; size</h2>
+      <p class="sub">Choose the kind of box, then check the inside size.</p>
+      <div class="types" id="typeCards"></div>
+
+      <h3>Inside size <span class="tag">in millimetres</span></h3>
+      <div class="card">
+        <div class="dimfig" id="dimFig"></div>
+        <div class="row3" id="dimBox">
+          <div class="f"><label id="lL">Length</label><div class="unit"><input type="number" data-p="L" data-num step="0.5" min="10"></div></div>
+          <div class="f"><label id="lW">Width</label><div class="unit"><input type="number" data-p="W" data-num step="0.5" min="10"></div></div>
+          <div class="f" id="hWrap"><label>Height</label><div class="unit"><input type="number" data-p="H" data-num step="0.5" min="5"></div></div>
+        </div>
+        <div class="row" id="dispDims">
+          <div class="f"><label>Front wall height</label><div class="unit"><input type="number" data-p="hf" data-num step="1" min="10"></div></div>
+          <div class="f"><label>Back card height</label><div class="unit"><input type="number" data-p="hb" data-num step="1" min="20"></div></div>
+        </div>
+        <p class="hint"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>Enter the space your product needs inside. Board thickness is added for you.</p>
+      </div>
+
+      <h3>Auto-size for straws</h3>
+      <div class="card">
+        <div class="row3">
+          <div class="f"><label>How many</label><input type="number" data-p="prod.n" data-num min="1"></div>
+          <div class="f"><label>Thickness</label><div class="unit"><input type="number" data-p="prod.d" data-num step="0.5" min="2"></div></div>
+          <div class="f"><label>Length</label><div class="unit"><input type="number" data-p="prod.len" data-num min="20"></div></div>
+        </div>
+        <label class="switch">Each straw is paper-wrapped <input type="checkbox" data-p="prod.wrap"></label>
+        <label class="switch">Show straws inside the 3D box <input type="checkbox" id="showStraws"></label>
+        <button class="btn pri block" id="fitBtn" style="margin-top:6px"><svg class="i" viewBox="0 0 24 24"><path d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg>Work out the box size for me</button>
+        <div class="fitres" id="fitNote"></div>
+      </div>
+
+      <h3>Board</h3>
+      <div class="f"><select data-p="material" id="material"></select></div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="pane" id="s3">
+      <h2>Design your box</h2>
+      <p class="sub">Change the words and colours. The 3D preview updates as you type.</p>
+
+      <h3>Words on the box</h3>
+      <div class="row">
+        <div class="f"><label>Brand name</label><input type="text" data-p="D.brand"></div>
+        <div class="f"><label>Product name</label><input type="text" data-p="D.product"></div>
+      </div>
+      <div class="f"><label>Size / details line</label><input type="text" data-p="D.subline"></div>
+      <div class="row-2-1">
+        <div class="f"><label>Pieces in box <small>(shown in circle)</small></label><input type="text" data-p="D.qty"></div>
+        <div class="f"><label>Unit</label><input type="text" data-p="D.unit"></div>
+      </div>
+      <div class="f"><label>Slogan <small>(bottom band)</small></label><input type="text" data-p="D.tagline"></div>
+
+      <h3>Colour theme</h3>
+      <div class="themes" id="themes"></div>
+
+      <h3>Board colour</h3>
+      <div class="seg full" data-group="D.finish">
+        <button data-set="D.finish" data-val="white">White</button>
+        <button data-set="D.finish" data-val="kraft">Brown kraft</button>
+        <button data-set="D.finish" data-val="colour">Coloured</button>
+      </div>
+
+      <h3>Background pattern</h3>
+      <div class="seg full">
+        <button data-set="D.pattern" data-val="none">Plain</button>
+        <button data-set="D.pattern" data-val="leaves">Leaves</button>
+        <button data-set="D.pattern" data-val="stripes">Stripes</button>
+        <button data-set="D.pattern" data-val="dots">Dots</button>
+      </div>
+
+      <h3>Logo</h3>
+      <div class="drop" id="logoDrop">
+        <div class="th" id="logoThumb"><svg class="i" viewBox="0 0 24 24" style="width:24px;height:24px"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 8"/></svg></div>
+        <div class="tx"><b id="logoTitle">Add your logo</b><small>Click or drop an image here. A PNG with no background looks best.</small></div>
+        <button class="btn sm" id="logoClear" style="display:none">Remove</button>
+      </div>
+      <input type="file" id="logoFile" accept="image/*" hidden>
+
+      <details class="more">
+        <summary><svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Back &amp; side panel text</summary>
+        <div class="in">
+          <div class="f"><label>Key features <small>(one per line)</small></label><textarea data-p="D.features"></textarea></div>
+          <div class="f"><label>Specifications on sides <small>(one per line, e.g. Size: 8 × 197 mm)</small></label><textarea data-p="D.specs"></textarea></div>
+          <div class="f"><label>About the product</label><textarea data-p="D.description"></textarea></div>
+          <div class="f"><label>Manufacturer details</label><textarea data-p="D.maker"></textarea></div>
+          <div class="f"><label>Barcode number <small>(first 12 digits of the EAN-13; the last digit is added)</small></label><input type="text" data-p="D.barcode" maxlength="13"></div>
+        </div>
+      </details>
+      <details class="more">
+        <summary><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="9" r="1.2"/><circle cx="15" cy="9" r="1.2"/><circle cx="8" cy="14" r="1.2"/></svg>Custom colours</summary>
+        <div class="in"><div class="row3">
+          <div class="f"><label>Main colour</label><input type="color" data-p="D.accent"></div>
+          <div class="f"><label>Text</label><input type="color" data-p="D.ink"></div>
+          <div class="f"><label>Board <small>(coloured)</small></label><input type="color" data-p="D.bg"></div>
+        </div></div>
+      </details>
+      <details class="more">
+        <summary><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg>Use your own artwork on one side</summary>
+        <div class="in">
+          <div class="f"><label>Which side?</label><select id="faceSel"></select></div>
+          <div class="row"><button class="btn block" id="faceBtn">Upload image</button><button class="btn block" id="faceClear">Back to auto design</button></div>
+          <p class="hint">Leave 3 mm extra on every edge; it gets trimmed off when cut.</p>
+        </div>
+      </details>
+      <input type="file" id="faceFile" accept="image/*" hidden>
+    </section>
+
+    <!-- STEP 4 -->
+    <section class="pane" id="s4">
+      <h2>Download</h2>
+      <p class="sub">Choose the file for who you're sending it to.</p>
+
+      <h3>For sales, WhatsApp &amp; catalogue</h3>
+      <div class="dl">
+        <button class="dlc" id="exPng"><span class="ic c-straw"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 8"/></svg></span><span class="t"><b>Product photo</b><small>High-quality image of the 3D box as it looks now</small></span><span class="fmt">PNG</span></button>
+        <button class="dlc" id="exPngT"><span class="ic c-straw"><svg class="i" viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7M12 11v10"/></svg></span><span class="t"><b>Photo with no background</b><small>For websites, Amazon and presentations</small></span><span class="fmt">PNG</span></button>
+      </div>
+
+      <h3>For the printer</h3>
+      <div class="dl">
+        <button class="dlc" id="exPdf"><span class="ic c-display"><svg class="i" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M6 14h12v7H6z"/></svg></span><span class="t"><b>Print file, actual size</b><small>Artwork with cut and fold lines. Print at 100%</small></span><span class="fmt">PDF</span></button>
+        <button class="dlc" id="exSvgArt"><span class="ic c-display"><svg class="i" viewBox="0 0 24 24"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 14l2 2 4-4"/></svg></span><span class="t"><b>Artwork + cut lines</b><small>Editable in CorelDRAW / Illustrator</small></span><span class="fmt">SVG</span></button>
+        <button class="dlc" id="exFaces"><span class="ic c-display"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg></span><span class="t"><b>Each side as an image</b><small>Front, back, sides and top in one folder</small></span><span class="fmt">ZIP</span></button>
+      </div>
+
+      <h3>For the die-maker</h3>
+      <div class="dl">
+        <button class="dlc" id="exDxf"><span class="ic c-carton"><svg class="i" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/></svg></span><span class="t"><b>Die-maker files</b><small>DXF (CAD, mm) plus a labelled drawing, in one folder</small></span><span class="fmt">ZIP</span></button>
+        <button class="dlc" id="exSvgCut"><span class="ic c-carton"><svg class="i" viewBox="0 0 24 24"><path d="M4 4h16v16H4z" stroke-dasharray="3 3"/><path d="M4 12h16"/></svg></span><span class="t"><b>Cut &amp; fold lines, labelled</b><small>Same lines with panel names, to check or print</small></span><span class="fmt">SVG</span></button>
+      </div>
+
+      <h3>Material &amp; costing</h3>
+      <div class="facts" id="facts"></div>
+
+      <h3>Save your work</h3>
+      <div class="row">
+        <button class="btn block" id="saveProj"><svg class="i" viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v5h7V3M8 21v-7h8v7"/></svg>Save project</button>
+        <button class="btn block" id="loadProjBtn"><svg class="i" viewBox="0 0 24 24"><path d="M3 7h6l2 2h10v10H3z"/></svg>Open project</button>
+      </div>
+      <input type="file" id="loadProj" accept=".json" hidden>
+      <p class="hint">Your latest work is also kept in this browser automatically.</p>
+    </section>
+  </div>
+  <footer class="stepnav">
+    <button class="btn back" id="prevStep">← Back</button>
+    <button class="btn pri" id="nextStep">Next →</button>
+  </footer>
+</aside>
+
+<main id="main">
+  <div class="view on" id="v3d">
+    <div class="float cams">
+      <button data-cam="34" title="Angled view"><svg class="i" viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7M12 11v10"/></svg><span>Angle</span></button>
+      <button data-cam="front" title="Front"><svg class="i" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1"/></svg><span>Front</span></button>
+      <button data-cam="side" title="Side"><svg class="i" viewBox="0 0 24 24"><rect x="8" y="5" width="8" height="14" rx="1"/></svg><span>Side</span></button>
+      <button data-cam="top" title="Top"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="8" rx="1"/><path d="M12 3v3M12 18v3"/></svg><span>Top</span></button>
+      <button data-cam="back" title="Back"><svg class="i" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 3-6.2M4 4v4h4"/></svg><span>Back</span></button>
+      <button data-cam="fit" title="Reset zoom"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M8.5 11h5"/></svg><span>Reset</span></button>
+    </div>
+    <div class="float scene">
+      <span class="bgl">Background</span>
+      <div class="dots">
+        <button data-bg="studio" style="background:linear-gradient(135deg,#fff,#dfe3dc)" title="Studio"></button>
+        <button data-bg="white" style="background:#fff" title="White"></button>
+        <button data-bg="dark" style="background:#1c211e" title="Dark"></button>
+      </div>
+      <span class="sep"></span>
+      <button class="btn" id="autoRot" title="Spin the box">⟳ Spin</button>
+    </div>
+    <div class="float status" id="busy"><i></i>Updating preview…</div>
+    <div class="float status" id="load3d"><i></i>Loading 3D viewer…</div>
+    <div id="nogl">The 3D preview needs internet the first time it loads, and a browser with graphics support.<br>The flat print layout and downloads still work.</div>
+    <div class="float drag-hint" id="dragHint"><svg class="i" viewBox="0 0 24 24"><path d="M9 11V5a1.5 1.5 0 0 1 3 0v5M12 10V4a1.5 1.5 0 0 1 3 0v6M15 10V6a1.5 1.5 0 0 1 3 0v7a7 7 0 0 1-7 7h-1a6 6 0 0 1-5-3l-2.5-4a1.5 1.5 0 0 1 2.5-1.6L9 13"/></svg>Drag to turn the box · Scroll to zoom</div>
+    <div class="float ctl">
+      <button class="btn pri" id="play"><svg class="i" viewBox="0 0 24 24" style="fill:currentColor;stroke:none"><path d="M7 5v14l12-7z"/></svg>Watch it fold</button>
+      <div class="rng"><span class="lab">Flat</span><input type="range" id="fold" min="0" max="1" step="0.001"><span class="lab">Box</span></div>
+      <button class="btn" id="openBtn"><svg class="i" viewBox="0 0 24 24"><path d="M3 10l9-4 9 4v9l-9 4-9-4z"/><path d="M3 10l6-6 9 2"/></svg><span>Open lid</span></button>
+    </div>
+  </div>
+  <div class="view" id="vdie">
+    <div class="float legend"><span><i></i>Cut</span><span><i class="c"></i>Fold</span>
+      <button class="btn" id="labelsBtn">Panel names</button>
+      <button class="btn" id="dieFit">Fit to screen</button></div>
+    <div id="dieBox"></div>
+    <div id="info"></div>
+  </div>
+
+  <div class="welcome" id="welcome">
+    <div class="wcard">
+      <h2>Make a box in 4 easy steps</h2>
+      <p class="sub" style="margin:0">Design packaging for any BioPapro product, see it in 3D, and download print-ready files.</p>
+      <div class="wsteps">
+        <div><b>1</b><strong>Pick a product</strong><small>Straws, cutlery, displays or cartons</small></div>
+        <div><b>2</b><strong>Check the size</strong><small>Or let us work it out</small></div>
+        <div><b>3</b><strong>Change text &amp; colours</strong><small>Add your logo, pick a theme</small></div>
+        <div><b>4</b><strong>Download</strong><small>Photo, print file or die file</small></div>
+      </div>
+      <p class="sub">Drag the 3D box to turn it. Press <b>Watch it fold</b> to see the flat sheet become a box.</p>
+      <button class="btn pri block" id="welcomeGo">Let's start</button>
+      <a href="guide.html" target="_blank" rel="noopener" style="display:block;text-align:center;margin-top:10px;font-size:13px;font-weight:600;color:var(--brand)">Read the full user guide →</a>
+    </div>
+  </div>
+</main>
+</div>
+<div id="wrapWork">
+  <div class="wbar"><button class="btn sm" id="backBoxes">← Back to boxes</button>Wrapping paper <span>· printed wrapper for individually wrapped cutlery and straws</span><a class="btn sm" href="guide.html#wrapping" target="_blank" rel="noopener" style="margin-left:auto;text-decoration:none">Guide</a></div>
+  <iframe id="wrapFrame" title="Wrapping paper designer"></iframe>
+</div>
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   BioPapro Design Hub – packaging dieline + 3D mockup generator
+   Single file, no server. Geometry is defined once as a panel tree
+   and drives both the flat dieline (SVG/DXF/PDF) and the 3D fold.
+   ============================================================ */
+const FONT = "Poppins, 'Segoe UI', Arial, sans-serif";
+const BLEED = 3; // mm
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+const r1 = v => Math.round(v * 10) / 10;
+
+const MATERIALS = [
+  { id: 'sbs300', name: 'White board 300 GSM (retail boxes)', gsm: 300, t: 0.40, inside: '#ffffff' },
+  { id: 'fbb350', name: 'White board 350 GSM (stronger, displays)', gsm: 350, t: 0.48, inside: '#f4f1ea' },
+  { id: 'kraft300', name: 'Brown kraft board 300 GSM', gsm: 300, t: 0.42, inside: '#b88c5d' },
+  { id: 'eflute', name: '3-ply corrugated (mailer boxes)', gsm: 450, t: 1.6, inside: '#c49a6c' },
+  { id: 'bc5', name: '5-ply corrugated (export cartons)', gsm: 950, t: 6.0, inside: '#c49a6c' }
+];
+
+const BASE_D = {
+  brand: 'BIOPAPRO', product: 'Paper Straws', subline: '8 mm × 197 mm · Individually Wrapped',
+  qty: '100', unit: 'PCS', tagline: '100% Biodegradable · Plastic Free',
+  features: 'Plastic free\nFood-grade paper\nCompostable',
+  specs: 'Size: 8 × 197 mm\nQty: 100 pcs\nMaterial: Food-grade paper\nPly: 3-ply',
+  description: 'Sturdy, food-safe paper straws made from sustainably sourced paper and food-grade adhesive. Stays firm in cold drinks and breaks down naturally after use.',
+  maker: 'Manufactured by:\nBioPapro Pvt. Ltd., India\nwww.biopapro.com',
+  barcode: '890000000000', finish: 'white', bg: '#f3efe4', accent: '#2e7d32', ink: '#1b2a1f', pattern: 'leaves'
+};
+
+const strawP = (n, d, len, wrap) => ({ kind: 'straw', n, d, len, wrap, color: '#ffffff', stripe: '#2e7d32', stripes: false });
+const PRESETS = [
+  { id: 'straw6', cat: 'straw', name: 'Paper Straw 6 × 197 mm – 100 pcs box', type: 'tuck', fit: true, material: 'sbs300', prod: strawP(100, 6, 197, true),
+    D: { subline: '6 mm × 197 mm · Individually Wrapped', specs: 'Size: 6 × 197 mm\nQty: 100 pcs\nMaterial: Food-grade paper\nPly: 3-ply' } },
+  { id: 'straw8', cat: 'straw', name: 'Paper Straw 8 × 197 mm – 100 pcs box', type: 'tuck', fit: true, material: 'sbs300', prod: strawP(100, 8, 197, true), D: {} },
+  { id: 'straw10', cat: 'straw', name: 'Paper Straw 10 × 197 mm – 100 pcs box', type: 'tuck', fit: true, material: 'sbs300', prod: strawP(100, 10, 197, true),
+    D: { subline: '10 mm × 197 mm · Individually Wrapped', specs: 'Size: 10 × 197 mm\nQty: 100 pcs\nMaterial: Food-grade paper\nPly: 4-ply' } },
+  { id: 'bubble12', cat: 'straw', name: 'Bubble Tea Straw 12 × 210 mm – 50 pcs box', type: 'tuck', fit: true, material: 'sbs300', prod: { ...strawP(50, 12, 210, true), stripes: true, stripe: '#6d4c41' },
+    D: { product: 'Bubble Tea Straws', subline: '12 mm × 210 mm · Sharp Edge · Wrapped', qty: '50', specs: 'Size: 12 × 210 mm\nQty: 50 pcs\nEdge: Sharp (pointed)\nPly: 4-ply', accent: '#6d4c41', pattern: 'dots' } },
+  { id: 'cocktail', cat: 'straw', name: 'Cocktail Straw 6 × 140 mm – 100 pcs box', type: 'tuck', fit: true, material: 'sbs300', prod: { ...strawP(100, 6, 140, false), stripes: true, stripe: '#c62828' },
+    D: { product: 'Cocktail Straws', subline: '6 mm × 140 mm · Unwrapped', specs: 'Size: 6 × 140 mm\nQty: 100 pcs\nMaterial: Food-grade paper', accent: '#c62828', pattern: 'stripes' } },
+  { id: 'display8', cat: 'display', name: 'Paper Straw 8 × 197 mm – counter display (250 pcs)', type: 'display', fit: true, material: 'fbb350', prod: strawP(250, 8, 197, true),
+    D: { qty: '250', specs: 'Size: 8 × 197 mm\nQty: 250 pcs\nWrapped: Yes' } },
+  { id: 'spoon160', cat: 'cutlery', name: 'Wooden Spoon 160 mm – 50 pcs box', type: 'tuck', L: 166, W: 42, H: 48, material: 'kraft300', prod: { ...strawP(0, 8, 197, false), kind: 'none' },
+    D: { product: 'Wooden Spoons', subline: '160 mm · Natural Birchwood', qty: '50', specs: 'Size: 160 mm\nQty: 50 pcs\nMaterial: Birchwood', features: 'Plastic free\nNo chemicals\nCompostable', description: 'Smooth, splinter-free wooden spoons made from sustainably sourced birchwood. Sturdy for hot and cold food, and fully compostable.', finish: 'kraft', accent: '#2e5d34', ink: '#2b1d10', pattern: 'none' } },
+  { id: 'fork160', cat: 'cutlery', name: 'Wooden Fork 160 mm – 50 pcs box', type: 'tuck', L: 166, W: 34, H: 48, material: 'kraft300', prod: { ...strawP(0, 8, 197, false), kind: 'none' },
+    D: { product: 'Wooden Forks', subline: '160 mm · Natural Birchwood', qty: '50', specs: 'Size: 160 mm\nQty: 50 pcs\nMaterial: Birchwood', features: 'Plastic free\nNo chemicals\nCompostable', description: 'Smooth, splinter-free wooden forks made from sustainably sourced birchwood. Sturdy for hot and cold food, and fully compostable.', finish: 'kraft', accent: '#2e5d34', ink: '#2b1d10', pattern: 'none' } },
+  { id: 'knife160', cat: 'cutlery', name: 'Wooden Knife 160 mm – 50 pcs box', type: 'tuck', L: 166, W: 26, H: 48, material: 'kraft300', prod: { ...strawP(0, 8, 197, false), kind: 'none' },
+    D: { product: 'Wooden Knives', subline: '160 mm · Natural Birchwood', qty: '50', specs: 'Size: 160 mm\nQty: 50 pcs\nMaterial: Birchwood', features: 'Plastic free\nNo chemicals\nCompostable', description: 'Smooth, splinter-free wooden knives made from sustainably sourced birchwood. Fully compostable.', finish: 'kraft', accent: '#2e5d34', ink: '#2b1d10', pattern: 'none' } },
+  { id: 'stirrer140', cat: 'cutlery', name: 'Wooden Stirrer 140 mm – 500 pcs box', type: 'tuck', L: 146, W: 56, H: 40, material: 'kraft300', prod: { ...strawP(0, 8, 197, false), kind: 'none' },
+    D: { product: 'Wooden Stirrers', subline: '140 mm · Coffee & Tea', qty: '500', specs: 'Size: 140 mm\nQty: 500 pcs\nMaterial: Birchwood', features: 'Plastic free\nNo chemicals\nCompostable', description: 'Wooden coffee stirrers made from sustainably sourced birchwood. A clean, plastic-free choice for cafés and offices.', finish: 'kraft', accent: '#2e5d34', ink: '#2b1d10', pattern: 'none' } },
+  { id: 'carton', cat: 'carton', name: 'Export shipper carton – 5-ply', type: 'rsc', L: 420, W: 300, H: 250, material: 'bc5', prod: { ...strawP(0, 8, 197, false), kind: 'none' },
+    D: { qty: '10,000', unit: 'PCS', finish: 'kraft', ink: '#2b1d10', accent: '#2b1d10', pattern: 'none' } }
+];
+
+const S = {
+  preset: 'straw8', type: 'tuck', L: 205, W: 88, H: 44, hf: 60, hb: 150, material: 'sbs300',
+  prod: strawP(100, 8, 197, true),
+  D: { ...BASE_D },
+  V: { bgMode: 'studio', inside: true, autoRot: false, labels: true, fold: 1, open: 0 }
+};
+const IMG = { logo: null, faces: {} };       // dataURLs
+const IMGC = {};                              // dataURL -> HTMLImageElement
+
+/* ---------------- path helpers for data-p bindings ---------------- */
+const getP = p => p.split('.').reduce((o, k) => o[k], S);
+const setP = (p, v) => { const ks = p.split('.'); const last = ks.pop(); ks.reduce((o, k) => o[k], S)[last] = v; };
+
+/* ---------------- fitting box to product ---------------- */
+function fitStraws() {
+  const P = S.prod; const dd = P.d + (P.wrap ? 0.8 : 0.2); const n = Math.max(1, P.n);
+  if (S.type === 'display') {
+    const cols = Math.ceil(Math.sqrt(2 * n)), rows = Math.ceil(n / cols);
+    S.L = Math.ceil(cols * dd + 4); S.W = Math.ceil(rows * dd + 4);
+    S.hf = Math.round(P.len * 0.3); S.hb = Math.round(P.len + 80);
+    return `${cols} × ${rows} straws standing up`;
+  }
+  if (S.type === 'rsc') return 'For shipping cartons, type the size in yourself.';
+  let best = null;
+  for (let cols = 1; cols <= n; cols++) {
+    const rows = Math.ceil(n / cols); const W = cols * dd + 2, H = rows * dd + 2;
+    const score = Math.abs(Math.log((W / H) / 2)) + (cols * rows - n) / n;
+    if (!best || score < best.score) best = { cols, rows, W, H, score };
+  }
+  S.L = Math.ceil(P.len + (P.wrap ? 8 : 3)); S.W = Math.ceil(best.W * 2) / 2; S.H = Math.ceil(best.H * 2) / 2;
+  return `${best.cols} across × ${best.rows} layers, room for ${best.cols * best.rows} (you need ${n})`;
+}
+
+/* ============================================================
+   GEOMETRY – panel trees (flat coords in mm, y up)
+   panel: {id, poly, parent, hinge:{axis,at,angle,phase}, face, rot, z, name}
+   ============================================================ */
+const rect = (x, y, w, h) => [[x, y], [x + w, y], [x + w, y + h], [x, y + h]];
+function tuckPoly(x0, y0, w, tk, s) {
+  const r = Math.min(tk * 0.6, 8), pts = [[x0 + 1, y0], [x0 + 1, y0 + s * (tk - r)]];
+  for (let i = 1; i <= 6; i++) { const a = Math.PI - i * Math.PI / 12; pts.push([x0 + 1 + r + r * Math.cos(a), y0 + s * (tk - r + r * Math.sin(a))]); }
+  for (let i = 0; i <= 6; i++) { const a = Math.PI / 2 - i * Math.PI / 12; pts.push([x0 + w - 1 - r + r * Math.cos(a), y0 + s * (tk - r + r * Math.sin(a))]); }
+  pts.push([x0 + w - 1, y0]); return pts;
+}
+function dustPoly(x0, y0, w, dh, s) {
+  return [[x0 + 1, y0], [x0 + 1, y0 + s * dh * 0.35], [x0 + w * 0.28, y0 + s * dh], [x0 + w - 4, y0 + s * dh], [x0 + w - 1, y0 + s * (dh - 3)], [x0 + w - 1, y0]];
+}
+const matOf = () => MATERIALS.find(m => m.id === S.material) || MATERIALS[0];
+
+function buildTuck() {
+  const t = matOf().t, Lp = S.L + t, Wp = S.W + t, Hp = S.H + 2 * t;
+  const g = Math.min(15, Wp * 0.6), tk = clamp(Wp * 0.3, 10, 18), dh = Math.min(Lp * 0.42, Wp * 0.9);
+  const P1 = g, P2 = g + Lp, P3 = g + Lp + Wp, P4 = g + 2 * Lp + Wp;
+  const Y = (axis, at, angle, phase) => ({ axis, at, angle, phase });
+  const panels = [
+    { id: 'front', name: 'Front', poly: rect(P3, 0, Lp, Hp), parent: null, face: 'front', rot: 0 },
+    { id: 'left', name: 'Side', poly: rect(P2, 0, Wp, Hp), parent: 'front', hinge: Y('y', P3, -90, [0, .4]), face: 'left', rot: 0 },
+    { id: 'back', name: 'Back', poly: rect(P1, 0, Lp, Hp), parent: 'left', hinge: Y('y', P2, -90, [0, .4]), face: 'back', rot: 0 },
+    { id: 'glue', name: 'Glue', poly: [[P1, 1.5], [P1 - g, 1.5 + g * 0.35], [P1 - g, Hp - 1.5 - g * 0.35], [P1, Hp - 1.5]], parent: 'back', hinge: Y('y', P1, -90, [0, .4]), z: -0.4 },
+    { id: 'right', name: 'Side', poly: rect(P4, 0, Wp, Hp), parent: 'front', hinge: Y('y', P4, 90, [0, .4]), face: 'right', rot: 0 },
+    { id: 'dustBL', name: '', poly: dustPoly(P2, 0, Wp, dh, -1), parent: 'left', hinge: Y('x', 0, 90, [.4, .5]), z: -0.8 },
+    { id: 'dustBR', name: '', poly: dustPoly(P4, 0, Wp, dh, -1), parent: 'right', hinge: Y('x', 0, 90, [.4, .5]), z: -0.8 },
+    { id: 'botLid', name: 'Bottom', poly: rect(P3, -Wp, Lp, Wp), parent: 'front', hinge: Y('x', 0, 90, [.5, .65]), face: 'bottom', rot: 0 },
+    { id: 'botTuck', name: 'Tuck', poly: tuckPoly(P3, -Wp, Lp, tk, -1), parent: 'botLid', hinge: Y('x', -Wp, 90, [.47, .62]), z: -0.4 },
+    { id: 'dustTL', name: '', poly: dustPoly(P2, Hp, Wp, dh, 1), parent: 'left', hinge: Y('x', Hp, -90, [.65, .75]), z: -0.8 },
+    { id: 'dustTR', name: '', poly: dustPoly(P4, Hp, Wp, dh, 1), parent: 'right', hinge: Y('x', Hp, -90, [.65, .75]), z: -0.8 },
+    { id: 'topLid', name: 'Top', poly: rect(P1, Hp, Lp, Wp), parent: 'back', hinge: Y('x', Hp, -90, [.75, .95]), face: 'top', rot: 180 },
+    { id: 'topTuck', name: 'Tuck', poly: tuckPoly(P1, Hp + Wp, Lp, tk, 1), parent: 'topLid', hinge: Y('x', Hp + Wp, -90, [.72, .9]), z: -0.4 }
+  ];
+  return {
+    panels, Lp, Wp, Hp,
+    closedPos: [-(P3 + Lp / 2), 0, Wp / 2], closedQ: null,
+    openExtra: { topLid: 118, topTuck: 70, dustTL: 88, dustTR: 88 },
+    roles: (Lp * Wp > Lp * Hp * 1.05)
+      ? { top: 'hero', bottom: 'info', front: 'strip', back: 'strip', left: 'side', right: 'side' }
+      : { front: 'hero', back: 'info', top: 'strip', bottom: 'strip', left: 'side', right: 'side' },
+    box: { L: Lp, W: Wp, H: Hp }
+  };
+}
+
+function buildRSC() {
+  const t = matOf().t, Lp = S.L + t, Wp = S.W + t, Hp = S.H + 2 * t;
+  const g = clamp(Hp * 0.12, 25, 40), fh = Wp / 2 + t / 2, sw = Math.max(3, t * 1.2);
+  const P1 = g, P2 = g + Lp, P3 = g + Lp + Wp, P4 = g + 2 * Lp + Wp;
+  const Y = (axis, at, angle, phase) => ({ axis, at, angle, phase });
+  const panels = [
+    { id: 'front', name: 'Front', poly: rect(P3, 0, Lp, Hp), parent: null, face: 'front', rot: 0 },
+    { id: 'left', name: 'Side', poly: rect(P2, 0, Wp, Hp), parent: 'front', hinge: Y('y', P3, -90, [0, .4]), face: 'left', rot: 0 },
+    { id: 'back', name: 'Back', poly: rect(P1, 0, Lp, Hp), parent: 'left', hinge: Y('y', P2, -90, [0, .4]), face: 'back', rot: 0 },
+    { id: 'glue', name: 'Joint', poly: [[P1, 0], [P1 - g, g * 0.25], [P1 - g, Hp - g * 0.25], [P1, Hp]], parent: 'back', hinge: Y('y', P1, -90, [0, .4]), z: -0.5 },
+    { id: 'right', name: 'Side', poly: rect(P4, 0, Wp, Hp), parent: 'front', hinge: Y('y', P4, 90, [0, .4]), face: 'right', rot: 0 }
+  ];
+  const cols = [['back', P1, Lp, true, false], ['left', P2, Wp, false, false], ['front', P3, Lp, false, false], ['right', P4, Wp, false, true]];
+  const openExtra = {};
+  cols.forEach(([pid, x0, w, first, last]) => {
+    const minor = pid === 'left' || pid === 'right';
+    const fx0 = x0 + (first ? 0 : sw / 2), fx1 = x0 + w - (last ? 0 : sw / 2);
+    panels.push({ id: pid + 'T', name: minor ? 'Minor flap' : 'Major flap', poly: rect(fx0, Hp, fx1 - fx0, fh), parent: pid, hinge: Y('x', Hp, -90, minor ? [.65, .8] : [.8, 1]), z: minor ? -1 : 0 });
+    panels.push({ id: pid + 'B', name: minor ? 'Minor flap' : 'Major flap', poly: rect(fx0, -fh, fx1 - fx0, fh), parent: pid, hinge: Y('x', 0, 90, minor ? [.4, .5] : [.5, .65]), z: minor ? -1 : 0 });
+    openExtra[pid + 'T'] = minor ? 80 : 105;
+  });
+  return {
+    panels, Lp, Wp, Hp, closedPos: [-(P3 + Lp / 2), 0, Wp / 2], closedQ: null, openExtra,
+    roles: { front: 'carton', back: 'carton', left: 'cartonSide', right: 'cartonSide' },
+    box: { L: Lp, W: Wp, H: Hp }
+  };
+}
+
+function buildDisplay() {
+  const t = matOf().t, L = S.L + t, W = S.W + t, hf = S.hf, hb = Math.max(S.hb, hf + 10), eh = hb - 3;
+  const gw = Math.min(18, W * 0.4, hf * 0.8);
+  const Y = (axis, at, angle, phase) => ({ axis, at, angle, phase });
+  const panels = [
+    { id: 'base', name: 'Base', poly: rect(0, 0, L, W), parent: null },
+    { id: 'back', name: 'Back', poly: rect(0, W, L, hb), parent: 'base', hinge: Y('x', W, -90, [.25, .5]), face: 'back', rot: 0 },
+    { id: 'ext', name: 'Header', poly: rect(0, W + hb, L, eh), parent: 'back', hinge: Y('x', W + hb, -179.5, [.85, 1]), face: 'header', rot: 180, z: 0.6 },
+    { id: 'front', name: 'Front', poly: rect(0, -hf, L, hf), parent: 'base', hinge: Y('x', 0, 90, [.25, .5]), face: 'front', rot: 180 },
+    { id: 'left', name: 'Side', poly: rect(-hf, 0, hf, W), parent: 'base', hinge: Y('y', 0, -90, [.65, .85]), face: 'left', rot: 90 },
+    { id: 'right', name: 'Side', poly: rect(L, 0, hf, W), parent: 'base', hinge: Y('y', L, 90, [.65, .85]), face: 'right', rot: -90 },
+    { id: 'fFL', name: '', poly: [[0, -1], [-gw, -3], [-gw, -hf + 3], [0, -hf + 1]], parent: 'front', hinge: Y('y', 0, -90, [.5, .65]), z: -0.6 },
+    { id: 'fFR', name: '', poly: [[L, -1], [L + gw, -3], [L + gw, -hf + 3], [L, -hf + 1]], parent: 'front', hinge: Y('y', L, 90, [.5, .65]), z: -0.6 },
+    { id: 'fBL', name: '', poly: [[0, W + 1], [-gw, W + 3], [-gw, W + hf - 3], [0, W + hf - 1]], parent: 'back', hinge: Y('y', 0, -90, [.5, .65]), z: -0.6 },
+    { id: 'fBR', name: '', poly: [[L, W + 1], [L + gw, W + 3], [L + gw, W + hf - 3], [L, W + hf - 1]], parent: 'back', hinge: Y('y', L, 90, [.5, .65]), z: -0.6 }
+  ];
+  let closedQ = null;
+  if (window.THREE) {
+    const m = new THREE.Matrix4().makeBasis(new THREE.Vector3(-1, 0, 0), new THREE.Vector3(0, 0, -1), new THREE.Vector3(0, -1, 0));
+    closedQ = new THREE.Quaternion().setFromRotationMatrix(m);
+  }
+  return {
+    panels, closedPos: [L / 2, 0, W / 2], closedQ, rootPhase: [0, .25], openExtra: {},
+    roles: { header: 'header', front: 'strip', back: 'info', left: 'side', right: 'side' },
+    box: { L, W, H: hb, hf, display: true }
+  };
+}
+
+function buildGeo() {
+  const G = S.type === 'rsc' ? buildRSC() : S.type === 'display' ? buildDisplay() : buildTuck();
+  let minx = 1e9, miny = 1e9, maxx = -1e9, maxy = -1e9, area = 0;
+  G.byId = {};
+  G.faces = {};
+  G.panels.forEach(p => {
+    G.byId[p.id] = p;
+    let a = 0, rx0 = 1e9, ry0 = 1e9, rx1 = -1e9, ry1 = -1e9;
+    p.poly.forEach(([x, y], i) => {
+      const [x2, y2] = p.poly[(i + 1) % p.poly.length]; a += x * y2 - x2 * y;
+      minx = Math.min(minx, x); maxx = Math.max(maxx, x); miny = Math.min(miny, y); maxy = Math.max(maxy, y);
+      rx0 = Math.min(rx0, x); rx1 = Math.max(rx1, x); ry0 = Math.min(ry0, y); ry1 = Math.max(ry1, y);
+    });
+    area += Math.abs(a) / 2;
+    p.rect = [rx0, ry0, rx1 - rx0, ry1 - ry0];
+    if (p.face) {
+      const q = Math.abs(p.rot) % 180 === 90;
+      G.faces[p.face] = { w: q ? p.rect[3] : p.rect[2], h: q ? p.rect[2] : p.rect[3], role: G.roles[p.face] || 'strip' };
+    }
+  });
+  G.bbox = { minx, miny, maxx, maxy, w: maxx - minx, h: maxy - miny };
+  G.area = area;
+  G.lines = computeLines(G.panels);
+  return G;
+}
+
+/* cut vs crease: an edge shared (collinear + overlapping) with another panel is a crease */
+function computeLines(panels) {
+  const eps = 1e-6, edges = [], cuts = [], folds = [];
+  panels.forEach((p, i) => p.poly.forEach((a, k) => {
+    const b = p.poly[(k + 1) % p.poly.length];
+    if (Math.abs(a[1] - b[1]) < eps) edges.push({ i, o: 'h', c: a[1], s0: Math.min(a[0], b[0]), s1: Math.max(a[0], b[0]) });
+    else if (Math.abs(a[0] - b[0]) < eps) edges.push({ i, o: 'v', c: a[0], s0: Math.min(a[1], b[1]), s1: Math.max(a[1], b[1]) });
+    else cuts.push([a, b]);
+  }));
+  const pt = (e, s) => e.o === 'h' ? [s, e.c] : [e.c, s];
+  edges.forEach(e => {
+    const ov = [];
+    edges.forEach(f => {
+      if (f.i === e.i || f.o !== e.o || Math.abs(f.c - e.c) > 1e-4) return;
+      const a = Math.max(e.s0, f.s0), b = Math.min(e.s1, f.s1);
+      if (b - a > 1e-4) { ov.push([a, b]); if (e.i < f.i) folds.push([pt(e, a), pt(e, b)]); }
+    });
+    ov.sort((a, b) => a[0] - b[0]);
+    let cur = e.s0;
+    ov.forEach(([a, b]) => { if (a - cur > 1e-4) cuts.push([pt(e, cur), pt(e, a)]); cur = Math.max(cur, b); });
+    if (e.s1 - cur > 1e-4) cuts.push([pt(e, cur), pt(e, e.s1)]);
+  });
+  return { cuts, folds };
+}
+
+/* ============================================================
+   ARTWORK – each face rendered to a canvas (with 3 mm bleed)
+   ============================================================ */
+let D = S.D;
+const baseColor = () => D.finish === 'white' ? '#ffffff' : D.finish === 'kraft' ? '#c9a176' : D.bg;
+function rng(seed) { let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const hashStr = s => { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h; };
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+function isDark(hex) { const n = parseInt(hex.slice(1), 16); return (0.299 * (n >> 16 & 255) + 0.587 * (n >> 8 & 255) + 0.114 * (n & 255)) < 140; }
+
+function setFont(x, size, weight) { x.font = `${weight} ${size}px ${FONT}`; }
+function txt(x, s, bx, by, bw, bh, o = {}) {
+  if (!s || bw <= 2 || bh <= 2) return 0;
+  const weight = o.weight || 600; setFont(x, bh, weight);
+  if (o.spacing && 'letterSpacing' in x) x.letterSpacing = (o.spacing * bh) + 'px';
+  const m = x.measureText(s).width || 1;
+  let size = Math.min(bh, bh * bw / m); if (o.max) size = Math.min(size, o.max);
+  setFont(x, size, weight);
+  if (o.spacing && 'letterSpacing' in x) x.letterSpacing = (o.spacing * size) + 'px';
+  x.fillStyle = o.color || D.ink; x.textBaseline = 'middle';
+  const al = o.align || 'center'; x.textAlign = al;
+  x.fillText(s, al === 'center' ? bx + bw / 2 : al === 'right' ? bx + bw : bx, by + bh / 2);
+  if ('letterSpacing' in x) x.letterSpacing = '0px';
+  return size;
+}
+function wrapLines(x, s, maxW) {
+  const out = []; let line = '';
+  s.split(/\s+/).forEach(w => { const t = line ? line + ' ' + w : w; if (x.measureText(t).width > maxW && line) { out.push(line); line = w; } else line = t; });
+  if (line) out.push(line); return out;
+}
+function para(x, s, bx, by, bw, bh, o = {}) {
+  if (!s || bw < 4 || bh < 4) return;
+  const lh = o.lh || 1.3, weight = o.weight || 400; let size = o.max || bh, lines = [];
+  for (let i = 0; i < 60; i++) {
+    setFont(x, size, weight);
+    lines = s.split('\n').flatMap(l => l.trim() ? wrapLines(x, l.trim(), bw) : []);
+    const wOK = lines.every(l => x.measureText(l).width <= bw * 1.001);
+    if ((lines.length * size * lh <= bh && wOK && (!o.maxLines || lines.length <= o.maxLines)) || size < 3) break;
+    size *= 0.92;
+  }
+  x.fillStyle = o.color || D.ink; x.textBaseline = 'top'; x.textAlign = o.align || 'left';
+  const tot = lines.length * size * lh; let y = by + (o.valign === 'middle' ? (bh - tot) / 2 : 0);
+  const tx = o.align === 'center' ? bx + bw / 2 : o.align === 'right' ? bx + bw : bx;
+  lines.forEach(l => { x.fillText(l, tx, y + (lh - 1) * size / 2); y += size * lh; });
+}
+function leaf(x, cx, cy, s, ang, color) {
+  x.save(); x.translate(cx, cy); x.rotate(ang); x.fillStyle = color;
+  x.beginPath(); x.moveTo(0, s / 2); x.bezierCurveTo(s * .55, s * .2, s * .45, -s * .3, 0, -s / 2); x.bezierCurveTo(-s * .45, -s * .3, -s * .55, s * .2, 0, s / 2); x.fill();
+  x.strokeStyle = 'rgba(255,255,255,.55)'; x.lineWidth = Math.max(1, s * 0.05); x.beginPath(); x.moveTo(0, s * .45); x.lineTo(0, -s * .38); x.stroke();
+  x.restore();
+}
+function roundRect(x, a, b, w, h, r) { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r); x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath(); }
+function drawContain(x, img, bx, by, bw, bh, align = 'center') {
+  const s = Math.min(bw / img.width, bh / img.height), w = img.width * s, h = img.height * s;
+  x.drawImage(img, align === 'left' ? bx : bx + (bw - w) / 2, by + (bh - h) / 2, w, h); return w;
+}
+function drawCover(x, img, w, h) { const s = Math.max(w / img.width, h / img.height); x.drawImage(img, (w - img.width * s) / 2, (h - img.height * s) / 2, img.width * s, img.height * s); }
+
+let KRAFT = null;
+function kraftTile() {
+  if (KRAFT) return KRAFT;
+  const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d'), R = rng(99);
+  for (let i = 0; i < 2600; i++) { x.fillStyle = `rgba(${R() < .5 ? '90,55,20' : '255,240,210'},${R() * .14})`; x.fillRect(R() * 256, R() * 256, 1 + R() * 2, 1 + R() * 2); }
+  return KRAFT = c;
+}
+function drawBg(x, cw, ch, ppm, key) {
+  x.fillStyle = baseColor(); x.fillRect(0, 0, cw, ch);
+  const R = rng(hashStr(key + D.pattern));
+  if (D.finish === 'kraft') { x.fillStyle = x.createPattern(kraftTile(), 'repeat'); x.fillRect(0, 0, cw, ch); }
+  if (D.pattern === 'leaves') {
+    const n = Math.round(cw * ch / (ppm * ppm * 650));
+    for (let i = 0; i < n; i++) leaf(x, R() * cw, R() * ch, ppm * (6 + R() * 7), R() * 6.28, hexA(D.accent, .09));
+  } else if (D.pattern === 'stripes') {
+    x.strokeStyle = hexA(D.accent, .08); x.lineWidth = ppm * 3;
+    for (let s = -ch; s < cw + ch; s += ppm * 11) { x.beginPath(); x.moveTo(s, 0); x.lineTo(s + ch, ch); x.stroke(); }
+  } else if (D.pattern === 'dots') {
+    x.fillStyle = hexA(D.accent, .13); const g = ppm * 7;
+    for (let yy = 0, r = 0; yy < ch + g; yy += g, r++) for (let xx = (r % 2) * g / 2; xx < cw + g; xx += g) { x.beginPath(); x.arc(xx, yy, ppm * 1.1, 0, 7); x.fill(); }
+  }
+}
+function waveBand(x, w, h, bh, bp) {
+  x.fillStyle = D.accent; x.beginPath(); const y0 = h - bh;
+  x.moveTo(-bp, y0 + bh * .18);
+  for (let i = 0; i < 3; i++) { const xa = -bp + (w + 2 * bp) * i / 3, xb = -bp + (w + 2 * bp) * (i + 1) / 3; x.bezierCurveTo(xa + (xb - xa) * .33, y0 - bh * .12, xa + (xb - xa) * .66, y0 + bh * .42, xb, y0 + bh * .18); }
+  x.lineTo(w + bp, h + bp); x.lineTo(-bp, h + bp); x.closePath(); x.fill();
+}
+function brandBlock(x, bx, by, bw, bh, align = 'left', color) {
+  const logo = IMG.logo && IMGC[IMG.logo];
+  if (logo) return drawContain(x, logo, bx, by, bw, bh, align === 'center' ? 'center' : 'left');
+  const size = txt(x, D.brand, bx, by, bw, bh, { weight: 800, color: color || D.accent, align, spacing: .12 });
+  setFont(x, size, 800); return Math.min(bw, x.measureText(D.brand).width * 1.12);
+}
+function badge(x, cx, cy, r) {
+  x.fillStyle = D.accent; x.beginPath(); x.arc(cx, cy, r, 0, 7); x.fill();
+  x.strokeStyle = 'rgba(255,255,255,.7)'; x.lineWidth = r * .04; x.setLineDash([r * .08, r * .06]); x.beginPath(); x.arc(cx, cy, r * .86, 0, 7); x.stroke(); x.setLineDash([]);
+  txt(x, D.qty, cx - r * .62, cy - r * .5, r * 1.24, r * .62, { weight: 800, color: '#fff' });
+  txt(x, D.unit, cx - r * .5, cy + r * .12, r * 1.0, r * .3, { weight: 600, color: '#fff', spacing: .1 });
+  leaf(x, cx, cy + r * .62, r * .26, 0, 'rgba(255,255,255,.9)');
+}
+function chips(x, bx, by, bw, bh, align = 'left') {
+  const items = D.features.split('\n').map(s => s.trim()).filter(Boolean).slice(0, 3); if (!items.length) return;
+  const gap = bh * .35; const cw = (bw - gap * (items.length - 1)) / items.length;
+  let size = bh * .5; setFont(x, size, 600);
+  items.forEach(s => { const m = x.measureText(s).width + bh * 1.2; if (m > cw) size = Math.min(size, size * cw / m); });
+  setFont(x, size, 600); const widths = items.map(s => x.measureText(s).width + bh * 1.25);
+  const total = widths.reduce((a, b) => a + b, 0) + gap * (items.length - 1);
+  let cx = align === 'center' ? bx + (bw - total) / 2 : bx;
+  items.forEach((s, i) => {
+    roundRect(x, cx, by, widths[i], bh, bh / 2); x.strokeStyle = D.accent; x.lineWidth = Math.max(1, bh * .06); x.stroke();
+    leaf(x, cx + bh * .45, by + bh / 2, bh * .5, .6, D.accent);
+    x.fillStyle = D.accent; x.textBaseline = 'middle'; x.textAlign = 'left'; x.fillText(s, cx + bh * .8, by + bh / 2);
+    cx += widths[i] + gap;
+  });
+}
+
+/* EAN-13 */
+function ean13(code) {
+  let d = (code || '').replace(/\D/g, '').slice(0, 12).padEnd(12, '0');
+  let sum = 0; for (let i = 0; i < 12; i++) sum += (+d[i]) * (i % 2 ? 3 : 1);
+  d += (10 - sum % 10) % 10;
+  const L = ['0001101', '0011001', '0010011', '0111101', '0100011', '0110001', '0101111', '0111011', '0110111', '0001011'];
+  const G = ['0100111', '0110011', '0011011', '0100001', '0011101', '0111001', '0000101', '0010001', '0001001', '0010111'];
+  const Rr = ['1110010', '1100110', '1101100', '1000010', '1011100', '1001110', '1010000', '1000100', '1001000', '1110100'];
+  const P = ['LLLLLL', 'LLGLGG', 'LLGGLG', 'LLGGGL', 'LGLLGG', 'LGGLLG', 'LGGGLL', 'LGLGLG', 'LGLGGL', 'LGGLGL'][+d[0]];
+  let bits = '101'; for (let i = 1; i <= 6; i++) bits += (P[i - 1] === 'L' ? L : G)[+d[i]];
+  bits += '01010'; for (let i = 7; i <= 12; i++) bits += Rr[+d[i]]; bits += '101';
+  return { digits: d, bits };
+}
+function barcode(x, bx, by, bw, bh) {
+  const { digits, bits } = ean13(D.barcode);
+  x.fillStyle = '#fff'; x.fillRect(bx, by, bw, bh);
+  const mw = bw / 113, barH = bh * .74, x0 = bx + mw * 11, y0 = by + bh * .06;
+  x.fillStyle = '#000';
+  for (let i = 0; i < 95; i++) if (bits[i] === '1') { const guard = i < 3 || (i >= 45 && i < 50) || i >= 92; x.fillRect(x0 + i * mw, y0, mw * 1.02, barH + (guard ? bh * .08 : 0)); }
+  setFont(x, bh * .15, 500); x.textBaseline = 'top'; x.textAlign = 'center';
+  const ty = y0 + barH + bh * .02;
+  x.fillText(digits[0], bx + mw * 6, ty);
+  for (let i = 0; i < 6; i++) x.fillText(digits[1 + i], x0 + mw * (3 + 7 * i + 3.5), ty);
+  for (let i = 0; i < 6; i++) x.fillText(digits[7 + i], x0 + mw * (50 + 7 * i + 3.5), ty);
+}
+function recycleMark(x, cx, cy, s, color) {
+  x.save(); x.translate(cx, cy); x.strokeStyle = color; x.fillStyle = color; x.lineWidth = s * .09; x.lineJoin = 'round';
+  for (let k = 0; k < 3; k++) {
+    x.save(); x.rotate(k * 2.094);
+    x.beginPath(); x.moveTo(-s * .18, -s * .36); x.lineTo(s * .2, -s * .36); x.lineTo(s * .38, -s * .05); x.stroke();
+    x.beginPath(); x.moveTo(s * .44, -s * .16); x.lineTo(s * .38, s * .06); x.lineTo(s * .22, -s * .06); x.closePath(); x.fill();
+    x.restore();
+  }
+  x.restore();
+}
+function handling(x, bx, by, s, color) {
+  x.strokeStyle = color; x.fillStyle = color; x.lineWidth = s * .05;
+  // box outlines
+  for (let i = 0; i < 3; i++) { x.strokeRect(bx + i * s * 1.15, by, s, s); }
+  // arrows up
+  let ox = bx + s * .5;
+  [-.18, .18].forEach(d => { x.beginPath(); x.moveTo(ox + d * s, by + s * .82); x.lineTo(ox + d * s, by + s * .3); x.stroke(); x.beginPath(); x.moveTo(ox + d * s - s * .12, by + s * .36); x.lineTo(ox + d * s, by + s * .16); x.lineTo(ox + d * s + s * .12, by + s * .36); x.fill(); });
+  x.fillRect(bx + s * .2, by + s * .86, s * .6, s * .05);
+  // umbrella
+  ox = bx + s * 1.65; const oy = by + s * .45;
+  x.beginPath(); x.arc(ox, oy, s * .32, Math.PI, 0); x.closePath(); x.fill();
+  x.beginPath(); x.moveTo(ox, oy); x.lineTo(ox, oy + s * .35); x.arc(ox - s * .08, oy + s * .35, s * .08, 0, Math.PI); x.stroke();
+  x.fillRect(ox - s * .3, by + s * .1, s * .03, s * .08); x.fillRect(ox + s * .27, by + s * .1, s * .03, s * .08);
+  // recycle
+  recycleMark(x, bx + s * 2.8, by + s * .52, s * .75, color);
+}
+
+const LAYOUTS = {
+  header(x, w, h, ppm, bp) {
+    // display header: straws stand in front of it, so the artwork sits in the visible top area
+    const covered = S.prod.kind === 'straw' ? (S.prod.len + 8) * ppm : 0;
+    const vis = Math.max(h * .38, h - covered);
+    if (vis < h) {
+      x.fillStyle = D.accent; x.fillRect(-bp, vis, w + 2 * bp, h - vis + bp);
+      txt(x, `${D.qty} ${D.unit} · ${D.subline}`, w * .06, vis + (h - vis) * .06, w * .88, Math.min((h - vis) * .08, ppm * 9), { weight: 600, color: '#fff' });
+    }
+    x.save(); x.beginPath(); x.rect(-bp, -bp, w + 2 * bp, vis + bp); x.clip();
+    LAYOUTS.hero(x, w, vis, ppm, bp);
+    x.restore();
+  },
+  hero(x, w, h, ppm, bp) {
+    const p = Math.min(w, h) * .08, bandH = Math.max(h * .15, ppm * 7);
+    waveBand(x, w, h, bandH, bp);
+    txt(x, D.tagline, p, h - bandH * .72, w - 2 * p, bandH * .42, { weight: 600, color: '#fff' });
+    const top = p, areaH = h - bandH - p * 1.6;
+    if (w / h >= 1.25) {
+      const lw = w * .64 - p;
+      brandBlock(x, p, top, lw * .55, areaH * .15);
+      para(x, D.product, p, top + areaH * .21, lw, areaH * .38, { weight: 800, lh: 1.02, max: areaH * .3, maxLines: 2, valign: 'middle' });
+      txt(x, D.subline, p, top + areaH * .62, lw, areaH * .11, { weight: 500, align: 'left', max: areaH * .1 });
+      chips(x, p, top + areaH * .82, lw, Math.min(areaH * .14, ppm * 8));
+      const r = Math.min(areaH * .42, w * .15);
+      badge(x, w - p - r * 1.1, top + areaH * .5, r);
+    } else {
+      brandBlock(x, p, top, w - 2 * p, areaH * .1, 'center');
+      para(x, D.product, p, top + areaH * .13, w - 2 * p, areaH * .26, { weight: 800, lh: 1.02, maxLines: 2, align: 'center', valign: 'middle' });
+      txt(x, D.subline, p, top + areaH * .41, w - 2 * p, areaH * .06, { weight: 500 });
+      const r = Math.min(areaH * .17, w * .24);
+      badge(x, w / 2, top + areaH * .52 + r, r);
+      chips(x, p, top + areaH * .9, w - 2 * p, Math.min(areaH * .08, ppm * 8), 'center');
+    }
+  },
+  strip(x, w, h, ppm) {
+    const p = Math.min(h * .18, w * .05);
+    if (w / h > 3.2) {
+      const ih = h - 2 * p;
+      x.fillStyle = D.accent; x.fillRect(0, h - h * .07, w, h * .07 + 99);
+      leaf(x, p + ih * .35, h / 2, ih * .7, .5, D.accent);
+      const bw = brandBlock(x, p + ih * .8, p + ih * .2, w * .3, ih * .45) || 0;
+      txt(x, D.product + (D.subline ? '  ·  ' + D.qty + ' ' + D.unit : ''), p + ih * .8 + bw + p * 1.5, p + ih * .12, w - (p * 3.5 + ih * .8 + bw), ih * .6, { weight: 700, align: 'left' });
+    } else {
+      brandBlock(x, p, p, w - 2 * p, (h - 2 * p) * .25, 'center');
+      para(x, D.product, p, p + (h - 2 * p) * .32, w - 2 * p, (h - 2 * p) * .4, { weight: 800, lh: 1.05, align: 'center', valign: 'middle', maxLines: 2 });
+      txt(x, D.subline, p, p + (h - 2 * p) * .78, w - 2 * p, (h - 2 * p) * .14, { weight: 500 });
+    }
+  },
+  side(x, w, h, ppm, bp) {
+    const band = Math.min(h * .2, ppm * 14);
+    x.fillStyle = D.accent; x.fillRect(-bp, -bp, w + 2 * bp, band + bp);
+    const lg = IMG.logo && IMGC[IMG.logo];
+    if (lg) { x.save(); x.fillStyle = '#fff'; drawContain(x, lg, w * .1, band * .15, w * .8, band * .7); x.restore(); }
+    else txt(x, D.brand, w * .08, band * .18, w * .84, band * .64, { weight: 800, color: '#fff', spacing: .12 });
+    const p = Math.min(w, h) * .08;
+    const lines = D.specs.split('\n').map(s => s.trim()).filter(Boolean);
+    const areaY = band + p * .8, areaH = h - band - p * 2.4 - Math.min(h * .12, ppm * 10);
+    if (lines.length) {
+      const lh = Math.min(areaH / lines.length, ppm * 9);
+      lines.forEach((l, i) => {
+        const [k, ...v] = l.split(':');
+        const y = areaY + i * lh + (areaH - lh * lines.length) / 2;
+        if (v.length) { txt(x, k.trim().toUpperCase(), p, y, (w - 2 * p) * .42, lh * .42, { weight: 600, align: 'left', color: hexA(D.ink, .65) }); txt(x, v.join(':').trim(), p + (w - 2 * p) * .44, y, (w - 2 * p) * .56, lh * .55, { weight: 700, align: 'left' }); }
+        else txt(x, l, p, y, w - 2 * p, lh * .55, { weight: 600 });
+        x.fillStyle = hexA(D.ink, .12); x.fillRect(p, y + lh * .92, w - 2 * p, Math.max(1, ppm * .15));
+      });
+    }
+    const ih = Math.min(h * .12, ppm * 10);
+    leaf(x, w / 2 - ih * .9, h - p - ih / 2, ih * .8, -.5, D.accent);
+    recycleMark(x, w / 2 + ih * .7, h - p - ih / 2, ih * .8, D.accent);
+  },
+  info(x, w, h, ppm) {
+    const p = Math.min(w, h) * .07;
+    const maker = () => D.maker + '\nMade in India';
+    if (w / h >= 1.3) {
+      const lw = w * .58;
+      txt(x, D.product, p, p, lw - p, h * .12, { weight: 800, align: 'left', color: D.accent });
+      para(x, D.description, p, p + h * .17, lw - p * 1.5, h * .38, { weight: 400, lh: 1.35 });
+      const feats = D.features.split('\n').filter(s => s.trim()).map(s => '•  ' + s.trim()).join('\n');
+      para(x, feats, p, p + h * .6, lw - p * 1.5, h - p * 2 - h * .6, { weight: 600, lh: 1.4 });
+      const rx = lw + p * .5, rw = w - rx - p;
+      const bh = Math.min(h * .34, rw * .55), bw = Math.min(rw, bh * 1.8);
+      barcode(x, rx + (rw - bw) / 2, p, bw, bh);
+      para(x, maker(), rx, p + bh + p * .6, rw, h - bh - p * 2.6 - h * .12, { weight: 500, lh: 1.35, align: 'center' });
+      const ih = Math.min(h * .11, ppm * 10);
+      leaf(x, rx + rw / 2 - ih * .8, h - p - ih / 2, ih * .8, -.5, D.accent); recycleMark(x, rx + rw / 2 + ih * .8, h - p - ih / 2, ih * .8, D.accent);
+    } else {
+      txt(x, D.product, p, p, w - 2 * p, h * .07, { weight: 800, color: D.accent });
+      para(x, D.description, p, p + h * .1, w - 2 * p, h * .3, { weight: 400, lh: 1.35, align: 'center' });
+      const feats = D.features.split('\n').filter(s => s.trim()).map(s => '•  ' + s.trim()).join('\n');
+      para(x, feats, p, p + h * .42, w - 2 * p, h * .18, { weight: 600, lh: 1.4, align: 'center' });
+      const bh = Math.min(h * .16, (w - 2 * p) * .3), bw = bh * 1.8;
+      barcode(x, (w - bw) / 2, h * .63, bw, bh);
+      para(x, maker(), p, h * .65 + bh, w - 2 * p, h * .33 - bh - p, { weight: 500, lh: 1.3, align: 'center' });
+    }
+  },
+  carton(x, w, h, ppm) {
+    const p = Math.min(w, h) * .07, ink = D.ink;
+    x.strokeStyle = ink; x.lineWidth = ppm * 1.2; x.strokeRect(p * .5, p * .5, w - p, h - p);
+    brandBlock(x, p * 1.2, p * 1.2, w * .45, h * .12, 'left', ink);
+    txt(x, 'MADE IN INDIA', w * .55, p * 1.3, w * .45 - p * 1.2, h * .07, { weight: 700, align: 'right', color: ink });
+    para(x, D.product.toUpperCase(), p * 1.2, h * .3, w - p * 2.4, h * .25, { weight: 800, lh: 1.05, align: 'center', valign: 'middle', color: ink, maxLines: 2 });
+    txt(x, D.subline, p * 1.2, h * .56, w - p * 2.4, h * .07, { weight: 500, color: ink });
+    txt(x, `QTY: ${D.qty} ${D.unit}`, p * 1.2, h * .66, w - p * 2.4, h * .09, { weight: 800, color: ink });
+    const s = Math.min(h * .16, w * .1); handling(x, p * 1.3, h - p * 1.3 - s, s, ink);
+    txt(x, D.tagline, w * .45, h - p * 1.3 - s * .7, w * .55 - p * 1.4, s * .4, { weight: 600, align: 'right', color: ink });
+  },
+  cartonSide(x, w, h, ppm) {
+    const p = Math.min(w, h) * .08, ink = D.ink;
+    brandBlock(x, p, p, w - 2 * p, h * .1, 'center', ink);
+    const rows = [['PRODUCT', D.product], ['SIZE', (D.specs.split('\n')[0] || '').split(':').slice(1).join(':').trim()], ['QTY / CARTON', `${D.qty} ${D.unit}`], ['NET WT', ''], ['GROSS WT', ''], ['BATCH NO', ''], ['MFG DATE', ''], ['CARTON NO', '']];
+    const ty = p + h * .15, th = h - ty - p, rh = th / rows.length;
+    x.strokeStyle = ink; x.lineWidth = Math.max(1, ppm * .5);
+    x.strokeRect(p, ty, w - 2 * p, th);
+    rows.forEach(([k, v], i) => {
+      const y = ty + i * rh; if (i) { x.beginPath(); x.moveTo(p, y); x.lineTo(w - p, y); x.stroke(); }
+      txt(x, k, p * 1.4, y + rh * .25, (w - 2 * p) * .38, rh * .5, { weight: 700, align: 'left', color: ink });
+      if (v) txt(x, v, p + (w - 2 * p) * .44, y + rh * .22, (w - 2 * p) * .52, rh * .56, { weight: 500, align: 'left', color: ink });
+    });
+    x.beginPath(); x.moveTo(p + (w - 2 * p) * .42, ty); x.lineTo(p + (w - 2 * p) * .42, ty + th); x.stroke();
+  }
+};
+
+function renderFace(key, f, hi) {
+  const maxPx = hi ? 3600 : 1100;
+  const ppm = Math.min(hi ? 16 : 5, maxPx / (Math.max(f.w, f.h) + 2 * BLEED));
+  const cw = Math.max(8, Math.round((f.w + 2 * BLEED) * ppm)), ch = Math.max(8, Math.round((f.h + 2 * BLEED) * ppm));
+  const c = document.createElement('canvas'); c.width = cw; c.height = ch;
+  const x = c.getContext('2d');
+  drawBg(x, cw, ch, ppm, key);
+  const custom = IMG.faces[key] && IMGC[IMG.faces[key]];
+  if (custom) { drawCover(x, custom, cw, ch); return c; }
+  const bp = BLEED * ppm;
+  x.save(); x.translate(bp, bp);
+  try { (LAYOUTS[f.role] || LAYOUTS.strip)(x, f.w * ppm, f.h * ppm, ppm, bp); } catch (e) { console.error(e); }
+  x.restore();
+  return c;
+}
+
+/* ============================================================
+   DIELINE – SVG / DXF / PDF
+   ============================================================ */
+let GEO = null, FACEC = {}, FACEURL = {};
+const polyD = poly => 'M' + poly.map(([x, y]) => `${r3(x)},${r3(-y)}`).join('L') + 'Z';
+const r3 = v => Math.round(v * 1000) / 1000;
+function faceImageSVG(p, url, bleed, clip) {
+  const f = GEO.faces[p.face], [rx, ry, rw, rh] = p.rect, cx = rx + rw / 2, cy = ry + rh / 2;
+  const b = bleed ? BLEED : 0;
+  const w = f.w + 2 * BLEED, h = f.h + 2 * BLEED;
+  const img = `<image href="${url}" xlink:href="${url}" x="${r3(-w / 2)}" y="${r3(-h / 2)}" width="${r3(w)}" height="${r3(h)}" preserveAspectRatio="none"/>`;
+  const g = `<g transform="translate(${r3(cx)},${r3(-cy)}) rotate(${-p.rot})">${img}</g>`;
+  return clip ? `<g clip-path="url(#cp-${p.id})">${g}</g>` : g;
+}
+function buildSVG({ art = true, labels = false, dims = true, urls = FACEURL } = {}) {
+  const G = GEO, bb = G.bbox, M = 22, TB = 30;
+  const vx = bb.minx - M, vy = -bb.maxy - M, vw = bb.w + 2 * M, vh = bb.h + 2 * M + TB;
+  const o = [];
+  o.push(`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${r3(vw)}mm" height="${r3(vh)}mm" viewBox="${r3(vx)} ${r3(vy)} ${r3(vw)} ${r3(vh)}">`);
+  o.push('<defs>' + G.panels.filter(p => p.face).map(p => `<clipPath id="cp-${p.id}"><path d="${polyD(p.poly)}"/></clipPath>`).join('') + '</defs>');
+  o.push(`<rect x="${r3(vx)}" y="${r3(vy)}" width="${r3(vw)}" height="${r3(vh)}" fill="#ffffff"/>`);
+  if (art) {
+    const bg = baseColor();
+    o.push('<g id="Artwork">');
+    G.panels.filter(p => !p.face).forEach(p => o.push(`<path d="${polyD(p.poly)}" fill="${bg}" stroke="${bg}" stroke-width="${BLEED * 2}" stroke-linejoin="round"/>`));
+    G.panels.filter(p => p.face).forEach(p => o.push(faceImageSVG(p, urls[p.face], true, false)));
+    G.panels.filter(p => !p.face).forEach(p => o.push(`<path d="${polyD(p.poly)}" fill="${bg}"/>`));
+    G.panels.filter(p => p.face).forEach(p => o.push(faceImageSVG(p, urls[p.face], false, true)));
+    o.push('</g>');
+  }
+  o.push('<g id="Dieline" fill="none" stroke-width="0.35" stroke-linecap="round">');
+  const seg = s => `M${r3(s[0][0])},${r3(-s[0][1])}L${r3(s[1][0])},${r3(-s[1][1])}`;
+  o.push(`<path id="Crease" stroke="#1f6feb" stroke-dasharray="3 1.6" d="${G.lines.folds.map(seg).join('')}"/>`);
+  o.push(`<path id="Cut" stroke="#e0262b" d="${G.lines.cuts.map(seg).join('')}"/>`);
+  o.push('</g>');
+  if (labels) {
+    o.push(`<g font-family="Arial" text-anchor="middle" fill="#333" opacity="${art ? .75 : .9}">`);
+    G.panels.forEach(p => {
+      if (!p.name) return; const [rx, ry, rw, rh] = p.rect; const fs = clamp(Math.min(rw, rh) * .13, 2.2, 7);
+      const halo = art ? ` stroke="#fff" stroke-width="${fs * .25}" paint-order="stroke"` : '';
+      o.push(`<text x="${r3(rx + rw / 2)}" y="${r3(-(ry + rh / 2))}" font-size="${r3(fs)}" font-weight="700"${halo}>${p.name.toUpperCase()}</text>`);
+      o.push(`<text x="${r3(rx + rw / 2)}" y="${r3(-(ry + rh / 2) + fs * 1.1)}" font-size="${r3(fs * .75)}"${halo}>${r1(rw)} × ${r1(rh)}</text>`);
+    });
+    o.push('</g>');
+  }
+  if (dims) {
+    const yT = -bb.maxy - 9, xL = bb.minx - 9, st = 'stroke="#555" stroke-width="0.25"';
+    o.push(`<g font-family="Arial" font-size="3.6" fill="#333" text-anchor="middle">`);
+    o.push(`<path ${st} d="M${r3(bb.minx)},${r3(yT)}H${r3(bb.maxx)}M${r3(bb.minx)},${r3(yT - 2.5)}v5M${r3(bb.maxx)},${r3(yT - 2.5)}v5"/>`);
+    o.push(`<text x="${r3(bb.minx + bb.w / 2)}" y="${r3(yT - 1.8)}">${r1(bb.w)} mm</text>`);
+    o.push(`<path ${st} d="M${r3(xL)},${r3(-bb.maxy)}V${r3(-bb.miny)}M${r3(xL - 2.5)},${r3(-bb.maxy)}h5M${r3(xL - 2.5)},${r3(-bb.miny)}h5"/>`);
+    o.push(`<text transform="translate(${r3(xL - 1.8)},${r3(-(bb.miny + bb.h / 2))}) rotate(-90)">${r1(bb.h)} mm</text>`);
+    const ty = -bb.miny + 14, tx = bb.minx;
+    const bx = G.box, inner = S.type === 'display' ? `${S.L} × ${S.W} mm, front ${S.hf} / header ${S.hb} mm` : `${S.L} × ${S.W} × ${S.H} mm`;
+    o.push(`<text x="${r3(tx)}" y="${r3(ty)}" text-anchor="start" font-size="4.2" font-weight="700">${esc(D.brand)} · ${esc(D.product)} – ${typeName()}</text>`);
+    o.push(`<text x="${r3(tx)}" y="${r3(ty + 5.5)}" text-anchor="start" font-size="3.2">Inner ${inner} · Board: ${esc(matOf().name)} · Blank ${r1(bb.w)} × ${r1(bb.h)} mm · Bleed ${BLEED} mm · ${new Date().toLocaleDateString('en-IN')}</text>`);
+    o.push(`<g transform="translate(${r3(tx)},${r3(ty + 10)})" font-size="3.2" text-anchor="start"><path d="M0,0h8" stroke="#e0262b" stroke-width=".4"/><text x="10" y="1.1">Cut</text><path d="M24,0h8" stroke="#1f6feb" stroke-width=".4" stroke-dasharray="3 1.6"/><text x="34" y="1.1">Crease</text><text x="56" y="1.1" fill="#777">BioPapro Design Hub</text></g>`);
+    o.push('</g>');
+  }
+  o.push('</svg>');
+  return o.join('');
+}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const typeName = () => ({ tuck: 'Reverse tuck-end box', rsc: 'Shipper carton (RSC)', display: 'Counter display tray' }[S.type]);
+
+function buildDXF() {
+  const L = ['0', 'SECTION', '2', 'HEADER', '9', '$INSUNITS', '70', '4', '0', 'ENDSEC', '0', 'SECTION', '2', 'ENTITIES'];
+  const add = (s, layer, col) => L.push('0', 'LINE', '8', layer, '62', col, '10', r3(s[0][0]), '20', r3(s[0][1]), '30', '0', '11', r3(s[1][0]), '21', r3(s[1][1]), '31', '0');
+  GEO.lines.cuts.forEach(s => add(s, 'CUT', 1)); GEO.lines.folds.forEach(s => add(s, 'CREASE', 5));
+  L.push('0', 'ENDSEC', '0', 'EOF'); return L.join('\r\n');
+}
+
+/* dieline viewer (pan/zoom via viewBox) */
+let dieVB = null;
+async function renderDieline(force) {
+  if (!GEO) return;
+  if (!$('#vdie').classList.contains('on')) { renderInfo(); return; }
+  const gen = urlGen;
+  if (!(await faceURLs()) || gen !== urlGen) return;
+  const box = $('#dieBox');
+  box.innerHTML = buildSVG({ art: true, labels: S.V.labels });
+  const svg = box.querySelector('svg'); svg.removeAttribute('width'); svg.removeAttribute('height');
+  if (dieVB) svg.setAttribute('viewBox', dieVB.join(' '));
+  renderInfo();
+}
+function dieFit() { dieVB = null; renderDieline(); }
+(function dieNav() {
+  const box = $('#dieBox'); let drag = null;
+  const vb = () => box.querySelector('svg').getAttribute('viewBox').split(/\s+/).map(Number);
+  box.addEventListener('wheel', e => {
+    e.preventDefault(); const svg = box.querySelector('svg'); if (!svg) return;
+    const v = vb(), r = svg.getBoundingClientRect(), k = Math.exp(e.deltaY * .0012);
+    const s = Math.max(v[2] / r.width, v[3] / r.height);
+    const ox = (r.width - v[2] / s) / 2, oy = (r.height - v[3] / s) / 2;
+    const px = v[0] + (e.clientX - r.left - ox) * s, py = v[1] + (e.clientY - r.top - oy) * s;
+    dieVB = [px - (px - v[0]) * k, py - (py - v[1]) * k, v[2] * k, v[3] * k]; svg.setAttribute('viewBox', dieVB.join(' '));
+  }, { passive: false });
+  box.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, v: vb() }; box.setPointerCapture(e.pointerId); box.style.cursor = 'grabbing'; });
+  box.addEventListener('pointermove', e => {
+    if (!drag) return; const svg = box.querySelector('svg'), r = svg.getBoundingClientRect(), v = drag.v;
+    const s = Math.max(v[2] / r.width, v[3] / r.height);
+    dieVB = [v[0] - (e.clientX - drag.x) * s, v[1] - (e.clientY - drag.y) * s, v[2], v[3]]; svg.setAttribute('viewBox', dieVB.join(' '));
+  });
+  box.addEventListener('pointerup', () => { drag = null; box.style.cursor = ''; });
+})();
+
+function renderInfo() {
+  const bb = GEO.bbox, m = matOf();
+  const bw = bb.w + 2 * BLEED, bh = bb.h + 2 * BLEED;
+  const sheets = [['20×30″', 508, 762], ['23×36″', 584, 914], ['25×36″', 635, 914], ['28×40″', 711, 1016]];
+  const ups = (W, H) => { const f = (a, b) => Math.floor((a - 20) / (bw + 3)) * Math.floor((b - 20) / (bh + 3)); return Math.max(f(W, H), f(H, W)); };
+  const list = sheets.map(([n, W, H]) => ({ n, u: ups(W, H), eff: ups(W, H) * bw * bh / (W * H) }));
+  const best = list.slice().sort((a, b) => b.eff - a.eff)[0];
+  const wt = bb.w * bb.h / 1e6 * m.gsm;
+  const fact = (k, v, e) => `<div class="fact"><small>${k}</small><b>${v}</b>${e ? `<em>${e}</em>` : ''}</div>`;
+  const html =
+    fact('Flat sheet size', `${Math.round(bb.w)} × ${Math.round(bb.h)} mm`, 'before folding') +
+    fact('Board per box', `${Math.round(wt)} g`, `${Math.round(1000 / wt)} boxes per kg of board`) +
+    fact('Best printing sheet', best.u ? `${best.u} per ${best.n}` : 'Too big', list.map(l => `${l.n}: ${l.u}`).join(' · ')) +
+    fact('Cutting / folding rule', `${(len(GEO.lines.cuts) / 1000).toFixed(1)} m / ${(len(GEO.lines.folds) / 1000).toFixed(1)} m`, 'for die-making quote');
+  $('#info').innerHTML = html;
+  const f = $('#facts'); if (f) f.innerHTML = html;
+}
+const len = segs => segs.reduce((a, s) => a + Math.hypot(s[1][0] - s[0][0], s[1][1] - s[0][1]), 0);
+
+/* ============================================================
+   3D – three.js scene, panel tree with hinges
+   ============================================================ */
+let R = null, scene, cam, sun, ground, rootWrap = null, NODES = {}, strawMesh = null, texCache = [], TEX = {}, FLAPMAT = null, MATS = [];
+const orb = { theta: -0.62, phi: 1.12, zoom: 1 };
+const FR = { flatT: [0, 0, 0], closedT: [0, 0, 0], flatR: 500, closedR: 400 };
+
+/* quality: weaker devices start lighter; drops further automatically if frames get slow */
+const WEAK = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+const QUAL = { pr: WEAK ? 1 : Math.min(2, window.devicePixelRatio || 1), shadow: WEAK ? 1024 : 2048, lowered: false };
+let DIRTY = true, LOOP = false, SLOW = { n: 0, sum: 0, last: 0 };
+const mark3D = () => { DIRTY = true; };
+function makeRenderer() {
+  const host = $('#v3d');
+  let r;
+  try { r = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' }); }
+  catch (e) { return null; }
+  if (!r.getContext()) return null;
+  r.setPixelRatio(QUAL.pr);
+  r.outputEncoding = THREE.sRGBEncoding; r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+  r.setClearColor(0x000000, 0);
+  host.insertBefore(r.domElement, host.firstChild);
+  // graphics card reset (driver crash, too many tabs, sleep): rebuild the 3D view instead of leaving it blank
+  r.domElement.addEventListener('webglcontextlost', e => { e.preventDefault(); $('#load3d').lastChild.textContent = 'Restarting 3D view…'; $('#load3d').classList.add('on'); setTimeout(restart3D, 1200); }, false);
+  return r;
+}
+function restart3D() {
+  const old = R; R = null;
+  if (old) { try { old.dispose(); old.forceContextLoss && old.forceContextLoss(); } catch (e) { } old.domElement.remove(); }
+  if (sun && sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; }
+  R = makeRenderer();
+  $('#load3d').classList.remove('on'); $('#load3d').lastChild.textContent = 'Loading 3D viewer…';
+  if (!R) { $('#nogl').innerHTML = 'The 3D view stopped because the graphics card was reset.<br><button class="btn pri" onclick="location.reload()" style="margin-top:12px">Reload the page</button><br><small>Your design is saved and will come back.</small>'; $('#nogl').style.display = 'flex'; return; }
+  resize3D(); if (GEO) build3D(); mark3D();
+}
+function init3D() {
+  const host = $('#v3d');
+  if (!window.THREE) { $('#nogl').style.display = 'flex'; return; }
+  R = makeRenderer();
+  if (!R) { $('#nogl').style.display = 'flex'; return; }
+  scene = new THREE.Scene();
+  cam = new THREE.PerspectiveCamera(32, 1, 1, 50000);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xd9d4c8, 0.62));
+  sun = new THREE.DirectionalLight(0xffffff, 0.62); sun.castShadow = true; sun.shadow.mapSize.set(QUAL.shadow, QUAL.shadow); sun.shadow.radius = 6; sun.shadow.bias = -0.0005;
+  scene.add(sun); scene.add(sun.target);
+  const fill = new THREE.DirectionalLight(0xffffff, 0.28); fill.position.set(1, 0.6, -0.8); scene.add(fill);
+  const fill2 = new THREE.DirectionalLight(0xffffff, 0.18); fill2.position.set(0.8, 0.3, 1.2); scene.add(fill2);
+  ground = new THREE.Mesh(new THREE.PlaneGeometry(40000, 40000), new THREE.ShadowMaterial({ opacity: 0.17, depthWrite: false }));
+  ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+
+  const cv = host, ptrs = new Map(); let pinch = 0;
+  cv.addEventListener('pointerdown', e => { if (!R || e.target !== R.domElement) return; ptrs.set(e.pointerId, [e.clientX, e.clientY]); cv.setPointerCapture(e.pointerId); R.domElement.style.cursor = 'grabbing'; });
+  cv.addEventListener('pointermove', e => {
+    if (!ptrs.has(e.pointerId)) return; const [px, py] = ptrs.get(e.pointerId);
+    if (ptrs.size === 2) {
+      ptrs.set(e.pointerId, [e.clientX, e.clientY]); const [a, b] = [...ptrs.values()]; const d = Math.hypot(a[0] - b[0], a[1] - b[1]);
+      if (pinch) orb.zoom = clamp(orb.zoom * pinch / d, .25, 4); pinch = d; mark3D(); return;
+    }
+    orb.theta -= (e.clientX - px) * .008; orb.phi = clamp(orb.phi - (e.clientY - py) * .008, .06, 1.66);
+    ptrs.set(e.pointerId, [e.clientX, e.clientY]); mark3D();
+  });
+  const up = e => { ptrs.delete(e.pointerId); pinch = 0; if (R) R.domElement.style.cursor = ''; };
+  cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  cv.addEventListener('wheel', e => { if (!R || e.target !== R.domElement) return; e.preventDefault(); orb.zoom = clamp(orb.zoom * Math.exp(e.deltaY * .001), .25, 4); mark3D(); }, { passive: false });
+  new ResizeObserver(resize3D).observe(host);
+  resize3D();
+  if (!LOOP) { LOOP = true; requestAnimationFrame(loop); }
+}
+function resize3D() {
+  if (!R) return; const host = $('#v3d'); const w = host.clientWidth, h = host.clientHeight; if (!w || !h) return;
+  R.setSize(w, h, false); R.domElement.style.width = w + 'px'; R.domElement.style.height = h + 'px'; cam.aspect = w / h; cam.updateProjectionMatrix(); mark3D();
+}
+function pivotOf(p) { return !p.hinge ? [0, 0] : p.hinge.axis === 'y' ? [p.hinge.at, 0] : [0, p.hinge.at]; }
+function faceUV(p, fx, fy) {
+  const f = GEO.faces[p.face], [rx, ry, rw, rh] = p.rect;
+  const dx = fx - (rx + rw / 2), dy = fy - (ry + rh / 2), a = -p.rot * Math.PI / 180;
+  const ux = dx * Math.cos(a) - dy * Math.sin(a), uy = dx * Math.sin(a) + dy * Math.cos(a);
+  return [(ux + f.w / 2 + BLEED) / (f.w + 2 * BLEED), (uy + f.h / 2 + BLEED) / (f.h + 2 * BLEED)];
+}
+function build3D() {
+  if (!R) return;
+  if (GEO.box.display && !GEO.closedQ) GEO.closedQ = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(new THREE.Vector3(-1, 0, 0), new THREE.Vector3(0, 0, -1), new THREE.Vector3(0, -1, 0)));
+  if (rootWrap) { scene.remove(rootWrap); rootWrap.traverse(o => { if (o.geometry) o.geometry.dispose(); }); }
+  texCache.forEach(t => t.dispose()); texCache = [];
+  MATS.forEach(m => m.dispose()); MATS = [];
+  if (strawMesh) { scene.remove(strawMesh); strawMesh.geometry.dispose(); strawMesh = null; }
+  rootWrap = new THREE.Group(); NODES = {};
+  const inside = new THREE.MeshStandardMaterial({ color: matOf().inside, roughness: .9, side: THREE.BackSide });
+  const flapMat = new THREE.MeshStandardMaterial({ color: baseColor(), roughness: .7, side: THREE.FrontSide });
+  inside.color.convertSRGBToLinear(); flapMat.color.convertSRGBToLinear(); MATS.push(inside, flapMat);
+  const faceMats = {}; TEX = {}; FLAPMAT = flapMat;
+  Object.keys(FACEC).forEach(k => {
+    const t = new THREE.CanvasTexture(FACEC[k]); t.encoding = THREE.sRGBEncoding; t.anisotropy = R.capabilities.getMaxAnisotropy(); texCache.push(t); TEX[k] = t;
+    faceMats[k] = new THREE.MeshStandardMaterial({ map: t, roughness: .6, side: THREE.FrontSide }); MATS.push(faceMats[k]);
+  });
+  GEO.panels.forEach(p => { NODES[p.id] = { p, g: new THREE.Group() }; });
+  GEO.panels.forEach(p => {
+    const n = NODES[p.id], piv = pivotOf(p);
+    if (p.parent) { const pp = NODES[p.parent], pv = pivotOf(pp.p); n.g.position.set(piv[0] - pv[0], piv[1] - pv[1], 0); pp.g.add(n.g); }
+    else rootWrap.add(n.g);
+    const shape = new THREE.Shape(p.poly.map(([x, y]) => new THREE.Vector2(x - piv[0], y - piv[1])));
+    const geom = new THREE.ShapeGeometry(shape);
+    if (p.face) {
+      const pos = geom.attributes.position, uv = geom.attributes.uv;
+      for (let i = 0; i < pos.count; i++) { const [u, v] = faceUV(p, pos.getX(i) + piv[0], pos.getY(i) + piv[1]); uv.setXY(i, u, v); }
+      uv.needsUpdate = true;
+    }
+    geom.computeVertexNormals();
+    const outer = new THREE.Mesh(geom, p.face ? faceMats[p.face] : flapMat), inner = new THREE.Mesh(geom, inside);
+    [outer, inner].forEach(m => { m.position.z = p.z || 0; m.castShadow = true; m.receiveShadow = true; n.g.add(m); });
+  });
+  scene.add(rootWrap);
+  buildStraws();
+  // framing
+  const bb = GEO.bbox, B = GEO.box;
+  const topY = Math.max(B.H, S.prod.kind === 'straw' && S.type === 'display' ? S.prod.len + 6 : 0);
+  const diag = Math.hypot(B.L, B.W, topY);
+  FR.flatT = [0, bb.h / 2 + 4, 0]; FR.flatR = Math.hypot(bb.w, bb.h) / 2;
+  FR.closedT = [0, topY * .45, 0]; FR.closedR = diag / 2;
+  const s = Math.max(bb.w, bb.h, diag) * 1.2;
+  Object.assign(sun.shadow.camera, { left: -s, right: s, top: s, bottom: -s, near: 1, far: s * 8 }); sun.shadow.camera.updateProjectionMatrix();
+  sun.position.set(-s * .9, s * 2.2, s * 1.3); sun.target.position.set(0, 0, 0);
+  applyPose();
+}
+function strawTexture() {
+  const c = document.createElement('canvas'); c.width = 64; c.height = 128; const x = c.getContext('2d');
+  x.fillStyle = S.prod.color; x.fillRect(0, 0, 64, 128);
+  if (S.prod.stripes) { x.fillStyle = S.prod.stripe; for (let i = -2; i < 6; i++) { x.beginPath(); x.moveTo(0, i * 32); x.lineTo(64, i * 32 + 32); x.lineTo(64, i * 32 + 48); x.lineTo(0, i * 32 + 16); x.fill(); } }
+  if (S.prod.wrap) { x.fillStyle = 'rgba(255,255,255,.5)'; x.fillRect(0, 0, 64, 128); }
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.encoding = THREE.sRGBEncoding; texCache.push(t); return t;
+}
+function buildStraws() {
+  const P = S.prod; if (P.kind !== 'straw' || S.type === 'rsc') return;
+  const dd = P.d + (P.wrap ? .8 : .2), r = dd / 2 - .15, B = GEO.box;
+  const mats = [];
+  if (S.type === 'tuck') {
+    const len = Math.min(P.len + (P.wrap ? 5 : 0), B.L - 1), cols = Math.floor((B.W - .5) / dd), rows = Math.floor((B.H - .5) / dd);
+    for (let rr = 0; rr < rows; rr++) for (let c = 0; c < cols; c++) { if (mats.length >= Math.min(P.n, 600)) break; mats.push([0, .3 + r + rr * dd, -B.W / 2 + .3 + r + c * dd, 'x', 0]); }
+    var geom = new THREE.CylinderGeometry(r, r, len, 14, 1, false);
+  } else {
+    const cols = Math.floor((B.L - 1) / dd), rows = Math.floor((B.W - 1) / dd), R0 = rng(7);
+    for (let rr = 0; rr < rows; rr++) for (let c = 0; c < cols; c++) { if (mats.length >= Math.min(P.n, 800)) break; mats.push([-B.L / 2 + .5 + r + c * dd, P.len / 2 + .5, -B.W / 2 + .5 + r + rr * dd, 'y', (R0() - .5) * .03]); }
+    var geom = new THREE.CylinderGeometry(r, r, P.len + (P.wrap ? 5 : 0), 14, 1, false);
+  }
+  if (!mats.length) return;
+  const tex = strawTexture(); tex.repeat.set(1, (P.len) / (P.d * 3));
+  const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: .55 }); MATS.push(mat);
+  strawMesh = new THREE.InstancedMesh(geom, mat, mats.length); strawMesh.castShadow = true; strawMesh.receiveShadow = true;
+  const m = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler();
+  mats.forEach(([x, y, z, ax, tilt], i) => {
+    if (ax === 'x') e.set(0, 0, Math.PI / 2); else e.set(tilt, 0, tilt * .7);
+    q.setFromEuler(e); m.compose(new THREE.Vector3(x, y, z), q, new THREE.Vector3(1, 1, 1)); strawMesh.setMatrixAt(i, m);
+  });
+  scene.add(strawMesh);
+}
+let Q0 = null;
+function applyPose() {
+  if (!R || !GEO || !rootWrap) return;
+  Q0 = Q0 || new THREE.Quaternion();
+  const f = S.V.fold, o = S.V.open * clamp((f - .95) / .05, 0, 1);
+  Object.values(NODES).forEach(({ p, g }) => {
+    if (!p.hinge) return; const [a, b] = p.hinge.phase;
+    const t = ease(clamp((f - a) / (b - a), 0, 1));
+    const ang = (p.hinge.angle * t + (GEO.openExtra[p.id] || 0) * o) * Math.PI / 180;
+    g.rotation.set(0, 0, 0); g.rotation[p.hinge.axis] = ang;
+  });
+  const bb = GEO.bbox, fp = [-(bb.minx + bb.w / 2), -bb.miny + 3, 0];
+  if (GEO.closedQ) { const [a, b] = GEO.rootPhase; rootWrap.quaternion.copy(Q0).slerp(GEO.closedQ, ease(clamp((f - a) / (b - a), 0, 1))); }
+  else rootWrap.quaternion.copy(Q0);
+  const tp = ease(clamp(f / .6, 0, 1)); const cp = GEO.closedPos;
+  rootWrap.position.set(lerp(fp[0], cp[0], tp), lerp(fp[1], cp[1], tp), lerp(fp[2], cp[2], tp));
+  if (strawMesh) strawMesh.visible = S.V.inside && f > .97;
+  mark3D();
+}
+let anim = null;
+function loop(t) {
+  requestAnimationFrame(loop);
+  if (!R || !GEO) return;
+  if (anim) {
+    const k = clamp((t - anim.t0) / anim.dur, 0, 1); S.V.fold = lerp(anim.from, anim.to, k); $('#fold').value = S.V.fold; applyPose();
+    if (k >= 1) anim = null;
+  }
+  if (Math.abs(S.V.open - openT) > .002) { S.V.open += (openT - S.V.open) * .1; applyPose(); }
+  if (S.V.autoRot) { orb.theta += .0035; DIRTY = true; }
+  if (!DIRTY) { SLOW.last = 0; return; }
+  DIRTY = false;
+  if (SLOW.last) { SLOW.sum += t - SLOW.last; SLOW.n++; if (SLOW.n >= 40) { if (SLOW.sum / SLOW.n > 45 && !QUAL.lowered) lowerQuality(); SLOW.n = 0; SLOW.sum = 0; } }
+  SLOW.last = t;
+  const f = ease(clamp(S.V.fold / .7, 0, 1));
+  const vf = cam.fov * Math.PI / 180, hf = 2 * Math.atan(Math.tan(vf / 2) * cam.aspect);
+  const T = FR.flatT.map((v, i) => lerp(v, FR.closedT[i], f)), rad = lerp(FR.flatR, FR.closedR, f) / Math.sin(Math.min(vf, hf) / 2) * 1.12 * orb.zoom;
+  cam.position.set(T[0] + rad * Math.sin(orb.phi) * Math.sin(orb.theta), T[1] + rad * Math.cos(orb.phi), T[2] + rad * Math.sin(orb.phi) * Math.cos(orb.theta));
+  cam.lookAt(T[0], T[1], T[2]);
+  R.render(scene, cam);
+}
+function lowerQuality() {
+  QUAL.lowered = true; QUAL.pr = 1; QUAL.shadow = 1024;
+  R.setPixelRatio(1); resize3D();
+  sun.shadow.mapSize.set(1024, 1024); if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; }
+  mark3D();
+}
+function setCam(v) {
+  const V = { '34': [-0.62, 1.12], front: [0, 1.38], side: [Math.PI / 2, 1.3], top: [0, 0.12], back: [Math.PI, 1.25] }[v];
+  if (v === 'fit') { orb.zoom = 1; mark3D(); return; }
+  if (V) { orb.theta = V[0]; orb.phi = V[1]; }
+  mark3D();
+}
+function mockupBlob(transparent, targetW = 2400) {
+  return new Promise(res => {
+    if (!R) return res(null);
+    const host = $('#v3d'), w = host.clientWidth || 800, h = host.clientHeight || 600, scale = Math.max(1, targetW / w);
+    const pr = R.getPixelRatio(); R.setPixelRatio(1); R.setSize(w * scale, h * scale, false); R.render(scene, cam);
+    const out = document.createElement('canvas'); out.width = w * scale; out.height = h * scale; const x = out.getContext('2d');
+    if (!transparent) {
+      if (S.V.bgMode === 'studio') { const g = x.createRadialGradient(out.width / 2, out.height * .3, 0, out.width / 2, out.height * .3, out.width * .75); g.addColorStop(0, '#ffffff'); g.addColorStop(.55, '#eef0ec'); g.addColorStop(1, '#dfe3dc'); x.fillStyle = g; }
+      else x.fillStyle = S.V.bgMode === 'dark' ? '#1c211e' : '#ffffff';
+      x.fillRect(0, 0, out.width, out.height);
+    }
+    x.drawImage(R.domElement, 0, 0);
+    R.setPixelRatio(pr); resize3D();
+    out.toBlob(res, 'image/png');
+  });
+}
+async function exportPNG(transparent) {
+  if (!R) return toast('The 3D preview is still loading. Try again in a moment.');
+  download(await mockupBlob(transparent), fname('mockup') + '.png');
+}
+
+/* ============================================================
+   APP – steps, cards, bindings, rebuild, exports, persistence
+   ============================================================ */
+const ICONS = {
+  straw: '<svg class="i" viewBox="0 0 24 24"><path d="M4 9h16v11H4z"/><path d="M4 9l2-3h12l2 3"/><path d="M9 6l1-4M13 6l.5-4M16 6l1.5-3.5"/></svg>',
+  cutlery: '<svg class="i" viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 0 0 2 2v9M11 3v7a2 2 0 0 1-2 2M9 3v6"/><path d="M16 21V3c2.5 1.5 3.5 4 3.5 7s-1.5 4-3.5 4"/></svg>',
+  display: '<svg class="i" viewBox="0 0 24 24"><path d="M4 21h16V14H4z"/><path d="M6 14V3h12v11"/><path d="M8 14V9M11 14V8M14 14V9M17 14V8"/></svg>',
+  carton: '<svg class="i" viewBox="0 0 24 24"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10M7.5 5l9 4"/></svg>',
+  check: '<svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>',
+  ok: '<svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px;color:#7ee29a"><path d="M5 12l5 5 9-10"/></svg>'
+};
+const CATS = [['all', 'All'], ['straw', 'Paper straws'], ['cutlery', 'Wooden cutlery'], ['display', 'Displays'], ['carton', 'Cartons']];
+const TYPES = [
+  ['tuck', 'Shelf box', 'Tuck-in lid, for retail',
+    '<svg viewBox="0 0 52 44" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M6 16l20-8 20 8v18l-20 8-20-8z" fill="var(--brand-l)"/><path d="M6 16l20 8 20-8M26 24v18"/><path d="M26 24l-6-12 20-8 6 12" fill="#fff"/></svg>'],
+  ['rsc', 'Shipping carton', 'Corrugated, for export',
+    '<svg viewBox="0 0 52 44" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M6 14l20-8 20 8v20l-20 8-20-8z" fill="#f3e6d6"/><path d="M6 14l20 8 20-8M26 22v20"/><path d="M16 10l20 8" stroke-width="3" stroke="#c9a176"/></svg>'],
+  ['display', 'Counter display', 'Open tray with back card',
+    '<svg viewBox="0 0 52 44" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 6h28v22H12z" fill="var(--brand-l)"/><path d="M6 28h40v12H6z" fill="#fff"/><path d="M16 28v-9M21 28v-11M26 28v-9M31 28v-11M36 28v-9"/></svg>']
+];
+const THEMES = [
+  { name: 'Eco green', finish: 'white', bg: '#f3efe4', accent: '#2e7d32', ink: '#1b2a1f', pattern: 'leaves' },
+  { name: 'Natural kraft', finish: 'kraft', bg: '#f3efe4', accent: '#2e5d34', ink: '#2b1d10', pattern: 'none' },
+  { name: 'Café brown', finish: 'white', bg: '#f3efe4', accent: '#6d4c41', ink: '#3e2723', pattern: 'dots' },
+  { name: 'Fresh mint', finish: 'colour', bg: '#e3f3ec', accent: '#00897b', ink: '#10332c', pattern: 'leaves' },
+  { name: 'Berry red', finish: 'white', bg: '#f3efe4', accent: '#c62828', ink: '#2b1414', pattern: 'stripes' },
+  { name: 'Ocean blue', finish: 'white', bg: '#f3efe4', accent: '#1565c0', ink: '#0d2138', pattern: 'dots' },
+  { name: 'Sunny yellow', finish: 'colour', bg: '#fff6d8', accent: '#e69100', ink: '#3a2a00', pattern: 'leaves' },
+  { name: 'Premium black', finish: 'colour', bg: '#1f211f', accent: '#c9a45c', ink: '#f4efe2', pattern: 'none' }
+];
+let step = 1, cat = 'all', openT = 0;
+
+function fname(kind) {
+  const dims = S.type === 'display' ? `${S.L}x${S.W}x${S.hb}` : `${S.L}x${S.W}x${S.H}`;
+  return `${D.brand} ${D.product} ${dims}mm ${kind}`.replace(/[\\/:*?"<>|]+/g, '').trim();
+}
+const DL_READY = (window.claude && window.claude.use) ? window.claude.use('downloads').catch(() => null) : Promise.resolve(undefined);
+async function download(data, name, type) {
+  const b = data instanceof Blob ? data : new Blob([data], { type: type || 'application/octet-stream' });
+  const dl = await DL_READY;
+  if (dl) {
+    try { await dl.save({ filename: name, data: b }); toast('Saved: ' + name); }
+    catch (e) {
+      const c = e && e.code;
+      if (c === 'declined') return;
+      if (c === 'rate_limited') return toast('Finish the save window that is already open first');
+      toast('This file could not be saved here. Try the other format.');
+    }
+    return;
+  }
+  if (dl === null) return toast('Saving files is not available in this view');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  toast('Downloaded: ' + name);
+}
+function loadScript(src) { return new Promise((res, rej) => { const sc = document.createElement('script'); sc.src = src; sc.onload = res; sc.onerror = () => rej(new Error('load')); document.head.appendChild(sc); }); }
+async function needLib(test, ...srcs) { for (const s of srcs) { if (test()) return; try { await loadScript(s); } catch (e) { } } if (!test()) throw new Error('library could not load'); }
+async function makeZip(files) {
+  await needLib(() => window.JSZip, 'vendor/jszip.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js');
+  const z = new JSZip(); files.forEach(([n, d]) => z.file(n, d));
+  return z.generateAsync({ type: 'blob', compression: 'DEFLATE' });
+}
+/* Actual-size PDF: artwork as one high-res image, cut/fold lines as sharp vectors on top */
+async function buildPDF() {
+  await needLib(() => window.jspdf, 'vendor/jspdf.umd.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+  const G = GEO, bb = G.bbox, M = 15, TB = 22, W = bb.w + 2 * M, H = bb.h + 2 * M + TB;
+  const ppm = Math.min(8, 8000 / Math.max(bb.w + 2 * BLEED, bb.h + 2 * BLEED));
+  const c = document.createElement('canvas'); c.width = Math.round((bb.w + 2 * BLEED) * ppm); c.height = Math.round((bb.h + 2 * BLEED) * ppm);
+  const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
+  x.setTransform(ppm, 0, 0, -ppm, (-bb.minx + BLEED) * ppm, (bb.maxy + BLEED) * ppm);
+  const faces = {}; Object.entries(G.faces).forEach(([k, f]) => { faces[k] = renderFace(k, f, true); });
+  const path = poly => { x.beginPath(); poly.forEach(([px, py], i) => i ? x.lineTo(px, py) : x.moveTo(px, py)); x.closePath(); };
+  const bg = baseColor();
+  const face = (p, clip) => {
+    const f = G.faces[p.face], [rx, ry, rw, rh] = p.rect; x.save();
+    if (clip) { path(p.poly); x.clip(); }
+    x.translate(rx + rw / 2, ry + rh / 2); x.rotate(p.rot * Math.PI / 180); x.scale(1, -1);
+    x.drawImage(faces[p.face], -(f.w / 2 + BLEED), -(f.h / 2 + BLEED), f.w + 2 * BLEED, f.h + 2 * BLEED); x.restore();
+  };
+  G.panels.filter(p => !p.face).forEach(p => { path(p.poly); x.fillStyle = x.strokeStyle = bg; x.lineWidth = BLEED * 2; x.lineJoin = 'round'; x.fill(); x.stroke(); });
+  G.panels.filter(p => p.face).forEach(p => face(p, false));
+  G.panels.filter(p => !p.face).forEach(p => { path(p.poly); x.fillStyle = bg; x.fill(); });
+  G.panels.filter(p => p.face).forEach(p => face(p, true));
+  const img = c.toDataURL('image/jpeg', .92);
+  const doc = new window.jspdf.jsPDF({ unit: 'mm', format: [W, H], orientation: W > H ? 'landscape' : 'portrait', compress: true });
+  doc.addImage(img, 'JPEG', M - BLEED, M - BLEED, bb.w + 2 * BLEED, bb.h + 2 * BLEED);
+  const P = pt => [M + pt[0] - bb.minx, M + bb.maxy - pt[1]];
+  const draw = segs => segs.forEach(sg => { const a = P(sg[0]), b = P(sg[1]); doc.line(a[0], a[1], b[0], b[1]); });
+  doc.setLineWidth(0.3);
+  doc.setDrawColor(31, 111, 235); doc.setLineDashPattern([3, 1.6], 0); draw(G.lines.folds);
+  doc.setDrawColor(224, 38, 43); doc.setLineDashPattern([], 0); draw(G.lines.cuts);
+  const inner = S.type === 'display' ? `${S.L} x ${S.W} mm, front ${S.hf} / back card ${S.hb} mm` : `${S.L} x ${S.W} x ${S.H} mm`;
+  doc.setTextColor(30, 30, 30); doc.setFontSize(10);
+  doc.text(`${D.brand} - ${D.product} - ${typeName()}`, M, M + bb.h + 11);
+  doc.setFontSize(7.5);
+  doc.text(`Inside size ${inner}   |   Board: ${matOf().name}   |   Flat sheet ${r1(bb.w)} x ${r1(bb.h)} mm   |   Bleed 3 mm   |   Red = cut, blue dashed = fold   |   Print at 100% (actual size)`, M, M + bb.h + 16);
+  return doc.output('blob');
+}
+function toast(m) { const t = $('#toast'); t.innerHTML = ICONS.ok + esc(m); t.classList.add('on'); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('on'), 2600); }
+function loadImg(url) {
+  return new Promise(res => { if (!url || IMGC[url]) return res(); const i = new Image(); i.onload = () => { IMGC[url] = i; res(); }; i.onerror = () => res(); i.src = url; });
+}
+
+const FACE_NAMES = { front: 'Front', back: 'Back', left: 'Left side', right: 'Right side', top: 'Top (lid)', bottom: 'Bottom', header: 'Display back card' };
+let dieURLs = [];
+let urlGen = 0, urlsFor = -1;
+function renderFaces() {
+  FACEC = {};
+  Object.entries(GEO.faces).forEach(([k, f]) => { FACEC[k] = renderFace(k, f, false); });
+  urlGen++;
+}
+function faceURLs() {
+  if (urlsFor === urlGen) return Promise.resolve(true);
+  const gen = urlGen, old = dieURLs, urls = {}, made = [];
+  return Promise.all(Object.entries(FACEC).map(([k, c]) => new Promise(res => c.toBlob(b => { const u = URL.createObjectURL(b); made.push(u); urls[k] = u; res(); }, 'image/jpeg', .85))))
+    .then(() => {
+      if (gen !== urlGen) { made.forEach(u => URL.revokeObjectURL(u)); return false; }   // newer edit arrived, drop these
+      FACEURL = urls; dieURLs = made; urlsFor = gen; setTimeout(() => old.forEach(u => URL.revokeObjectURL(u)), 3000); return true;
+    });
+}
+async function rebuild() {
+  D = S.D;
+  GEO = buildGeo();
+  FACEURL = {};
+  renderFaces();
+  build3D();
+  const fs = $('#faceSel'), cur = fs.value;
+  fs.innerHTML = Object.keys(GEO.faces).map(k => `<option value="${k}">${FACE_NAMES[k] || k}${IMG.faces[k] ? ' (your image)' : ''}</option>`).join('');
+  if (GEO.faces[cur]) fs.value = cur;
+  renderInfo();
+  busy(false); renderDieline(); save();
+}
+async function refreshArt() {
+  // text / colour / logo change: same box shape, so only repaint the artwork
+  if (!GEO) return rebuild();
+  D = S.D;
+  renderFaces();
+  Object.entries(TEX).forEach(([k, t]) => { if (FACEC[k]) { t.image = FACEC[k]; t.needsUpdate = true; } });
+  mark3D();
+  if (FLAPMAT) FLAPMAT.color.set(baseColor()).convertSRGBToLinear();
+  busy(false); renderDieline(); save();
+}
+function busy(on) { const b = $('#busy'); if (b) b.classList.toggle('on', on); }
+let rbT = 0, rbFull = false;
+const schedule = (full = true) => { rbFull = rbFull || full; busy(true); clearTimeout(rbT); rbT = setTimeout(() => { const f = rbFull; rbFull = false; f ? rebuild() : refreshArt(); }, full ? 250 : 350); };
+const scheduleArt = () => schedule(false);
+
+/* ---------- step navigation ---------- */
+const NEXT = ['', 'Next: Box size →', 'Next: Design →', 'Next: Download →', ''];
+function goStep(n) {
+  step = clamp(n, 1, 4);
+  $$('.pane').forEach((p, i) => p.classList.toggle('on', i + 1 === step));
+  $$('#steps button').forEach((b, i) => { b.classList.toggle('on', i + 1 === step); b.classList.toggle('done', i + 1 < step); });
+  $('#prevStep').style.visibility = step > 1 ? '' : 'hidden';
+  $('#nextStep').style.display = step < 4 ? '' : 'none';
+  $('#nextStep').textContent = NEXT[step];
+  $('#panes').scrollTop = 0;
+}
+
+/* ---------- cards ---------- */
+function presetInfo(P) {
+  const [title, rest] = P.name.split(' – ');
+  let d;
+  if (P.fit) { const keep = { type: S.type, L: S.L, W: S.W, H: S.H, hf: S.hf, hb: S.hb, prod: S.prod }; S.type = P.type; S.prod = P.prod; fitStraws(); d = { L: S.L, W: S.W, H: S.type === 'display' ? S.hb : S.H }; Object.assign(S, keep); }
+  else d = { L: P.L, W: P.W, H: P.H };
+  return { title, sub: `${rest || ''} · box ${d.L} × ${d.W} × ${d.H} mm` };
+}
+function renderPresetCards() {
+  $('#catChips').innerHTML = CATS.map(([k, n]) => `<button class="chip${k === cat ? ' on' : ''}" data-cat="${k}">${n}</button>`).join('');
+  $('#presetCards').innerHTML = PRESETS.filter(p => cat === 'all' || p.cat === cat).map(p => {
+    const { title, sub } = presetInfo(p);
+    return `<button class="pcard${p.id === S.preset ? ' on' : ''}" data-id="${p.id}"><span class="ic c-${p.cat}">${ICONS[p.cat]}</span><span class="t"><b>${esc(title)}</b><small>${esc(sub)}</small></span><span class="ok">${ICONS.check}</span></button>`;
+  }).join('') + (S.preset === 'custom' ? `<div class="hint" style="margin-top:6px"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>You're working on a custom size. Pick a product above to start again from a template.</div>` : '');
+}
+/* Wrapping paper lives inside Packaging (4th option in step 2) */
+const SHOW_WRAP = true; // was hidden behind ?wrap; live for everyone since 1 Oct 2026
+const WRAP_CARD = ['Wrapping paper', 'Printed wrapper, cutlery & straws',
+  '<svg viewBox="0 0 52 44" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M18 4h16v36H18z" fill="#e8d3b4"/><path d="M18 9h16M18 35h16" stroke-dasharray="2 2"/><path d="M26 13v20M23.5 13v6M28.5 13v6M23.5 19q2.5 3 5 0" stroke-width="1.3"/></svg>'];
+function renderTypeCards() {
+  $('#typeCards').classList.toggle('four', SHOW_WRAP);
+  $('#typeCards').innerHTML = TYPES.map(([k, n, s, svg]) => `<button class="tcard${S.type === k ? ' on' : ''}" data-set="type" data-val="${k}">${svg}<b>${n}</b><small>${s}</small></button>`).join('')
+    + (SHOW_WRAP ? `<button class="tcard" data-wrap="1">${WRAP_CARD[2]}<b>${WRAP_CARD[0]}</b><small>${WRAP_CARD[1]}</small></button>` : '');
+}
+function enterWrap() {
+  const f = $('#wrapFrame'); if (!f.getAttribute('src')) f.setAttribute('src', 'wrap.html?embed=1');
+  document.body.classList.add('wrapmode');
+}
+function leaveWrap() { document.body.classList.remove('wrapmode'); setTimeout(() => { resize3D(); mark3D(); }, 30); }
+function renderThemes() {
+  $('#themes').innerHTML = THEMES.map((t, i) => {
+    const base = t.finish === 'white' ? '#ffffff' : t.finish === 'kraft' ? '#c9a176' : t.bg;
+    const on = D.accent.toLowerCase() === t.accent && D.finish === t.finish && (t.finish !== 'colour' || D.bg.toLowerCase() === t.bg);
+    return `<button class="theme${on ? ' on' : ''}" data-theme="${i}" title="${t.name}"><div class="sw" style="background:${base}"><em style="background:${t.accent}"></em><i style="background:${t.accent}"></i></div><span>${t.name}</span></button>`;
+  }).join('');
+}
+function dimFigure() {
+  const disp = S.type === 'display';
+  const lab = (x, y, t) => `<text x="${x}" y="${y}" font-size="10" font-weight="700" fill="var(--brand)" text-anchor="middle" font-family="Poppins,Arial">${t}</text>`;
+  $('#dimFig').innerHTML = disp
+    ? `<svg viewBox="0 0 190 100" fill="none" stroke="#8b948e" stroke-width="1.3" stroke-linejoin="round"><path d="M60 8h80v46H60z" fill="#eef6f0"/><path d="M40 54h100l20 12v24H60L40 78z" fill="#fff"/><path d="M40 54l20 12h100M60 66v24"/>${lab(100, 99, '')}<path d="M60 96h80" stroke="var(--brand)"/>${lab(100, 94, 'Width')}<path d="M168 68l-18-12" stroke="var(--brand)"/>${lab(176, 62, 'Depth')}<path d="M34 58v20" stroke="var(--brand)"/>${lab(20, 71, 'Front')}<path d="M146 8v46" stroke="var(--brand)"/>${lab(166, 30, 'Back')}${lab(166, 41, 'card')}</svg>`
+    : `<svg viewBox="0 0 200 112" fill="none" stroke="#8b948e" stroke-width="1.3" stroke-linejoin="round"><path d="M40 34l40-18h90l-40 18z" fill="#eef6f0"/><path d="M40 34h90v52H40z" fill="#fff"/><path d="M130 34l40-18v52l-40 18z" fill="#f6f8f5"/><path d="M40 94h90M40 90v8M130 90v8" stroke="var(--brand)"/>${lab(85, 108, 'Length')}<path d="M138 94l38-18" stroke="var(--brand)"/>${lab(178, 98, 'Width')}<path d="M32 34v52M28 34h8M28 86h8" stroke="var(--brand)"/>${lab(16, 64, 'Height')}</svg>`;
+}
+
+/* ---------- sync UI with state ---------- */
+function syncUI() {
+  D = S.D;
+  $$('[data-p]').forEach(el => { const v = getP(el.dataset.p); if (el.type === 'checkbox') el.checked = !!v; else if (document.activeElement !== el) el.value = v; });
+  $$('[data-set]').forEach(b => b.classList.toggle('on', String(getP(b.dataset.set)) === b.dataset.val));
+  const disp = S.type === 'display';
+  $('#dispDims').style.display = disp ? '' : 'none';
+  $('#hWrap').style.display = disp ? 'none' : '';
+  $('#dimBox').style.gridTemplateColumns = disp ? '1fr 1fr' : '';
+  $('#lL').textContent = disp ? 'Width' : 'Length'; $('#lW').textContent = disp ? 'Depth' : 'Width';
+  $('#openBtn').style.display = disp ? 'none' : '';
+  $('#openBtn').classList.toggle('on', openT > 0);
+  $('#openBtn span').textContent = openT > 0 ? 'Close lid' : 'Open lid';
+  $('#showStraws').checked = S.prod.kind === 'straw' && S.V.inside;
+  $('#v3d').classList.remove('white', 'dark'); if (S.V.bgMode !== 'studio') $('#v3d').classList.add(S.V.bgMode);
+  $$('[data-bg]').forEach(b => b.classList.toggle('on', b.dataset.bg === S.V.bgMode));
+  $('#autoRot').classList.toggle('on', !!S.V.autoRot);
+  $('#labelsBtn').classList.toggle('on', !!S.V.labels);
+  $('#fold').value = S.V.fold;
+  const lg = IMG.logo;
+  $('#logoThumb').innerHTML = lg ? `<img src="${lg}" alt="">` : '<svg class="i" viewBox="0 0 24 24" style="width:24px;height:24px"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 8"/></svg>';
+  $('#logoTitle').textContent = lg ? 'Logo added' : 'Add your logo';
+  $('#logoClear').style.display = lg ? '' : 'none';
+  renderPresetCards(); renderTypeCards(); renderThemes(); dimFigure();
+}
+function applyPreset(id) {
+  const P = PRESETS.find(p => p.id === id); if (!P) return;
+  S.preset = id; S.type = P.type; S.material = P.material;
+  S.prod = JSON.parse(JSON.stringify(P.prod));
+  S.D = { ...BASE_D, ...P.D };
+  const note = $('#fitNote');
+  if (P.fit) { note.innerHTML = '<b>Box fits:</b> ' + fitStraws(); note.classList.add('on'); }
+  else { note.classList.remove('on'); ['L', 'W', 'H'].forEach(k => { if (P[k]) S[k] = P[k]; }); }
+  S.V.fold = 1; S.V.open = 0; openT = 0; orb.zoom = 1; dieVB = null;
+  syncUI(); rebuild();
+}
+function markCustom() { if (S.preset !== 'custom') { S.preset = 'custom'; } dieVB = null; }
+
+function save() {
+  try { localStorage.setItem('bpps_state', JSON.stringify(S)); } catch (e) { }
+  try { localStorage.setItem('bpps_img', JSON.stringify(IMG)); } catch (e) { }
+}
+function restore() {
+  try {
+    const s = JSON.parse(localStorage.getItem('bpps_state') || 'null');
+    if (s && s.D) { delete s.cloud; Object.assign(S, s, { D: { ...BASE_D, ...s.D }, V: { ...S.V, ...s.V, open: 0 }, prod: { ...S.prod, ...s.prod } }); }
+    const im = JSON.parse(localStorage.getItem('bpps_img') || 'null'); if (im) { IMG.logo = im.logo || null; IMG.faces = im.faces || {}; }
+    return !!(s && s.D);
+  } catch (e) { return false; }
+}
+function shrinkImg(url, max, png) {
+  return new Promise(res => {
+    const i = new Image();
+    i.onload = () => {
+      if (Math.max(i.width, i.height) <= max && url.length < 3e6) return res(url);
+      const s = Math.min(1, max / Math.max(i.width, i.height)), c = document.createElement('canvas');
+      c.width = Math.round(i.width * s); c.height = Math.round(i.height * s); c.getContext('2d').drawImage(i, 0, 0, c.width, c.height);
+      res(c.toDataURL(png ? 'image/png' : 'image/jpeg', .9));
+    };
+    i.onerror = () => res(null); i.src = url;
+  });
+}
+function readFile(file) { return new Promise(res => { if (!file) return res(null); const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(file); }); }
+async function setLogo(file) { let u = await readFile(file); if (!u) return; u = await shrinkImg(u, 1200, true); if (!u) return toast('That file is not an image the browser can read.'); await loadImg(u); IMG.logo = u; syncUI(); refreshArt(); toast('Logo added to every side'); }
+function setView(v) {
+  $$('#viewSeg button').forEach(x => x.classList.toggle('on', x.dataset.v === v));
+  $('#main').classList.toggle('split', v === 'split');
+  $('#v3d').classList.toggle('on', v !== 'die'); $('#vdie').classList.toggle('on', v !== '3d');
+  setTimeout(() => { resize3D(); if (v !== '3d') { dieVB = null; renderDieline(); } }, 30);
+}
+function hideHint() { $('#dragHint').classList.add('gone'); }
+
+function initUI() {
+  $('#material').innerHTML = MATERIALS.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+  // step nav
+  $$('#steps button').forEach(b => b.onclick = () => goStep(+b.dataset.s));
+  $('#nextStep').onclick = () => goStep(step + 1);
+  $('#typeCards').addEventListener('click', e => { if (e.target.closest('[data-wrap]')) enterWrap(); });
+  $('#backBoxes').onclick = leaveWrap;
+  $('#prevStep').onclick = () => goStep(step - 1);
+  $('#dlTop').onclick = () => goStep(4);
+  // step 1
+  $('#catChips').addEventListener('click', e => { const c = e.target.closest('[data-cat]'); if (!c) return; cat = c.dataset.cat; renderPresetCards(); });
+  $('#presetCards').addEventListener('click', e => {
+    const c = e.target.closest('[data-id]'); if (!c) return;
+    applyPreset(c.dataset.id); toast('Loaded ' + c.querySelector('b').textContent);
+  });
+  // generic inputs
+  $$('[data-p]').forEach(el => {
+    const ev = el.tagName === 'SELECT' || el.type === 'checkbox' ? 'change' : 'input';
+    el.addEventListener(ev, () => {
+      let v = el.type === 'checkbox' ? el.checked : el.value;
+      if (el.hasAttribute('data-num')) { v = parseFloat(v); if (!isFinite(v) || v <= 0) return; }
+      setP(el.dataset.p, v);
+      const p = el.dataset.p;
+      if (['L', 'W', 'H', 'hf', 'hb', 'material'].includes(p)) markCustom();
+      if (p.startsWith('D.')) { renderThemes(); scheduleArt(); } else schedule();
+    });
+  });
+  // segmented / card buttons with data-set
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-set]'); if (!b) return;
+    setP(b.dataset.set, b.dataset.val);
+    if (b.dataset.set === 'type') { markCustom(); if (S.prod.kind === 'straw' && S.prod.n > 0) { const n = fitStraws(); $('#fitNote').innerHTML = '<b>Box fits:</b> ' + n; $('#fitNote').classList.add('on'); } }
+    syncUI(); b.dataset.set.startsWith('D.') ? scheduleArt() : schedule();
+  });
+  $('#themes').addEventListener('click', e => {
+    const b = e.target.closest('[data-theme]'); if (!b) return; const t = THEMES[+b.dataset.theme];
+    Object.assign(S.D, { finish: t.finish, bg: t.bg, accent: t.accent, ink: t.ink, pattern: t.pattern });
+    syncUI(); refreshArt();
+  });
+  $('#fitBtn').onclick = () => {
+    S.prod.kind = 'straw'; const n = fitStraws(); markCustom();
+    $('#fitNote').innerHTML = '<b>Box fits:</b> ' + n; $('#fitNote').classList.add('on');
+    syncUI(); rebuild(); toast('Box size updated to fit your straws');
+  };
+  $('#showStraws').onchange = e => { S.V.inside = e.target.checked; if (e.target.checked) S.prod.kind = 'straw'; rebuild(); };
+  // logo
+  const drop = $('#logoDrop');
+  drop.onclick = e => { if (e.target.id !== 'logoClear') $('#logoFile').click(); };
+  drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
+  drop.ondragleave = () => drop.classList.remove('over');
+  drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); setLogo(e.dataTransfer.files[0]); };
+  $('#logoFile').onchange = e => { setLogo(e.target.files[0]); e.target.value = ''; };
+  $('#logoClear').onclick = e => { e.stopPropagation(); IMG.logo = null; syncUI(); refreshArt(); };
+  // custom face art
+  $('#faceBtn').onclick = () => $('#faceFile').click();
+  $('#faceFile').onchange = async e => { let u = await readFile(e.target.files[0]); e.target.value = ''; if (!u) return; u = await shrinkImg(u, 2400, false); if (!u) return toast('That file is not an image the browser can read.'); await loadImg(u); IMG.faces[$('#faceSel').value] = u; refreshArt(); toast('Your image is on the ' + (FACE_NAMES[$('#faceSel').value] || 'side')); };
+  $('#faceClear').onclick = () => { delete IMG.faces[$('#faceSel').value]; refreshArt(); };
+  // views & 3D controls
+  $$('#viewSeg button').forEach(b => b.onclick = () => setView(b.dataset.v));
+  $$('[data-cam]').forEach(b => b.onclick = () => setCam(b.dataset.cam));
+  $$('[data-bg]').forEach(b => b.onclick = () => { S.V.bgMode = b.dataset.bg; syncUI(); save(); });
+  $('#autoRot').onclick = () => { S.V.autoRot = !S.V.autoRot; syncUI(); save(); };
+  $('#labelsBtn').onclick = () => { S.V.labels = !S.V.labels; syncUI(); renderDieline(); save(); };
+  $('#fold').addEventListener('input', e => { anim = null; S.V.fold = +e.target.value; if (S.V.fold < .95) { openT = 0; S.V.open = 0; syncUI(); } applyPose(); hideHint(); });
+  $('#openBtn').onclick = () => { openT = openT > 0 ? 0 : 1; if (S.V.fold < 1) { S.V.fold = 1; $('#fold').value = 1; } syncUI(); };
+  $('#play').onclick = () => { openT = 0; S.V.open = 0; syncUI(); anim = { t0: performance.now(), dur: 3800, from: 0, to: 1 }; S.V.fold = 0; applyPose(); hideHint(); };
+  $('#v3d').addEventListener('pointerdown', hideHint);
+  $('#dieFit').onclick = dieFit;
+  // welcome
+  const closeW = () => { $('#welcome').classList.remove('on'); try { localStorage.setItem('bpps_welcome', '1'); } catch (e) { } };
+  $('#welcomeGo').onclick = closeW; $('#welcome').onclick = e => { if (e.target.id === 'welcome') closeW(); };
+  $('#helpBtn').onclick = () => $('#welcome').classList.add('on');
+  // downloads
+  const hiURLs = () => { const u = {}; Object.entries(GEO.faces).forEach(([k, f]) => { u[k] = renderFace(k, f, true).toDataURL('image/png'); }); return u; };
+  $('#exSvgArt').onclick = () => { toast('Preparing print-quality artwork…'); setTimeout(() => download(buildSVG({ art: true, labels: false, urls: hiURLs() }), fname('print artwork') + '.svg', 'image/svg+xml'), 40); };
+  $('#exSvgCut').onclick = () => download(buildSVG({ art: false, labels: true }), fname('cut lines') + '.svg', 'image/svg+xml');
+  $('#exDxf').onclick = async () => {
+    toast('Preparing die-maker files…');
+    try { download(await makeZip([[fname('die file') + '.dxf', buildDXF()], [fname('cut lines') + '.svg', buildSVG({ art: false, labels: true })]]), fname('die file') + '.zip'); }
+    catch (e) { toast('Could not prepare the file. Check your internet connection and try again.'); }
+  };
+  $('#exPdf').onclick = async () => {
+    toast('Preparing the print PDF… this takes a few seconds');
+    try { download(await buildPDF(), fname('print file') + '.pdf'); }
+    catch (e) { console.error(e); toast('Could not make the PDF. Check your internet connection and try again.'); }
+  };
+  $('#exPng').onclick = () => exportPNG(false);
+  $('#exPngT').onclick = () => exportPNG(true);
+  $('#exFaces').onclick = async () => {
+    toast('Preparing side images…');
+    try {
+      const files = await Promise.all(Object.entries(GEO.faces).map(([k, f]) => new Promise(res => renderFace(k, f, true).toBlob(b => res([fname((FACE_NAMES[k] || k) + ' side') + '.png', b]), 'image/png'))));
+      download(await makeZip(files), fname('side images') + '.zip');
+    } catch (e) { toast('Could not prepare the images. Check your internet connection and try again.'); }
+  };
+  $('#saveProj').onclick = () => download(JSON.stringify({ app: 'BioPapro Design Hub', v: 1, S, IMG }), fname('project') + '.json', 'application/json');
+  $('#loadProjBtn').onclick = () => $('#loadProj').click();
+  $('#loadProj').onchange = e => {
+    const f = e.target.files[0]; if (!f) return; const r = new FileReader();
+    r.onload = async () => {
+      try {
+        const j = JSON.parse(r.result); Object.assign(S, j.S, { D: { ...BASE_D, ...j.S.D } }); IMG.logo = j.IMG.logo || null; IMG.faces = j.IMG.faces || {};
+        await Promise.all([IMG.logo, ...Object.values(IMG.faces)].map(loadImg)); dieVB = null; syncUI(); rebuild(); toast('Project opened');
+      } catch (err) { toast('Could not open that file. Is it a Design Hub project?'); }
+    };
+    r.readAsText(f); e.target.value = '';
+  };
+}
+
+(async function start() {
+  initUI();
+  const had = restore();
+  if (!had) applyPreset('straw8'); else { await Promise.all([IMG.logo, ...Object.values(IMG.faces)].map(loadImg)); syncUI(); }
+  S.V.fold = 1; syncUI(); goStep(1);
+  rebuild();
+  load3D();
+  let seen = false; try { seen = !!localStorage.getItem('bpps_welcome'); } catch (e) { }
+  if (!seen) $('#welcome').classList.add('on');
+  if (document.fonts) {
+    try { await Promise.race([Promise.all(['400', '500', '600', '700', '800'].map(w => document.fonts.load(`${w} 20px Poppins`))), new Promise(r => setTimeout(r, 3000))]); } catch (e) { }
+    refreshArt();
+  }
+})();
+function load3D() {
+  const srcs = ['vendor/three.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js', 'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js'];
+  const tryLoad = i => {
+    if (i >= srcs.length) { $('#load3d').classList.remove('on'); $('#nogl').style.display = 'flex'; return; }
+    const sc = document.createElement('script'); sc.src = srcs[i]; sc.async = true;
+    sc.onload = () => { if (!window.THREE) { sc.remove(); return tryLoad(i + 1); } $('#load3d').classList.remove('on'); init3D(); if (GEO) build3D(); };
+    sc.onerror = () => { sc.remove(); tryLoad(i + 1); };
+    document.head.appendChild(sc);
+  };
+  $('#load3d').classList.add('on'); tryLoad(0);
+}
+</script>
+<a href="../../#work" style="position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:99999;background:#1c1712;color:#ffb547;font:500 12px/1 Inter,system-ui,sans-serif;padding:9px 14px;border-radius:999px;box-shadow:0 6px 24px rgba(0,0,0,.25);text-decoration:none;white-space:nowrap">Portfolio demo · ← back to portfolio</a></body>
+</html>

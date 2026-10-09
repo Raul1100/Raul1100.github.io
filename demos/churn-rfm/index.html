@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B2B Churn Prediction + RFM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/demo.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>window.APP={"name": "Retain", "short": "Re", "tagline": "Churn intelligence", "accent": "#16a34a", "workspace": "B2B accounts · 520 customers", "nav": [{"id": "overview", "title": "Overview", "icon": "home", "desc": "How well the model finds customers who are about to stop ordering."}, {"id": "calls", "title": "Call list", "icon": "phone", "desc": "Highest-risk active customers, with the reasons behind each score."}, {"id": "segments", "title": "RFM segments", "icon": "pie", "desc": "Recency, frequency and spend segments with their actual churn."}, {"id": "method", "title": "Methodology", "icon": "book", "desc": "Simulation, features, labels and the time-based split."}], "notifications": [["Model retrained", "Logistic regression on monthly snapshots"], ["High-risk accounts flagged", "See the call list"], ["RFM refreshed", "Segments recomputed for the test snapshot"]]};</script>
+<script src="../_shared/demo.js"></script>
+<script src="core.js"></script>
+</head>
+<body>
+<header class="top">
+  <h1>B2B Churn Prediction + RFM</h1>
+  <span class="sub" id="sub"></span>
+  <span class="spacer"></span>
+  <button id="regen">↻ New simulation</button>
+</header>
+<main>
+  <div data-view="overview" class="grid g4" id="kpis"></div>
+  <div data-view="overview" class="grid g2">
+    <div class="card"><h2>Who to call first <small>share of churners reached vs % of customers called</small></h2><div class="chart"><canvas id="curve"></canvas></div></div>
+    <div class="card"><h2>Compared with simpler approaches <small>same 20% call budget</small></h2><table id="compare"></table>
+      <h2 style="margin-top:18px">What the model learned <small>logistic weights, standardised</small></h2><table id="weights"></table></div>
+  </div>
+  <div data-view="calls" class="card"><h2>Highest churn risk <small>with the top reasons</small></h2><table id="list"></table></div>
+  <div data-view="segments" class="card"><h2>RFM segments <small>actual 90-day churn</small></h2><table id="segs"></table>
+    <p class="note" style="margin-top:12px">RFM scores recency, frequency and spend against <em>everyone else</em>. The model also compares each customer with <em>their own</em> rhythm and order size, which is where most of its extra lift comes from.</p></div>
+  <div data-view="method" class="card"><h2>How it works</h2><p class="note">520 simulated B2B customers with their own ordering rhythms; about 45% eventually leave, slowing down and placing smaller orders first, and some order lumpily without leaving. A snapshot is taken every 30 days: seven features from history up to that day, label = "no order in the next 90 days". Training uses only snapshots whose label window closes before the test snapshot (time-based split, no leakage). Logistic regression with L2 is trained by gradient descent in your browser. Source: <span class="mono">demos/churn-rfm/core.js</span>.</p></div>
+</main>
+<script>
+let seed = 11, chart;
+function render() {
+  const r = Churn.run(seed);
+  $('#sub').textContent = `${r.custs.length} customers · ${num(r.trainRows)} training rows from ${r.trainSnapshots} snapshots · tested on ${r.test.length} active customers`;
+  $('#kpis').innerHTML = [
+    ['Churners reached in top 20%', pct(r.capture.model, 0), 'ok'], ['Revenue at risk covered', pct(r.revenue.model, 0), 'acc'],
+    ['ROC AUC (model)', r.auc.model.toFixed(3), ''], ['Actual churn rate (test)', pct(r.churners / r.test.length, 0), 'bad']]
+    .map(([l, v, c]) => `<div class="card kpi ${c}"><b>${v}</b><span>${l}</span></div>`).join('');
+  const cmp = [['Churn model', r.capture.model, r.auc.model.toFixed(3), 'ok'], ['Rank by days since last order', r.capture.recency, r.auc.recency.toFixed(3), ''], ['Random calls', r.capture.random, '0.500', 'bad']];
+  $('#compare').innerHTML = '<tr><th>Approach</th><th class="num">Churners reached</th><th></th><th class="num">AUC</th></tr>' +
+    cmp.map(([n, v, a, c]) => `<tr class="${c === 'ok' ? 'best' : ''}"><td>${n}</td><td class="num"><b>${pct(v, 0)}</b></td><td><div class="bar"><i class="${c}" style="width:${v * 100}%"></i></div></td><td class="num">${a}</td></tr>`).join('') +
+    `<tr><td colspan="4" class="note">The fixed rule "no order in 60 days" flags ${r.rule.flagged} customers and catches ${pct(r.rule.caught, 0)} of churners (precision ${pct(r.rule.precision, 0)}).</td></tr>`;
+  const ws = r.model.w.map((w, j) => [r.FEATS[j], w]).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])), mx = Math.max(...ws.map(x => Math.abs(x[1])));
+  $('#weights').innerHTML = ws.map(([n, w]) => `<tr><td>${n}</td><td class="num mono" style="color:${w > 0 ? 'var(--bad)' : 'var(--ok)'}">${w > 0 ? '+' : ''}${w.toFixed(2)}</td><td style="width:40%"><div class="bar"><i class="${w > 0 ? 'bad' : 'ok'}" style="width:${Math.abs(w) / mx * 100}%"></i></div></td></tr>`).join('') +
+    '<tr><td colspan="3" class="note">Red raises churn risk, green lowers it.</td></tr>';
+  const reason = c => c.contrib.map((v, j) => [v, j]).filter(x => x[0] > 0).sort((a, b) => b[0] - a[0]).slice(0, 2).map(([, j]) => {
+    const x = c.x[j]; return j === 0 ? `${Math.round(x)} days quiet` : j === 3 ? `gap ${x.toFixed(1)}× their usual` : j === 4 ? `gaps getting longer (${x.toFixed(1)}×)` : j === 5 ? `orders ${Math.round((1 - x) * 100)}% smaller` : j === 1 ? `only ${x} orders in 180d` : r.FEATS[j]; });
+  $('#list').innerHTML = '<tr><th>Customer</th><th class="num">Risk</th><th>Why</th><th>RFM</th><th>Outcome</th></tr>' + r.ranked.slice(0, 12).map(c =>
+    `<tr><td>${esc(c.name)} <span class="mono" style="color:var(--dim);font-size:11px">${c.id}</span></td><td class="num"><b style="color:${c.p > .6 ? 'var(--bad)' : 'var(--accent)'}">${pct(c.p, 0)}</b></td><td style="font-size:12px;color:var(--muted)">${reason(c).join(' · ')}</td><td><span class="pill mute">${c.seg}</span></td><td>${c.y ? '<span class="pill bad">left</span>' : '<span class="pill ok">stayed</span>'}</td></tr>`).join('');
+  const order = ['Champions', 'Loyal', 'Promising', 'Needs Attention', 'At Risk', 'Hibernating'];
+  $('#segs').innerHTML = '<tr><th>Segment</th><th class="num">Customers</th><th class="num">Churned</th><th></th></tr>' + order.filter(s => r.segs[s]).map(s => {
+    const v = r.segs[s], rate = v.churn / v.n; return `<tr><td>${s}</td><td class="num">${v.n}</td><td class="num">${pct(rate, 0)}</td><td style="width:35%"><div class="bar"><i class="${rate > .3 ? 'bad' : rate < .1 ? 'ok' : ''}" style="width:${rate * 100}%"></i></div></td></tr>`; }).join('');
+  chart?.destroy();
+  chart = new Chart($('#curve'), { type: 'line', data: { labels: r.curve.map(c => Math.round(c[0] * 100) + '%'), datasets: [
+    { label: 'Churn model', data: r.curve.map(c => +(c[1] * 100).toFixed(1)), borderColor: '#7bd88f', backgroundColor: 'rgba(123,216,143,.12)', fill: true, tension: .3, pointRadius: 0 },
+    { label: 'Days since last order', data: r.curve.map(c => +(c[2] * 100).toFixed(1)), borderColor: '#ffb547', tension: .3, pointRadius: 0 },
+    { label: 'Random', data: r.curve.map(c => +(c[0] * 100).toFixed(1)), borderColor: '#6f675c', borderDash: [5, 5], pointRadius: 0 }] },
+    options: { maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, scales: { x: { title: { display: true, text: '% of customers called (highest risk first)' } }, y: { max: 100, ticks: { callback: v => v + '%' } } } } });
+}
+$('#regen').onclick = () => { seed = Math.floor(Math.random() * 1e6); render(); };
+render();
+</script>
+</body>
+</html>

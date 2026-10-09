@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="fixtures.js"></script><script src="demo-api.js"></script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Biopapro — Gross Margin Dashboard</title>
+<script>window.API_TOKEN = "";</script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="shared.css">
+<script src="shared.js"></script>
+<style>
+:root{
+  --brand:#117A50;--brand-lt:#E6F4EF;--brand-dim:#0D5E3C;
+  --hdr:#0a1628;--hdr2:#0d1f3c;--hdr3:#1e3a5f;
+  --srf:#FFFFFF;--pg:#f4f3ef;--border:#e5e2db;--border2:#ccc9c0;
+  --txt:#191917;--txt2:#3a3834;--txt3:#6a6760;
+  --green:#117A50;--green-bg:#E6F4EF;--green-txt:#0A5236;
+  --red:#C0392B;--red-bg:#FDEDEC;--red-txt:#922B21;
+  --amber:#D68910;--amber-bg:#FEF9E7;--amber-txt:#9A6208;
+  --blue:#1A6FA8;--blue-bg:#EBF5FB;--blue-txt:#154360;
+  --r:6px;--r2:10px;--r3:14px;
+}
+/* box-sizing reset + body font-family/background/color moved to shared.css */
+body{font-size:13px;min-height:100vh}
+/* Phase 3 v2: .hdr (real, rendered — confirmed via grep) was a navy bar, replaced with
+   .ds-header in the HTML below; these .hdr-*/.logo-sq/.pulse rules are now unused CSS, kept
+   only where a class is reused by name below (none are — see the HTML change). Not deleted
+   outright since .hdr-status/.pulse's "Loading.../Live" status text is still real functionality,
+   just re-homed into .ds-header-sub; kept the class names to avoid touching the JS that sets
+   #status's textContent. Non-sticky by design (same reasoning as sales.html/production.html:
+   avoids hand-tuning a pixel offset for stacked sticky bars) — .fbar is now the first sticky
+   element, top:0 instead of top:52px. */
+.hdr-status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink-3)}
+.pulse{width:7px;height:7px;border-radius:50%;background:#27AE60;animation:pulse 2s infinite}
+/* @keyframes pulse moved to shared.css */
+.fbar{background:#fff;border-bottom:1px solid var(--border);padding:8px 24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:sticky;top:0;z-index:199}
+.fl{font-size:11px;font-weight:500;color:var(--txt3);text-transform:uppercase;letter-spacing:.6px;white-space:nowrap}
+.fsel{display:flex;align-items:center;gap:6px;position:relative}
+.fsel label{font-size:11px;color:var(--txt3);white-space:nowrap}
+.fsel input{padding:5px 26px 5px 9px;border:1px solid var(--border2);border-radius:var(--r);font-size:12px;font-family:inherit;color:var(--txt);background:#fff;height:30px;min-width:130px;outline:none}
+.fsel input:focus{border-color:var(--brand)}
+.fsel input.wide{min-width:190px}
+.fsel-clr{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:16px;height:16px;background:var(--border2);border-radius:50%;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:10px;color:var(--txt2);line-height:1;flex-shrink:0}
+.fsel-clr.vis{display:flex}
+.fdrop{position:absolute;top:calc(100% + 4px);left:0;min-width:100%;max-width:320px;background:#fff;border:1px solid var(--border2);border-radius:var(--r2);box-shadow:0 4px 16px rgba(0,0,0,.10);z-index:300;max-height:220px;overflow-y:auto;display:none}
+.fdrop.open{display:block}
+.fdrop-item{padding:7px 10px;font-size:12px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--txt)}
+.fdrop-item:hover,.fdrop-item.active{background:var(--brand-lt);color:var(--brand-dim)}
+.fdrop-empty{padding:8px 10px;font-size:12px;color:var(--txt3);font-style:italic}
+.ftog{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--txt2);cursor:pointer;padding:5px 8px;border:1px solid var(--border2);border-radius:var(--r);height:30px;background:#fff;font-family:inherit}
+.ftog input{accent-color:var(--brand);width:13px;height:13px}
+.fbar-sep{width:1px;height:20px;background:var(--border);flex-shrink:0}
+.tabs{background:#fff;border-bottom:2px solid var(--border);padding:0 24px;display:flex;align-items:stretch;position:sticky;top:42px;z-index:198}
+.tab{padding:0 20px;height:40px;display:flex;align-items:center;font-size:13px;font-weight:500;color:var(--txt3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;gap:6px;transition:.15s;white-space:nowrap}
+.tab.on{color:var(--brand);border-bottom-color:var(--brand);font-weight:600}
+.tab:hover:not(.on){color:var(--txt)}
+.tab-icon{width:15px;height:15px;opacity:.7}
+.tab.on .tab-icon{opacity:1}
+.main{padding:20px 24px;max-width:1600px;margin:0 auto}
+.pane{display:none}.pane.on{display:block;animation:pageIn .18s ease-out}
+/* Wow Factor v2, Technique 5 — tab switching gets a brief cross-fade+slide, matching the
+   app-wide pattern (index.html's .page.active, sales.html's .page.on, production.html's .tab-page.active). */
+@keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.sec-label{font-size:10px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border)}
+/* Phase 3 v2: .krow/.kcard (real, single template site — the kcard() JS helper) replaced with
+   shared.css's .ds-stat-row/.ds-stat (3px LEFT border instead of kcard's 3px TOP border, per
+   the design system's stat-card spec). Same 5 accent colors, same hex values (var(--brand) for
+   green, var(--red)/var(--amber)/var(--blue)/var(--border2) for gray), kept as page-scoped
+   .ds-stat.c-{color} modifiers (same class names kcard() already passes, zero JS changes)
+   since this page has no single department accent either. .kval's
+   separate value-text-color modifier (green/red/amber/blue, applied independently of the
+   card's own accent — e.g. a c-amber card can have a plain-ink value) is preserved as
+   .ds-stat-value.{color}, same class names the kcard() helper already passes through unchanged. */
+.ds-stat.c-green{border-left-color:var(--brand)}
+.ds-stat.c-red{border-left-color:var(--red)}
+.ds-stat.c-amber{border-left-color:var(--amber)}
+.ds-stat.c-blue{border-left-color:var(--blue)}
+.ds-stat.c-gray{border-left-color:var(--border2)}
+.ds-stat-value.green{color:var(--green)}.ds-stat-value.red{color:var(--red)}
+.ds-stat-value.amber{color:var(--amber)}.ds-stat-value.blue{color:var(--blue)}
+/* Phase 3 v2: .badge retinted to the .ds-pill visual treatment (rounded-full, was already a
+   light-tint-bg + colored-text pattern close to .ds-pill — just the radius/padding needed
+   updating). Kept the same class names (.g/.r/.a/.b/.x) — chip()/kcard() build these as plain
+   strings, zero JS changes needed. */
+.badge{font-size:10px;font-weight:600;padding:3px 10px;border-radius:999px}
+.badge.g{background:var(--green-bg);color:var(--green-txt)}.badge.r{background:var(--red-bg);color:var(--red-txt)}
+.badge.a{background:var(--amber-bg);color:var(--amber-txt)}.badge.b{background:var(--blue-bg);color:var(--blue-txt)}.badge.x{background:#F0F2F5;color:var(--txt2)}
+/* v3 "wow factor" pass, Step 5: card padding/grid gaps +~20-25% app-wide. */
+.vgrid{display:grid;grid-template-columns:1.55fr 1fr;gap:15px;margin-bottom:15px}
+.vcard{background:var(--srf);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.vcard-hdr{padding:15px 19px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.vcard-title{font-size:11px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.6px}
+.vcard-sub{font-size:11px;color:var(--txt3)}
+.vcard-body{padding:14px 16px}
+.blist{display:flex;flex-direction:column;gap:9px}
+.bitem{display:flex;align-items:center;gap:10px}
+.bname{width:150px;font-size:12px;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
+.btrack{flex:1;height:8px;background:var(--pg);border-radius:4px;overflow:hidden}
+.bfill{height:100%;border-radius:4px}
+.bamt{width:70px;text-align:right;font-size:12px;font-weight:600;font-family:'DM Mono',monospace;flex-shrink:0}
+.dlegend{display:flex;flex-direction:column;gap:7px;flex:1;min-width:0}
+.dleg-item{display:flex;align-items:center;gap:7px;font-size:11px;overflow:hidden}
+.dleg-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+.dleg-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt)}
+.dleg-pct{font-size:11px;font-weight:600;font-family:'DM Mono',monospace;color:var(--txt2);white-space:nowrap}
+.tcard{background:var(--srf);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.tcard-hdr{padding:14px 19px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.tcard-title{font-size:11px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.6px}
+.tcard-info{font-size:11px;color:var(--txt3)}
+.tscroll{max-height:480px;overflow-y:auto;overflow-x:auto}
+/* Phase 3 v2 count-up pass: the bare table/thead th/.grp-hdr th/.g0-g3/tbody tr/td.r rules that
+   used to style these 2 tables unscoped are now shared.css's .ds-table--grouped variant (same
+   visual language as .ds-table — hairline borders, ink-tone palette, DM Mono numeric columns,
+   no zebra — adapted to this table's real two-row grouped header instead of forcing .ds-table's
+   single-row shape onto it). Only page-specific density (td padding/font-size, the min-width
+   scroll threshold) and the 3 semantic column-tint backgrounds stay page-local. */
+.ds-table--grouped{min-width:860px}
+td{padding:7px 10px;white-space:nowrap;vertical-align:middle;font-size:12px}
+td.dim{background:rgba(17,122,80,.04)}.tdcost{background:rgba(214,137,16,.04)}.tdmarg{background:rgba(26,111,168,.04)}
+.mg{color:var(--green);font-weight:600}.mr{color:var(--red);font-weight:600}
+.noR{font-size:10px;color:var(--amber);font-style:italic}
+.cat-chip{font-size:10px;font-weight:500;padding:2px 7px;border-radius:3px;display:inline-block;white-space:nowrap}
+.ch-g{background:var(--green-bg);color:var(--green-txt)}.ch-a{background:var(--amber-bg);color:var(--amber-txt)}
+.ch-b{background:var(--blue-bg);color:var(--blue-txt)}.ch-r{background:var(--red-bg);color:var(--red-txt)}.ch-x{background:#F0F2F5;color:var(--txt2)}
+.mbar{display:flex;align-items:center;gap:5px}
+.mtrk{width:38px;height:4px;background:#EEF0F3;border-radius:2px;overflow:hidden;flex-shrink:0}
+.mfill{height:100%;border-radius:2px}
+.totrow td{font-weight:600;background:var(--pg);border-top:1.5px solid var(--border2);position:sticky;bottom:0}
+.clickrow{cursor:pointer}.clickrow:hover td{background:#F0F9F4 !important}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px;gap:12px;color:var(--txt3)}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite}
+/* @keyframes spin moved to shared.css */
+.errbox{background:var(--red-bg);border:1px solid #F1948A;border-radius:var(--r2);padding:14px 18px;color:var(--red-txt);margin:20px 0;font-size:13px}
+.modal-bg{position:fixed;inset:0;background:rgba(10,20,35,.55);z-index:900;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:#fff;border-radius:var(--r3);width:100%;max-width:900px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+/* Phase 3 v2: the modal's own header was ALSO navy (var(--hdr)) — "no navy bars outside the
+   sidebar" applies everywhere, not just page headers, so this got the same treatment even
+   though a dialog title bar is a different UI context than a page header. */
+.modal-hdr{background:var(--srf);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-shrink:0}
+.modal-ttl{font-size:15px;font-weight:600;color:var(--txt)}
+.modal-sub{font-size:11px;color:var(--txt3);margin-top:2px}
+.modal-close{width:28px;height:28px;background:var(--pg);border:1px solid var(--border);border-radius:6px;color:var(--txt2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.modal-close:hover{background:var(--border);color:var(--txt)}
+.modal-krow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 18px;border-bottom:1px solid var(--border);flex-shrink:0}
+.modal-kpi{background:var(--pg);border-radius:var(--r);padding:10px 12px}
+.modal-klbl{font-size:10px;font-weight:500;color:var(--txt3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.modal-kval{font-size:18px;font-weight:600;font-family:'DM Mono',monospace;color:var(--txt)}
+.modal-search{padding:10px 18px;border-bottom:1px solid var(--border);flex-shrink:0}
+.modal-search input{width:100%;padding:7px 12px;border:1px solid var(--border2);border-radius:var(--r);font-size:12px;font-family:inherit;outline:none}
+.modal-search input:focus{border-color:var(--brand)}
+.modal-body{overflow-y:auto;flex:1}
+.modal-table{width:100%;border-collapse:collapse;font-size:12px;min-width:700px}
+.modal-table thead th{position:sticky;top:0;background:#fff;color:var(--ink-3);padding:8px 10px 9px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+.modal-table thead th.r{text-align:right}
+.modal-table tbody tr:hover td{background:#F9FAFB}
+.modal-table td{padding:8px 10px;vertical-align:middle}
+.modal-table td.r{text-align:right;font-family:'DM Mono',monospace}
+.inv-badge{background:#E6F1FB;color:#185FA5;font-size:10px;font-weight:600;padding:2px 7px;border-radius:3px;font-family:'DM Mono',monospace;white-space:nowrap}
+.modal-table tfoot td{font-weight:700;background:#F8FAFC;border-top:2px solid var(--border2);padding:8px 10px}
+.modal-table tfoot td.r{text-align:right;font-family:'DM Mono',monospace}
+/* .krow{...} dropped from both queries below — dead since .krow was renamed to .ds-stat-row in
+   the count-up pass; .ds-stat-row's own grid-template-columns:repeat(auto-fit,minmax(180px,1fr))
+   already reflows responsively with no breakpoint needed. */
+@media(max-width:1100px){.vgrid{grid-template-columns:1fr}}
+@media(max-width:700px){.main{padding:14px 12px}}
+</style>
+</head>
+<body>
+
+<!-- PAGE HEADER — Phase 3 v2. #status kept exactly where JS expects it (setStatus()-style calls
+     set its textContent), just re-homed from the navy header's right side into .ds-header's
+     actions slot. -->
+<div class="ds-header">
+  <div class="ds-header-left">
+    <div class="ds-header-icon" style="color:var(--brand)">💰</div>
+    <div>
+      <div class="ds-header-title">Biopapro — Gross Margin Dashboard</div>
+      <div class="ds-header-sub">Dispatch Data &times; SKU Cost</div>
+    </div>
+  </div>
+  <div class="ds-header-actions">
+    <div class="hdr-status"><div class="pulse"></div><span id="status">Loading...</span></div>
+    <button class="ds-btn-primary" onclick="load()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 018-8 8 8 0 015.66 2.34L21 10"/><path d="M21 4v6h-6"/></svg>
+      Refresh
+    </button>
+  </div>
+</div>
+
+<div class="fbar">
+  <div class="fl">Filters</div>
+  <div class="fbar-sep"></div>
+  <div class="fsel">
+    <label>Month</label>
+    <input type="text" id="fMonth" placeholder="All months" autocomplete="off"
+      oninput="onFilter('month')" onfocus="openDrop('month')" onblur="closeDrop('month')">
+    <span class="fsel-clr" id="clr-month" onmousedown="clearFilter('month')">&#x2715;</span>
+    <div class="fdrop" id="drop-month"></div>
+  </div>
+  <div class="fsel">
+    <label>Customer</label>
+    <input type="text" id="fCust" class="wide" placeholder="All customers" autocomplete="off"
+      oninput="onFilter('cust')" onfocus="openDrop('cust')" onblur="closeDrop('cust')">
+    <span class="fsel-clr" id="clr-cust" onmousedown="clearFilter('cust')">&#x2715;</span>
+    <div class="fdrop" id="drop-cust"></div>
+  </div>
+  <div class="fsel">
+    <label>Category</label>
+    <input type="text" id="fCat" placeholder="All categories" autocomplete="off"
+      oninput="onFilter('cat')" onfocus="openDrop('cat')" onblur="closeDrop('cat')">
+    <span class="fsel-clr" id="clr-cat" onmousedown="clearFilter('cat')">&#x2715;</span>
+    <div class="fdrop" id="drop-cat"></div>
+  </div>
+  <div class="fsel">
+    <label>Product</label>
+    <input type="text" id="fProd" class="wide" placeholder="All products" autocomplete="off"
+      oninput="onFilter('prod')" onfocus="openDrop('prod')" onblur="closeDrop('prod')">
+    <span class="fsel-clr" id="clr-prod" onmousedown="clearFilter('prod')">&#x2715;</span>
+    <div class="fdrop" id="drop-prod"></div>
+  </div>
+  <div class="fbar-sep"></div>
+  <label class="ftog"><input type="checkbox" id="showAll" onchange="render()"> Show unbilled</label>
+</div>
+
+<div class="tabs">
+  <div class="tab on" onclick="switchTab('overview',this)">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+      <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+    </svg>
+    Overview
+  </div>
+  <div class="tab" onclick="switchTab('products',this)">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+    </svg>
+    Product Analysis
+  </div>
+</div>
+
+<div class="main">
+  <div id="pane-overview" class="pane on">
+    <div id="app"><div class="loading"><div class="spinner"></div><div>Loading...</div></div></div>
+  </div>
+  <div id="pane-products" class="pane">
+    <div id="prod-app"><div class="loading"><div class="spinner"></div><div>Loading...</div></div></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modalBg" class="modal-bg" style="display:none" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div>
+        <div class="modal-ttl" id="modal-ttl">Product</div>
+        <div class="modal-sub" id="modal-sub">Customer dispatch history</div>
+      </div>
+      <button class="modal-close" onclick="closeModalDirect()">&#x2715;</button>
+    </div>
+    <div class="modal-krow" id="modal-krow"></div>
+    <div class="modal-search">
+      <input type="text" id="modal-search" placeholder="Search date / invoice / customer..." oninput="filterModal()">
+    </div>
+    <div class="modal-body">
+      <table class="modal-table" id="modal-table"></table>
+    </div>
+  </div>
+</div>
+
+<script>
+var DATA=null, DC=null, DC2=null, DC3=null, DC4=null;
+// v3 "wow factor" pass: tonal family instead of a 10-hue rainbow — one distinct accent (this
+// page's own --gm-accent green) for the largest category, descending navy/brand tints for the
+// rest, neutral grey last for the capped "Other" bucket. Only 5 entries needed since categories
+// are now capped to top-4 + Other (see capCats()).
+var PAL=["#059669","#0d1f3c","#2d4a7a","#5b7ba8","#94a8c9"];
+var LISTS={month:[],cust:[],cat:[],prod:[]};
+var VALS={month:'',cust:'',cat:'',prod:''};
+var MODAL_ROWS=[];
+var SORT={raw:{col:null,dir:1},grp:{col:null,dir:1}};
+var RAW_ROWS_CACHE=[], GRP_ROWS_CACHE=[];
+
+const API_BASE = location.protocol==='file:' ? 'http://localhost:3000' : '';
+
+// window.API_TOKEN is injected server-side (see app/main.py's Jinja2Templates wiring) — every
+// /api/* call needs it since Phase 1.5 added a shared-bearer-token auth gate.
+function authFetch(url, opts) {
+  opts = opts || {};
+  opts.headers = Object.assign({}, opts.headers, {Authorization: 'Bearer ' + (window.API_TOKEN || '')});
+  return fetch(url, opts);
+}
+
+function inr(v){
+  // Uses the literal ₹ character, not the &#x20B9; HTML entity: this function's return value is
+  // also used as dsCountUp's per-frame `format` callback, which writes via el.textContent (never
+  // parses HTML entities) — the entity showed up as literal text "&#x20B9;" once animated. A
+  // literal Unicode character renders correctly via both textContent and innerHTML, so this is
+  // safe for every existing call site too (the page is UTF-8).
+  v=Math.round(v||0);
+  if(Math.abs(v)>=1e7) return '₹'+(v/1e7).toFixed(2)+'Cr';
+  if(Math.abs(v)>=1e5) return '₹'+(v/1e5).toFixed(1)+'L';
+  if(Math.abs(v)>=1e3) return '₹'+(v/1e3).toFixed(1)+'K';
+  return '₹'+v.toLocaleString('en-IN');
+}
+function n(v){return Math.round(v||0).toLocaleString('en-IN');}
+// Real bug fix: n() rounds to the nearest integer, which is correct for counts/rates but was
+// also being used for QTY — silently displaying every sub-1 quantity (a lot of order lines, e.g.
+// 0.14) as a flat "0", with no way to tell "0.14 units" apart from "genuinely zero" in the table.
+// nQty keeps whole quantities exactly as clean as before (n() and nQty() agree on any integer)
+// and only switches to 2-decimal display for the fractional case n() was silently erasing.
+function nQty(v){v=v||0;return (v%1===0)?v.toLocaleString('en-IN'):v.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function p(v){return((Math.round((v||0)*10))/10).toFixed(1)+'%';}
+function esc(s){return(s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function chip(cat){
+  var m={'Wooden cutlery':'ch-g','Wooden cutlery set with tissue':'ch-g','Ice cream':'ch-a','Bamboo':'ch-g','Stirrer':'ch-a','Straw':'ch-b','Cutlery Set':'ch-b','Gloves':'ch-r','Toothpick':'ch-x'};
+  return '<span class="cat-chip '+(m[cat]||'ch-x')+'">'+esc((cat||'Unknown').substring(0,18))+'</span>';
+}
+function kcard(cls,lbl,val,vcls,sub,bdg,bc){
+  return '<div class="ds-stat '+cls+'"><div class="ds-stat-label">'+lbl+'</div>'+
+    '<div class="ds-stat-value '+(vcls||'')+'"><span class="cu-num">'+val+'</span></div>'+
+    '<div class="ds-stat-caption">'+sub+(bdg?'<span class="badge '+(bc||'x')+'">'+bdg+'</span>':'')+'</div></div>';
+}
+function mkpi(l,v){return '<div class="modal-kpi"><div class="modal-klbl">'+l+'</div><div class="modal-kval">'+v+'</div></div>';}
+function cap(k){return k.charAt(0).toUpperCase()+k.slice(1);}
+
+function showErr(msg){
+  document.getElementById('app').innerHTML='<div class="errbox">&#9888; Error: '+esc(msg)+'<br><br><button onclick="load()" style="background:#117A50;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:600;margin-top:8px">Retry</button></div>';
+  document.getElementById('status').textContent='Error';
+}
+
+// ── filters ──
+function fillLists(){
+  LISTS.month=DATA.months.slice();
+  LISTS.cat=DATA.cats.map(function(c){return c.name;}).sort();
+  var cs={},ps={};
+  DATA.rows.forEach(function(r){if(r.cust)cs[r.cust]=1;if(r.prod)ps[r.prod]=1;});
+  LISTS.cust=Object.keys(cs).sort();
+  LISTS.prod=Object.keys(ps).sort();
+}
+function buildDrop(key,query){
+  var drop=document.getElementById('drop-'+key);if(!drop)return;
+  var q=(query||'').trim().toLowerCase();
+  var matches=q?LISTS[key].filter(function(v){return v.toLowerCase().indexOf(q)!==-1;}):LISTS[key];
+  if(!matches.length){drop.innerHTML='<div class="fdrop-empty">No results</div>';return;}
+  drop.innerHTML=matches.slice(0,60).map(function(v){
+    var a=VALS[key]===v?' active':'';
+    return '<div class="fdrop-item'+a+'" onmousedown="selectFilter(\''+key+'\',\''+v.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')" >'+esc(v)+'</div>';
+  }).join('');
+}
+function openDrop(key){buildDrop(key,'');document.getElementById('drop-'+key).classList.add('open');}
+function closeDrop(key){
+  setTimeout(function(){
+    document.getElementById('drop-'+key).classList.remove('open');
+    document.getElementById('f'+cap(key)).value=VALS[key]||'';
+  },160);
+}
+function onFilter(key){
+  var v=document.getElementById('f'+cap(key)).value;
+  buildDrop(key,v);
+  document.getElementById('drop-'+key).classList.add('open');
+  if(!v.trim()&&VALS[key]){VALS[key]='';updateClr(key);render();}
+}
+function selectFilter(key,val){
+  VALS[key]=val;
+  document.getElementById('f'+cap(key)).value=val;
+  document.getElementById('drop-'+key).classList.remove('open');
+  updateClr(key);render();
+}
+function clearFilter(key){
+  VALS[key]='';document.getElementById('f'+cap(key)).value='';
+  updateClr(key);render();
+}
+function updateClr(key){
+  var el=document.getElementById('clr-'+key);
+  if(el)el.classList.toggle('vis',!!VALS[key]);
+}
+
+// ── load ──
+window.onload=function(){load();};
+
+function switchTab(name,el){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  document.querySelectorAll('.pane').forEach(function(p){p.classList.remove('on');});
+  el.classList.add('on');
+  document.getElementById('pane-'+name).classList.add('on');
+  if(name==='products'&&DATA)renderProducts();
+}
+
+function load(){
+  document.getElementById('app').innerHTML='<div class="loading"><div class="spinner"></div><div>Loading data from Google Sheets...</div></div>';
+  document.getElementById('status').textContent='Loading...';
+  authFetch(API_BASE+'/api/gross-margin')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(!data.ok) throw new Error(data.error||'API error');
+      DATA=data;
+      fillLists();
+      // auto-select current month
+      var now=new Date();
+      var mn=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var cur=mn[now.getMonth()+1]+' '+now.getFullYear();
+      if(LISTS.month.indexOf(cur)!==-1){
+        VALS.month=cur;
+        document.getElementById('fMonth').value=cur;
+        updateClr('month');
+      }
+      render();
+      document.getElementById('status').textContent='Updated '+new Date().toLocaleTimeString();
+    })
+    .catch(function(e){showErr(e.message||e.toString());});
+}
+
+// ── data helpers ──
+function getRows(){
+  var fm=VALS.month,fc=VALS.cust,fk=VALS.cat,fp=VALS.prod;
+  var all=document.getElementById('showAll').checked;
+  return DATA.rows.filter(function(r){
+    if(fm&&r.mon!==fm)return false;
+    if(fc&&r.cust!==fc)return false;
+    if(fk&&r.cat!==fk)return false;
+    if(fp&&r.prod!==fp)return false;
+    // Real bug fix: the checkbox is meant to ISOLATE the unbilled/no-cost-rate rows when
+    // checked (matching the "Unbilled" KPI's own r.billed && r.costRate>0 definition — see the
+    // unb= fix above), leaving them hidden among everything else by default. This used to do the
+    // opposite — hide unbilled rows when UNCHECKED (using only !r.billed, which is almost never
+    // true in real data) and show everything when CHECKED — so unchecked already showed
+    // essentially every row, and checking the box visibly did nothing: there was no state where
+    // the 2 no-cost-rate August rows were ever filtered OUT to be revealed by the toggle.
+    if(all&&(r.billed&&r.costRate>0))return false;
+    return true;
+  });
+}
+
+function calcCats(bRows,tSale){
+  var cmap={};
+  bRows.forEach(function(r){if(!cmap[r.cat])cmap[r.cat]={sale:0};cmap[r.cat].sale+=r.total;});
+  return Object.keys(cmap).map(function(k){
+    return{name:k,sale:cmap[k].sale,share:tSale>0?Math.round(cmap[k].sale/tSale*1000)/10:0};
+  }).sort(function(a,b){return b.sale-a.sale;});
+}
+// v3 "wow factor" pass: a donut with 8+ thin slivers reads as busy no matter how it's styled —
+// cap to top-(max-1) real categories plus one grouped "Other" bucket for everything past that,
+// used by both the donut chart and its legend (buildViz) so the two stay in sync.
+function capCats(cats,max){
+  if(cats.length<=max) return cats;
+  var top=cats.slice(0,max-1);
+  var rest=cats.slice(max-1);
+  var restSale=rest.reduce(function(s,c){return s+c.sale;},0);
+  var restShare=rest.reduce(function(s,c){return s+c.share;},0);
+  return top.concat([{name:'Other',sale:restSale,share:Math.round(restShare*10)/10}]);
+}
+
+function calcTrend(bRows){
+  var mmap={};
+  bRows.forEach(function(r){if(!mmap[r.mon])mmap[r.mon]={sale:0,cost:0};mmap[r.mon].sale+=r.total;mmap[r.mon].cost+=r.cost;});
+  var sMons=DATA.months.filter(function(m){return mmap[m];});
+  return{
+    mons:sMons,
+    sales:sMons.map(function(m){return Math.round(mmap[m].sale/1000);}),
+    margins:sMons.map(function(m){return Math.round((mmap[m].sale-mmap[m].cost)/1000);})
+  };
+}
+
+function buildKPIs(tSale,tCost,tMarg,avgPct,unb,mon){
+  var h='<div class="sec-label">Key metrics &mdash; '+esc(mon)+'</div><div class="ds-stat-row">';
+  h+=kcard('c-green','Total Sale',inr(tSale),'','Billed dispatch','','');
+  h+=kcard('c-gray','Total Cost',inr(tCost),'','SKU production cost','','');
+  h+=kcard(tMarg>=0?'c-green':'c-red','Gross Margin',inr(tMarg),tMarg>=0?'green':'red','',tMarg>=0?'Profit':'Loss',tMarg>=0?'g':'r');
+  h+=kcard(avgPct>=20?'c-green':'c-amber','Margin %',p(avgPct),(avgPct>=20?'green':'amber')+' ds-stat-value--hero','',avgPct>=20?'Good':'Low',avgPct>=20?'g':'a');
+  h+=kcard('c-amber','Unbilled',n(unb),'amber','No amount entered','','');
+  h+='</div>';
+  return h;
+}
+// Count-up wiring for buildKPIs()'s 5 cards, shared by render() and renderProducts() (identical
+// metric set, different container). Positional — matches kcard()'s call order in buildKPIs()
+// exactly (Total Sale, Total Cost, Gross Margin, Margin %, Unbilled) — and reuses the exact same
+// formatter each metric already renders with (inr/n/p), so the animation's final frame matches
+// the static text byte-for-byte.
+function wireKPICountUp(containerId,tSale,tCost,tMarg,avgPct,unb){
+  var els=document.querySelectorAll('#'+containerId+' .ds-stat-row .cu-num');
+  dsCountUp(els[0],tSale,{format:inr});
+  dsCountUp(els[1],tCost,{format:inr});
+  dsCountUp(els[2],tMarg,{format:inr});
+  dsCountUp(els[3],avgPct,{format:p});
+  dsCountUp(els[4],unb,{format:n});
+}
+
+function buildViz(items,cats,pieId,barTitle){
+  var maxM=items.length?Math.abs(items[0].margin):1;
+  var bhtml=items.map(function(b){
+    var pct=maxM>0?Math.max(4,Math.round(Math.abs(b.margin)/maxM*100)):0;
+    var fc=b.margin>=0?'#117A50':'#C0392B';
+    return '<div class="bitem">'+
+      '<div class="bname" title="'+esc(b.name)+'">'+esc(b.name.substring(0,22))+(b.name.length>22?'...':'')+'</div>'+
+      '<div class="btrack"><div class="bfill" style="width:'+pct+'%;background:'+fc+'"></div></div>'+
+      '<div class="bamt" style="color:'+fc+'">'+inr(b.margin)+'</div>'+
+    '</div>';
+  }).join('');
+  var leg=cats.map(function(c,i){
+    return '<div class="dleg-item">'+
+      '<div class="dleg-dot" style="background:'+PAL[i%PAL.length]+'"></div>'+
+      '<div class="dleg-name">'+esc(c.name)+'</div>'+
+      '<div class="dleg-pct">'+c.share+'%</div>'+
+    '</div>';
+  }).join('');
+  return '<div class="vgrid">'+
+    '<div class="vcard">'+
+      '<div class="vcard-hdr"><div class="vcard-title">'+barTitle+'</div><div class="vcard-sub">Top 8</div></div>'+
+      '<div class="vcard-body"><div class="blist">'+(bhtml||'<div style="color:var(--txt3)">No billed data</div>')+'</div></div>'+
+    '</div>'+
+    '<div class="vcard">'+
+      '<div class="vcard-hdr"><div class="vcard-title">Revenue by Category</div><div class="vcard-sub">Sale share</div></div>'+
+      '<div class="vcard-body" style="display:flex;align-items:center;gap:14px">'+
+        '<div style="flex-shrink:0;width:144px;height:144px"><canvas id="'+pieId+'" width="144" height="144"></canvas></div>'+
+        '<div class="dlegend" style="flex:1;min-width:0">'+(leg||'<div style="color:var(--txt3)">No data</div>')+'</div>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+}
+
+// ── sort helpers ──
+function sortRows(rows,col,dir){
+  return rows.slice().sort(function(a,b){
+    var av=a[col],bv=b[col];
+    if(typeof av==='string')av=av.toLowerCase();
+    if(typeof bv==='string')bv=bv.toLowerCase();
+    if(av<bv)return -1*dir;if(av>bv)return 1*dir;return 0;
+  });
+}
+function thSort(id,col,label,isRight){
+  var s=SORT[id],arrow='';
+  if(s.col===col)arrow=s.dir===1?' &#9650;':' &#9660;';
+  var align=isRight?'text-align:right;':'';
+  return '<th style="cursor:pointer;user-select:none;'+align+'" onclick="doSort(\''+id+'\',\''+col+'\')">'+label+arrow+'</th>';
+}
+function doSort(id,col){
+  var s=SORT[id];
+  if(s.col===col){s.dir*=-1;}else{s.col=col;s.dir=1;}
+  if(id==='raw')reRawTable();else reGrpTable();
+}
+
+function rawSortHead(){
+  return thSort('raw','dt','Date',false)+
+    thSort('raw','inv','Invoice',false)+
+    thSort('raw','cust','Customer',false)+
+    thSort('raw','prod','Product',false)+
+    thSort('raw','cat','Category',false)+
+    thSort('raw','qty','Qty',true)+
+    thSort('raw','rate','Rate',true)+
+    thSort('raw','total','Sale Total',true)+
+    thSort('raw','costRate','Cost Rate',true)+
+    thSort('raw','cost','Total Cost',true)+
+    thSort('raw','margin','Margin &#x20B9;',true)+
+    thSort('raw','pct','Margin %',true);
+}
+function grpSortHead(){
+  return thSort('grp','dt','Date',false)+
+    thSort('grp','prod','Product',false)+
+    thSort('grp','cat','Category',false)+
+    thSort('grp','qty','Qty',true)+
+    thSort('grp','rate','Rate',true)+
+    thSort('grp','total','Sale Total',true)+
+    thSort('grp','costRate','Cost Rate',true)+
+    thSort('grp','cost','Total Cost',true)+
+    thSort('grp','margin','Margin &#x20B9;',true)+
+    thSort('grp','pct','Margin %',true);
+}
+
+function rawTbody(rows){
+  return rows.map(function(r){
+    var mc=r.margin>=0?'mg':'mr';
+    var pct=r.total>0?Math.min(100,Math.abs(r.pct)):0;
+    var fc=r.margin>=0?'#117A50':'#C0392B';
+    var rc=r.billed?'<td class="ds-r dim">&#x20B9;'+n(r.rate)+'</td>':'<td class="ds-r dim"><span class="noR">-</span></td>';
+    var ps=r.prod.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return '<tr class="clickrow" onclick="openModal(\''+ps+'\')">' +
+      '<td style="font-size:11px;font-family:DM Mono,monospace;color:var(--txt3)">'+esc(r.dt)+'</td>'+
+      '<td style="font-size:11px;color:var(--blue)">'+esc(r.inv||'-')+'</td>'+
+      '<td title="'+esc(r.cust)+'">'+esc((r.cust||'').substring(0,22))+(r.cust&&r.cust.length>22?'...':'')+'</td>'+
+      '<td title="'+esc(r.prod)+'"><span style="font-size:12px;font-weight:500">'+esc(r.prod.substring(0,26))+(r.prod.length>26?'...':'')+'</span></td>'+
+      '<td>'+chip(r.cat)+'</td>'+
+      '<td class="ds-r dim">'+nQty(r.qty)+'</td>'+rc+
+      '<td class="ds-r dim"><strong>'+inr(r.total)+'</strong></td>'+
+      '<td class="ds-r tdcost">&#x20B9;'+n(r.costRate)+'</td>'+
+      '<td class="ds-r tdcost"><strong>'+inr(r.cost)+'</strong></td>'+
+      '<td class="ds-r tdmarg '+mc+'"><strong>'+inr(r.margin)+'</strong></td>'+
+      '<td class="ds-r tdmarg"><div class="mbar"><div class="mtrk"><div class="mfill" style="width:'+pct+'%;background:'+fc+'"></div></div>'+
+        '<span class="'+mc+'" style="font-size:11px;font-family:DM Mono,monospace">'+p(r.pct)+'</span></div></td>'+
+    '</tr>';
+  }).join('');
+}
+
+function grpTbody(rows){
+  return rows.map(function(r){
+    var mc=r.margin>=0?'mg':'mr';
+    var pct=r.total>0?Math.min(100,Math.abs(r.pct)):0;
+    var fc=r.margin>=0?'#117A50':'#C0392B';
+    var rc=r.billed?'<td class="ds-r dim">&#x20B9;'+n(r.rate)+'</td>':'<td class="ds-r dim"><span class="noR">-</span></td>';
+    var ps=r.prod.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return '<tr class="clickrow" onclick="openModal(\''+ps+'\')">' +
+      '<td style="font-size:11px;font-family:DM Mono,monospace;color:var(--txt3)">'+esc(r.dt)+'</td>'+
+      '<td title="'+esc(r.prod)+'"><span style="font-size:12px;font-weight:500">'+esc(r.prod.substring(0,28))+(r.prod.length>28?'...':'')+'</span></td>'+
+      '<td>'+chip(r.cat)+'</td>'+
+      '<td class="ds-r dim">'+nQty(r.qty)+'</td>'+rc+
+      '<td class="ds-r dim"><strong>'+inr(r.total)+'</strong></td>'+
+      '<td class="ds-r tdcost">&#x20B9;'+n(r.costRate)+'</td>'+
+      '<td class="ds-r tdcost"><strong>'+inr(r.cost)+'</strong></td>'+
+      '<td class="ds-r tdmarg '+mc+'"><strong>'+inr(r.margin)+'</strong></td>'+
+      '<td class="ds-r tdmarg"><div class="mbar"><div class="mtrk"><div class="mfill" style="width:'+pct+'%;background:'+fc+'"></div></div>'+
+        '<span class="'+mc+'" style="font-size:11px;font-family:DM Mono,monospace">'+p(r.pct)+'</span></div></td>'+
+    '</tr>';
+  }).join('');
+}
+
+function reRawTable(){
+  var q=document.getElementById('raw-search')?document.getElementById('raw-search').value.trim().toLowerCase():'';
+  var rows=q?RAW_ROWS_CACHE.filter(function(r){return(r.dt+' '+r.inv+' '+r.cust+' '+r.prod+' '+r.cat).toLowerCase().indexOf(q)!==-1;}):RAW_ROWS_CACHE;
+  var s=SORT.raw;if(s.col)rows=sortRows(rows,s.col,s.dir);
+  var el=document.getElementById('raw-tbody');if(el)el.innerHTML=rawTbody(rows);
+  var el2=document.getElementById('raw-info');if(el2)el2.textContent=rows.length+' rows — click row for detail';
+  var el3=document.getElementById('raw-thead-sort');if(el3)el3.innerHTML=rawSortHead();
+}
+function reGrpTable(){
+  var q=document.getElementById('grp-search')?document.getElementById('grp-search').value.trim().toLowerCase():'';
+  var rows=q?GRP_ROWS_CACHE.filter(function(r){return(r.dt+' '+r.prod+' '+r.cat).toLowerCase().indexOf(q)!==-1;}):GRP_ROWS_CACHE;
+  var s=SORT.grp;if(s.col)rows=sortRows(rows,s.col,s.dir);
+  var el=document.getElementById('grp-tbody');if(el)el.innerHTML=grpTbody(rows);
+  var el2=document.getElementById('grp-info');if(el2)el2.textContent=rows.length+' rows — click row for detail';
+  var el3=document.getElementById('grp-thead-sort');if(el3)el3.innerHTML=grpSortHead();
+}
+
+function buildRawTableHTML(rows,tSale,tCost,tMarg){
+  RAW_ROWS_CACHE=rows;SORT.raw={col:null,dir:1};
+  var tQty=rows.reduce(function(s,r){return s+r.qty;},0);
+  return '<div class="tcard">'+
+    '<div class="tcard-hdr">'+
+      '<div><div class="tcard-title">Line-item Gross Margin</div><div class="tcard-info" id="raw-info">'+rows.length+' rows — click row for detail</div></div>'+
+      '<input id="raw-search" type="text" placeholder="&#128269; Search date, invoice, customer, product..." '+
+        'style="padding:5px 10px;border:1px solid var(--border2);border-radius:var(--r);font-size:12px;font-family:inherit;outline:none;min-width:280px;height:30px" '+
+        'oninput="reRawTable()">'+
+    '</div>'+
+    '<div class="tscroll"><table class="ds-table--grouped">'+
+    '<thead><tr class="ds-grp-row"><th colspan="5" class="ds-g0">Transaction</th><th colspan="3" class="ds-g1">Dispatch</th><th colspan="2" class="ds-g2">SKU Cost</th><th colspan="2" class="ds-g3">Gross Margin</th></tr>'+
+    '<tr id="raw-thead-sort">'+rawSortHead()+'</tr></thead>'+
+    '<tbody id="raw-tbody">'+rawTbody(rows)+'</tbody>'+
+    '<tfoot><tr class="totrow"><td colspan="5"><strong>Total</strong></td>'+
+      '<td class="ds-r dim">'+nQty(tQty)+'</td><td class="ds-r dim">-</td><td class="ds-r dim"><strong>'+inr(tSale)+'</strong></td>'+
+      '<td class="ds-r tdcost">-</td><td class="ds-r tdcost"><strong>'+inr(tCost)+'</strong></td>'+
+      '<td class="ds-r tdmarg '+(tMarg>=0?'mg':'mr')+'"><strong>'+inr(tMarg)+'</strong></td>'+
+      '<td class="ds-r tdmarg '+(tMarg>=0?'mg':'mr')+'">'+p(tSale>0?Math.round(tMarg/tSale*1000)/10:0)+'</td>'+
+    '</tr></tfoot></table></div></div>';
+}
+
+function groupRows(rows){
+  var map={};
+  rows.forEach(function(r){
+    var key=r.prod+'||'+String(r.rate)+'||'+r.cust;
+    if(!map[key])map[key]={dt:r.dt,inv:r.inv,cust:r.cust,prod:r.prod,cat:r.cat,rate:r.rate,qty:0,total:0,cost:0,margin:0,costRate:r.costRate,billed:r.billed,pct:0,cnt:0};
+    var g=map[key];g.qty+=r.qty;g.total+=r.total;g.cost+=r.cost;g.margin+=r.margin;g.cnt++;
+  });
+  return Object.keys(map).map(function(k){
+    var g=map[k];g.pct=g.total>0?Math.round(g.margin/g.total*1000)/10:0;
+    if(g.cnt>1)g.inv='('+g.cnt+' entries)';return g;
+  });
+}
+
+function buildTableHTML(grouped,tSale,tCost,tMarg){
+  GRP_ROWS_CACHE=grouped;SORT.grp={col:null,dir:1};
+  var tQty=grouped.reduce(function(s,r){return s+r.qty;},0);
+  return '<div class="tcard">'+
+    '<div class="tcard-hdr">'+
+      '<div><div class="tcard-title">Product-wise Gross Margin</div><div class="tcard-info" id="grp-info">'+grouped.length+' rows — click row for detail</div></div>'+
+      '<input id="grp-search" type="text" placeholder="&#128269; Search product, category..." '+
+        'style="padding:5px 10px;border:1px solid var(--border2);border-radius:var(--r);font-size:12px;font-family:inherit;outline:none;min-width:260px;height:30px" '+
+        'oninput="reGrpTable()">'+
+    '</div>'+
+    '<div class="tscroll"><table class="ds-table--grouped">'+
+    '<thead><tr class="ds-grp-row"><th colspan="3" class="ds-g0">Product</th><th colspan="3" class="ds-g1">Dispatch</th><th colspan="2" class="ds-g2">SKU Cost</th><th colspan="2" class="ds-g3">Gross Margin</th></tr>'+
+    '<tr id="grp-thead-sort">'+grpSortHead()+'</tr></thead>'+
+    '<tbody id="grp-tbody">'+grpTbody(grouped)+'</tbody>'+
+    '<tfoot><tr class="totrow"><td colspan="3"><strong>Total</strong></td>'+
+      '<td class="ds-r dim">'+nQty(tQty)+'</td><td class="ds-r dim">-</td><td class="ds-r dim"><strong>'+inr(tSale)+'</strong></td>'+
+      '<td class="ds-r tdcost">-</td><td class="ds-r tdcost"><strong>'+inr(tCost)+'</strong></td>'+
+      '<td class="ds-r tdmarg '+(tMarg>=0?'mg':'mr')+'"><strong>'+inr(tMarg)+'</strong></td>'+
+      '<td class="ds-r tdmarg '+(tMarg>=0?'mg':'mr')+'">'+p(tSale>0?Math.round(tMarg/tSale*1000)/10:0)+'</td>'+
+    '</tr></tfoot></table></div></div>';
+}
+
+// ── chart drawers ──
+// v3 "wow factor" pass: dsCenterLabel/DS_CHART_TOOLTIP come from shared.js — same helpers the
+// OS Ageing donut (ceo.js) uses, not a page-local copy.
+function drawPie(id,cats,old,totalSale){
+  var cv=document.getElementById(id);if(!cv)return null;
+  if(old)old.destroy();
+  // Bug fix, confirmed via screenshot (the center label never rendered): the per-chart custom
+  // plugins array belongs as a sibling of `options`, not nested inside it — nested there, it
+  // silently overwrote options.plugins's {legend,tooltip} object (same key, object-literal
+  // last-write-wins) instead of registering dsCenterLabel at all. cutout also moved inside
+  // options, where Chart.js v4 actually reads it from.
+  return new Chart(cv,{type:'doughnut',data:{labels:cats.map(function(c){return c.name;}),datasets:[{data:cats.map(function(c){return c.sale;}),backgroundColor:cats.map(function(_,i){return PAL[i%PAL.length];}),borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{...DS_CHART_TOOLTIP,callbacks:{label:function(ctx){return ' '+ctx.label+': '+inr(ctx.raw);}}}}},
+    plugins:[dsCenterLabel(inr(totalSale||0),'Total Sale')]});
+}
+function drawTrend(id,labels,sales,margins,old){
+  var cv=document.getElementById(id);if(!cv)return null;
+  if(old)old.destroy();
+  return new Chart(cv,{type:'line',data:{labels:labels,datasets:[
+    {label:'Sale',data:sales,borderColor:'#0d1f3c',
+      backgroundColor:function(ctx){var c=ctx.chart,ca=c.chartArea;if(!ca)return null;
+        var g=c.ctx.createLinearGradient(0,ca.top,0,ca.bottom);
+        g.addColorStop(0,'rgba(13,31,60,.35)');g.addColorStop(1,'rgba(13,31,60,0)');return g;},
+      pointRadius:0,pointHoverRadius:6,pointBackgroundColor:'#0d1f3c',tension:.35,fill:true,borderWidth:2},
+    {label:'Margin',data:margins,borderColor:'#1A6FA8',backgroundColor:'transparent',pointRadius:0,pointHoverRadius:6,pointBackgroundColor:'#1A6FA8',tension:.35,fill:false,borderWidth:2,borderDash:[5,4]}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',align:'end',labels:{boxWidth:10,font:{size:11},color:'#4A5568'}},tooltip:{...DS_CHART_TOOLTIP,mode:'index',intersect:false}},scales:{x:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:11},color:'#8592A3',maxRotation:45,autoSkip:false}},y:{grid:{color:'rgba(25,25,23,.05)'},ticks:{font:{size:11},color:'#8592A3',callback:function(v){return'₹'+v+'K';}}}}}});
+}
+
+// ── render ──
+function render(){
+  if(!DATA)return;
+  var rows=getRows();
+  var allBilled=rows.filter(function(r){return r.billed;});
+  var bRows=rows.filter(function(r){return r.billed&&r.costRate>0;});
+  var tSale=allBilled.reduce(function(s,r){return s+r.total;},0);
+  var tCost=bRows.reduce(function(s,r){return s+r.cost;},0);
+  var tMarg=bRows.reduce(function(s,r){return s+r.margin;},0);
+  var avgPct=tSale>0?Math.round(tMarg/tSale*1000)/10:0;
+  // Real bug fix: this used to count only rows.filter(!billed) — i.e. only lines with no sale
+  // amount entered at all, which is nearly always 0 in real data. The backend's own kpi.unbilled
+  // (app/services/gross_margin.py, matching legacy/server.js:1949) and the "Show unbilled"
+  // toggle above both mean something broader: any row that ISN'T a clean, fully cost-rated,
+  // billed line — that includes rows with a real sale amount but no SKU cost rate mapped (costRate
+  // 0), which is exactly the "no amount entered" caption below is actually pointing at (that
+  // caption is about the SKU COST amount, not the sale amount). rows.length - bRows.length
+  // matches that real definition; bRows is already computed right above as billed && costRate>0.
+  var unb=rows.length-bRows.length;
+  var bmap={};
+  bRows.forEach(function(r){var nm=r.cust.split(' ').slice(0,3).join(' ');bmap[nm]=(bmap[nm]||0)+r.margin;});
+  var buyers=Object.keys(bmap).map(function(k){return{name:k,margin:bmap[k]};}).sort(function(a,b){return b.margin-a.margin;}).slice(0,8);
+  var cats=capCats(calcCats(bRows,tSale),5);
+  var tr=calcTrend(bRows);
+  var mon=VALS.month||'All months';
+  var html=buildKPIs(tSale,tCost,tMarg,avgPct,unb,mon);
+  html+='<div class="sec-label">Visual analysis</div>';
+  html+=buildViz(buyers,cats,'pieChart','Top customers by margin');
+  if(tr.mons.length>1){
+    html+='<div class="sec-label">Monthly trend</div>'+
+      '<div class="vcard" style="margin-bottom:12px">'+
+        '<div class="vcard-hdr"><div class="vcard-title">Sale vs Margin (&#x20B9; Thousands)</div><div class="vcard-sub">Billed rows only</div></div>'+
+        '<div class="vcard-body" style="padding:12px 16px 16px"><div style="position:relative;width:100%;height:200px"><canvas id="trendChart"></canvas></div></div>'+
+      '</div>';
+  }
+  html+='<div class="sec-label">Transaction detail</div>';
+  html+=buildRawTableHTML(rows,tSale,tCost,tMarg);
+  document.getElementById('app').innerHTML=html;
+  wireKPICountUp('app',tSale,tCost,tMarg,avgPct,unb);
+  setTimeout(function(){DC=drawPie('pieChart',cats,DC,cats.reduce(function(s,c){return s+c.sale;},0));if(tr.mons.length>1)DC2=drawTrend('trendChart',tr.mons,tr.sales,tr.margins,DC2);},60);
+  if(document.getElementById('pane-products').classList.contains('on'))renderProducts();
+}
+
+function renderProducts(){
+  if(!DATA)return;
+  var rows=getRows();
+  var allBilled=rows.filter(function(r){return r.billed;});
+  var bRows=rows.filter(function(r){return r.billed&&r.costRate>0;});
+  var tSale=allBilled.reduce(function(s,r){return s+r.total;},0);
+  var tCost=bRows.reduce(function(s,r){return s+r.cost;},0);
+  var tMarg=bRows.reduce(function(s,r){return s+r.margin;},0);
+  var avgPct=tSale>0?Math.round(tMarg/tSale*1000)/10:0;
+  // Real bug fix: this used to count only rows.filter(!billed) — i.e. only lines with no sale
+  // amount entered at all, which is nearly always 0 in real data. The backend's own kpi.unbilled
+  // (app/services/gross_margin.py, matching legacy/server.js:1949) and the "Show unbilled"
+  // toggle above both mean something broader: any row that ISN'T a clean, fully cost-rated,
+  // billed line — that includes rows with a real sale amount but no SKU cost rate mapped (costRate
+  // 0), which is exactly the "no amount entered" caption below is actually pointing at (that
+  // caption is about the SKU COST amount, not the sale amount). rows.length - bRows.length
+  // matches that real definition; bRows is already computed right above as billed && costRate>0.
+  var unb=rows.length-bRows.length;
+  var pmap={};
+  bRows.forEach(function(r){if(!pmap[r.prod])pmap[r.prod]={name:r.prod,margin:0};pmap[r.prod].margin+=r.margin;});
+  var topP=Object.keys(pmap).map(function(k){return pmap[k];}).sort(function(a,b){return b.margin-a.margin;}).slice(0,8);
+  var cats=capCats(calcCats(bRows,tSale),5);
+  var tr=calcTrend(bRows);
+  var mon=VALS.month||'All months';
+  var html=buildKPIs(tSale,tCost,tMarg,avgPct,unb,mon);
+  html+='<div class="sec-label">Visual analysis</div>';
+  html+=buildViz(topP,cats,'p-pieChart','Top products by margin');
+  if(tr.mons.length>1){
+    html+='<div class="sec-label">Monthly trend</div>'+
+      '<div class="vcard" style="margin-bottom:12px">'+
+        '<div class="vcard-hdr"><div class="vcard-title">Sale vs Margin (&#x20B9; Thousands)</div><div class="vcard-sub">Billed rows only</div></div>'+
+        '<div class="vcard-body" style="padding:12px 16px 16px"><div style="position:relative;width:100%;height:200px"><canvas id="p-trendChart"></canvas></div></div>'+
+      '</div>';
+  }
+  html+='<div class="sec-label">Transaction detail</div>';
+  html+=buildTableHTML(groupRows(rows),tSale,tCost,tMarg);
+  document.getElementById('prod-app').innerHTML=html;
+  wireKPICountUp('prod-app',tSale,tCost,tMarg,avgPct,unb);
+  setTimeout(function(){DC3=drawPie('p-pieChart',cats,DC3,cats.reduce(function(s,c){return s+c.sale;},0));if(tr.mons.length>1)DC4=drawTrend('p-trendChart',tr.mons,tr.sales,tr.margins,DC4);},60);
+}
+
+// ── modal ──
+function openModal(prodName){
+  var allRows=DATA.rows.filter(function(r){
+    var fm=VALS.month,fc=VALS.cust,fk=VALS.cat;
+    if(fm&&r.mon!==fm)return false;
+    if(fc&&r.cust!==fc)return false;
+    if(fk&&r.cat!==fk)return false;
+    return r.prod===prodName;
+  });
+  MODAL_ROWS=allRows;
+  var tQty=allRows.reduce(function(s,r){return s+r.qty;},0);
+  var tSale=allRows.reduce(function(s,r){return s+r.total;},0);
+  var tCost=allRows.reduce(function(s,r){return s+r.cost;},0);
+  var custs={};allRows.forEach(function(r){if(r.cust)custs[r.cust]=1;});
+  document.getElementById('modal-ttl').textContent=prodName;
+  document.getElementById('modal-sub').textContent='Dispatch history — '+(VALS.month||'All months');
+  document.getElementById('modal-krow').innerHTML=mkpi('Total Qty',nQty(tQty))+mkpi('Customers',n(Object.keys(custs).length))+mkpi('Total Sale',inr(tSale))+mkpi('SKU Cost',inr(tCost));
+  document.getElementById('modal-search').value='';
+  renderModalTable(allRows);
+  document.getElementById('modalBg').style.display='flex';
+}
+function renderModalTable(rows){
+  var tQty=rows.reduce(function(s,r){return s+r.qty;},0);
+  var tSale=rows.reduce(function(s,r){return s+r.total;},0);
+  var tCost=rows.reduce(function(s,r){return s+r.cost;},0);
+  var tbody=rows.map(function(r,i){
+    return '<tr>'+
+      '<td style="color:var(--txt3)">'+(i+1)+'</td>'+
+      '<td style="font-size:11px;font-family:DM Mono,monospace;color:var(--txt3)">'+esc(r.dt)+'</td>'+
+      '<td><span class="inv-badge">'+esc(r.inv||'-')+'</span></td>'+
+      '<td style="font-weight:500">'+esc(r.cust||'-')+'</td>'+
+      '<td class="r">'+nQty(r.qty)+'</td>'+
+      '<td class="r" style="color:var(--amber-txt);font-weight:600">&#x20B9;'+n(r.rate)+'</td>'+
+      '<td class="r" style="font-weight:600">'+inr(r.total)+'</td>'+
+      '<td class="r" style="color:var(--txt3)">&#x20B9;'+n(r.costRate)+'</td>'+
+      '<td class="r">'+inr(r.cost)+'</td>'+
+    '</tr>';
+  }).join('');
+  document.getElementById('modal-table').innerHTML=
+    '<thead><tr><th>#</th><th>Date</th><th>Invoice</th><th>Customer</th>'+
+    '<th class="r">Qty</th><th class="r">Sale Rate</th><th class="r">Sale Amt</th>'+
+    '<th class="r">SKU Rate</th><th class="r">SKU Amt</th></tr></thead>'+
+    '<tbody>'+tbody+'</tbody>'+
+    '<tfoot><tr><td colspan="4" style="font-weight:700">Total</td>'+
+    '<td class="r" style="font-weight:700;color:var(--green)">'+nQty(tQty)+'</td><td class="r">-</td>'+
+    '<td class="r" style="font-weight:700">'+inr(tSale)+'</td><td class="r">-</td>'+
+    '<td class="r" style="font-weight:700">'+inr(tCost)+'</td></tr></tfoot>';
+}
+function filterModal(){
+  var q=document.getElementById('modal-search').value.trim().toLowerCase();
+  renderModalTable(q?MODAL_ROWS.filter(function(r){return(r.dt+' '+r.inv+' '+r.cust).toLowerCase().indexOf(q)!==-1;}):MODAL_ROWS);
+}
+function closeModal(e){if(e&&e.target!==document.getElementById('modalBg'))return;document.getElementById('modalBg').style.display='none';}
+function closeModalDirect(){document.getElementById('modalBg').style.display='none';}
+</script>
+</body>
+</html>

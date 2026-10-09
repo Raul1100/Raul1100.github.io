@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BioPapro TDS &amp; Spec Generator</title>
+<style>
+  :root{
+    --bg:#f4f6f8; --card:#fff; --ink:#1c2530; --muted:#5b6b7a;
+    --line:#d8e0e8; --brand:#0b7a4b; --brand2:#0a5c8a; --accent:#e8f3ee;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 "Segoe UI",Roboto,Arial,sans-serif}
+  header{background:var(--brand);color:#fff;padding:14px 20px}
+  header h1{margin:0;font-size:17px;letter-spacing:.3px}
+  header p{margin:2px 0 0;font-size:12px;opacity:.85}
+  .wrap{max-width:1180px;margin:0 auto;padding:18px;display:grid;grid-template-columns:400px 1fr;gap:18px}
+  @media(max-width:980px){.wrap{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+  .card h2{margin:0 0 10px;font-size:14px;text-transform:uppercase;letter-spacing:.5px;color:var(--brand2)}
+  fieldset{border:1px solid var(--line);border-radius:8px;margin:0 0 14px;padding:10px 12px 4px}
+  legend{font-weight:600;font-size:12px;color:var(--muted);padding:0 6px;text-transform:uppercase;letter-spacing:.4px}
+  label{display:block;margin:0 0 9px;font-size:12px;color:var(--muted)}
+  label span{display:block;margin-bottom:3px}
+  input,select,textarea{width:100%;padding:7px 8px;border:1px solid var(--line);border-radius:6px;font:inherit;background:#fff}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-color:var(--brand)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .chk{display:flex;align-items:center;gap:8px;margin:0 0 10px}
+  .chk input{width:auto}
+  .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  button{cursor:pointer;border:1px solid var(--brand);background:var(--brand);color:#fff;padding:8px 14px;border-radius:6px;font:inherit;font-weight:600}
+  button.sec{background:#fff;color:var(--brand)}
+  button.ghost{background:#fff;color:var(--muted);border-color:var(--line)}
+  .hint{font-size:11px;color:var(--muted);margin:-4px 0 10px}
+  .out{display:flex;flex-direction:column;gap:18px}
+  .doc{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+  .doc-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;background:#eef3f7;padding:8px 12px;border-bottom:1px solid var(--line)}
+  .doc-bar strong{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--brand2)}
+  .doc-body{padding:18px;overflow-x:auto}
+  .sheet{max-width:720px;margin:0 auto;border:2px solid #222;padding:22px 26px;font-family:"Segoe UI",Arial,sans-serif}
+  .sh-co{text-align:center;font-weight:700;font-size:16px;letter-spacing:.5px}
+  .sh-ti{text-align:center;font-weight:700;font-size:15px;margin:6px 0 16px;text-decoration:underline}
+  .sh-tb{width:100%;border-collapse:collapse;margin-bottom:14px}
+  .sh-tb td{border:1px solid #333;padding:7px 10px;font-size:13px}
+  .sh-tb td:first-child{width:44%;font-weight:600;background:#f3f6f4;text-transform:uppercase}
+  .sh-dr{border:1px solid #333;padding:6px;text-align:center}
+  .sh-dr svg{max-width:100%;height:auto}
+  .sh-ft{margin-top:12px;font-size:10px;color:#777;text-align:right}
+  .spec h3{font-size:13px;margin:14px 0 4px;color:var(--brand2);text-transform:uppercase;letter-spacing:.4px}
+  .spec table{width:100%;border-collapse:collapse}
+  .spec td{border:1px solid #ccc;padding:5px 9px;font-size:12px}
+  .spec td:first-child{width:42%;font-weight:600;background:#f5f7f9}
+  .empty{color:#999;text-align:center;padding:26px}
+  .dl{stroke:#c0392b;stroke-width:1}
+  .dt{fill:#c0392b;font:600 11px "Segoe UI",Arial;}
+  .ti{fill:#333;font:700 13px "Segoe UI",Arial;letter-spacing:1px}
+  .pfill{fill:#e8eef5;stroke:#333;stroke-width:1.5}
+  .pline{stroke:#8896a6;stroke-width:1;stroke-dasharray:4 3;fill:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>BioPapro — TDS &amp; Product Specification Generator</h1>
+  <p>Paper straws &amp; wooden cutlery · fill the form → get the Technical Data Sheet, dimensioned drawing &amp; customer spec</p>
+</header>
+
+<div class="wrap">
+  <div class="card">
+    <h2>Input</h2>
+
+    <fieldset>
+      <legend>Product</legend>
+      <label><span>Category</span>
+        <select id="category">
+          <option value="straw">Paper Straw</option>
+          <option value="cutlery">Wooden Cutlery</option>
+        </select>
+      </label>
+
+      <div data-cat="cutlery">
+        <label><span>Sheet style</span>
+          <select id="sheetStyle">
+            <option value="rm">Raw Material (RM) — weight / pcs-per-kg / wastage</option>
+            <option value="fg">Finished Good — packing / box weight / box dimension</option>
+          </select>
+        </label>
+        <label><span>Shape</span>
+          <select id="shape">
+            <option value="spoon">Spoon</option>
+            <option value="fork">Fork</option>
+            <option value="knife">Knife</option>
+            <option value="scoop">Scoop</option>
+            <option value="stirrer">Coffee / Cocktail stirrer</option>
+          </select>
+        </label>
+      </div>
+
+      <div data-cat="straw">
+        <label><span>Straw type</span>
+          <input id="strawType" list="strawTypes" value="PLAIN WHITE">
+          <datalist id="strawTypes">
+            <option>PLAIN WHITE</option><option>RED AND WHITE</option><option>SOLID BLACK</option>
+          </datalist>
+        </label>
+        <div class="chk"><input type="checkbox" id="sharp"><label for="sharp" style="margin:0">Sharp edge</label></div>
+      </div>
+
+      <label><span>Product name (auto — edit if needed)</span>
+        <input id="pname" placeholder="auto-filled from fields">
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Specifications</legend>
+      <div data-cat="straw">
+        <div class="row2">
+          <label><span>Nominal Ø (mm)</span><input id="s_od" type="number" step="0.1" value="8"></label>
+          <label><span>Length (mm)</span><input id="s_len" type="number" step="1" value="197"></label>
+        </div>
+        <div class="row2">
+          <label><span>Ply</span><input id="s_ply" type="number" step="1" value="3"></label>
+          <label><span>GSM</span><input id="s_gsm" type="number" step="1" value="300"></label>
+        </div>
+        <label><span>Weight (g/pc) — auto from Ø × length × GSM, editable</span><input id="s_wt" type="number" step="0.01"></label>
+      </div>
+
+      <div data-cat="cutlery">
+        <div class="row2">
+          <label><span>Length (mm)</span><input id="c_len" type="number" step="1" value="160"></label>
+          <label><span>Thickness (mm)</span><input id="c_thk" type="number" step="0.01" value="1.60"></label>
+        </div>
+        <div data-style="rm">
+          <div class="row2">
+            <label><span>Weight (g/pc)</span><input id="c_wt" type="number" step="0.01" value="2.70"></label>
+            <label><span>Pcs per kg — auto, editable</span><input id="c_pcs" type="number" step="1"></label>
+          </div>
+          <label><span>Wastage (%)</span><input id="c_waste" value="10-15"></label>
+        </div>
+        <div data-style="fg">
+          <div class="row2">
+            <label><span>Pcs per packet</span><input id="f_ppk" type="number" step="1" value="50"></label>
+            <label><span>Box weight (kg)</span><input id="f_bw" type="number" step="0.001" value="14.600"></label>
+          </div>
+          <label><span>Box pcs count</span><input id="f_bpcs" type="number" step="1" value="20000"></label>
+          <div class="row3">
+            <label><span>Box L (mm)</span><input id="f_bl" type="number" value="440"></label>
+            <label><span>Box W (mm)</span><input id="f_bwid" type="number" value="280"></label>
+            <label><span>Box H (mm)</span><input id="f_bh" type="number" value="260"></label>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Drawing dimensions (measured, mm)</legend>
+      <div class="hint">Leave blank to auto-estimate from the specs above.</div>
+      <div id="dimFields" class="row2"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Customer Product Specification <span style="text-transform:none">(optional)</span></legend>
+      <div class="chk"><input type="checkbox" id="specOn"><label for="specOn" style="margin:0">Generate customer spec sheet</label></div>
+      <div id="specWrap" hidden>
+        <div class="row2">
+          <label><span>Customer name</span><input id="sp_cust"></label>
+          <label><span>Date</span><input id="sp_date" type="date"></label>
+        </div>
+        <label><span>Material</span><input id="sp_mat"></label>
+        <label><span>1 pc weight (g)</span><input id="sp_pcw" type="number" step="0.01"></label>
+        <h3 style="font-size:12px;color:#5b6b7a;margin:8px 0 2px">Primary bag / plastic</h3>
+        <div class="row2">
+          <label><span>Plastic size</span><input id="sp_psize" placeholder="11x15 Inch"></label>
+          <label><span>BOPP / LD</span><input id="sp_bopp" placeholder="LD Bag"></label>
+        </div>
+        <div class="row2">
+          <label><span>Printed?</span><input id="sp_pprint" placeholder="No"></label>
+          <label><span>Bag weight (g)</span><input id="sp_pw" type="number" step="0.01"></label>
+        </div>
+        <h3 style="font-size:12px;color:#5b6b7a;margin:8px 0 2px">Outer carton</h3>
+        <div class="row3">
+          <label><span>L (mm)</span><input id="sp_ol" type="number"></label>
+          <label><span>W (mm)</span><input id="sp_ow" type="number"></label>
+          <label><span>H (mm)</span><input id="sp_oh" type="number"></label>
+        </div>
+        <div class="row3">
+          <label><span>Colour</span><input id="sp_ocol" placeholder="Brown"></label>
+          <label><span>Printed?</span><input id="sp_oprint" placeholder="No"></label>
+          <label><span>Ply</span><input id="sp_oply" placeholder="5 ply"></label>
+        </div>
+        <label><span>Carton weight (kg)</span><input id="sp_ocw" type="number" step="0.001"></label>
+        <h3 style="font-size:12px;color:#5b6b7a;margin:8px 0 2px">Wrapping paper (if wrapped)</h3>
+        <div class="row2">
+          <label><span>Paper size</span><input id="sp_wsz" placeholder="L-210 W-140mm"></label>
+          <label><span>GSM</span><input id="sp_wg" type="number"></label>
+        </div>
+        <div class="row2">
+          <label><span>1 pc weight (g)</span><input id="sp_ww" type="number" step="0.01"></label>
+          <label><span>Coating</span><input id="sp_wc" placeholder="PE Coating"></label>
+        </div>
+        <h3 style="font-size:12px;color:#5b6b7a;margin:8px 0 2px">Tissue (if included)</h3>
+        <div class="row3">
+          <label><span>Size</span><input id="sp_tsz" placeholder="220x220mm"></label>
+          <label><span>1 pc wt (g)</span><input id="sp_tw" type="number" step="0.01"></label>
+          <label><span>Ply</span><input id="sp_tply" placeholder="1 Ply"></label>
+        </div>
+        <h3 style="font-size:12px;color:#5b6b7a;margin:8px 0 2px">Packaging counts &amp; weights</h3>
+        <div class="row3">
+          <label><span>Pcs / pkt</span><input id="sp_ppkt" type="number"></label>
+          <label><span>Pkt / outer</span><input id="sp_pout" type="number"></label>
+          <label><span>Pcs / carton</span><input id="sp_pcar" type="number"></label>
+        </div>
+        <div class="row3">
+          <label><span>Gross wt (kg)</span><input id="sp_gw" type="number" step="0.001"></label>
+          <label><span>Tare wt (kg)</span><input id="sp_tare" type="number" step="0.001"></label>
+          <label><span>Net wt (kg) — auto</span><input id="sp_net" type="number" step="0.001"></label>
+        </div>
+        <label><span>Documents (comma separated)</span><input id="sp_docs" placeholder="COA, Self-Inspection Report"></label>
+      </div>
+    </fieldset>
+
+    <div class="btns">
+      <button id="gen">Generate</button>
+      <button class="sec" id="printAll">Print full pack</button>
+      <button class="ghost" id="clear">Clear form</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Output</h2>
+    <div id="out" class="out"><div class="empty">Fill the form and click <b>Generate</b>.</div></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var num=function(v){v=parseFloat(v);return isNaN(v)?0:v};
+  var fmt=function(v){return num(v).toFixed(2)+" MM"};
+  var esc=function(s){return String(s==null?"":s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})};
+  var todayISO=function(){var d=new Date();return d.toISOString().slice(0,10)};
+  var dmy=function(iso){if(!iso)return "";var p=iso.split("-");return p[2]+"-"+p[1]+"-"+p[0]};
+
+  $('sp_date').value=todayISO();
+
+  /* ---------- show / hide by category & style ---------- */
+  function refreshVis(){
+    var cat=$('category').value, style=$('sheetStyle').value;
+    document.querySelectorAll('[data-cat]').forEach(function(el){el.hidden = el.getAttribute('data-cat')!==cat});
+    document.querySelectorAll('[data-style]').forEach(function(el){el.hidden = !(cat==='cutlery' && el.getAttribute('data-style')===style)});
+    buildDimFields();
+    autoName();
+  }
+  ['category','sheetStyle','shape'].forEach(function(id){$(id).addEventListener('change',refreshVis)});
+  $('specOn').addEventListener('change',function(){$('specWrap').hidden=!this.checked});
+
+  /* ---------- dimension fields per shape ---------- */
+  var DIMS={
+    straw:[['d_id','Inner Ø (ID)'],['d_od','Outer Ø (OD)'],['d_len','Length']],
+    spoon:[['d_len','Total length'],['d_bowl','Bowl length'],['d_bowlw','Bowl width'],['d_hw','Handle width'],['d_tw','Tip width'],['d_thk','Thickness']],
+    scoop:[['d_len','Total length'],['d_bowl','Scoop length'],['d_bowlw','Scoop width'],['d_hw','Handle width'],['d_tw','Tip width'],['d_thk','Thickness']],
+    fork:[['d_len','Total length'],['d_head','Head length'],['d_headw','Head width'],['d_hw','Handle width'],['d_tw','Tip width'],['d_thk','Thickness']],
+    knife:[['d_len','Total length'],['d_blade','Blade length'],['d_bladew','Blade width'],['d_hw','Handle width'],['d_thk','Thickness']],
+    stirrer:[['d_len','Total length'],['d_w','Width'],['d_thk','Thickness']]
+  };
+  function curShape(){return $('category').value==='straw'?'straw':$('shape').value}
+  function buildDimFields(){
+    var box=$('dimFields'); var keep={};
+    box.querySelectorAll('input').forEach(function(i){keep[i.id]=i.value});
+    box.innerHTML='';
+    DIMS[curShape()].forEach(function(d){
+      var l=document.createElement('label');
+      l.innerHTML='<span>'+d[1]+'</span><input id="'+d[0]+'" type="number" step="0.01">';
+      box.appendChild(l);
+      if(keep[d[0]]!=null) l.querySelector('input').value=keep[d[0]];
+    });
+  }
+
+  /* ---------- auto calculations ---------- */
+  function autoStrawWeight(){
+    var od=num($('s_od').value), len=num($('s_len').value), gsm=num($('s_gsm').value);
+    if(od&&len&&gsm){
+      var w=Math.PI*(od/1000)*(len/1000)*gsm*1.04;
+      var f=$('s_wt');
+      if(!f.value || f.dataset.auto===f.value) { f.value=w.toFixed(2); f.dataset.auto=f.value; }
+    }
+  }
+  function autoPcs(){
+    var wt=num($('c_wt').value), f=$('c_pcs');
+    if(wt){ if(!f.value || f.dataset.auto===f.value){ f.value=Math.round(1000/wt); f.dataset.auto=f.value; } }
+  }
+  function autoNet(){
+    var g=num($('sp_gw').value), t=num($('sp_tare').value), f=$('sp_net');
+    if(g&&t){ if(!f.value || f.dataset.auto===f.value){ f.value=(g-t).toFixed(3); f.dataset.auto=f.value; } }
+  }
+  ['s_od','s_len','s_gsm'].forEach(function(id){$(id).addEventListener('input',autoStrawWeight)});
+  $('c_wt').addEventListener('input',autoPcs);
+  ['sp_gw','sp_tare'].forEach(function(id){$(id).addEventListener('input',autoNet)});
+
+  /* ---------- auto product name ---------- */
+  function autoName(){
+    var f=$('pname'); if(f.dataset.auto && f.dataset.auto!==f.value) return; // user edited
+    var cat=$('category').value, nm='';
+    if(cat==='straw'){
+      nm=($('strawType').value||'').toUpperCase()+' PAPER STRAW'+($('sharp').checked?' (SHARP EDGE)':'');
+    }else{
+      var len=num($('c_len').value), sh=$('shape').value;
+      nm=$('sheetStyle').value==='rm' ? (len+' mm wooden '+sh+' (RM)') : (len+' MM '+sh.toUpperCase());
+    }
+    f.value=nm; f.dataset.auto=nm;
+  }
+  ['strawType','sharp','c_len','shape','category','sheetStyle'].forEach(function(id){$(id).addEventListener('input',autoName)});
+  $('pname').addEventListener('input',function(){this.dataset.auto=this.dataset.auto||''});
+
+  /* ================= DRAWING ================= */
+  function dH(x1,x2,y,label){var m=(x1+x2)/2;return '<line x1="'+x1+'" y1="'+y+'" x2="'+x2+'" y2="'+y+'" class="dl"/>'+
+    '<line x1="'+x1+'" y1="'+(y-4)+'" x2="'+x1+'" y2="'+(y+4)+'" class="dl"/>'+
+    '<line x1="'+x2+'" y1="'+(y-4)+'" x2="'+x2+'" y2="'+(y+4)+'" class="dl"/>'+
+    '<rect x="'+(m-38)+'" y="'+(y-9)+'" width="76" height="15" fill="#fff"/>'+
+    '<text x="'+m+'" y="'+(y+2)+'" class="dt" text-anchor="middle">'+label+'</text>'}
+  function dV(y1,y2,x,label,side){var m=(y1+y2)/2;var tx=side==='left'?x-7:x+7;var a=side==='left'?'end':'start';
+    return '<line x1="'+x+'" y1="'+y1+'" x2="'+x+'" y2="'+y2+'" class="dl"/>'+
+    '<line x1="'+(x-4)+'" y1="'+y1+'" x2="'+(x+4)+'" y2="'+y1+'" class="dl"/>'+
+    '<line x1="'+(x-4)+'" y1="'+y2+'" x2="'+(x+4)+'" y2="'+y2+'" class="dl"/>'+
+    '<text x="'+tx+'" y="'+(m+3)+'" class="dt" text-anchor="'+a+'">'+label+'</text>'}
+  function thkStrip(thk,scale){
+    var h=Math.max(Math.min(num(thk)*scale*3,16),6);
+    return '<text x="60" y="34" class="dt">THICKNESS (EDGE)</text>'+
+      '<rect x="60" y="46" width="96" height="'+h+'" class="pfill"/>'+
+      dV(46,46+h,162,fmt(thk),'right');
+  }
+  var CY=180, VBW=920, VBH=390, MAXW=600, MAXH=120;
+
+  function svgWrap(inner,title){
+    return '<svg viewBox="0 0 '+VBW+' '+VBH+'" xmlns="http://www.w3.org/2000/svg">'+
+      '<text x="460" y="24" class="ti" text-anchor="middle">'+esc(title)+'</text>'+inner+'</svg>';
+  }
+
+  function draw(shape,d){
+    var g=function(k){return num(d[k])};
+    if(shape==='straw'){
+      var L=g('d_len')||g('s_len')||197, od=g('d_od')||g('s_od')||8, id=g('d_id')||(od-1);
+      var sc=Math.min(MAXW/L, MAXH/od);
+      var Lp=L*sc, odp=od*sc, idp=id*sc, x0=(VBW-Lp)/2;
+      var s='<rect x="'+x0+'" y="'+(CY-odp/2)+'" width="'+Lp+'" height="'+odp+'" rx="'+(odp/2)+'" class="pfill"/>';
+      s+='<line x1="'+x0+'" y1="'+(CY-idp/2)+'" x2="'+(x0+Lp)+'" y2="'+(CY-idp/2)+'" class="pline"/>';
+      s+='<line x1="'+x0+'" y1="'+(CY+idp/2)+'" x2="'+(x0+Lp)+'" y2="'+(CY+idp/2)+'" class="pline"/>';
+      s+=dH(x0,x0+Lp,CY+odp/2+46,fmt(L));
+      s+=dV(CY-odp/2,CY+odp/2,x0+Lp+40,'Ø '+fmt(od),'right');
+      s+=dV(CY-idp/2,CY+idp/2,x0-40,'ID '+fmt(id),'left');
+      return svgWrap(s,'PAPER STRAW');
+    }
+    var L=g('d_len')||g('c_len')||160, thk=g('d_thk')||g('c_thk')||1.3;
+    if(shape==='stirrer'){
+      var w=g('d_w')||6;
+      var sc=Math.min(MAXW/L, MAXH/w);
+      var Lp=L*sc, wp=w*sc, x0=(VBW-Lp)/2;
+      var s='<rect x="'+x0+'" y="'+(CY-wp/2)+'" width="'+Lp+'" height="'+wp+'" rx="'+(wp/2)+'" class="pfill"/>';
+      s+=dH(x0,x0+Lp,CY+wp/2+46,fmt(L));
+      s+=dV(CY-wp/2,CY+wp/2,x0+Lp+40,fmt(w),'right');
+      s+=thkStrip(thk,sc);
+      return svgWrap(s,'STIRRER');
+    }
+    if(shape==='knife'){
+      var bl=g('d_blade')||L*0.55, bw=g('d_bladew')||L*0.09, hw=g('d_hw')||bw*1.7;
+      var maxW=Math.max(bw,hw), sc=Math.min(MAXW/L,MAXH/maxW);
+      var x0=(VBW-L*sc)/2, hx=x0+(L-bl)*sc, ex=x0+L*sc;
+      var bwp=bw*sc, hwp=hw*sc;
+      var s='<path d="M'+x0+' '+(CY-hwp/2)+' L'+hx+' '+(CY-hwp/2)+' L'+hx+' '+(CY+hwp/2)+' L'+x0+' '+(CY+hwp/2)+' Z" class="pfill"/>';
+      s+='<path d="M'+hx+' '+(CY-bwp/2)+' L'+(ex-6)+' '+(CY-bwp*0.14)+' Q'+ex+' '+CY+' '+(ex-6)+' '+(CY+bwp*0.14)+' L'+hx+' '+(CY+bwp/2)+' Z" class="pfill"/>';
+      s+=dH(x0,ex,CY+maxW*sc/2+46,fmt(L));
+      s+=dH(hx,ex,CY+maxW*sc/2+22,fmt(bl));
+      s+=dV(CY-bwp/2,CY+bwp/2,ex+38,fmt(bw),'right');
+      s+=dV(CY-hwp/2,CY+hwp/2,x0-38,fmt(hw),'left');
+      s+=thkStrip(thk,sc);
+      return svgWrap(s,'KNIFE');
+    }
+    if(shape==='fork'){
+      var hd=g('d_head')||L*0.28, headw=g('d_headw')||L*0.16, hw=g('d_hw')||headw*0.5, tw=g('d_tw')||hw*0.85;
+      var maxW=Math.max(headw,hw,tw), sc=Math.min(MAXW/L,MAXH/maxW);
+      var x0=(VBW-L*sc)/2, hx=x0+(L-hd)*sc, ex=x0+L*sc;
+      var hp=headw*sc, hwp=hw*sc, twp=tw*sc, hdp=hd*sc;
+      var s='<path d="M'+x0+' '+(CY-twp/2)+' L'+hx+' '+(CY-hwp/2)+' L'+hx+' '+(CY+hwp/2)+' L'+x0+' '+(CY+twp/2)+' Z" class="pfill"/>';
+      s+='<rect x="'+hx+'" y="'+(CY-hp/2)+'" width="'+hdp+'" height="'+hp+'" rx="3" class="pfill"/>';
+      var slot=hdp*0.55, sw=hp*0.15;
+      for(var i=1;i<=3;i++){var yy=CY-hp/2+hp*i/4-sw/2;s+='<rect x="'+(ex-slot)+'" y="'+yy+'" width="'+slot+'" height="'+sw+'" fill="#fff"/>';}
+      s+=dH(x0,ex,CY+maxW*sc/2+46,fmt(L));
+      s+=dH(hx,ex,CY+maxW*sc/2+22,fmt(hd));
+      s+=dV(CY-hp/2,CY+hp/2,ex+38,fmt(headw),'right');
+      s+=dV(CY-hwp/2,CY+hwp/2,x0+(L-hd)*sc*0.5,fmt(hw),'left');
+      s+=dV(CY-twp/2,CY+twp/2,x0-38,fmt(tw),'left');
+      s+=thkStrip(thk,sc);
+      return svgWrap(s,'FORK');
+    }
+    /* spoon / scoop */
+    var bl=g('d_bowl')||L*0.32, bw=g('d_bowlw')||L*0.18, hw=g('d_hw')||bw*0.45, tw=g('d_tw')||hw*0.85;
+    var maxW=Math.max(bw,hw,tw), sc=Math.min(MAXW/L,MAXH/maxW);
+    var x0=(VBW-L*sc)/2, hx=x0+(L-bl)*sc, ex=x0+L*sc;
+    var bwp=bw*sc, hwp=hw*sc, twp=tw*sc;
+    var s='<path d="M'+x0+' '+(CY-twp/2)+' L'+hx+' '+(CY-hwp/2)+' L'+hx+' '+(CY+hwp/2)+' L'+x0+' '+(CY+twp/2)+' Z" class="pfill"/>';
+    s+='<ellipse cx="'+((hx+ex)/2)+'" cy="'+CY+'" rx="'+(bl*sc/2)+'" ry="'+(bwp/2)+'" class="pfill"/>';
+    s+=dH(x0,ex,CY+maxW*sc/2+46,fmt(L));
+    s+=dH(hx,ex,CY+maxW*sc/2+22,fmt(bl));
+    s+=dV(CY-bwp/2,CY+bwp/2,ex+38,fmt(bw),'right');
+    s+=dV(CY-hwp/2,CY+hwp/2,x0+(L-bl)*sc*0.5,fmt(hw),'left');
+    s+=dV(CY-twp/2,CY+twp/2,x0-38,fmt(tw),'left');
+    s+=thkStrip(thk,sc);
+    return svgWrap(s, shape.toUpperCase());
+  }
+
+  function collectDims(){
+    var d={s_len:$('s_len').value,s_od:$('s_od').value,c_len:$('c_len').value,c_thk:$('c_thk').value};
+    $('dimFields').querySelectorAll('input').forEach(function(i){d[i.id]=i.value});
+    return d;
+  }
+
+  /* ================= DOCUMENTS ================= */
+  function row(l,v){return (v!=null && String(v).trim()!=='') ? '<tr><td>'+esc(l)+'</td><td>'+esc(v)+'</td></tr>' : ''}
+
+  function strawTDS(f,svg){
+    return '<div class="sheet"><div class="sh-co">BIOPAPRO PVT. LTD.</div>'+
+      '<div class="sh-ti">TECHNICAL DATA SHEET</div><table class="sh-tb">'+
+      row('Product Name',f.pname)+
+      row('Size',fmtNum(f.s_od)+' MM DIAMETER X '+fmtNum(f.s_len)+' MM LENGTH')+
+      row('Layer',fmtNum(f.s_ply)+' PLY')+
+      row('GSM',fmtNum(f.s_gsm)+' GSM')+
+      row('Weight',num(f.s_wt).toFixed(2)+' GMS PER PCS')+
+      row('Weight',(num(f.s_wt)*100).toFixed(0)+' GMS (100 PCS)')+
+      '</table><div class="sh-dr">'+svg+'</div>'+
+      '<div class="sh-ft">Generated '+dmy(todayISO())+' &bull; BioPapro</div></div>';
+  }
+  function cutleryRM(f,svg){
+    return '<div class="sheet"><div class="sh-co">BIOPAPRO CUTLERIES PVT. LTD.</div>'+
+      '<div class="sh-ti">TECHNICAL DATA SHEET</div><table class="sh-tb">'+
+      row('Product Name',f.pname)+
+      row('Weight',num(f.c_wt).toFixed(2)+' g')+
+      row('Pcs per kg',fmtNum(f.c_pcs)+' pcs')+
+      row('Wastage',f.c_waste+' %')+
+      row('Thickness',num(f.c_thk).toFixed(2)+' mm')+
+      row('Unit','Millimeter (mm)')+
+      '</table><div class="sh-dr">'+svg+'</div>'+
+      '<div class="sh-ft">Generated '+dmy(todayISO())+' &bull; BioPapro Cutleries</div></div>';
+  }
+  function cutleryFG(f,svg){
+    return '<div class="sheet"><div class="sh-co">BIOPAPRO CUTLERIES PVT. LTD.</div>'+
+      '<div class="sh-ti">TECHNICAL DATA SHEET</div><table class="sh-tb">'+
+      row('Product Name',f.pname)+
+      row('Product Thickness',num(f.c_thk).toFixed(2)+' MM')+
+      row('Packing Details',fmtNum(f.f_ppk)+' PCS PER PACKET')+
+      row('Box Weight',num(f.f_bw).toFixed(3)+' KG ('+fmtNum(f.f_bpcs)+' PCS)')+
+      row('Box Dimension','L-'+fmtNum(f.f_bl)+' X W-'+fmtNum(f.f_bwid)+' X H-'+fmtNum(f.f_bh)+' MM')+
+      '</table><div class="sh-dr">'+svg+'</div>'+
+      '<div class="sh-ft">Generated '+dmy(todayISO())+' &bull; BioPapro Cutleries</div></div>';
+  }
+  function fmtNum(v){v=String(v==null?'':v).trim();return v}
+
+  function specSheet(f){
+    var h='<div class="sheet spec"><div class="sh-co">BIOPAPRO</div><div class="sh-ti">PRODUCT SPECIFICATION</div><table>';
+    h+=row('Date',dmy(f.sp_date))+row('Customer Name',f.sp_cust)+row('Product Name',f.pname);
+    h+='</table><h3>Product Details</h3><table>';
+    h+=row('Size',f.category==='straw'?(fmtNum(f.s_od)+'mm x '+fmtNum(f.s_len)+'mm'):(fmtNum(f.c_len)+'mm'))+
+       row('Material',f.sp_mat)+
+       row('Thickness',f.category==='straw'?'':(num(f.c_thk).toFixed(2)+'mm'))+
+       row('1 Pcs Weight',f.sp_pcw?num(f.sp_pcw).toFixed(2)+' gms':'');
+    h+='</table>';
+    var bag=row('Plastic Size',f.sp_psize)+row('BOPP / LD',f.sp_bopp)+row('Printed',f.sp_pprint)+row('Bag Weight',f.sp_pw?num(f.sp_pw).toFixed(2)+' gms':'');
+    var oc=row('Outer Carton',(f.sp_ol||f.sp_ow||f.sp_oh)?(fmtNum(f.sp_ol)+' x '+fmtNum(f.sp_ow)+' x '+fmtNum(f.sp_oh)+' mm'):'')+
+       row('Colour',f.sp_ocol)+row('Printed',f.sp_oprint)+row('Ply',f.sp_oply)+row('Carton Weight',f.sp_ocw?num(f.sp_ocw).toFixed(3)+' kg':'');
+    if(bag||oc) h+='<h3>Packaging Material</h3><table>'+bag+oc+'</table>';
+    var wp=row('Paper Size',f.sp_wsz)+row('Paper GSM',f.sp_wg)+row('1 Pcs Weight',f.sp_ww?num(f.sp_ww).toFixed(2)+' gms':'')+row('Coating',f.sp_wc);
+    if(wp) h+='<h3>Wrapping Paper Details</h3><table>'+wp+'</table>';
+    var tp=row('Tissue Size',f.sp_tsz)+row('1 Pcs Weight',f.sp_tw?num(f.sp_tw).toFixed(2)+' gms':'')+row('Ply',f.sp_tply);
+    if(tp) h+='<h3>Tissue Paper Details</h3><table>'+tp+'</table>';
+    var pd=row('Pcs Per Pkt',f.sp_ppkt)+row('Pkt Per Outer',f.sp_pout)+row('Pcs Per Carton',f.sp_pcar)+
+       row('Gross Weight',f.sp_gw?num(f.sp_gw).toFixed(3)+' kg':'')+
+       row('Tare Weight',f.sp_tare?num(f.sp_tare).toFixed(3)+' kg':'')+
+       row('Net Weight',f.sp_net?num(f.sp_net).toFixed(3)+' kg':'');
+    if(pd) h+='<h3>Packaging Details</h3><table>'+pd+'</table>';
+    if(f.sp_docs&&f.sp_docs.trim()) h+='<h3>Documents</h3><table>'+f.sp_docs.split(',').map(function(x){return row('&bull;',x.trim())}).join('')+'</table>';
+    h+='<div class="sh-ft">Generated '+dmy(todayISO())+' &bull; BioPapro</div></div>';
+    return h;
+  }
+
+  /* ================= EXPORT ================= */
+  var PRINTCSS='body{font:13px/1.5 "Segoe UI",Arial,sans-serif;margin:0;padding:0;color:#111}'+
+    '.sheet{max-width:720px;margin:0 auto;border:2px solid #222;padding:22px 26px}'+
+    '.sh-co{text-align:center;font-weight:700;font-size:16px}'+
+    '.sh-ti{text-align:center;font-weight:700;font-size:15px;margin:6px 0 16px;text-decoration:underline}'+
+    '.sh-tb,.spec table{width:100%;border-collapse:collapse;margin-bottom:12px}'+
+    '.sh-tb td,.spec td{border:1px solid #333;padding:7px 10px}'+
+    '.sh-tb td:first-child,.spec td:first-child{width:44%;font-weight:600;background:#f3f3f3;text-transform:uppercase}'+
+    '.spec h3{font-size:13px;margin:12px 0 4px;text-transform:uppercase}'+
+    '.sh-dr{border:1px solid #333;padding:6px;text-align:center}.sh-dr svg{max-width:100%;height:auto}'+
+    '.sh-ft{margin-top:10px;font-size:10px;color:#777;text-align:right}'+
+    '.dl{stroke:#c0392b;stroke-width:1}.dt{fill:#c0392b;font:600 11px Arial}.ti{fill:#333;font:700 13px Arial}'+
+    '.pfill{fill:#e8eef5;stroke:#333;stroke-width:1.5}.pline{stroke:#8896a6;stroke-width:1;stroke-dasharray:4 3;fill:none}'+
+    '@media print{.sheet{page-break-after:always;border:none}}';
+
+  function printHTML(html,title){
+    var w=window.open('','_blank');
+    w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>'+esc(title)+'</title><style>'+PRINTCSS+'</style></head><body>'+html+'</body></html>');
+    w.document.close(); w.focus(); setTimeout(function(){w.print()},350);
+  }
+  function downloadWord(html,name){
+    var pre='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><style>'+PRINTCSS+'</style></head><body>';
+    var blob=new Blob(['﻿'+pre+html+'</body></html>'],{type:'application/msword'});
+    trigger(blob,name+'.doc');
+  }
+  function downloadSVG(svg,name){ trigger(new Blob([svg],{type:'image/svg+xml'}), name+'.svg'); }
+  function downloadPNG(svg,name){
+    var img=new Image();
+    var url=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
+    img.onload=function(){
+      var c=document.createElement('canvas'); c.width=1840; c.height=780;
+      var x=c.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,c.width,c.height);
+      x.drawImage(img,0,0,c.width,c.height);
+      c.toBlob(function(b){trigger(b,name+'.png'); URL.revokeObjectURL(url)});
+    };
+    img.src=url;
+  }
+  function trigger(blob,fname){
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fname;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){URL.revokeObjectURL(a.href)},2000);
+  }
+
+  /* ================= GENERATE ================= */
+  function readForm(){
+    var f={};
+    document.querySelectorAll('input,select,textarea').forEach(function(el){
+      if(!el.id) return;
+      f[el.id]= el.type==='checkbox'? el.checked : el.value;
+    });
+    return f;
+  }
+  function fileBase(f){
+    if(f.category==='straw'){
+      return (fmtNum(f.s_od)+'X'+fmtNum(f.s_len)+'MM '+(f.strawType||'').toUpperCase()+' PAPER STRAW'+(f.sharp?' (SHARP EDGE)':'')).trim();
+    }
+    if(f.sheetStyle==='rm') return (fmtNum(f.c_len)+' MM-RM '+f.shape.toUpperCase()).trim();
+    return (f.pname||'PRODUCT').toUpperCase();
+  }
+
+  function docBlock(title,html,base,svg){
+    var d=document.createElement('div'); d.className='doc';
+    var bar=document.createElement('div'); bar.className='doc-bar';
+    bar.innerHTML='<strong>'+esc(title)+'</strong>';
+    var b=document.createElement('div');
+    function mk(txt,cls,fn){var x=document.createElement('button');x.textContent=txt;if(cls)x.className=cls;x.onclick=fn;b.appendChild(x);}
+    mk('Print / PDF','sec',function(){printHTML(html,base)});
+    mk('Word','ghost',function(){downloadWord(html,base)});
+    if(svg){
+      mk('PNG','ghost',function(){downloadPNG(svg,base+' DRAWING')});
+      mk('SVG','ghost',function(){downloadSVG(svg,base+' DRAWING')});
+    }
+    bar.appendChild(b); d.appendChild(bar);
+    var body=document.createElement('div'); body.className='doc-body'; body.innerHTML=html;
+    d.appendChild(body); return d;
+  }
+
+  var lastPack='';
+  function generate(){
+    autoStrawWeight(); autoPcs(); autoNet();
+    var f=readForm(); var out=$('out'); out.innerHTML='';
+    var svg=draw(curShape(),collectDims());
+    var base=fileBase(f);
+    var tds = f.category==='straw' ? strawTDS(f,svg)
+            : (f.sheetStyle==='rm' ? cutleryRM(f,svg) : cutleryFG(f,svg));
+    out.appendChild(docBlock('Technical Data Sheet',tds,base,null));
+
+    var drawDoc='<div class="sheet"><div class="sh-co">'+(f.category==='straw'?'BIOPAPRO PVT. LTD.':'BIOPAPRO CUTLERIES PVT. LTD.')+
+      '</div><div class="sh-ti">DIMENSIONED DRAWING</div><table class="sh-tb">'+row('Product Name',f.pname)+row('Unit','Millimeter (mm)')+
+      '</table><div class="sh-dr">'+svg+'</div></div>';
+    out.appendChild(docBlock('Dimensioned Drawing',drawDoc,base+' DRAWING',svg));
+
+    lastPack=tds+drawDoc;
+    if(f.specOn){
+      var sp=specSheet(f);
+      out.appendChild(docBlock('Customer Product Specification',sp,(f.sp_cust?f.sp_cust.toUpperCase()+' - ':'')+base,null));
+      lastPack+=sp;
+    }
+    save();
+  }
+
+  $('gen').addEventListener('click',generate);
+  $('printAll').addEventListener('click',function(){ if(!lastPack){generate()} printHTML(lastPack,'BioPapro pack'); });
+
+  /* ================= PERSIST ================= */
+  function save(){
+    try{ localStorage.setItem('biopapro_tds', JSON.stringify(readForm())); }catch(e){}
+  }
+  function load(){
+    try{
+      var d=JSON.parse(localStorage.getItem('biopapro_tds')||'{}');
+      Object.keys(d).forEach(function(k){
+        var el=$(k); if(!el) return;
+        if(el.type==='checkbox') el.checked=!!d[k]; else if(d[k]!=='') el.value=d[k];
+      });
+    }catch(e){}
+  }
+  $('clear').addEventListener('click',function(){
+    if(!confirm('Clear the whole form?')) return;
+    try{localStorage.removeItem('biopapro_tds')}catch(e){}
+    location.reload();
+  });
+  document.addEventListener('input',function(){ clearTimeout(window.__sv); window.__sv=setTimeout(save,400); });
+
+  /* init */
+  load();
+  refreshVis();
+  buildDimFields();
+  $('specWrap').hidden=!$('specOn').checked;
+})();
+</script>
+<a href="../../#work" style="position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:99999;background:#1c1712;color:#ffb547;font:500 12px/1 Inter,system-ui,sans-serif;padding:9px 14px;border-radius:999px;box-shadow:0 6px 24px rgba(0,0,0,.25);text-decoration:none;white-space:nowrap">Portfolio demo · ← back to portfolio</a>
+<script>addEventListener('load',()=>{const g=[...document.querySelectorAll('button')].find(b=>b.textContent.trim()==='Generate');g&&g.click();});</script>
+</body>
+</html>

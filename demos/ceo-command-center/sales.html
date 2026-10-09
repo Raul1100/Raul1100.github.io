@@ -1,0 +1,2447 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="fixtures.js"></script><script src="demo-api.js"></script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Sales Dashboard</title>
+<script>window.API_TOKEN = "";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="stylesheet" href="shared.css">
+<script src="shared.js"></script>
+<style>
+/* box-sizing reset + body font-family/background/color moved to shared.css */
+body{font-size:13px;min-height:100vh}
+
+/* ══ PAGE HEADER — Phase 3 v2 ══
+   Replaces a .top-header that turned out to be dead CSS: no HTML in this file ever actually
+   rendered it (confirmed via grep before touching anything — genuinely never wired up, not a
+   navy bar someone would have seen). Added a real .ds-header (shared.css) here instead, since
+   every other page has one and this page previously had no title/description at all. Kept
+   @keyframes blink (still used by #upd-toast's dot) and .spin (still used in the toolbar below)
+   — only the truly unused .th-*/#th-clock/.btn-refresh-top rules were removed.
+   Deliberately NOT sticky, unlike the toolbar below it — avoids having to hand-tune a pixel
+   offset for two stacked sticky bars; the toolbar (tabs/search/KPI anchor) is the one thing
+   that needs to stay pinned while scrolling, not the title. */
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.spin{display:none;width:11px;height:11px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+/* @keyframes spin moved to shared.css */
+
+/* ══ SUB TOOLBAR ══ */
+.toolbar{
+  background:#fff;border-bottom:1px solid #e2e6f0;
+  padding:0 24px;height:52px;
+  display:flex;align-items:center;gap:12px;
+  position:sticky;top:0;z-index:200;
+  box-shadow:0 1px 6px rgba(0,0,0,.06);
+}
+.tabs-wrap{display:flex;gap:2px}
+.tab{
+  padding:6px 16px;border-radius:7px;font-size:12px;font-weight:600;
+  cursor:pointer;color:#6a6760;border:1px solid transparent;transition:all .18s;
+}
+.tab:hover{background:#f8f7f3;color:#3a3834}
+.tab.on{background:#0d1f3c;color:#fff;border-color:#0d1f3c}
+.toolbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.period-badge{
+  display:flex;align-items:center;gap:6px;
+  background:#fff7e6;border:1.5px solid #fbbf24;border-radius:8px;
+  padding:5px 12px;font-size:12px;font-weight:700;color:#92400e;cursor:pointer;
+}
+.period-badge svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.5}
+.search-box{
+  display:flex;align-items:center;gap:7px;
+  background:#f8f7f3;border:1.5px solid #e5e2db;border-radius:8px;
+  padding:5px 12px;font-size:12px;color:#9d9a93;cursor:text;
+  min-width:180px;transition:all .15s;
+}
+.search-box:focus-within{border-color:#3b5bdb;background:#fff;box-shadow:0 0 0 3px rgba(59,91,219,.08)}
+.search-box input{border:none;outline:none;background:transparent;font-size:12px;color:#3a3834;font-family:'Inter',sans-serif;flex:1}
+.search-box input::placeholder{color:#9d9a93}
+.count-badge{font-size:11px;color:#6a6760;font-weight:500;white-space:nowrap}
+
+/* ══ PAGE WRAP ══ */
+.page{display:none;padding:18px 24px}
+.page.on{display:block;animation:pageIn .18s ease-out}
+/* Wow Factor v2, Technique 5 — tab switching gets a brief cross-fade+slide instead of a hard cut. */
+@keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══ KPI CARDS ══ */
+/* Phase 3 v2 design-unification pass: KPI cards now use shared.css's .ds-stat component
+   (white card, 3px left-border accent, white icon chip — Wow Factor v2 later moved the chip off
+   a tinted wash) instead of this page's own .kpi card with a solid-color top border. Only the
+   per-metric ACCENT COLORS are page-scoped
+   here (Sales Dashboard isn't one of the 6 department pages, so it has no single department
+   accent — each KPI metric keeps its own established color, e.g. revenue=green, GST=teal,
+   same hex values as before, just applied via .ds-stat's structure instead of .kpi's). */
+#p1sc, #p2sc, #p3sc, #p4sc{position:sticky;top:52px;z-index:150;background:var(--bg);padding:10px 0 6px}
+/* Sales Dashboard's currency values (fmtAmt) print full "₹13,86,09,311.00" strings, not
+   abbreviated K/L/Cr like other pages — .ds-stat-value's default --text-xl (24px) can overflow
+   a narrow card at that length, so allow wrapping here specifically. */
+#p1sc .ds-stat-value, #p2sc .ds-stat-value, #p3sc .ds-stat-value, #p4sc .ds-stat-value{word-break:break-word;font-size:19px}
+/* v3 Step 3: the hero modifier needs to beat the KPI-row downsize rule above it (both are
+   scoped to #p1sc, so specificity alone wouldn't decide it in source order) — this one wins by
+   being more specific (two classes + the same ID scope). */
+/* 40px (the app-wide hero size) wraps here — this row is 6 cards wide, tighter per-card width
+   than any other hero's row, and Total Revenue's abbreviated form can run up to ~9 characters
+   ("₹123.45Cr"). Confirmed via screenshot. 30px is the largest size that reliably fits that
+   worst case at this column width, and still clears the spec's "at least 1.5x" bar against the
+   row's other cards (30/19 = 1.58x). */
+#p1sc .ds-stat-value.ds-stat-value--hero{font-size:30px}
+/* Wow Factor v2, Technique 2 — chip background is now the shared white default (shared.css);
+   each variant sets only the icon's own saturated color, no tinted wash behind it. */
+.ds-stat--navy .ds-stat-icon{color:#0d1f3c}.ds-stat--navy{border-left-color:#0d1f3c}.ds-stat--navy .ds-stat-value{color:#0d1f3c}
+.ds-stat--purple .ds-stat-icon{color:#7c3aed}.ds-stat--purple{border-left-color:#7c3aed}.ds-stat--purple .ds-stat-value{color:#7c3aed}
+.ds-stat--orange .ds-stat-icon{color:#ea6c00}.ds-stat--orange{border-left-color:#ea6c00}.ds-stat--orange .ds-stat-value{color:#ea6c00}
+.ds-stat--green .ds-stat-icon{color:#059669}.ds-stat--green{border-left-color:#059669}.ds-stat--green .ds-stat-value{color:#059669}
+.ds-stat--blue .ds-stat-icon{color:#1d4ed8}.ds-stat--blue{border-left-color:#1d4ed8}.ds-stat--blue .ds-stat-value{color:#1d4ed8}
+.ds-stat--red .ds-stat-icon{color:#dc2626}.ds-stat--red{border-left-color:#dc2626}.ds-stat--red .ds-stat-value{color:#dc2626}
+.ds-stat--teal .ds-stat-icon{color:#0891b2}.ds-stat--teal{border-left-color:#0891b2}.ds-stat--teal .ds-stat-value{color:#0891b2}
+.ds-stat--rose .ds-stat-icon{color:#be185d}.ds-stat--rose{border-left-color:#be185d}.ds-stat--rose .ds-stat-value{color:#be185d}
+
+/* ══ FILTER BAR ══ */
+.fbar{
+  background:#fff;border:1px solid #e5e2db;border-radius:12px;
+  padding:12px 16px;margin-bottom:16px;
+  display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;
+  box-shadow:0 1px 4px rgba(0,0,0,.05);
+}
+.fg{display:flex;flex-direction:column;gap:4px;flex:1;min-width:115px}
+.fg label{font-size:9px;font-weight:700;color:#9d9a93;text-transform:uppercase;letter-spacing:1.1px}
+.fg select,.fg input[type=date],.fg input[type=text]{
+  border:1.5px solid #e5e2db;border-radius:7px;padding:6px 10px;
+  font-size:12px;color:#191917;background:#f8f7f3;outline:none;width:100%;height:32px;
+  font-family:'Inter',sans-serif;transition:all .15s;-webkit-appearance:none;appearance:none;font-weight:500;
+}
+.fg select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239ca3af'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:24px}
+.fg select:focus,.fg input:focus{border-color:#3b5bdb;box-shadow:0 0 0 3px rgba(59,91,219,.1);background:#fff}
+.btn-r{background:#f8f7f3;border:1.5px solid #e5e2db;border-radius:7px;padding:6px 14px;font-size:11px;cursor:pointer;color:#6a6760;font-weight:600;height:32px;white-space:nowrap;transition:all .18s;font-family:'Inter',sans-serif;}
+.btn-r:hover{background:#f8f7f3;color:#3a3834;border-color:#ccc9c0}
+
+/* ══ SS ══ */
+.ss-wrap{position:relative}
+.ss-box{border:1.5px solid #e5e2db;border-radius:7px;padding:6px 10px;font-size:12px;background:#f8f7f3;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:6px;height:32px;transition:all .15s;font-weight:500;}
+.ss-box:hover{border-color:#ccc9c0;background:#f8f7f3}
+.ss-box.open{border-color:#3b5bdb;box-shadow:0 0 0 3px rgba(59,91,219,.1);background:#fff}
+.ss-box span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:12px;color:#191917;font-weight:500}
+.ss-box span.ph{color:#9d9a93;font-weight:400}
+.ss-arrow{font-size:8px;color:#9d9a93;flex-shrink:0}
+.ss-drop{position:absolute;top:calc(100% + 4px);left:0;right:0;min-width:200px;background:#fff;border:1.5px solid #e5e2db;border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,.12);z-index:600;overflow:hidden;}
+.ss-search{padding:8px 10px;border-bottom:1px solid #f8f7f3;display:flex;align-items:center;gap:6px}
+.ss-search input{border:none;outline:none;font-size:12px;flex:1;color:#3a3834;background:transparent;font-family:'Inter',sans-serif}
+.ss-search input::placeholder{color:#9d9a93}
+.ss-list{max-height:190px;overflow-y:auto}
+.ss-list::-webkit-scrollbar{width:4px}.ss-list::-webkit-scrollbar-track{background:transparent}.ss-list::-webkit-scrollbar-thumb{background:#e5e2db;border-radius:4px}
+.ss-opt{padding:8px 12px;cursor:pointer;font-size:12px;color:#3a3834;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:all .1s;font-weight:500}
+.ss-opt:hover{background:#eff6ff;color:#1d4ed8}
+.ss-opt.sel{background:#dbeafe;color:#1d4ed8;font-weight:700}
+.ss-empty{padding:12px;font-size:12px;color:#9d9a93;text-align:center}
+
+/* ══ SECTION HEADER ══ */
+.sec-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:12px;padding-bottom:0;
+}
+.sec-title{
+  display:flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:700;color:#191917;
+}
+.sec-title .ic{width:28px;height:28px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:14px}
+.sec-count{background:#f8f7f3;border:1px solid #e5e2db;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#6a6760}
+
+/* ══ EXPORT BAR ══ */
+.exp-bar{
+  display:flex;align-items:center;gap:7px;flex-wrap:wrap;
+  background:#fff;border:1px solid #e5e2db;border-radius:10px;
+  padding:9px 14px;margin-bottom:14px;
+  box-shadow:0 1px 4px rgba(0,0,0,.04);
+}
+.exp-lbl{font-size:9px;font-weight:700;color:#9d9a93;text-transform:uppercase;letter-spacing:1.1px;padding-right:8px;border-right:1px solid #e5e2db;margin-right:2px}
+.dl-csv{display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;padding:5px 10px;font-size:10px;font-weight:700;color:#16a34a;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;}
+.dl-csv:hover{background:#dcfce7;box-shadow:0 2px 6px rgba(22,163,74,.15)}
+.dl-xls{display:inline-flex;align-items:center;gap:4px;background:#eff6ff;border:1px solid #93c5fd;border-radius:6px;padding:5px 10px;font-size:10px;font-weight:700;color:#1d4ed8;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;}
+.dl-xls:hover{background:#dbeafe;box-shadow:0 2px 6px rgba(29,78,216,.15)}
+
+/* ══ CARD ══ */
+.card{background:#fff;border:1px solid #e5e2db;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:11px;border-bottom:1px solid #f8f7f3;flex-wrap:wrap;gap:8px}
+.ch h3{font-size:12px;font-weight:700;color:#3a3834;display:flex;align-items:center;gap:7px;letter-spacing:-.1px}
+.ch h3 .bar{display:inline-block;width:3px;height:14px;background:#3b5bdb;border-radius:2px}
+.ct{font-size:10px;background:#f8f7f3;color:#9d9a93;padding:3px 9px;border-radius:20px;border:1px solid #e5e2db;font-weight:600}
+.ch-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+
+/* ══ TABLE FILTERS ══ */
+.tbl-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tbl-filters input,.tbl-filters select{border:1.5px solid #e5e2db;border-radius:7px;padding:5px 9px;font-size:11px;color:#3a3834;background:#f8f7f3;outline:none;flex:1;min-width:80px;font-family:'Inter',sans-serif;transition:all .15px;height:30px;font-weight:500;}
+.tbl-filters input:focus,.tbl-filters select:focus{border-color:#3b5bdb;background:#fff;box-shadow:0 0 0 2px rgba(59,91,219,.08)}
+.tbl-filters input::placeholder{color:#9d9a93}
+.tbl-filters select option{background:#fff}
+
+/* ══ TABLES ══ */
+/* Phase 3 v2: every table now uses shared.css's .ds-table-wrap/.ds-table (was two separate
+   near-duplicate systems here — bare element selectors for most tables, a parallel .p3-tw
+   variant for the Customer Intelligence tab — both had the exact "colored-text-on-dark-navy"
+   header treatment the design system explicitly replaces). `.r`/`.trunc`/`.sr`/`.sr-cell` are
+   kept as page-wide utility classes (not table-specific, no navy/zebra concerns) so none of the
+   many JS-generated <th class="r">/<td class="r"> call sites needed to change. */
+.r{text-align:right;font-family:var(--font-mono)}
+/* Real bug fix: shared.css's `.ds-table thead th{text-align:left}` (1 class + 2 element types)
+   outranks the bare `.r{text-align:right}` above (1 class, 0 element types) on specificity, so
+   every `<th class="r">` in this page's .ds-table tables (Category/Product/Ledger headers —
+   Total Qty, Rate, Revenue, GST Amt, Amount, etc.) was silently stuck left-aligned above its
+   correctly right-aligned `<td class="r">` data — same bug, same fix, as production.html's
+   Product Performance table. `.ds-table th.r` (2 classes + 1 type) beats `.ds-table thead th`
+   (1 class + 2 types) on class-count alone. */
+.ds-table th.r{text-align:right}
+.trunc{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr, .sr-cell{font-size:11px;color:var(--ink-4);font-weight:600;text-align:center;width:36px}
+th.sr-th{text-align:center}
+
+/* TOTAL ROW — kept as a deliberate emphasis pattern (not in the explicit removal list), just
+   retinted to the hairline-based palette instead of the old blue/green gradient. */
+.total-row td, .p3-total-row td{background:var(--bg)!important;color:var(--ink)!important;font-weight:700;border-top:2px solid var(--hairline-2);font-size:11.5px}
+.total-row:hover td, .p3-total-row:hover td{background:var(--bg)!important}
+
+/* MBAR */
+.mbar{height:5px;border-radius:3px;background:#f8f7f3;margin-top:3px;min-width:40px}
+.mbar-f{height:100%;border-radius:3px}
+
+/* BADGES */
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:700}
+.bg-green{background:#dcfce7;color:#15803d;border:1px solid #86efac}
+.bg-amber{background:#fef3c7;color:#b45309;border:1px solid #fcd34d}
+.bg-red{background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5}
+.bg-blue{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd}
+.bg-gray{background:#f8f7f3;color:#6a6760;border:1px solid #e5e2db}
+.pill{display:inline-flex;align-items:center;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:700}
+.pill.up{background:#dcfce7;color:#15803d}.pill.dn{background:#fee2e2;color:#b91c1c}.pill.fl{background:#f8f7f3;color:#6a6760}
+
+/* RANK */
+.rank-dot{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;font-size:9px;font-weight:700;margin-right:4px;flex-shrink:0}
+.rank-1{background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
+.rank-2{background:#f1f5f9;color:#475569;border:1px solid #cbd5e1}
+.rank-3{background:#fff7ed;color:#9a3412;border:1px solid #fdba74}
+.rank-n{background:#f8f7f3;color:#9d9a93;border:1px solid #e5e2db}
+
+/* CHART */
+.cw{position:relative;width:100%}
+
+/* HL INSIGHT */
+.hl-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.hl{background:#fff;border:1px solid #e8eaf0;border-radius:12px;padding:22px 24px;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+.hl-head{font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.hlrow{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f8f7f3;font-size:12px}
+.hlrow:last-child{border:none;padding-bottom:0}
+.hlrow .n{font-weight:500;color:#3a3834;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:62%}
+.hl-pill-red{background:#fee2e2;color:#dc2626;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;white-space:nowrap}
+.hl-pill-grn{background:#dcfce7;color:#16a34a;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;white-space:nowrap}
+.hl-pill-blu{background:#dbeafe;color:#1d4ed8;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;white-space:nowrap}
+.hl-pill-amb{background:#fef3c7;color:#b45309;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;white-space:nowrap}
+
+/* HL EXPORT BAR */
+.hl-exp-bar{
+  display:flex;align-items:center;gap:7px;flex-wrap:wrap;
+  background:#fff;border:1px solid #e5e2db;border-radius:10px;
+  padding:8px 14px;margin-bottom:12px;
+  box-shadow:0 1px 4px rgba(0,0,0,.04);
+}
+
+/* BUSINESS INTELLIGENCE SUMMARY */
+.bi-card{background:#fff;border:1px solid #e8eaf0;border-radius:12px;padding:24px 26px;margin-bottom:16px;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+.bi-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #f8f7f3}
+.bi-icon{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#0d1f3c,#3b5bdb);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.bi-head-text h3{font-size:13px;font-weight:700;color:#191917;letter-spacing:-.1px}
+.bi-head-text p{font-size:10px;color:#9d9a93;font-weight:500;margin-top:1px}
+.bi-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.bi-section{border-radius:10px;padding:14px 16px}
+.bi-section.danger{background:#fff5f5;border:1px solid #fecaca}
+.bi-section.success{background:#f0fdf4;border:1px solid #bbf7d0}
+.bi-section.warning{background:#fffbeb;border:1px solid #fde68a}
+.bi-section.info{background:#eff6ff;border:1px solid #bfdbfe}
+.bi-section.purple{background:#faf5ff;border:1px solid #e9d5ff}
+.bi-section.slate{background:#f8fafc;border:1px solid #e2e8f0}
+.bi-sec-title{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.bi-item{font-size:11.5px;color:#3a3834;padding:4px 0;border-bottom:1px solid rgba(0,0,0,.05);display:flex;align-items:flex-start;gap:6px;line-height:1.4}
+.bi-item:last-child{border:none;padding-bottom:0}
+.bi-item .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.bi-item b{color:#191917;font-weight:700}
+
+/* TOAST */
+#upd-toast{position:fixed;bottom:20px;right:20px;z-index:999;background:#fff;border:1px solid #e5e2db;border-radius:10px;padding:11px 16px;font-size:11px;color:#3a3834;display:flex;align-items:center;gap:9px;box-shadow:0 8px 28px rgba(0,0,0,.12);transform:translateY(80px);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none;}
+#upd-toast.show{transform:translateY(0);opacity:1}
+#upd-toast .dot{width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0;animation:blink 1.5s infinite}
+#upd-toast strong{color:#191917;font-weight:700}
+
+/* LOADER */
+#loader{position:fixed;inset:0;background:#f4f3ef;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:20px;}
+.loader-top{display:flex;align-items:center;gap:12px}
+.loader-logo-box{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#0d1f3c,#3b5bdb);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 8px 24px rgba(26,35,64,.3)}
+.loader-title{font-size:26px;font-weight:800;color:#191917;letter-spacing:-.5px}
+.loader-title span{color:#3b5bdb}
+.loader-track{width:220px;height:3px;background:#e5e2db;border-radius:3px;overflow:hidden}
+.loader-fill{height:100%;background:linear-gradient(90deg,#0d1f3c,#3b82f6);border-radius:3px;animation:lbar 1.5s ease-in-out infinite}
+@keyframes lbar{0%{width:0;margin-left:0}60%{width:60%;margin-left:20%}100%{width:0;margin-left:100%}}
+#loader-msg{font-size:12px;color:#9d9a93;font-weight:600;letter-spacing:.4px}
+
+/* METRIC SELECTOR */
+.met-btn{
+  padding:6px 14px;border-radius:7px;font-size:11px;font-weight:600;
+  border:none;cursor:pointer;background:transparent;color:#6a6760;
+  transition:all .18s;font-family:'Inter',sans-serif;white-space:nowrap;
+}
+.met-btn:hover{background:#f8f7f3;color:#3a3834}
+.met-btn.met-on{background:#0d1f3c;color:#fff;box-shadow:0 2px 8px rgba(26,35,64,.2)}
+
+/* ══ PAGE 3 — CUSTOMER INTELLIGENCE STYLES ══ */
+.p3-inner-tabs{display:flex;gap:3px;background:#fff;border:1.5px solid #e5e2db;border-radius:10px;padding:4px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.05);width:fit-content;flex-wrap:wrap}
+.p3-it{padding:7px 18px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;color:#6a6760;border:none;background:transparent;transition:all .18s;font-family:'Inter',sans-serif;white-space:nowrap}
+.p3-it:hover{background:#f8f7f3;color:#3a3834}
+.p3-it.on{background:#0d1f3c;color:#fff;box-shadow:0 2px 6px rgba(26,35,64,.18)}
+.p3-itab{display:none}.p3-itab.on{display:block}
+
+/* .p3-tw's own table system removed — Customer Intelligence tables now use the same
+   .ds-table-wrap/.ds-table + page-wide .r/.sr utility classes as every other tab.
+   .p3-total-row is still used by JS-generated rows; styled together with .total-row above. */
+.p3-mbar{height:4px;border-radius:2px;background:#f8f7f3;margin-top:3px;min-width:36px}
+.p3-mbar-f{height:100%;border-radius:2px}
+
+.trend-chip{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:700}
+.trend-grow{background:#dcfce7;color:#15803d}
+.trend-decl{background:#fee2e2;color:#b91c1c}
+.trend-stab{background:#f8f7f3;color:#6a6760}
+.badge-grow{background:#dcfce7;color:#15803d;border:1px solid #86efac;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:700;display:inline-block}
+.badge-crit{background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:700;display:inline-flex;align-items:center;gap:3px}
+.badge-warn{background:#fef3c7;color:#b45309;border:1px solid #fcd34d;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:700;display:inline-flex;align-items:center;gap:3px}
+
+/* Detail layout */
+.p3-detail-wrap{display:grid;grid-template-columns:230px 1fr;gap:14px;min-height:500px}
+.p3-cust-list{background:#fff;border:1px solid #e5e2db;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05);display:flex;flex-direction:column}
+.p3-cl-head{padding:10px 14px;background:#f8f7f3;border-bottom:1px solid #e5e2db;font-size:9.5px;font-weight:700;color:#6a6760;text-transform:uppercase;letter-spacing:.9px;flex-shrink:0}
+.p3-cl-search{padding:8px 10px;border-bottom:1px solid #f8f7f3;flex-shrink:0}
+.p3-cl-search input{width:100%;border:1.5px solid #e5e2db;border-radius:7px;padding:5px 9px;font-size:11.5px;outline:none;background:#f8f7f3;font-family:'Inter',sans-serif;color:#3a3834;height:30px}
+.p3-cl-search input:focus{border-color:#3b5bdb;background:#fff}
+.p3-cl-items{flex:1;overflow-y:auto;max-height:540px}
+.p3-cl-items::-webkit-scrollbar{width:3px}.p3-cl-items::-webkit-scrollbar-thumb{background:#e5e2db;border-radius:3px}
+.p3-cli{padding:9px 12px;cursor:pointer;border-bottom:1px solid #f8f7f3;display:flex;align-items:center;justify-content:space-between;gap:6px;transition:background .12s;border-left:3px solid transparent}
+.p3-cli:hover{background:#f8f9ff}
+.p3-cli.sel{background:#eff6ff;border-left-color:#3b5bdb}
+.p3-cli .cn{font-size:12px;font-weight:600;color:#191917;word-break:break-word;line-height:1.4}
+.p3-cli .cs{font-size:10px;color:#9d9a93;margin-top:1px}
+.p3-cli .cscore{font-size:10px;font-weight:700;border-radius:4px;padding:1px 6px;flex-shrink:0}
+.p3-cli .cscore.pos{background:#dcfce7;color:#15803d}
+.p3-cli .cscore.neg{background:#fee2e2;color:#b91c1c}
+.p3-cli .cscore.neu{background:#f8f7f3;color:#6a6760}
+
+.p3-detail-panel{background:#fff;border:1px solid #e5e2db;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.05);min-height:500px}
+.p3-dp-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid #f8f7f3}
+.p3-dp-name{font-size:17px;font-weight:800;color:#191917;letter-spacing:-.3px}
+.p3-dp-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;margin-top:4px}
+.p3-dp-badge.grow{background:#dcfce7;color:#15803d}
+.p3-dp-badge.decl{background:#fee2e2;color:#b91c1c}
+.p3-dp-badge.stable{background:#dbeafe;color:#1e40af}
+.p3-dp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.p3-stat{background:#f8f7f3;border:1px solid #e5e2db;border-radius:9px;padding:11px 13px}
+.p3-stat .sl{font-size:9.5px;font-weight:700;color:#9d9a93;text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px}
+.p3-stat .sv{font-size:16px;font-weight:800;color:#191917;line-height:1}
+.p3-stat.hs-pos .sv{color:#15803d}
+.p3-stat.hs-neg .sv{color:#b91c1c}
+.p3-mini-bars{display:flex;gap:6px;align-items:flex-end;height:80px;margin-bottom:16px}
+.p3-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.p3-bar-v{width:100%;border-radius:4px 4px 0 0;min-height:4px;background:#3b5bdb}
+.p3-bar-lbl{font-size:9px;color:#6a6760;font-weight:600;text-align:center;white-space:nowrap}
+.p3-bar-val{font-size:9px;font-weight:700;color:#191917;text-align:center}
+.p3-sec-hd{font-size:11px;font-weight:700;color:#3a3834;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #f8f7f3;letter-spacing:.1px}
+.p3-fi-row{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.p3-fi-row input{border:1.5px solid #e5e2db;border-radius:6px;padding:4px 9px;font-size:11px;color:#3a3834;background:#f8f7f3;outline:none;flex:1;min-width:80px;font-family:'Inter',sans-serif;height:27px;font-weight:500}
+.p3-fi-row input:focus{border-color:#3b5bdb;background:#fff}
+.p3-fi-row input::placeholder{color:#9d9a93}
+.p3-empty-state{text-align:center;padding:60px 20px;color:#9d9a93;font-size:13px}
+.p3-empty-state .ico{font-size:32px;margin-bottom:10px}
+
+@media(max-width:700px){.p3-detail-wrap{grid-template-columns:1fr}.p3-dp-stats{grid-template-columns:1fr 1fr}}
+
+/* ══ COLUMN FILTER SYSTEM ══ */
+.cf-btn{background:none;border:none;cursor:pointer;color:rgba(255,255,255,.5);font-size:9px;padding:1px 3px;border-radius:3px;line-height:1;transition:all .15s;vertical-align:middle;margin-left:3px}
+.cf-btn:hover{color:#fff;background:rgba(255,255,255,.18)}
+.cf-btn.cf-on{color:#fbbf24;background:rgba(251,191,36,.2)}
+.cf-panel{position:fixed;background:#fff;border:1.5px solid #e5e2db;border-radius:10px;box-shadow:0 10px 36px rgba(0,0,0,.18);z-index:9999;width:234px;overflow:hidden}
+.cf-hd{padding:9px 12px 8px;border-bottom:1px solid #f8f7f3;font-size:9.5px;font-weight:800;color:#191917;text-transform:uppercase;letter-spacing:.7px;display:flex;align-items:center;justify-content:space-between}
+.cf-hd .cf-x{font-size:15px;cursor:pointer;color:#9d9a93;line-height:1;font-weight:400;background:none;border:none;padding:0}
+.cf-hd .cf-x:hover{color:#3a3834}
+.cf-srch-row{padding:7px 10px;border-bottom:1px solid #f8f7f3;display:flex;align-items:center;gap:6px}
+.cf-srch-row input{border:none;outline:none;font-size:12px;flex:1;color:#3a3834;background:transparent;font-family:'Inter',sans-serif}
+.cf-acts{padding:5px 10px;border-bottom:1px solid #f8f7f3;display:flex;gap:4px}
+.cf-act{font-size:10px;font-weight:600;padding:3px 9px;border-radius:5px;border:1.5px solid #e5e2db;background:#f8f7f3;cursor:pointer;color:#6a6760;font-family:'Inter',sans-serif;transition:all .12s;white-space:nowrap}
+.cf-act:hover{background:#f8f7f3;border-color:#ccc9c0;color:#3a3834}
+.cf-lst{max-height:200px;overflow-y:auto;padding:4px 0}
+.cf-lst::-webkit-scrollbar{width:4px}.cf-lst::-webkit-scrollbar-thumb{background:#e5e2db;border-radius:4px}
+.cf-row{display:flex;align-items:center;gap:8px;padding:5px 12px;cursor:pointer;transition:background .1s}
+.cf-row:hover{background:#f8f7f3}
+.cf-row input[type=checkbox]{width:13px;height:13px;cursor:pointer;accent-color:#3b5bdb;flex-shrink:0}
+.cf-row label{cursor:pointer;flex:1;font-size:12px;color:#3a3834;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.cf-ft{padding:8px 10px 9px;border-top:1px solid #f8f7f3;display:flex;align-items:center;justify-content:space-between}
+.cf-cnt{font-size:10px;color:#9d9a93;font-weight:500}
+.cf-done{background:#0d1f3c;color:#fff;border:none;border-radius:6px;padding:5px 16px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:background .15s}
+.cf-done:hover{background:#2d3a5e}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader" style="display:none">
+  <div class="loader-top">
+    <div class="loader-logo-box">📈</div>
+    <div class="loader-title">Sales<span> Dashboard</span></div>
+  </div>
+  <div class="loader-track"><div class="loader-fill"></div></div>
+  <p id="loader-msg">Loading data…</p>
+</div>
+
+<!-- TOAST -->
+<div id="upd-toast">
+  <div class="dot"></div>
+  <div>Dashboard refreshed — <strong id="toast-time"></strong></div>
+</div>
+
+<!-- PAGE HEADER — Phase 3 v2. Refresh button is new here (there was no working manual refresh
+     anywhere on this page before — the old header's button was never actually rendered). -->
+<div class="ds-header">
+  <div class="ds-header-left">
+    <div class="ds-header-icon" style="color:var(--pipeline-accent)">📈</div>
+    <div>
+      <div class="ds-header-title">Sales Dashboard</div>
+      <div class="ds-header-sub">Dispatch ledger, month comparison, customer intelligence &amp; pending orders</div>
+    </div>
+  </div>
+  <div class="ds-header-actions">
+    <button class="ds-btn-ghost" onclick="loadData(true,true)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 018-8 8 8 0 015.66 2.34L21 10"/><path d="M21 4v6h-6"/></svg>
+      Refresh
+    </button>
+  </div>
+</div>
+
+<!-- SUB TOOLBAR -->
+<div class="toolbar">
+  <div class="tabs-wrap">
+    <div class="tab on" onclick="sw('p1')" id="t-p1">◫ Dispatch Ledger</div>
+    <div class="tab" onclick="sw('p2')" id="t-p2">▥ Month Comparison</div>
+    <div class="tab" onclick="sw('p3')" id="t-p3">👥 Customer Intelligence</div>
+    <div class="tab" onclick="sw('p4')" id="t-p4">📋 Pending Orders</div>
+  </div>
+  <div class="toolbar-right">
+    <div class="search-box">
+      <svg width="13" height="13" fill="none" stroke="#9d9a93" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="global-search" placeholder="Search product, customer…" oninput="onGlobalSearch(this.value)">
+    </div>
+    <span class="count-badge" id="toolbar-count"></span>
+    <span style="font-size:10px;color:#9d9a93;font-weight:500" id="toolbar-period"></span>
+    <span id="spin" class="spin"></span>
+  </div>
+</div>
+
+<!-- ══════════ PAGE 1 — DISPATCH LEDGER ══════════ -->
+<div class="page on" id="p1">
+  <div style="height:18px"></div>
+  <div class="ds-stat-row" id="p1sc"></div>
+
+  <div class="fbar">
+    <div class="fg"><label>From Date</label><input type="date" id="f-from"></div>
+    <div class="fg"><label>To Date</label><input type="date" id="f-to"></div>
+    <div class="fg"><label>Dispatch Date</label><select id="f-date" onchange="onPickDate()"><option value="">All Dates</option></select></div>
+    <div class="fg"><label>Category</label><select id="f-cat"><option value="">All Categories</option></select></div>
+    <div class="fg ss-wrap"><label>Product</label>
+      <div class="ss-box" id="fprod-box" onclick="toggleSS('fprod')"><span class="ph" id="fprod-lbl">All Products</span><span class="ss-arrow">▾</span></div>
+      <div class="ss-drop" id="fprod-drop" style="display:none">
+        <div class="ss-search"><span style="color:#9d9a93">⌕</span><input type="text" placeholder="Search product…" oninput="filterSS('fprod',this.value)" autocomplete="off"></div>
+        <div class="ss-list" id="fprod-list"></div>
+      </div>
+    </div>
+    <div class="fg ss-wrap"><label>Customer</label>
+      <div class="ss-box" id="fcust-box" onclick="toggleSS('fcust')"><span class="ph" id="fcust-lbl">All Customers</span><span class="ss-arrow">▾</span></div>
+      <div class="ss-drop" id="fcust-drop" style="display:none">
+        <div class="ss-search"><span style="color:#9d9a93">⌕</span><input type="text" placeholder="Search customer…" oninput="filterSS('fcust',this.value)" autocomplete="off"></div>
+        <div class="ss-list" id="fcust-list"></div>
+      </div>
+    </div>
+    <div class="fg"><label>Sales Rep</label><select id="f-rep"><option value="">All Reps</option></select></div>
+    <div class="fg" style="flex:0 0 auto"><label>&nbsp;</label><button class="btn-r" onclick="resetP1()">↺ Reset</button></div>
+  </div>
+
+  <div class="exp-bar">
+    <span class="exp-lbl">↓ Export</span>
+    <button class="dl-csv" onclick="dlLedgerCSV()">⬇ Ledger CSV</button>
+    <button class="dl-xls" onclick="dlLedgerExcel()">⬇ Ledger Excel</button>
+    <button class="dl-csv" onclick="dlCatCSV()">⬇ Category CSV</button>
+    <button class="dl-xls" onclick="dlCatExcel()">⬇ Category Excel</button>
+    <button class="dl-csv" onclick="dlProdCSV()">⬇ Product CSV</button>
+    <button class="dl-xls" onclick="dlProdExcel()">⬇ Product Excel</button>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="ch">
+        <h3><span class="bar"></span>Category — Qty Summary</h3>
+        <div class="ch-right"><span class="ct" id="cat-ct"></span><button class="dl-csv" onclick="dlCatCSV()">⬇ CSV</button><button class="dl-xls" onclick="dlCatExcel()">⬇ XLS</button></div>
+      </div>
+      <div class="tbl-filters"><input type="text" placeholder="⌕  Filter category…" id="fi-cat" oninput="renderCatTable()"></div>
+      <div class="ds-table-wrap" style="max-height:280px">
+        <table id="cat-tbl" class="ds-table">
+          <thead><tr id="cat-head"></tr></thead>
+          <tbody></tbody>
+          <tfoot><tr class="total-row" id="cat-total"><td colspan="7"></td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><h3><span class="bar"></span>Category vs Qty — Top 5</h3></div>
+      <div class="cw" style="height:280px"><canvas id="catChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="ch">
+        <h3><span class="bar"></span>Product — Qty Summary</h3>
+        <div class="ch-right"><span class="ct" id="prod-ct"></span><button class="dl-csv" onclick="dlProdCSV()">⬇ CSV</button><button class="dl-xls" onclick="dlProdExcel()">⬇ XLS</button></div>
+      </div>
+      <div class="tbl-filters">
+        <input type="text" placeholder="⌕  Product…" id="fi-prod" oninput="renderProdTable()">
+        <input type="text" placeholder="⌕  Category…" id="fi-prod-cat" oninput="renderProdTable()">
+      </div>
+      <div class="ds-table-wrap" style="max-height:310px">
+        <table id="prod-tbl" class="ds-table">
+          <thead><tr id="prod-head"></tr></thead>
+          <tbody></tbody>
+          <tfoot><tr class="total-row" id="prod-total"><td colspan="8"></td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><h3><span class="bar"></span>Product vs Qty — Top 5</h3></div>
+      <div class="cw" style="height:310px"><canvas id="prodChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch">
+      <h3><span class="bar"></span>Order Ledger — Customer × Product × Qty</h3>
+      <div class="ch-right"><span class="ct" id="ledger-ct"></span><button class="dl-csv" onclick="dlLedgerCSV()">⬇ CSV</button><button class="dl-xls" onclick="dlLedgerExcel()">⬇ XLS</button></div>
+    </div>
+    <div class="tbl-filters">
+      <input type="text" placeholder="⌕  Order ID" id="li-order" oninput="renderLedger()">
+      <input type="text" placeholder="⌕  Customer" id="li-cust" oninput="renderLedger()">
+      <input type="text" placeholder="⌕  Product" id="li-prod" oninput="renderLedger()">
+      <input type="text" placeholder="⌕  State" id="li-state" oninput="renderLedger()">
+      <input type="text" placeholder="⌕  City" id="li-city" oninput="renderLedger()">
+      <select id="li-status" onchange="renderLedger()"><option value="">All Status</option><option>Complete</option><option>Partial</option><option>Balance Cancelled</option></select>
+    </div>
+    <div class="ds-table-wrap" style="max-height:450px">
+      <table id="ledger-tbl" class="ds-table">
+        <thead><tr id="ledger-head"></tr></thead>
+        <tbody></tbody>
+        <tfoot><tr class="total-row" id="ledger-total"><td colspan="11"></td></tr></tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PAGE 2 — MONTH COMPARISON ══════════ -->
+<div class="page" id="p2">
+  <div style="height:18px"></div>
+  <div class="ds-stat-row" id="p2sc"></div>
+
+  <div style="padding:0 0 0 0;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <span style="font-size:10px;font-weight:700;color:#9d9a93;text-transform:uppercase;letter-spacing:1px">Calculate by:</span>
+    <div style="display:flex;background:#fff;border:1.5px solid #e5e2db;border-radius:9px;padding:3px;gap:2px;box-shadow:0 1px 4px rgba(0,0,0,.05);flex-wrap:wrap">
+      <button id="met-qty"  class="met-btn met-on" onclick="setMetric('qty','p2')">📦 Quantity</button>
+      <button id="met-rev"  class="met-btn"        onclick="setMetric('rev','p2')">💰 Total Amount (₹)</button>
+      <button id="met-gst"  class="met-btn"        onclick="setMetric('gst','p2')">🧾 Total GST Amount (₹)</button>
+      <button id="met-rate" class="met-btn"        onclick="setMetric('rate','p2')">📊 Avg Rate (₹)</button>
+    </div>
+    <span id="metric-note" style="font-size:10px;color:#9d9a93;font-weight:500">Showing quantity dispatched per month</span>
+  </div>
+
+  <div class="fbar">
+    <div class="fg"><label>From Date</label><input type="date" id="m-from"></div>
+    <div class="fg"><label>To Date</label><input type="date" id="m-to"></div>
+    <div class="fg"><label>Category</label><select id="m-cat"><option value="">All Categories</option></select></div>
+    <div class="fg ss-wrap"><label>Product</label>
+      <div class="ss-box" id="mprod-box" onclick="toggleSS('mprod')"><span class="ph" id="mprod-lbl">All Products</span><span class="ss-arrow">▾</span></div>
+      <div class="ss-drop" id="mprod-drop" style="display:none">
+        <div class="ss-search"><span style="color:#9d9a93">⌕</span><input type="text" placeholder="Search product…" oninput="filterSS('mprod',this.value)" autocomplete="off"></div>
+        <div class="ss-list" id="mprod-list"></div>
+      </div>
+    </div>
+    <div class="fg ss-wrap"><label>Customer</label>
+      <div class="ss-box" id="mcust-box" onclick="toggleSS('mcust')"><span class="ph" id="mcust-lbl">All Customers</span><span class="ss-arrow">▾</span></div>
+      <div class="ss-drop" id="mcust-drop" style="display:none">
+        <div class="ss-search"><span style="color:#9d9a93">⌕</span><input type="text" placeholder="Search customer…" oninput="filterSS('mcust',this.value)" autocomplete="off"></div>
+        <div class="ss-list" id="mcust-list"></div>
+      </div>
+    </div>
+    <div class="fg"><label>Sales Rep</label><select id="m-rep"><option value="">All Reps</option></select></div>
+    <div class="fg" style="flex:0 0 auto"><label>&nbsp;</label><button class="btn-r" onclick="resetP2()">↺ Reset</button></div>
+  </div>
+
+  <div class="exp-bar">
+    <span class="exp-lbl">↓ Export</span>
+    <button class="dl-csv" onclick="dlP2ProductCSV()">⬇ Product Month CSV</button>
+    <button class="dl-xls" onclick="dlP2ProductExcel()">⬇ Product Month Excel</button>
+    <button class="dl-csv" onclick="dlP2CustomerCSV()">⬇ Customer Month CSV</button>
+    <button class="dl-xls" onclick="dlP2CustomerExcel()">⬇ Customer Month Excel</button>
+  </div>
+
+  <div class="card">
+    <div class="ch"><h3><span class="bar"></span>Product — Month-wise Qty</h3><div class="ch-right"><span class="ct" id="pm-ct"></span><button class="dl-csv" onclick="dlP2ProductCSV()">⬇ CSV</button><button class="dl-xls" onclick="dlP2ProductExcel()">⬇ XLS</button></div></div>
+    <div class="tbl-filters"><input type="text" placeholder="⌕  Filter product…" id="fi-pm" oninput="renderPMTable()" style="max-width:240px"></div>
+    <div class="grid2" style="margin-bottom:0">
+      <div class="ds-table-wrap" style="max-height:380px"><table id="pm-tbl" class="ds-table"><thead><tr id="pm-head"></tr></thead><tbody></tbody><tfoot><tr class="total-row" id="pm-total"></tr></tfoot></table></div>
+      <div class="cw" style="height:380px"><canvas id="pmChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="hl-exp-bar">
+    <span class="exp-lbl">↓ Export Insights</span>
+    <button class="dl-csv" onclick="dlHLCSV('prod')">⬇ Product Insights CSV</button>
+    <button class="dl-xls" onclick="dlHLExcel('prod')">⬇ Product Insights Excel</button>
+  </div>
+  <div class="hl-grid" id="prod-hl"></div>
+
+  <div class="card">
+    <div class="ch"><h3><span class="bar"></span>Customer — Month-wise Qty</h3><div class="ch-right"><span class="ct" id="cm-ct"></span><button class="dl-csv" onclick="dlP2CustomerCSV()">⬇ CSV</button><button class="dl-xls" onclick="dlP2CustomerExcel()">⬇ XLS</button></div></div>
+    <div class="tbl-filters"><input type="text" placeholder="⌕  Filter customer…" id="fi-cm" oninput="renderCMTable()" style="max-width:240px"></div>
+    <div class="grid2" style="margin-bottom:0">
+      <div class="ds-table-wrap" style="max-height:380px"><table id="cm-tbl" class="ds-table"><thead><tr id="cm-head"></tr></thead><tbody></tbody><tfoot><tr class="total-row" id="cm-total"></tr></tfoot></table></div>
+      <div class="cw" style="height:380px"><canvas id="cmChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="hl-exp-bar">
+    <span class="exp-lbl">↓ Export Insights</span>
+    <button class="dl-csv" onclick="dlHLCSV('cust')">⬇ Customer Insights CSV</button>
+    <button class="dl-xls" onclick="dlHLExcel('cust')">⬇ Customer Insights Excel</button>
+  </div>
+  <div class="hl-grid" id="cust-hl"></div>
+
+  <div class="bi-card" id="bi-summary" style="display:none">
+    <div class="bi-head">
+      <div class="bi-icon">🧠</div>
+      <div class="bi-head-text">
+        <h3>Business Intelligence Summary</h3>
+        <p id="bi-subtitle">Auto-generated insights based on selected data</p>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:7px;flex-shrink:0">
+        <button class="dl-csv" onclick="dlBICSV()">⬇ BI CSV</button>
+        <button class="dl-xls" onclick="dlBIExcel()">⬇ BI Excel</button>
+      </div>
+    </div>
+    <div class="bi-grid" id="bi-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════ PAGE 3 — CUSTOMER INTELLIGENCE ══════════ -->
+<div class="page" id="p3">
+  <div style="height:18px"></div>
+  <div class="ds-stat-row" id="p3sc"></div>
+  <div style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <span style="font-size:10px;font-weight:700;color:#9d9a93;text-transform:uppercase;letter-spacing:1px">Calculate by:</span>
+    <div style="display:flex;background:#fff;border:1.5px solid #e5e2db;border-radius:9px;padding:3px;gap:2px;box-shadow:0 1px 4px rgba(0,0,0,.05);flex-wrap:wrap">
+      <button id="p3-met-qty"  class="met-btn met-on" onclick="setMetric('qty','p3')">📦 Quantity</button>
+      <button id="p3-met-rev"  class="met-btn"        onclick="setMetric('rev','p3')">💰 Total Amount (₹)</button>
+      <button id="p3-met-gst"  class="met-btn"        onclick="setMetric('gst','p3')">🧾 Total GST Amount (₹)</button>
+      <button id="p3-met-rate" class="met-btn"        onclick="setMetric('rate','p3')">📊 Avg Rate (₹)</button>
+    </div>
+    <span id="p3-metric-note" style="font-size:10px;color:#9d9a93;font-weight:500">Showing quantity dispatched per month</span>
+  </div>
+  <div class="fbar">
+    <div class="fg"><label>From Date</label><input type="date" id="p3-from"></div>
+    <div class="fg"><label>To Date</label><input type="date" id="p3-to"></div>
+    <div class="fg"><label>Category</label><select id="p3-cat"><option value="">All Categories</option></select></div>
+    <div class="fg ss-wrap"><label>Product</label>
+      <div class="ss-box" id="p3prod-box" onclick="toggleSS('p3prod')"><span class="ph" id="p3prod-lbl">All Products</span><span class="ss-arrow">▾</span></div>
+      <div class="ss-drop" id="p3prod-drop" style="display:none">
+        <div class="ss-search"><span style="color:#9d9a93">⌕</span><input type="text" placeholder="Search product…" oninput="filterSS('p3prod',this.value)" autocomplete="off"></div>
+        <div class="ss-list" id="p3prod-list"></div>
+      </div>
+    </div>
+    <div class="fg"><label>Sales Rep</label><select id="p3-rep"><option value="">All Reps</option></select></div>
+    <div class="fg" style="flex:0 0 auto"><label>&nbsp;</label><button class="btn-r" onclick="resetP3()">↺ Reset</button></div>
+  </div>
+  <div class="p3-inner-tabs">
+    <button class="p3-it on" data-t="t1" onclick="swP3('t1')">◫ Overview</button>
+    <button class="p3-it" data-t="t2" onclick="swP3('t2')">📈 Growing</button>
+    <button class="p3-it" data-t="t3" onclick="swP3('t3')">⚠ At Risk</button>
+    <button class="p3-it" data-t="t4" onclick="swP3('t4')">🔍 Customer Details</button>
+  </div>
+  <div class="p3-itab on" id="p3t-t1">
+    <div class="exp-bar"><span class="exp-lbl">↓ Export</span><button class="dl-csv" onclick="dlP3OvCSV()">⬇ Overview CSV</button><button class="dl-xls" onclick="dlP3OvExcel()">⬇ Overview Excel</button></div>
+    <div class="card">
+      <div class="ch"><h3><span class="bar"></span>Customer Month-wise Overview</h3><div class="ch-right"><span class="ct" id="p3ov-ct"></span><button class="dl-csv" onclick="dlP3OvCSV()">⬇ CSV</button><button class="dl-xls" onclick="dlP3OvExcel()">⬇ XLS</button></div></div>
+      <div class="tbl-filters"><input type="text" placeholder="⌕  Customer…" id="p3-fi-ov" oninput="renderP3Overview()"><input type="text" placeholder="⌕  State…" id="p3-fi-ov-st" oninput="renderP3Overview()"></div>
+      <div class="ds-table-wrap" style="max-height:450px"><table id="p3ov-tbl" class="ds-table"><thead><tr id="p3ov-head"></tr></thead><tbody></tbody><tfoot><tr class="p3-total-row" id="p3ov-total"></tr></tfoot></table></div>
+    </div>
+  </div>
+  <div class="p3-itab" id="p3t-t2">
+    <div class="exp-bar"><span class="exp-lbl">↓ Export</span><button class="dl-csv" onclick="dlP3GrCSV()">⬇ Growing CSV</button><button class="dl-xls" onclick="dlP3GrExcel()">⬇ Growing Excel</button></div>
+    <div class="card">
+      <div class="ch"><h3><span class="bar" style="background:#059669"></span>Growing Customers</h3><div class="ch-right"><span id="p3gr-ct" style="font-size:10px;background:#dcfce7;border:1px solid #86efac;border-radius:20px;padding:3px 10px;color:#15803d;font-weight:600"></span><button class="dl-csv" onclick="dlP3GrCSV()">⬇ CSV</button><button class="dl-xls" onclick="dlP3GrExcel()">⬇ XLS</button></div></div>
+      <div class="tbl-filters"><input type="text" placeholder="⌕  Customer…" id="p3-fi-gr" oninput="renderP3Growing()"></div>
+      <div class="ds-table-wrap" style="max-height:450px"><table id="p3gr-tbl" class="ds-table"><thead><tr id="p3gr-head"></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+  <div class="p3-itab" id="p3t-t3">
+    <div class="exp-bar"><span class="exp-lbl">↓ Export</span><button class="dl-csv" onclick="dlP3ArCSV()">⬇ At Risk CSV</button><button class="dl-xls" onclick="dlP3ArExcel()">⬇ At Risk Excel</button></div>
+    <div class="card">
+      <div class="ch"><h3><span class="bar" style="background:#dc2626"></span>At Risk Customers</h3><div class="ch-right"><span id="p3ar-ct" style="font-size:10px;background:#fee2e2;border:1px solid #fca5a5;border-radius:20px;padding:3px 10px;color:#b91c1c;font-weight:600"></span><button class="dl-csv" onclick="dlP3ArCSV()">⬇ CSV</button><button class="dl-xls" onclick="dlP3ArExcel()">⬇ XLS</button></div></div>
+      <div class="tbl-filters"><input type="text" placeholder="⌕  Customer…" id="p3-fi-ar" oninput="renderP3AtRisk()"></div>
+      <div class="ds-table-wrap" style="max-height:450px"><table id="p3ar-tbl" class="ds-table"><thead><tr id="p3ar-head"></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+  <div class="p3-itab" id="p3t-t4">
+    <div class="p3-detail-wrap">
+      <div class="p3-cust-list">
+        <div class="p3-cl-head">Customer List</div>
+        <div class="p3-cl-search"><input type="text" id="p3-cl-q" placeholder="⌕  Search customer…" oninput="renderP3CustList()"></div>
+        <div class="p3-cl-items" id="p3-cl-items"></div>
+      </div>
+      <div class="p3-detail-panel" id="p3-dp">
+        <div class="p3-empty-state"><div class="ico">🔍</div><div>Select a customer from the list to view full history</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PAGE 4 — PENDING ORDERS ══════════ -->
+<div class="page" id="p4">
+  <div style="height:18px"></div>
+  <div class="ds-stat-row" id="p4sc"></div>
+  <div class="fbar">
+    <div class="fg"><label>Planned From</label><input type="date" id="p4-from"></div>
+    <div class="fg"><label>Planned To</label><input type="date" id="p4-to"></div>
+    <div class="fg"><label>Category</label><select id="p4-cat"><option value="">All Categories</option></select></div>
+    <div class="fg ss-wrap"><label>Product</label>
+      <div class="ss-box" id="p4prod-box" onclick="toggleSS('p4prod')"><span class="ph" id="p4prod-lbl">All Products</span><span class="ss-arrow">▾</span></div>
+      <div class="ss-drop" id="p4prod-drop" style="display:none">
+        <div class="ss-search"><span style="color:#9d9a93">⌕</span><input type="text" placeholder="Search product…" oninput="filterSS('p4prod',this.value)" autocomplete="off"></div>
+        <div class="ss-list" id="p4prod-list"></div>
+      </div>
+    </div>
+    <div class="fg ss-wrap"><label>Customer</label>
+      <div class="ss-box" id="p4cust-box" onclick="toggleSS('p4cust')"><span class="ph" id="p4cust-lbl">All Customers</span><span class="ss-arrow">▾</span></div>
+      <div class="ss-drop" id="p4cust-drop" style="display:none">
+        <div class="ss-search"><span style="color:#9d9a93">⌕</span><input type="text" placeholder="Search customer…" oninput="filterSS('p4cust',this.value)" autocomplete="off"></div>
+        <div class="ss-list" id="p4cust-list"></div>
+      </div>
+    </div>
+    <div class="fg"><label>Sales Rep</label><select id="p4-rep"><option value="">All Reps</option></select></div>
+    <div class="fg"><label>State</label><select id="p4-state"><option value="">All States</option></select></div>
+    <div class="fg"><label>Order Status</label><select id="p4-status"><option value="">All Status</option></select></div>
+    <div class="fg" style="flex:0 0 auto;min-width:auto">
+      <label>&nbsp;</label>
+      <label style="display:flex;align-items:center;gap:6px;height:32px;font-size:12px;font-weight:600;color:#3a3834;cursor:pointer;padding:0 4px;white-space:nowrap">
+        <input type="checkbox" id="p4-overdue-only" onchange="renderP4()" style="width:14px;height:14px;accent-color:#dc2626;flex-shrink:0"> ⚠ Overdue Only
+      </label>
+    </div>
+    <div class="fg" style="flex:0 0 auto"><label>&nbsp;</label><button class="btn-r" onclick="resetP4()">↺ Reset</button></div>
+  </div>
+  <div class="exp-bar">
+    <span class="exp-lbl">↓ Export</span>
+    <button class="dl-csv" onclick="dlP4PendListCSV()">⬇ Pending List CSV</button>
+    <button class="dl-xls" onclick="dlP4PendListExcel()">⬇ Pending List Excel</button>
+    <button class="dl-csv" onclick="dlP4OverdueCSV()">⬇ Overdue CSV</button>
+    <button class="dl-xls" onclick="dlP4OverdueExcel()">⬇ Overdue Excel</button>
+    <button class="dl-csv" onclick="dlP4LedgerCSV()">⬇ Ledger CSV</button>
+    <button class="dl-xls" onclick="dlP4LedgerExcel()">⬇ Ledger Excel</button>
+  </div>
+  <div id="p4-loader" style="text-align:center;padding:70px 20px;color:#9d9a93">
+    <div style="font-size:40px;margin-bottom:14px">📋</div>
+    <div style="font-size:14px;font-weight:700;color:#3a3834;margin-bottom:10px">Loading Pending Orders…</div>
+    <div class="loader-track" style="width:200px;margin:0 auto"><div class="loader-fill"></div></div>
+    <div style="font-size:11px;margin-top:10px">Fetching data from Google Sheets</div>
+  </div>
+  <div id="p4-main-content" style="display:none">
+    <div class="card">
+      <div class="ch"><h3><span class="bar"></span>Pending Order</h3><div class="ch-right"><span class="ct" id="p4pl-ct"></span><button class="dl-csv" onclick="dlP4PendListCSV()">⬇ CSV</button><button class="dl-xls" onclick="dlP4PendListExcel()">⬇ XLS</button></div></div>
+      <div class="tbl-filters">
+        <input type="text" placeholder="⌕  Order ID…" id="p4pl-order" oninput="renderP4PendingList()">
+        <input type="text" placeholder="⌕  Customer…" id="p4pl-cust" oninput="renderP4PendingList()">
+        <input type="text" placeholder="⌕  Product…" id="p4pl-prod" oninput="renderP4PendingList()">
+      </div>
+      <div class="ds-table-wrap" style="max-height:480px">
+        <table id="p4pl-tbl" class="ds-table"><thead><tr id="p4pl-head"></tr></thead><tbody></tbody><tfoot><tr class="total-row" id="p4pl-total"></tr></tfoot></table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><h3><span class="bar" style="background:#dc2626"></span>⚠ Overdue Orders — Past Planned Date</h3><div class="ch-right"><span class="ct" id="p4od-ct" style="background:#fee2e2;border-color:#fca5a5;color:#b91c1c"></span><button class="dl-csv" onclick="dlP4OverdueCSV()">⬇ CSV</button><button class="dl-xls" onclick="dlP4OverdueExcel()">⬇ XLS</button></div></div>
+      <div class="tbl-filters">
+        <input type="text" placeholder="⌕  Customer…" id="p4-fi-od-cust" oninput="renderP4Overdue()">
+        <input type="text" placeholder="⌕  Product…" id="p4-fi-od-prod" oninput="renderP4Overdue()">
+      </div>
+      <div class="ds-table-wrap" style="max-height:380px">
+        <table id="p4od-tbl" class="ds-table"><thead><tr id="p4od-head"></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><h3><span class="bar"></span>Full Pending Ledger</h3><div class="ch-right"><span class="ct" id="p4ldg-ct"></span><button class="dl-csv" onclick="dlP4LedgerCSV()">⬇ CSV</button><button class="dl-xls" onclick="dlP4LedgerExcel()">⬇ XLS</button></div></div>
+      <div class="tbl-filters">
+        <input type="text" placeholder="⌕  Order ID" id="p4li-order" oninput="renderP4Ledger()">
+        <input type="text" placeholder="⌕  Customer" id="p4li-cust" oninput="renderP4Ledger()">
+        <input type="text" placeholder="⌕  Product" id="p4li-prod" oninput="renderP4Ledger()">
+        <input type="text" placeholder="⌕  State" id="p4li-state" oninput="renderP4Ledger()">
+      </div>
+      <div class="ds-table-wrap" style="max-height:520px">
+        <table id="p4ldg-tbl" class="ds-table"><thead><tr id="p4ldg-head"></tr></thead><tbody></tbody><tfoot><tr class="total-row" id="p4ldg-total"></tr></tfoot></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// window.API_TOKEN is injected server-side (see app/main.py's Jinja2Templates wiring) — every
+// /api/* call needs it since Phase 1.5 added a shared-bearer-token auth gate.
+function authFetch(url, opts) {
+  opts = opts || {};
+  opts.headers = Object.assign({}, opts.headers, {Authorization: 'Bearer ' + (window.API_TOKEN || '')});
+  return fetch(url, opts);
+}
+
+// ── STATE ──────────────────────────────────────────────
+let DATA=[];
+const charts={};const SS={};
+let _catArr=[],_prodArr=[],_ledgerData=[],_pmArr=[],_cmArr=[],_pmMonths=[],_cmMonths=[];
+let _isFirstLoad=true;
+let _metric='qty';
+
+// Page 3 state
+let _p3metric='qty';
+let _p3cmArr=[];
+let _p3cmMonths=[];
+let _p3growArr=[];
+let _p3atArr=[];
+let _p3selCust='';
+
+// Suppress toast on very first auto-refresh after page load
+let _firstAutoRefreshDone=false;
+
+let _hlProdData={drops:[],gains:[],consistent:[],dropped:[]};
+let _hlCustData={drops:[],gains:[],consistent:[],dropped:[]};
+let _biData={};
+let _biMonths=[];
+
+// ══════════════════════════════════════════════════════
+//  COLUMN FILTER SYSTEM
+// ══════════════════════════════════════════════════════
+const CF={};
+let _cfPanel=null,_cfCur=null,_cfVals=[];
+
+function cfInit(tbl,col,rawVals){
+  if(!CF[tbl])CF[tbl]={};
+  const uniq=[...new Set(rawVals.map(v=>String(v==null||v===''?'(blank)':v)))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'}));
+  if(!CF[tbl][col]){CF[tbl][col]={all:uniq,sel:new Set(uniq)};}
+  else{
+    const prev=CF[tbl][col].sel;
+    CF[tbl][col].all=uniq;
+    const kept=new Set(uniq.filter(v=>prev.has(v)));
+    CF[tbl][col].sel=kept.size?kept:new Set(uniq);
+  }
+}
+
+function cfOk(tbl,col,val){
+  const s=CF[tbl]?.[col];if(!s)return true;
+  if(s.sel.size===s.all.length)return true;
+  return s.sel.has(String(val==null||val===''?'(blank)':val));
+}
+
+function cfOn(tbl,col){const s=CF[tbl]?.[col];return s&&s.sel.size<s.all.length;}
+
+function cfBtn(tbl,col,fn){
+  return`<button class="cf-btn${cfOn(tbl,col)?' cf-on':''}" onclick="cfOpen(event,'${tbl}','${col}','${fn}')" title="Filter">▼</button>`;
+}
+
+function cfOpen(e,tbl,col,fn){
+  e.stopPropagation();cfClose();
+  const s=CF[tbl]?.[col];if(!s)return;
+  _cfCur={tbl,col,fn};
+  const p=document.createElement('div');p.className='cf-panel';p.id='cf-panel';
+  p.innerHTML=`<div class="cf-hd"><span>Filter: ${col}</span><button class="cf-x" onclick="cfClose()">×</button></div>
+<div class="cf-srch-row"><span style="color:#9d9a93;font-size:13px">⌕</span><input type="text" id="cf-q" placeholder="Search values…" oninput="cfSrch(this.value)" autocomplete="off"></div>
+<div class="cf-acts"><button class="cf-act" onclick="cfAll()">All</button><button class="cf-act" onclick="cfNone()">None</button><button class="cf-act" onclick="cfSortD('az')">A→Z</button><button class="cf-act" onclick="cfSortD('za')">Z→A</button></div>
+<div class="cf-lst" id="cf-lst"></div>
+<div class="cf-ft"><span class="cf-cnt" id="cf-c"></span><button class="cf-done" onclick="cfDone()">Done</button></div>`;
+  document.body.appendChild(p);_cfPanel=p;
+  const r=e.currentTarget.getBoundingClientRect();
+  let lx=r.left,ty=r.bottom+4;
+  if(lx+240>innerWidth-8)lx=innerWidth-240-8;
+  if(ty+380>innerHeight-8)ty=r.top-380-4;
+  p.style.left=lx+'px';p.style.top=ty+'px';
+  cfDrawList('');
+  setTimeout(()=>document.addEventListener('mousedown',cfOut),0);
+}
+
+function cfDrawList(q){
+  if(!_cfCur)return;
+  const s=CF[_cfCur.tbl][_cfCur.col];
+  _cfVals=q?s.all.filter(v=>v.toLowerCase().includes(q.toLowerCase())):[...s.all];
+  const lst=document.getElementById('cf-lst');if(!lst)return;
+  lst.innerHTML=_cfVals.map((v,i)=>`<div class="cf-row"><input type="checkbox" id="cf${i}" ${s.sel.has(v)?'checked':''} onchange="cfTog(${i},this.checked)"><label for="cf${i}" title="${v}">${v}</label></div>`).join('');
+  const c=document.getElementById('cf-c');if(c)c.textContent=`${s.sel.size} / ${s.all.length} selected`;
+}
+
+function cfSrch(q){cfDrawList(q);}
+function cfTog(i,chk){if(!_cfCur)return;const s=CF[_cfCur.tbl][_cfCur.col];if(chk)s.sel.add(_cfVals[i]);else s.sel.delete(_cfVals[i]);const c=document.getElementById('cf-c');if(c)c.textContent=`${s.sel.size} / ${s.all.length} selected`;}
+function cfAll(){if(!_cfCur)return;const s=CF[_cfCur.tbl][_cfCur.col];s.sel=new Set(s.all);cfDrawList(document.getElementById('cf-q')?.value||'');}
+function cfNone(){if(!_cfCur)return;const s=CF[_cfCur.tbl][_cfCur.col];s.sel=new Set();cfDrawList(document.getElementById('cf-q')?.value||'');}
+function cfSortD(d){if(!_cfCur)return;const s=CF[_cfCur.tbl][_cfCur.col];s.all=d==='az'?[...s.all].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true})):[...s.all].sort((a,b)=>b.localeCompare(a,undefined,{numeric:true}));cfDrawList(document.getElementById('cf-q')?.value||'');}
+function cfDone(){if(_cfCur){const fn=window[_cfCur.fn];if(typeof fn==='function')fn();}cfClose();}
+function cfClose(){if(_cfPanel){_cfPanel.remove();_cfPanel=null;}_cfCur=null;_cfVals=[];document.removeEventListener('mousedown',cfOut);}
+function cfOut(e){if(_cfPanel&&!_cfPanel.contains(e.target)&&!e.target.classList.contains('cf-btn'))cfClose();}
+
+// ── FORMATTING ─────────────────────────────────────────
+const fmt     = n => (Number(n)||0).toLocaleString('en-IN',{maximumFractionDigits:2});
+const fmtN    = n => (Number(n)||0);
+const fmtExact= n => (Number(n)||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtAmt  = n => {
+  const num = Number(n) || 0;
+  if (num === 0) return '—';
+  return '₹' + num.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+};
+const fmtR = fmtAmt;
+// v3 hero-number bug fix: fmtAmt never abbreviates (full paise precision, e.g.
+// "₹13,92,10,401.00") — fine in a table cell, but at the hero's 40px it overflowed a ~200px
+// card and wrapped across 3 lines (confirmed via screenshot, not just source inspection this
+// time). Every other page's hero uses an abbreviating formatter (inr/inrOv/fmtCur/osFmt all
+// cap to K/L/Cr) — this gives Sales Dashboard's hero the same treatment, display-only; the
+// count-up target itself is still the exact number, only how it's drawn on screen changes.
+const fmtAmtShort = n => {
+  const num = Number(n) || 0;
+  if (num === 0) return '—';
+  const abs = Math.abs(num);
+  if (abs >= 1e7) return '₹'+(num/1e7).toFixed(2)+'Cr';
+  if (abs >= 1e5) return '₹'+(num/1e5).toFixed(1)+'L';
+  if (abs >= 1e3) return '₹'+(num/1e3).toFixed(1)+'K';
+  return '₹'+num.toLocaleString('en-IN');
+};
+
+// ── CLOCK ──────────────────────────────────────────────
+function tickClock(){
+  const el=document.getElementById('th-clock');
+  if(!el)return;
+  const n=new Date();
+  el.textContent=
+    n.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+
+    n.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+tickClock();setInterval(tickClock,1000);
+
+// ── HELPERS ────────────────────────────────────────────
+const uniq=k=>[...new Set(DATA.map(r=>r[k]).filter(Boolean))].sort();
+const fill=(id,arr)=>{const s=document.getElementById(id);if(!s)return;const ph=s.options[0].text;s.innerHTML=`<option value="">${ph}</option>`;arr.forEach(v=>{const o=document.createElement('option');o.value=o.textContent=v;s.appendChild(o);});};
+
+const C=['#1d4ed8','#059669','#d97706','#7c3aed','#dc2626','#0891b2','#15803d','#be185d','#c2410c','#0f766e'];
+// v3 "wow factor" pass: DM Sans everywhere else in the app, Chart.js was still defaulting to
+// 'Inter' (never actually loaded — silently fell through to the browser's generic sans-serif).
+Chart.defaults.font.family="'DM Sans'";Chart.defaults.color='#9d9a93';Chart.defaults.borderColor='#f8f7f3';
+// TT is now DS_CHART_TOOLTIP (shared.js) — same white-card/hairline/DM-Mono tooltip every chart
+// in the app uses, not this page's own dark box. Every call site below still does
+// `{...TT, callbacks:{...}}`, so redefining TT itself was the only change needed here.
+const TT={...DS_CHART_TOOLTIP,callbacks:{label:c=>c.dataset.label+': '+fmt(c.raw)}};
+// Single-hue brand gradient (navy, full to faded) for bar charts — replaces per-bar rainbow
+// fills; each bar is still visually distinct via spacing, not competing hues (v3 spec: charts'
+// primary series should read as "brand," not "rainbow"). Chart.js scriptable-option form so it
+// gets a real canvas gradient, not a flat semi-transparent color.
+// Bug fix: the original .35 floor computes to rgb(170,176,187) over white — a visible gray, not
+// a faded navy, and since most bars in a "top 5" comparison don't reach the top of the chart
+// area, most of what's on screen was that pale end. Raised the floor to .6 (rgb(112,123,143) —
+// clearly blue-tinted, not gray) and the ceiling to .96.
+const brandBarFill=(ctx)=>{
+  const {chart}=ctx, {ctx:c2d,chartArea}=chart;
+  if(!chartArea) return 'rgba(13,31,60,.75)';
+  const g=c2d.createLinearGradient(0,chartArea.top,0,chartArea.bottom);
+  g.addColorStop(0,'rgba(13,31,60,.96)');g.addColorStop(1,'rgba(13,31,60,.6)');
+  return g;
+};
+// Horizontal variant (left-to-right gradient) for indexAxis:'y' bar charts.
+const brandBarFillH=(ctx)=>{
+  const {chart}=ctx, {ctx:c2d,chartArea}=chart;
+  if(!chartArea) return 'rgba(13,31,60,.75)';
+  const g=c2d.createLinearGradient(chartArea.left,0,chartArea.right,0);
+  g.addColorStop(0,'rgba(13,31,60,.6)');g.addColorStop(1,'rgba(13,31,60,.96)');
+  return g;
+};
+
+const mkChart=(id,type,data,opts)=>{
+  if(charts[id])charts[id].destroy();
+  const c=document.getElementById(id);if(!c)return;
+  charts[id]=new Chart(c,{type,data,options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},...opts}});
+};
+
+// ── SEARCHABLE SELECT ──────────────────────────────────
+function initSS(k,arr){SS[k]={val:'',opts:arr};renderSSList(k,'');}
+function renderSSList(k,q){
+  const list=document.getElementById(k+'-list');
+  const opts=SS[k].opts.filter(o=>!q||o.toLowerCase().includes(q.toLowerCase()));
+  if(!opts.length){list.innerHTML='<div class="ss-empty">No results</div>';return;}
+  list.innerHTML=`<div class="ss-opt${SS[k].val===''?' sel':''}" onclick="pickSS('${k}','','All')">All</div>`+
+    opts.map(o=>`<div class="ss-opt${SS[k].val===o?' sel':''}" onclick="pickSS('${k}','${o.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}','${o.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">${o}</div>`).join('');
+}
+function filterSS(k,q){renderSSList(k,q);}
+function toggleSS(k){
+  const drop=document.getElementById(k+'-drop');const open=drop.style.display!=='none';
+  document.querySelectorAll('.ss-drop').forEach(d=>d.style.display='none');
+  document.querySelectorAll('.ss-box').forEach(b=>b.classList.remove('open'));
+  if(!open){drop.style.display='block';document.getElementById(k+'-box').classList.add('open');const i=drop.querySelector('input');if(i){i.value='';i.focus();}renderSSList(k,'');}
+}
+function pickSS(k,val,label){
+  SS[k].val=val;const lbl=document.getElementById(k+'-lbl');
+  lbl.textContent=label==='All'?(k.includes('prod')?'All Products':'All Customers'):label;
+  lbl.className=label==='All'?'ph':'';
+  document.getElementById(k+'-drop').style.display='none';document.getElementById(k+'-box').classList.remove('open');
+  if(k.startsWith('f'))renderP1();
+  else if(k.startsWith('m'))renderP2();
+  else if(k.startsWith('p3'))renderP3();
+  else if(k.startsWith('p4')){if(_p4Loaded)renderP4();}
+}
+document.addEventListener('click',e=>{if(!e.target.closest('.ss-wrap')){document.querySelectorAll('.ss-drop').forEach(d=>d.style.display='none');document.querySelectorAll('.ss-box').forEach(b=>b.classList.remove('open'));}});
+
+// ── GLOBAL SEARCH ──────────────────────────────────────
+function onGlobalSearch(q){
+  const v=q.toLowerCase().trim();
+  if(document.getElementById('p1').classList.contains('on')){
+    document.getElementById('li-prod').value=v;
+    document.getElementById('li-cust').value='';
+    renderLedger();
+  } else if(document.getElementById('p2').classList.contains('on')){
+    document.getElementById('fi-pm').value=v;
+    document.getElementById('fi-cm').value=v;
+    renderPMTable();renderCMTable();
+  } else if(document.getElementById('p4').classList.contains('on')){
+    const el=document.getElementById('p4li-cust');if(el)el.value=v;
+    if(_p4Loaded)renderP4Ledger();
+  } else {
+    document.getElementById('p3-fi-ov').value=v;
+    renderP3Overview();
+  }
+}
+
+// ── SILENT REFRESH ─────────────────────────────────────
+let _lastChecksum='';
+let _autoTimer=null;
+function dataChecksum(rows){const n=rows.length;const q=rows.reduce((s,r)=>s+(r.qty||0),0);return n+'_'+Math.round(q);}
+function scheduleRefresh(){if(_autoTimer)clearTimeout(_autoTimer);_autoTimer=setTimeout(()=>loadData(false,false),5000);}
+function showToast(ts){const t=document.getElementById('upd-toast');document.getElementById('toast-time').textContent=ts;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);}
+
+function loadData(manual,showLoader){
+  if(manual)document.getElementById('spin').style.display='block';
+  // loader disabled — show dashboard directly
+  const url='/api/sales';
+  authFetch(url,{cache:'no-store'})
+    .then(r=>r.json())
+    .then(res=>{onData(res,manual);})
+    .catch(()=>{
+      if(typeof google!=='undefined'&&google.script){
+        google.script.run.withSuccessHandler(res=>{onData(res,manual);}).withFailureHandler(e=>{document.getElementById('loader-msg').textContent='Error: '+e.message;scheduleRefresh();}).getData();
+      }else{document.getElementById('loader-msg').textContent='Could not load data.';scheduleRefresh();}
+    });
+}
+
+function onData(res,manual){
+  const newRows=res.rows||[];
+  console.log('[SALES] onData rows='+newRows.length+' manual='+manual);
+  const ts=new Date(res.updated).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  if(_isFirstLoad){document.getElementById('loader').style.display='none';_isFirstLoad=false;}
+  document.getElementById('spin').style.display='none';
+  const newChecksum=dataChecksum(newRows);
+  const dataChanged=(newChecksum!==_lastChecksum);
+  if(!manual&&!dataChanged){scheduleRefresh();return;}
+  _lastChecksum=newChecksum;
+  DATA=newRows;
+
+  const cats=uniq('category'),prods=uniq('product'),custs=uniq('customer'),reps=uniq('sales_rep');
+  ['f-cat','m-cat','p3-cat'].forEach(id=>{const s=document.getElementById(id),v=s.value;fill(id,cats);s.value=v;});
+  ['f-rep','m-rep','p3-rep'].forEach(id=>{const s=document.getElementById(id),v=s.value;fill(id,reps);s.value=v;});
+  if(!SS['fprod']||!SS['fprod'].opts.length){initSS('fprod',prods);initSS('mprod',prods);initSS('p3prod',prods);}
+  if(!SS['fcust']||!SS['fcust'].opts.length){initSS('fcust',custs);initSS('mcust',custs);}
+  fillDates();
+
+  if(!document.getElementById('f-from').value){
+    const dates=DATA.map(r=>r.dispatch_date).filter(Boolean).sort();
+    if(dates.length){
+      ['f-from','m-from','p3-from'].forEach(id=>document.getElementById(id).value=dates[0]);
+      ['f-to','m-to','p3-to'].forEach(id=>document.getElementById(id).value=dates[dates.length-1]);
+    }
+  }
+
+  const allMonths=[...new Set(DATA.map(r=>r.month).filter(m=>m&&m!=='1899-12'))].sort();
+  const lastMonth=allMonths[allMonths.length-1]||'';
+  document.getElementById('toolbar-count').textContent=DATA.length.toLocaleString('en-IN')+' records';
+  document.getElementById('toolbar-period').textContent=lastMonth?'Latest: '+mL(lastMonth):'';
+
+  const ap=document.querySelector('.page.on');
+  if(ap){if(ap.id==='p1')renderP1();else if(ap.id==='p2')renderP2();else renderP3();}
+  if(!manual){if(_firstAutoRefreshDone)showToast(ts);_firstAutoRefreshDone=true;}
+  scheduleRefresh();
+}
+
+// ══════════════════════════════════════════════════════
+//  PAGE 1 — DISPATCH LEDGER (unchanged)
+// ══════════════════════════════════════════════════════
+function getP1(){
+  const from=document.getElementById('f-from').value,to=document.getElementById('f-to').value;
+  const cat=document.getElementById('f-cat').value,prod=SS['fprod']?.val||'',cust=SS['fcust']?.val||'',rep=document.getElementById('f-rep').value;
+  return DATA.filter(r=>{
+    if(!r.dispatch_date)return false;
+    if(from&&r.dispatch_date<from)return false;
+    if(to&&r.dispatch_date>to)return false;
+    if(cat&&r.category!==cat)return false;if(prod&&r.product!==prod)return false;
+    if(cust&&r.customer!==cust)return false;if(rep&&r.sales_rep!==rep)return false;
+    return true;
+  });
+}
+
+function renderP1(){
+  const d=getP1();
+  const tQ=d.reduce((s,r)=>s+r.qty,0);
+  const tA=d.reduce((s,r)=>s+r.amount,0);
+  const tG=d.reduce((s,r)=>s+(r.gst_amount||0),0);
+  const ord=new Set(d.map(r=>r.order_id)).size;
+  const cus=new Set(d.map(r=>r.customer)).size;
+  const ratesWithQty=d.filter(r=>r.rate>0&&r.qty>0);
+  const avgRate=ratesWithQty.length?ratesWithQty.reduce((s,r)=>s+(r.rate*r.qty),0)/ratesWithQty.reduce((s,r)=>s+r.qty,0):0;
+
+  document.getElementById('p1sc').innerHTML=`
+    <div class="ds-stat ds-stat--navy"><div class="ds-stat-icon">📦</div><div class="ds-stat-ghost-icon">📦</div><div class="ds-stat-label">Total Qty Dispatched</div><div class="ds-stat-value">${fmt(tQ)}</div><div class="ds-stat-caption">units dispatched</div></div>
+    <div class="ds-stat ds-stat--green"><div class="ds-stat-icon">💰</div><div class="ds-stat-ghost-icon">💰</div><div class="ds-stat-label">Total Revenue</div><div class="ds-stat-value ds-stat-value--hero">${fmtAmtShort(tA)}</div><div class="ds-stat-caption">${fmtAmt(tA)}</div></div>
+    <div class="ds-stat ds-stat--teal"><div class="ds-stat-icon">🧾</div><div class="ds-stat-ghost-icon">🧾</div><div class="ds-stat-label">Total GST Amount</div><div class="ds-stat-value">${fmtAmt(tG)}</div><div class="ds-stat-caption">GST collected</div></div>
+    <div class="ds-stat ds-stat--orange"><div class="ds-stat-icon">📋</div><div class="ds-stat-ghost-icon">📋</div><div class="ds-stat-label">Total Orders</div><div class="ds-stat-value">${fmt(ord)}</div><div class="ds-stat-caption">unique orders</div></div>
+    <div class="ds-stat ds-stat--blue"><div class="ds-stat-icon">🏢</div><div class="ds-stat-ghost-icon">🏢</div><div class="ds-stat-label">Active Customers</div><div class="ds-stat-value">${cus}</div><div class="ds-stat-caption">accounts</div></div>
+    <div class="ds-stat ds-stat--purple"><div class="ds-stat-icon">📊</div><div class="ds-stat-ghost-icon">📊</div><div class="ds-stat-label">Avg Rate / Unit</div><div class="ds-stat-value">${avgRate?fmtExact(avgRate):'—'}</div><div class="ds-stat-caption">blended rate</div></div>`;
+  const p1el=document.querySelectorAll('#p1sc .ds-stat-value');
+  dsCountUp(p1el[0],tQ,{format:fmt});
+  dsCountUp(p1el[1],tA,{format:fmtAmtShort});
+  dsCountUp(p1el[2],tG,{format:fmtAmt});
+  dsCountUp(p1el[3],ord,{format:fmt});
+  dsCountUp(p1el[4],cus);
+  dsCountUp(p1el[5],avgRate,{format:v=>v?fmtExact(v):'—'});
+
+  const catMap={};
+  d.forEach(r=>{const c=r.category||'Unknown';if(!catMap[c])catMap[c]={qty:0,rev:0,gst:0,rSum:0,rQty:0};catMap[c].qty+=r.qty;catMap[c].rev+=r.amount;catMap[c].gst+=(r.gst_amount||0);if(r.rate>0&&r.qty>0){catMap[c].rSum+=r.rate*r.qty;catMap[c].rQty+=r.qty;}});
+  _catArr=Object.entries(catMap).sort((a,b)=>b[1].qty-a[1].qty);
+  renderCatTable();
+
+  const top5c=_catArr.slice(0,5);
+  mkChart('catChart','bar',{labels:top5c.map(([c])=>c.length>16?c.slice(0,16)+'…':c),datasets:[{label:'Qty',data:top5c.map(([,v])=>v.qty),backgroundColor:brandBarFill,borderColor:'#0d1f3c',borderWidth:2,borderRadius:8,borderSkipped:false,barPercentage:.6,categoryPercentage:.75}]},
+    {indexAxis:'x',plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>c.dataset.label+': '+fmt(c.raw)}}},scales:{x:{grid:{display:false},ticks:{font:{size:11,weight:'600'},color:'#3a3834',maxRotation:30,minRotation:0}},y:{grid:{color:'rgba(25,25,23,.05)'},ticks:{callback:v=>fmt(v),font:{size:10}},title:{display:true,text:'Qty',font:{size:10}}}},animation:{duration:500}});
+
+  const prodMap={};
+  d.forEach(r=>{const p=r.product||'Unknown';if(!prodMap[p])prodMap[p]={qty:0,rev:0,cat:r.category,rates:[],qtys:[],gst:0};prodMap[p].qty+=r.qty;prodMap[p].rev+=r.amount;prodMap[p].gst+=(r.gst_amount||0);if(r.rate>0&&r.qty>0){prodMap[p].rates.push(r.rate);prodMap[p].qtys.push(r.qty);}});
+  _prodArr=Object.entries(prodMap).sort((a,b)=>b[1].qty-a[1].qty);
+  renderProdTable();
+
+  const top5p=_prodArr.slice(0,5);
+  mkChart('prodChart','bar',{labels:top5p.map(([p])=>p.length>16?p.slice(0,16)+'…':p),datasets:[{label:'Qty',data:top5p.map(([,v])=>v.qty),backgroundColor:brandBarFill,borderColor:'#0d1f3c',borderWidth:2,borderRadius:8,borderSkipped:false,barPercentage:.6,categoryPercentage:.75}]},
+    {indexAxis:'x',plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>c.dataset.label+': '+fmt(c.raw)}}},scales:{x:{grid:{display:false},ticks:{font:{size:11,weight:'600'},color:'#3a3834',maxRotation:30,minRotation:0}},y:{grid:{color:'rgba(25,25,23,.05)'},ticks:{callback:v=>fmt(v),font:{size:10}},title:{display:true,text:'Qty',font:{size:10}}}},animation:{duration:500}});
+
+  const lm={};
+  d.forEach(r=>{const k=r.order_id+'||'+r.customer+'||'+r.product;if(!lm[k])lm[k]={...r,qty:0,amount:0,gst_amount:0};lm[k].qty+=r.qty;lm[k].amount+=r.amount;lm[k].gst_amount+=(r.gst_amount||0);});
+  _ledgerData=Object.values(lm).sort((a,b)=>b.qty-a.qty);
+  renderLedger();
+}
+
+function renderCatTable(){
+  cfInit('cat','Category',_catArr.map(([c])=>c));
+  const q=(document.getElementById('fi-cat')?.value||'').toLowerCase();
+  const tQ=_catArr.reduce((s,[,v])=>s+v.qty,0),mQ=_catArr[0]?.[1]?.qty||1;
+  const f=_catArr.filter(([c])=>(!q||c.toLowerCase().includes(q))&&cfOk('cat','Category',c));
+  document.getElementById('cat-head').innerHTML=`<th class="sr-th">SR</th><th>Category ${cfBtn('cat','Category','renderCatTable')}</th><th class="r">Total Qty</th><th class="r">Rate</th><th class="r">Total Amt Dispatch</th><th class="r">Total GST Dispatch</th><th style="width:60px">Dist.</th>`;
+  document.getElementById('cat-ct').textContent=f.length+' categories';
+  document.querySelector('#cat-tbl tbody').innerHTML=f.map(([c,v],i)=>`<tr><td class="sr-cell">${i+1}</td><td><span class="rank-dot ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-n'}">${i<3?['🥇','🥈','🥉'][i]:i+1}</span><strong style="color:#191917">${c}</strong></td><td class="r">${fmt(v.qty)}</td><td class="r">${v.rQty>0?fmtExact(v.rSum/v.rQty):'—'}</td><td class="r">${fmtAmt(v.rev)}</td><td class="r">${fmtAmt(v.gst)}</td><td><div class="mbar"><div class="mbar-f" style="width:${(v.qty/mQ*100).toFixed(0)}%;background:${C[i%C.length]}"></div></div></td></tr>`).join('');
+  const fQ=f.reduce((s,[,v])=>s+v.qty,0),fR=f.reduce((s,[,v])=>s+v.rev,0),fG=f.reduce((s,[,v])=>s+v.gst,0);
+  const fRs=f.reduce((s,[,v])=>s+(v.rSum||0),0),fRq=f.reduce((s,[,v])=>s+(v.rQty||0),0);
+  document.getElementById('cat-total').innerHTML=`<td></td><td><strong>Σ Total (${f.length})</strong></td><td class="r"><strong>${fmt(fQ)}</strong></td><td class="r"><strong>${fRq>0?fmtExact(fRs/fRq):'—'}</strong></td><td class="r"><strong>${fmtAmt(fR)}</strong></td><td class="r"><strong>${fmtAmt(fG)}</strong></td><td></td>`;
+}
+
+function renderProdTable(){
+  cfInit('prod','Product',_prodArr.map(([p])=>p));
+  cfInit('prod','Category',_prodArr.map(([,v])=>v.cat||''));
+  const qp=(document.getElementById('fi-prod')?.value||'').toLowerCase();
+  const qc=(document.getElementById('fi-prod-cat')?.value||'').toLowerCase();
+  const mQ=_prodArr[0]?.[1]?.qty||1;
+  const f=_prodArr.filter(([p,v])=>(!qp||p.toLowerCase().includes(qp))&&(!qc||(v.cat||'').toLowerCase().includes(qc))&&cfOk('prod','Product',p)&&cfOk('prod','Category',v.cat||''));
+  document.getElementById('prod-head').innerHTML=`<th class="sr-th">SR</th><th>Product Name ${cfBtn('prod','Product','renderProdTable')}</th><th>Category ${cfBtn('prod','Category','renderProdTable')}</th><th class="r">Total Qty</th><th class="r">Avg Rate</th><th class="r">Revenue</th><th class="r">GST Amt</th><th style="width:60px">Dist.</th>`;
+  document.getElementById('prod-ct').textContent=f.length+' products';
+  document.querySelector('#prod-tbl tbody').innerHTML=f.map(([p,v],i)=>{const avgR=v.rates.length?v.rates.reduce((s,r,idx)=>s+(r*v.qtys[idx]),0)/v.qtys.reduce((s,q)=>s+q,0):0;return`<tr><td class="sr-cell">${i+1}</td><td><span class="rank-dot ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-n'}">${i<3?['🥇','🥈','🥉'][i]:i+1}</span><span style="color:#191917;font-weight:600">${p}</span></td><td style="font-size:11px;color:#9d9a93">${v.cat||'—'}</td><td class="r"><strong style="color:#191917">${fmt(v.qty)}</strong></td><td class="r">${avgR?fmtExact(avgR):'—'}</td><td class="r">${fmtAmt(v.rev)}</td><td class="r">${fmtAmt(v.gst)}</td><td><div class="mbar"><div class="mbar-f" style="width:${(v.qty/mQ*100).toFixed(0)}%;background:${C[Math.min(i,C.length-1)]}"></div></div></td></tr>`;}).join('');
+  const fQ=f.reduce((s,[,v])=>s+v.qty,0),fR=f.reduce((s,[,v])=>s+v.rev,0),fG=f.reduce((s,[,v])=>s+v.gst,0);
+  document.getElementById('prod-total').innerHTML=`<td></td><td colspan="2"><strong>Σ Total (${f.length} products)</strong></td><td class="r"><strong>${fmt(fQ)}</strong></td><td class="r">—</td><td class="r"><strong>${fmtAmt(fR)}</strong></td><td class="r"><strong>${fmtAmt(fG)}</strong></td><td></td>`;
+}
+
+function renderLedger(){
+  cfInit('ldg','Customer',_ledgerData.map(r=>r.customer||''));
+  cfInit('ldg','Product',_ledgerData.map(r=>r.product||''));
+  cfInit('ldg','State',_ledgerData.map(r=>r.state||''));
+  cfInit('ldg','City',_ledgerData.map(r=>r.city||''));
+  cfInit('ldg','Status',_ledgerData.map(r=>r.dispatch_status||''));
+  const fO=(document.getElementById('li-order')?.value||'').toLowerCase();
+  const fC=(document.getElementById('li-cust')?.value||'').toLowerCase();
+  const fP=(document.getElementById('li-prod')?.value||'').toLowerCase();
+  const fSt=(document.getElementById('li-state')?.value||'').toLowerCase();
+  const fCi=(document.getElementById('li-city')?.value||'').toLowerCase();
+  const fSta=(document.getElementById('li-status')?.value||'');
+  const f=_ledgerData.filter(r=>{
+    if(fO&&!r.order_id.toLowerCase().includes(fO))return false;
+    if(fC&&!r.customer.toLowerCase().includes(fC))return false;
+    if(fP&&!r.product.toLowerCase().includes(fP))return false;
+    if(fSt&&!(r.state||'').toLowerCase().includes(fSt))return false;
+    if(fCi&&!(r.city||'').toLowerCase().includes(fCi))return false;
+    if(fSta&&r.dispatch_status!==fSta)return false;
+    if(!cfOk('ldg','Customer',r.customer||''))return false;
+    if(!cfOk('ldg','Product',r.product||''))return false;
+    if(!cfOk('ldg','State',r.state||''))return false;
+    if(!cfOk('ldg','City',r.city||''))return false;
+    if(!cfOk('ldg','Status',r.dispatch_status||''))return false;
+    return true;
+  });
+  document.getElementById('ledger-head').innerHTML=`<th class="sr-th">SR</th><th>Order ID</th><th>Customer ${cfBtn('ldg','Customer','renderLedger')}</th><th>Product ${cfBtn('ldg','Product','renderLedger')}</th><th class="r">Qty</th><th>State ${cfBtn('ldg','State','renderLedger')}</th><th>City ${cfBtn('ldg','City','renderLedger')}</th><th class="r">Rate</th><th class="r">Amount ₹</th><th class="r">GST Amt ₹</th><th>Status ${cfBtn('ldg','Status','renderLedger')}</th>`;
+  document.getElementById('ledger-ct').textContent=fmt(f.length)+' rows';
+  const sc={Complete:'bg-green',Partial:'bg-amber','Balance Cancelled':'bg-red'};
+  document.querySelector('#ledger-tbl tbody').innerHTML=f.slice(0,500).map((r,i)=>`<tr><td class="sr-cell">${i+1}</td><td style="font-size:10px;color:#9d9a93;white-space:nowrap;font-weight:600">${r.order_id}</td><td style="color:#191917;font-weight:600">${r.customer}</td><td>${r.product}</td><td class="r"><strong style="color:#191917">${fmt(r.qty)}</strong></td><td style="font-size:11px">${r.state||'—'}</td><td style="font-size:11px">${r.city||'—'}</td><td class="r">${r.rate?fmtExact(r.rate):'—'}</td><td class="r"><strong>${r.amount?fmtAmt(r.amount):'—'}</strong></td><td class="r">${r.gst_amount?fmtAmt(r.gst_amount):'—'}</td><td><span class="badge ${sc[r.dispatch_status]||'bg-gray'}">${r.dispatch_status||'—'}</span></td></tr>`).join('');
+  const tQ=f.reduce((s,r)=>s+r.qty,0),tA=f.reduce((s,r)=>s+r.amount,0),tG=f.reduce((s,r)=>s+(r.gst_amount||0),0);
+  document.getElementById('ledger-total').innerHTML=`<td></td><td colspan="3"><strong>Σ Total — ${fmt(f.length)} rows${f.length>500?' (top 500)':''}</strong></td><td class="r"><strong>${fmt(tQ)}</strong></td><td colspan="2"></td><td class="r">—</td><td class="r"><strong>${fmtAmt(tA)}</strong></td><td class="r"><strong>${fmtAmt(tG)}</strong></td><td></td>`;
+}
+
+// ── Dispatch Date dropdown ─────────────────────────────
+function fmtDate(d){
+  if(!d)return d;
+  const [y,m,day]=d.split('-');
+  const mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return day+' '+mn[parseInt(m,10)-1]+' '+y;
+}
+function fillDates(){
+  const sel=document.getElementById('f-date');if(!sel)return;
+  const cur=sel.value;
+  const dates=[...new Set(DATA.map(r=>r.dispatch_date).filter(Boolean))].sort();
+  sel.innerHTML='<option value="">All Dates</option>'+
+    dates.map(d=>`<option value="${d}"${d===cur?' selected':''}>${fmtDate(d)}</option>`).join('');
+}
+function onPickDate(){
+  const d=document.getElementById('f-date').value;
+  const dates=DATA.map(r=>r.dispatch_date).filter(Boolean).sort();
+  if(d){
+    document.getElementById('f-from').value=d;
+    document.getElementById('f-to').value=d;
+  } else {
+    if(dates.length){document.getElementById('f-from').value=dates[0];document.getElementById('f-to').value=dates[dates.length-1];}
+  }
+  renderP1();
+}
+
+function resetP1(){
+  const dates=DATA.map(r=>r.dispatch_date).filter(Boolean).sort();
+  if(dates.length){document.getElementById('f-from').value=dates[0];document.getElementById('f-to').value=dates[dates.length-1];}
+  document.getElementById('f-date').value='';
+  ['f-cat','f-rep'].forEach(id=>document.getElementById(id).value='');
+  ['fi-cat','fi-prod','fi-prod-cat','li-order','li-cust','li-prod','li-state','li-city'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('li-status').value='';document.getElementById('global-search').value='';
+  pickSS('fprod','','All');pickSS('fcust','','All');
+}
+// Clear the date picker when the user manually edits From/To range
+['f-from','f-to'].forEach(id=>document.getElementById(id).addEventListener('change',()=>{document.getElementById('f-date').value='';}));
+['f-from','f-to','f-cat','f-rep'].forEach(id=>document.getElementById(id).addEventListener('change',renderP1));
+
+// ══════════════════════════════════════════════════════
+//  SHARED METRIC + MONTH UTILITIES
+// ══════════════════════════════════════════════════════
+const _MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const mL=m=>{
+  if(!m)return m;
+  const p=m.split('-');
+  if(p.length===2){const mo=parseInt(p[1],10)-1;if(mo>=0&&mo<12)return _MN[mo]+' '+p[0].slice(2);}
+  return m;
+};
+
+function setMetric(m, page){
+  if(page==='p3'){
+    _p3metric=m;
+    ['qty','rev','gst','rate'].forEach(x=>{document.getElementById('p3-met-'+x)?.classList.toggle('met-on',x===m);});
+    const notes={qty:'Showing quantity dispatched per month',rev:'Showing total amount (₹) per month',gst:'Showing total GST amount (₹) per month',rate:'Showing average rate per unit per month'};
+    document.getElementById('p3-metric-note').textContent=notes[m]||'';
+    renderP3();
+  } else {
+    _metric=m;
+    ['qty','rev','gst','rate'].forEach(x=>{document.getElementById('met-'+x)?.classList.toggle('met-on',x===m);});
+    const notes={qty:'Showing quantity dispatched per month',rev:'Showing total amount (₹) per month',gst:'Showing total GST amount (₹) per month',rate:'Showing average rate per unit per month'};
+    document.getElementById('metric-note').textContent=notes[m]||'';
+    renderP2();
+  }
+}
+
+function getMonthsForPage(fromId, toId){
+  const from=document.getElementById(fromId).value;
+  const to=document.getElementById(toId).value;
+  const all=[...new Set(DATA.map(r=>r.month).filter(m=>m&&m!=='1899-12'))].sort();
+  if(!from||!to)return all;
+  const fromM=from.substring(0,7);
+  const toM=to.substring(0,7);
+  return all.filter(m=>m>=fromM&&m<=toM);
+}
+
+function getVal(r, metric){
+  if(metric==='rev')return r.amount||0;
+  if(metric==='gst')return r.gst_amount||0;
+  if(metric==='rate')return r.rate||0;
+  return r.qty||0;
+}
+function fmtM(v, metric){
+  if(metric==='rev'||metric==='gst')return fmtAmt(v);
+  if(metric==='rate')return v?fmtExact(v):'—';
+  return fmt(v);
+}
+function fmtMRaw(v, metric){
+  if(metric==='rev'||metric==='gst')return fmtN(v);
+  if(metric==='rate')return v?(Number(v)||0):'';
+  return fmtN(v);
+}
+function metLabel(metric){
+  if(metric==='rev')return'Total Amount (₹)';
+  if(metric==='gst')return'Total GST (₹)';
+  if(metric==='rate')return'Avg Rate';
+  return'Qty';
+}
+function aggMetricRows(rows, metric){
+  if(metric==='rate'){const valid=rows.filter(r=>r.rate>0&&r.qty>0);return valid.length?valid.reduce((s,r)=>s+(r.rate*r.qty),0)/valid.reduce((s,r)=>s+r.qty,0):0;}
+  if(metric==='gst')return rows.reduce((s,r)=>s+(r.gst_amount||0),0);
+  if(metric==='rev')return rows.reduce((s,r)=>s+(r.amount||0),0);
+  return rows.reduce((s,r)=>s+(r.qty||0),0);
+}
+function pillM(a,b,metric){
+  const d=(b||0)-(a||0);
+  if(d>0)return`<span class="pill up">+${fmtM(d,metric)}</span>`;
+  if(d<0)return`<span class="pill dn">${fmtM(d,metric)}</span>`;
+  return'<span class="pill fl">—</span>';
+}
+
+// ══════════════════════════════════════════════════════
+//  PAGE 2 — MONTH COMPARISON (unchanged)
+// ══════════════════════════════════════════════════════
+function getP2(){
+  const months=getMonthsForPage('m-from','m-to');
+  const cat=document.getElementById('m-cat').value,prod=SS['mprod']?.val||'',cust=SS['mcust']?.val||'',rep=document.getElementById('m-rep').value;
+  return {data:DATA.filter(r=>{if(!months.includes(r.month))return false;if(cat&&r.category!==cat)return false;if(prod&&r.product!==prod)return false;if(cust&&r.customer!==cust)return false;if(rep&&r.sales_rep!==rep)return false;return true;}), months};
+}
+
+function renderP2(){
+  const {data:d, months}=getP2();
+  const mVal={};months.forEach(m=>mVal[m]={rows:[]});
+  d.forEach(r=>{if(mVal[r.month])mVal[r.month].rows.push(r);});
+  const mAgg={};months.forEach(m=>mAgg[m]=aggMetricRows(mVal[m].rows,_metric));
+  const tot=_metric==='rate'
+    ?(months.reduce((s,m)=>s+mAgg[m],0)/months.filter(m=>mAgg[m]>0).length||0)
+    :months.reduce((s,m)=>s+mAgg[m],0);
+
+  const kpiC=['navy','purple','orange','green','blue','teal','rose'];
+  const kpiI=['📅','📈','📊','🚚','🎯','💎','⚡'];
+  const mlbl=metLabel(_metric);
+  document.getElementById('p2sc').innerHTML=months.map((m,i)=>`<div class="ds-stat ds-stat--${kpiC[i%kpiC.length]}"><div class="ds-stat-icon">${kpiI[i%kpiI.length]}</div><div class="ds-stat-ghost-icon">${kpiI[i%kpiI.length]}</div><div class="ds-stat-label">${mL(m)}</div><div class="ds-stat-value">${fmtM(mAgg[m],_metric)}</div><div class="ds-stat-caption">${mlbl}</div></div>`).join('')+
+    `<div class="ds-stat ds-stat--green"><div class="ds-stat-icon">🏆</div><div class="ds-stat-ghost-icon">🏆</div><div class="ds-stat-label">${_metric==='rate'?'Avg Rate Overall':'Grand Total'}</div><div class="ds-stat-value">${fmtM(tot,_metric)}</div><div class="ds-stat-caption">all selected months</div></div>`;
+  const p2el=document.querySelectorAll('#p2sc .ds-stat-value');
+  months.forEach((m,i)=>dsCountUp(p2el[i],mAgg[m],{format:v=>fmtM(v,_metric)}));
+  dsCountUp(p2el[months.length],tot,{format:v=>fmtM(v,_metric)});
+
+  const pm={};
+  d.forEach(r=>{const p=r.product||'Unknown';if(!pm[p]){pm[p]={rows:{}};months.forEach(m=>{pm[p].rows[m]=[];});}if(pm[p].rows[r.month])pm[p].rows[r.month].push(r);});
+  const pmAgg={};Object.keys(pm).forEach(p=>{pmAgg[p]={};months.forEach(m=>{pmAgg[p][m]=aggMetricRows(pm[p].rows[m]||[],_metric);});});
+  _pmArr=Object.keys(pmAgg).map(p=>({p,v:pmAgg[p],total:_metric==='rate'?Object.values(pmAgg[p]).filter(x=>x>0).reduce((a,b)=>a+b,0)/(Object.values(pmAgg[p]).filter(x=>x>0).length||1):months.reduce((s,m)=>s+(pmAgg[p][m]||0),0)})).sort((a,b)=>b.total-a.total);
+  _pmMonths=months;
+  document.getElementById('pm-ct').textContent=Object.keys(pm).length+' products';
+  document.querySelector('#pm-tbl').closest('.card').querySelector('h3').innerHTML=`<span class="bar"></span>Product — Month-wise ${mlbl}`;
+  renderPMTable();
+
+  const top10p=_pmArr.slice(0,10);
+  mkChart('pmChart','line',{labels:months.map(mL),datasets:top10p.map(({p,v},i)=>({label:p.length>18?p.slice(0,18)+'…':p,data:months.map(m=>v[m]||0),borderColor:C[i%C.length],backgroundColor:C[i%C.length]+'18',tension:.35,fill:false,pointRadius:0,pointHoverRadius:6,pointBackgroundColor:C[i%C.length],pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:2.5}))},
+    {plugins:{legend:{display:true,position:'bottom',labels:{font:{size:10},boxWidth:10,padding:8,usePointStyle:true,color:'#3a3834'}},tooltip:{...TT,mode:'index',intersect:false,callbacks:{label:c=>c.dataset.label+': '+fmtM(c.raw,_metric)}}},scales:{x:{grid:{display:false},ticks:{font:{size:11,weight:'600'},color:'#3a3834'}},y:{grid:{color:'rgba(25,25,23,.05)'},ticks:{callback:v=>fmtM(v,_metric),font:{size:10}},title:{display:true,text:mlbl,font:{size:10}}}}});
+  buildHL('prod-hl',_pmArr,months,x=>x.p,x=>x.v,x=>x.total,'prod',_metric);
+
+  const cm={},cs={};
+  d.forEach(r=>{const c=r.customer||'Unknown';if(!cm[c]){cm[c]={};months.forEach(m=>cm[c][m]=[]); }if(cm[c][r.month])cm[c][r.month].push(r);if(r.state&&!cs[c])cs[c]=r.state;});
+  const cmAgg={};Object.keys(cm).forEach(c=>{cmAgg[c]={};months.forEach(m=>{cmAgg[c][m]=aggMetricRows(cm[c][m]||[],_metric);});});
+  _cmArr=Object.keys(cmAgg).map(c=>({c,v:cmAgg[c],total:_metric==='rate'?Object.values(cmAgg[c]).filter(x=>x>0).reduce((a,b)=>a+b,0)/(Object.values(cmAgg[c]).filter(x=>x>0).length||1):months.reduce((s,m)=>s+(cmAgg[c][m]||0),0),state:cs[c]||''})).sort((a,b)=>b.total-a.total);
+  _cmMonths=months;
+  document.getElementById('cm-ct').textContent=Object.keys(cm).length+' customers';
+  document.querySelector('#cm-tbl').closest('.card').querySelector('h3').innerHTML=`<span class="bar"></span>Customer — Month-wise ${mlbl}`;
+  renderCMTable();
+
+  const top10c=_cmArr.slice(0,10);
+  mkChart('cmChart','line',{labels:months.map(mL),datasets:top10c.map(({c,v},i)=>({label:c.length>18?c.slice(0,18)+'…':c,data:months.map(m=>v[m]||0),borderColor:C[i%C.length],backgroundColor:C[i%C.length]+'18',tension:.35,fill:false,pointRadius:0,pointHoverRadius:6,pointBackgroundColor:C[i%C.length],pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:2.5}))},
+    {plugins:{legend:{display:true,position:'bottom',labels:{font:{size:10},boxWidth:10,padding:8,usePointStyle:true,color:'#3a3834'}},tooltip:{...TT,mode:'index',intersect:false,callbacks:{label:c=>c.dataset.label+': '+fmtM(c.raw,_metric)}}},scales:{x:{grid:{display:false},ticks:{font:{size:11,weight:'600'},color:'#3a3834'}},y:{grid:{color:'rgba(25,25,23,.05)'},ticks:{callback:v=>fmtM(v,_metric),font:{size:10}},title:{display:true,text:mlbl,font:{size:10}}}}});
+  buildHL('cust-hl',_cmArr,months,x=>x.c,x=>x.v,x=>x.total,'cust',_metric);
+  buildBI(months,_metric);
+  _biMonths=months;
+}
+
+function renderPMTable(){
+  cfInit('pm','Product',_pmArr.map(({p})=>p));
+  const q=(document.getElementById('fi-pm')?.value||'').toLowerCase(),months=_pmMonths;
+  const f=_pmArr.filter(({p})=>(!q||p.toLowerCase().includes(q))&&cfOk('pm','Product',p));
+  document.getElementById('pm-head').innerHTML=`<th class="sr-th">SR</th><th>Product ${cfBtn('pm','Product','renderPMTable')}</th>`+months.map(m=>`<th class="r">${mL(m)}</th>`).join('')+`<th class="r">Total / Avg</th>`+(months.length>=2?`<th class="r">Δ Change</th>`:'');
+  document.querySelector('#pm-tbl tbody').innerHTML=f.map(({p,v,total},i)=>`<tr><td class="sr-cell">${i+1}</td><td><span class="rank-dot ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-n'}">${i<3?['🥇','🥈','🥉'][i]:i+1}</span><span style="color:#191917;font-weight:600">${p}</span></td>${months.map(m=>`<td class="r">${v[m]?fmtM(v[m],_metric):'—'}</td>`).join('')}<td class="r"><strong style="color:#191917">${fmtM(total,_metric)}</strong></td>${months.length>=2?`<td class="r">${pillM(v[months[months.length-2]]||0,v[months[months.length-1]]||0,_metric)}</td>`:''}</tr>`).join('');
+  const tBM={};months.forEach(m=>tBM[m]=_metric==='rate'?f.filter(x=>x.v[m]>0).reduce((s,x)=>s+x.v[m],0)/(f.filter(x=>x.v[m]>0).length||1):f.reduce((s,x)=>s+(x.v[m]||0),0));
+  const gT=_metric==='rate'?f.reduce((s,x)=>s+x.total,0)/(f.length||1):f.reduce((s,x)=>s+x.total,0);
+  const pm2=months[months.length-2],lm=months[months.length-1];
+  document.getElementById('pm-total').innerHTML=`<td></td><td><strong>Σ (${f.length} products)</strong></td>`+months.map(m=>`<td class="r"><strong>${fmtM(tBM[m]||0,_metric)}</strong></td>`).join('')+`<td class="r"><strong>${fmtM(gT,_metric)}</strong></td>`+(months.length>=2?`<td class="r">${pillM(tBM[pm2]||0,tBM[lm]||0,_metric)}</td>`:'');
+}
+
+function renderCMTable(){
+  cfInit('cm','Customer',_cmArr.map(({c})=>c));
+  cfInit('cm','State',_cmArr.map(({state})=>state||''));
+  const q=(document.getElementById('fi-cm')?.value||'').toLowerCase(),months=_cmMonths;
+  const f=_cmArr.filter(({c,state})=>(!q||c.toLowerCase().includes(q))&&cfOk('cm','Customer',c)&&cfOk('cm','State',state||''));
+  document.getElementById('cm-head').innerHTML=`<th class="sr-th">SR</th><th>Customer ${cfBtn('cm','Customer','renderCMTable')}</th><th>State ${cfBtn('cm','State','renderCMTable')}</th>`+months.map(m=>`<th class="r">${mL(m)}</th>`).join('')+`<th class="r">Total / Avg</th>`+(months.length>=2?`<th class="r">Δ Change</th>`:'');
+  document.querySelector('#cm-tbl tbody').innerHTML=f.map(({c,v,total,state},i)=>`<tr><td class="sr-cell">${i+1}</td><td><span class="rank-dot ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-n'}">${i<3?['🥇','🥈','🥉'][i]:i+1}</span><span style="color:#191917;font-weight:600">${c}</span></td><td style="font-size:11px;color:#9d9a93">${state||'—'}</td>${months.map(m=>`<td class="r">${v[m]?fmtM(v[m],_metric):'—'}</td>`).join('')}<td class="r"><strong style="color:#191917">${fmtM(total,_metric)}</strong></td>${months.length>=2?`<td class="r">${pillM(v[months[months.length-2]]||0,v[months[months.length-1]]||0,_metric)}</td>`:''}</tr>`).join('');
+  const tBM={};months.forEach(m=>tBM[m]=_metric==='rate'?f.filter(x=>x.v[m]>0).reduce((s,x)=>s+x.v[m],0)/(f.filter(x=>x.v[m]>0).length||1):f.reduce((s,x)=>s+(x.v[m]||0),0));
+  const gT=_metric==='rate'?f.reduce((s,x)=>s+x.total,0)/(f.length||1):f.reduce((s,x)=>s+x.total,0);
+  const pm2=months[months.length-2],lm=months[months.length-1];
+  document.getElementById('cm-total').innerHTML=`<td></td><td colspan="2"><strong>Σ (${f.length} customers)</strong></td>`+months.map(m=>`<td class="r"><strong>${fmtM(tBM[m]||0,_metric)}</strong></td>`).join('')+`<td class="r"><strong>${fmtM(gT,_metric)}</strong></td>`+(months.length>=2?`<td class="r">${pillM(tBM[pm2]||0,tBM[lm]||0,_metric)}</td>`:'');
+}
+
+function resetP2(){
+  const dates=DATA.map(r=>r.dispatch_date).filter(Boolean).sort();
+  if(dates.length){document.getElementById('m-from').value=dates[0];document.getElementById('m-to').value=dates[dates.length-1];}
+  ['m-cat','m-rep'].forEach(id=>document.getElementById(id).value='');
+  ['fi-pm','fi-cm'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('global-search').value='';
+  pickSS('mprod','','All');pickSS('mcust','','All');
+  setMetric('qty','p2');
+}
+['m-from','m-to','m-cat','m-rep'].forEach(id=>document.getElementById(id).addEventListener('change',renderP2));
+
+// ══════════════════════════════════════════════════════
+//  SHARED: buildHL + buildBI (Page 2, unchanged)
+// ══════════════════════════════════════════════════════
+function buildHL(cid,arr,months,getName,getV,getTotal,key,metric){
+  if(months.length<2){document.getElementById(cid).innerHTML='';return;}
+  const last=months[months.length-1],prev=months[months.length-2],first=months[0];
+  const drops=arr.filter(x=>(getV(x)[prev]||0)>0&&(getV(x)[last]||0)<(getV(x)[prev]||0))
+    .map(x=>({n:getName(x),prev:getV(x)[prev]||0,last:getV(x)[last]||0,diff:(getV(x)[last]||0)-(getV(x)[prev]||0)}))
+    .sort((a,b)=>a.diff-b.diff);
+  const gains=arr.map(x=>({n:getName(x),prev:getV(x)[prev]||0,last:getV(x)[last]||0,diff:(getV(x)[last]||0)-(getV(x)[prev]||0)}))
+    .filter(x=>x.diff>0).sort((a,b)=>b.diff-a.diff);
+  const consistent=arr.filter(x=>months.every(m=>(getV(x)[m]||0)>0)).sort((a,b)=>getTotal(b)-getTotal(a));
+  const dropped=arr.filter(x=>(getV(x)[first]||0)>0&&(getV(x)[last]||0)===0).sort((a,b)=>(getV(b)[first]||0)-(getV(a)[first]||0));
+  if(key==='prod')_hlProdData={drops,gains,consistent,dropped,last,prev,first,months};
+  if(key==='cust')_hlCustData={drops,gains,consistent,dropped,last,prev,first,months};
+  const scrl=`max-height:370px;overflow-y:auto;padding-right:2px`;
+  const dlb=(sec)=>`<span style="display:flex;gap:4px;margin-left:auto;flex-shrink:0"><button class="dl-csv" style="padding:2px 7px;font-size:9px" onclick="dlHLSection('${key}','${sec}','csv')">⬇ CSV</button><button class="dl-xls" style="padding:2px 7px;font-size:9px" onclick="dlHLSection('${key}','${sec}','xls')">⬇ XLS</button></span>`;
+  const card=(headHtml,rows,noRowMsg,sec)=>`<div class="hl"><div style="display:flex;align-items:center;gap:6px;margin-bottom:12px">${headHtml}${dlb(sec)}</div><div style="${scrl}">${rows.length?rows.join(''):`<div style="color:#9d9a93;font-size:11px;padding:6px 0">${noRowMsg}</div>`}</div></div>`;
+  document.getElementById(cid).innerHTML=
+    card(`<div class="hl-head" style="color:#dc2626;margin-bottom:0">↓ BIGGEST DROP — ${mL(prev)} → ${mL(last)}</div>`,
+      drops.map(x=>`<div class="hlrow"><span class="n" style="max-width:none;white-space:normal;word-break:break-word">${x.n}</span><span class="hl-pill-red" style="flex-shrink:0;margin-left:8px">${fmtM(x.diff,metric)} (${x.prev>0?((x.diff/x.prev)*100).toFixed(0):0}%)</span></div>`),
+      'No drops in this period','drops')+
+    card(`<div class="hl-head" style="color:#16a34a;margin-bottom:0">↑ BIGGEST GAIN — ${mL(prev)} → ${mL(last)}</div>`,
+      gains.map(x=>`<div class="hlrow"><span class="n" style="max-width:none;white-space:normal;word-break:break-word">${x.n}</span><span class="hl-pill-grn" style="flex-shrink:0;margin-left:8px">+${fmtM(x.diff,metric)} (${x.prev>0?((x.diff/x.prev)*100).toFixed(0):'+∞'}%)</span></div>`),
+      'No gains in this period','gains')+
+    card(`<div class="hl-head" style="color:#1d4ed8;margin-bottom:0">✓ ACTIVE ALL ${months.length} MONTHS</div>`,
+      consistent.map(x=>`<div class="hlrow"><span class="n" style="max-width:none;white-space:normal;word-break:break-word">${getName(x)}</span><span class="hl-pill-blu" style="flex-shrink:0;margin-left:8px">${fmtM(getTotal(x),metric)}</span></div>`),
+      'None active in all months','consistent')+
+    card(`<div class="hl-head" style="color:#d97706;margin-bottom:0">⚠ DROPPED OFF — ${mL(first)} → ${mL(last)} ZERO</div>`,
+      dropped.map(x=>`<div class="hlrow"><span class="n" style="max-width:none;white-space:normal;word-break:break-word">${getName(x)}</span><span class="hl-pill-amb" style="flex-shrink:0;margin-left:8px">${mL(first)}: ${fmtM(getV(x)[first]||0,metric)}</span></div>`),
+      'None dropped off','dropped');
+}
+
+function dlHLSection(key,sec,fmt){
+  const d=key==='prod'?_hlProdData:_hlCustData;
+  if(!d||!d.months)return;
+  const metric=_metric;
+  const gn=x=>x.p!==undefined?x.p:x.c;
+  let rows=[];
+  if(sec==='drops'){
+    rows=[['SR','Name',mL(d.prev),mL(d.last),'Change','Change %'],
+      ...d.drops.map((x,i)=>[i+1,x.n,fmtMRaw(x.prev,metric),fmtMRaw(x.last,metric),fmtMRaw(x.diff,metric),x.prev>0?((x.diff/x.prev)*100).toFixed(1)+'%':'—'])];
+  } else if(sec==='gains'){
+    rows=[['SR','Name',mL(d.prev),mL(d.last),'Change','Change %'],
+      ...d.gains.map((x,i)=>[i+1,x.n,fmtMRaw(x.prev,metric),fmtMRaw(x.last,metric),'+'+fmtMRaw(x.diff,metric),x.prev>0?((x.diff/x.prev)*100).toFixed(1)+'%':'+∞%'])];
+  } else if(sec==='consistent'){
+    rows=[['SR','Name','Total',...d.months.map(mL)],
+      ...d.consistent.map((x,i)=>[i+1,gn(x),fmtMRaw(x.total,metric),...d.months.map(m=>fmtMRaw((x.v&&x.v[m])||0,metric))])];
+  } else if(sec==='dropped'){
+    rows=[['SR','Name',mL(d.first)+' Value',...d.months.map(mL)],
+      ...d.dropped.map((x,i)=>[i+1,gn(x),fmtMRaw((x.v&&x.v[d.first])||0,metric),...d.months.map(m=>fmtMRaw((x.v&&x.v[m])||0,metric))])];
+  }
+  if(rows.length<2)return;
+  const lblMap={drops:'Biggest_Drop',gains:'Biggest_Gain',consistent:'Active_All_Months',dropped:'Dropped_Off'};
+  const fn=`BCPL_${key==='prod'?'Product':'Customer'}_${lblMap[sec]||sec}`;
+  if(fmt==='csv')dlCSV(rows,fn+'.csv');
+  else dlXLS(rows[0],rows.slice(1),null,fn+'.xls');
+}
+
+function buildBI(months, metric){
+  const el=document.getElementById('bi-summary');
+  if(!el||months.length<2){if(el)el.style.display='none';return;}
+  el.style.display='block';
+  const last=months[months.length-1],prev=months[months.length-2];
+  document.getElementById('bi-subtitle').textContent=`Analysis for ${mL(prev)} → ${mL(last)} · ${months.length} months selected`;
+  const mQ={};months.forEach(m=>mQ[m]=0);
+  _pmArr.forEach(({v})=>months.forEach(m=>{mQ[m]+=(v[m]||0);}));
+  const lastQ=mQ[last]||0,prevQ=mQ[prev]||0;
+  const qDiff=lastQ-prevQ,qPct=prevQ>0?((qDiff/prevQ)*100).toFixed(1):0;
+  const growing=qDiff>0,stable=Math.abs(qDiff)<prevQ*.05;
+  const topProd=_pmArr.filter(x=>(x.v[last]||0)>0).sort((a,b)=>(b.v[last]||0)-(a.v[last]||0)).slice(0,3);
+  const topCust=_cmArr.filter(x=>(x.v[last]||0)>0).sort((a,b)=>(b.v[last]||0)-(a.v[last]||0)).slice(0,3);
+  const declProd=_pmArr.filter(x=>(x.v[prev]||0)>0&&(x.v[last]||0)<(x.v[prev]||0)*.7).sort((a,b)=>((a.v[last]||0)/(a.v[prev]||1))-((b.v[last]||0)/(b.v[prev]||1))).slice(0,4);
+  const declCust=_cmArr.filter(x=>(x.v[prev]||0)>0&&(x.v[last]||0)<(x.v[prev]||0)*.7).sort((a,b)=>((a.v[last]||0)/(a.v[prev]||1))-((b.v[last]||0)/(b.v[prev]||1))).slice(0,4);
+  const newCust=_cmArr.filter(x=>(x.v[prev]||0)===0&&(x.v[last]||0)>0).sort((a,b)=>(b.v[last]||0)-(a.v[last]||0)).slice(0,4);
+  const consProd=_pmArr.filter(x=>months.every(m=>(x.v[m]||0)>0)).sort((a,b)=>b.total-a.total).slice(0,4);
+  _biData={topProd,topCust,declProd,declCust,newCust,consProd,lastQ,prevQ,qDiff,qPct,growing,stable,last,prev};
+  const arrow=growing?'↑':'↓',color=growing?'#16a34a':'#dc2626';
+  const overallMsg=growing?`Overall volume increased by ${fmt(qDiff)} units (${qPct}%) compared to ${mL(prev)}. Business is on an upward trend.`:stable?`Volume is stable — marginal change of ${fmt(Math.abs(qDiff))} units vs ${mL(prev)}.`:`Overall volume declined by ${fmt(Math.abs(qDiff))} units (${Math.abs(qPct)}%) vs ${mL(prev)}. Immediate attention needed.`;
+  const trn=n=>n.length>28?n.slice(0,28)+'…':n;
+  const biv=(icon,color,s)=>`<div class="bi-item"><span class="dot" style="background:${color}"></span><span>${s}</span></div>`;
+  document.getElementById('bi-grid').innerHTML=`
+    <div class="bi-section ${growing?'success':'danger'}" style="grid-column:1/-1">
+      <div class="bi-sec-title" style="color:${color}">${arrow} OVERALL PERFORMANCE — ${mL(prev)} TO ${mL(last)}</div>
+      <div class="bi-item" style="font-size:12.5px"><span class="dot" style="background:${color}"></span><span>${overallMsg}</span></div>
+      ${prevQ>0?`<div class="bi-item"><span class="dot" style="background:#9d9a93"></span><span>${mL(prev)}: <b>${fmtM(prevQ,metric)}</b> &nbsp;→&nbsp; ${mL(last)}: <b>${fmtM(lastQ,metric)}</b> &nbsp;|&nbsp; Net change: <b style="color:${color}">${growing?'+':''}${fmtM(qDiff,metric)}</b></span></div>`:''}
+    </div>
+    <div class="bi-section success"><div class="bi-sec-title" style="color:#16a34a">🏆 TOP PRODUCTS — ${mL(last)}</div>${topProd.length?topProd.map((x,i)=>biv('🟢','#16a34a',`<b>#${i+1} ${trn(x.p)}</b> — ${fmtM(x.v[last]||0,metric)}`)).join(''):biv('','#9d9a93','No product data for this period')}</div>
+    <div class="bi-section info"><div class="bi-sec-title" style="color:#1d4ed8">👥 TOP CUSTOMERS — ${mL(last)}</div>${topCust.length?topCust.map((x,i)=>biv('🔵','#1d4ed8',`<b>#${i+1} ${trn(x.c)}</b> — ${fmtM(x.v[last]||0,metric)}`)).join(''):biv('','#9d9a93','No customer data for this period')}</div>
+    <div class="bi-section ${declProd.length?'danger':'slate'}"><div class="bi-sec-title" style="color:${declProd.length?'#dc2626':'#6a6760'}">⚠ FOCUS HERE — DECLINING PRODUCTS</div>${declProd.length?declProd.map(x=>{const pct=x.v[prev]>0?((((x.v[last]||0)-(x.v[prev]||0))/(x.v[prev]||1))*100).toFixed(0):0;return biv('🔴','#dc2626',`<b>${trn(x.p)}</b> — dropped <b style="color:#dc2626">${pct}%</b> (${fmtM(x.v[prev]||0,metric)} → ${fmtM(x.v[last]||0,metric)})`);}).join(''):biv('','#16a34a','✅ No major product decline this month!')}</div>
+    <div class="bi-section ${declCust.length?'danger':'slate'}"><div class="bi-sec-title" style="color:${declCust.length?'#dc2626':'#6a6760'}">⚠ FOCUS HERE — DECLINING CUSTOMERS</div>${declCust.length?declCust.map(x=>{const pct=x.v[prev]>0?((((x.v[last]||0)-(x.v[prev]||0))/(x.v[prev]||1))*100).toFixed(0):0;return biv('🔴','#dc2626',`<b>${trn(x.c)}</b> — dropped <b style="color:#dc2626">${pct}%</b> (${fmtM(x.v[prev]||0,metric)} → ${fmtM(x.v[last]||0,metric)})`);}).join(''):biv('','#16a34a','✅ No major customer decline!')}</div>
+    <div class="bi-section purple"><div class="bi-sec-title" style="color:#7c3aed">✨ NEW CUSTOMERS — ${mL(last)}</div>${newCust.length?newCust.map(x=>biv('🟣','#7c3aed',`<b>${trn(x.c)}</b> — ${fmtM(x.v[last]||0,metric)} (new)`)).join(''):biv('','#9d9a93','No new customers added this month.')}</div>
+    <div class="bi-section warning"><div class="bi-sec-title" style="color:#d97706">💡 STABLE EARNERS — ALL MONTHS</div>${consProd.length?consProd.map(x=>biv('🟡','#d97706',`<b>${trn(x.p)}</b> — ${fmtM(x.total,metric)} total (consistent)`)).join(''):biv('','#9d9a93','No products active in all selected months.')}</div>
+    <div class="bi-section slate" style="grid-column:3/4;grid-row:3/5">
+      <div class="bi-sec-title" style="color:#475569">📋 ACTION CHECKLIST</div>
+      ${declCust.length?biv('🔴','#dc2626',`Call <b>${declCust.length} declining customer${declCust.length>1?'s':''}</b> — understand drop reason`):''}
+      ${declProd.length?biv('🟠','#ea580c',`Review stock & pricing for <b>${declProd.length} declining product${declProd.length>1?'s':''}</b>`):''}
+      ${newCust.length?biv('🟢','#16a34a',`Nurture <b>${newCust.length} new customer${newCust.length>1?'s':''}</b> — convert to regular accounts`):''}
+      ${consProd.length?biv('🔵','#1d4ed8',`Ensure stock for <b>${consProd.length} consistent product${consProd.length>1?'s':''}</b>`):''}
+      ${!growing?biv('⚠️','#d97706',`Volume down — push sales to recover <b>${fmtM(Math.abs(qDiff),metric)}</b>`):''}
+      ${growing?biv('🏆','#16a34a','Volume growing — maintain momentum & expand territories'):''}
+      ${biv('📊','#6a6760','Track weekly: top 3 products + top 3 customers closely')}
+    </div>`;
+}
+
+// ══════════════════════════════════════════════════════
+//  P2 downloads (unchanged)
+// ══════════════════════════════════════════════════════
+function escCSV(v){if(v==null)return'';const s=String(v);return(s.includes(',')||s.includes('"')||s.includes('\n'))?'"'+s.replace(/"/g,'""')+'"':s;}
+function dlCSV(rows,fn){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+rows.map(r=>r.map(escCSV).join(',')).join('\n')],{type:'text/csv;charset=utf-8;'}));a.download=fn;a.click();}
+function dlXLS(h,rows,tot,fn){let x='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"></head><body><table>';x+='<tr>'+h.map(c=>`<th style="background:#0d1f3c;color:#fff;font-weight:bold;padding:7px;border:1px solid #444">${c}</th>`).join('')+'</tr>';rows.forEach(r=>{x+='<tr>'+r.map(c=>`<td style="border:1px solid #e5e2db;padding:5px">${c??''}</td>`).join('')+'</tr>';});if(tot)x+='<tr>'+tot.map(c=>`<td style="background:#eff6ff;font-weight:bold;border:1px solid #93c5fd;padding:5px">${c??''}</td>`).join('')+'</tr>';x+='</table></body></html>';const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([x],{type:'application/vnd.ms-excel'}));a.download=fn;a.click();}
+
+function dlCatCSV(){const tRs=_catArr.reduce((s,[,v])=>s+(v.rSum||0),0),tRq=_catArr.reduce((s,[,v])=>s+(v.rQty||0),0);dlCSV([['SR','Category','Total Qty','Rate (₹)','Total Amt Dispatch (₹)','Total GST Dispatch (₹)'],..._catArr.map(([c,v],i)=>[i+1,c,fmtN(v.qty),v.rQty>0?fmtExact(v.rSum/v.rQty):'—',fmtN(v.rev),fmtN(v.gst||0)]),['','TOTAL',fmtN(_catArr.reduce((s,[,v])=>s+v.qty,0)),tRq>0?fmtExact(tRs/tRq):'—',fmtN(_catArr.reduce((s,[,v])=>s+v.rev,0)),fmtN(_catArr.reduce((s,[,v])=>s+(v.gst||0),0))]],'BCPL_Category.csv');}
+function dlCatExcel(){const tRs=_catArr.reduce((s,[,v])=>s+(v.rSum||0),0),tRq=_catArr.reduce((s,[,v])=>s+(v.rQty||0),0);dlXLS(['SR','Category','Total Qty','Rate (₹)','Total Amt Dispatch (₹)','Total GST Dispatch (₹)'],_catArr.map(([c,v],i)=>[i+1,c,fmtN(v.qty),v.rQty>0?fmtExact(v.rSum/v.rQty):'—',fmtN(v.rev),fmtN(v.gst||0)]),['','TOTAL',fmtN(_catArr.reduce((s,[,v])=>s+v.qty,0)),tRq>0?fmtExact(tRs/tRq):'—',fmtN(_catArr.reduce((s,[,v])=>s+v.rev,0)),fmtN(_catArr.reduce((s,[,v])=>s+(v.gst||0),0))],'BCPL_Category.xls');}
+function dlProdCSV(){dlCSV([['SR','Product','Category','Qty','Avg Rate','Revenue (₹)','GST Amount (₹)'],..._prodArr.map(([p,v],i)=>{const a=v.rates.length?v.rates.reduce((s,r,idx)=>s+(r*v.qtys[idx]),0)/v.qtys.reduce((s,q)=>s+q,0):0;return[i+1,p,v.cat||'',fmtN(v.qty),a?fmtExact(a):'',fmtN(v.rev),fmtN(v.gst||0)];}),['','TOTAL','',fmtN(_prodArr.reduce((s,[,v])=>s+v.qty,0)),'',fmtN(_prodArr.reduce((s,[,v])=>s+v.rev,0)),fmtN(_prodArr.reduce((s,[,v])=>s+(v.gst||0),0))]],'BCPL_Products.csv');}
+function dlProdExcel(){dlXLS(['SR','Product','Category','Qty','Avg Rate','Revenue (₹)','GST Amount (₹)'],_prodArr.map(([p,v],i)=>{const a=v.rates.length?v.rates.reduce((s,r,idx)=>s+(r*v.qtys[idx]),0)/v.qtys.reduce((s,q)=>s+q,0):0;return[i+1,p,v.cat||'',fmtN(v.qty),a?fmtExact(a):'',fmtN(v.rev),fmtN(v.gst||0)];}),['','TOTAL','',fmtN(_prodArr.reduce((s,[,v])=>s+v.qty,0)),'',fmtN(_prodArr.reduce((s,[,v])=>s+v.rev,0)),fmtN(_prodArr.reduce((s,[,v])=>s+(v.gst||0),0))],'BCPL_Products.xls');}
+function getLF(){const fO=(document.getElementById('li-order')?.value||'').toLowerCase();const fC=(document.getElementById('li-cust')?.value||'').toLowerCase();const fP=(document.getElementById('li-prod')?.value||'').toLowerCase();const fSt=(document.getElementById('li-state')?.value||'').toLowerCase();const fCi=(document.getElementById('li-city')?.value||'').toLowerCase();const fSta=(document.getElementById('li-status')?.value||'');return _ledgerData.filter(r=>{if(fO&&!r.order_id.toLowerCase().includes(fO))return false;if(fC&&!r.customer.toLowerCase().includes(fC))return false;if(fP&&!r.product.toLowerCase().includes(fP))return false;if(fSt&&!(r.state||'').toLowerCase().includes(fSt))return false;if(fCi&&!(r.city||'').toLowerCase().includes(fCi))return false;if(fSta&&r.dispatch_status!==fSta)return false;return true;});}
+function dlLedgerCSV(){const d=getLF();dlCSV([['SR','Order ID','Customer','Product','Qty','State','City','Rate','Amount (₹)','GST Amount (₹)','Status'],...d.map((x,i)=>[i+1,x.order_id,x.customer,x.product,fmtN(x.qty),x.state||'',x.city||'',x.rate?fmtExact(x.rate):'',x.amount?fmtN(x.amount):'',fmtN(x.gst_amount||0),x.dispatch_status||'']),['','TOTAL','','',fmtN(d.reduce((s,x)=>s+x.qty,0)),'','','',fmtN(d.reduce((s,x)=>s+x.amount,0)),fmtN(d.reduce((s,x)=>s+(x.gst_amount||0),0)),'']],'BCPL_Ledger.csv');}
+function dlLedgerExcel(){const d=getLF();dlXLS(['SR','Order ID','Customer','Product','Qty','State','City','Rate','Amount (₹)','GST Amount (₹)','Status'],d.map((x,i)=>[i+1,x.order_id,x.customer,x.product,fmtN(x.qty),x.state||'',x.city||'',x.rate?fmtExact(x.rate):'',x.amount?fmtN(x.amount):'',fmtN(x.gst_amount||0),x.dispatch_status||'']),['','TOTAL','','',fmtN(d.reduce((s,x)=>s+x.qty,0)),'','','',fmtN(d.reduce((s,x)=>s+x.amount,0)),fmtN(d.reduce((s,x)=>s+(x.gst_amount||0),0)),''],'BCPL_Ledger.xls');}
+function dlP2ProductCSV(){const m=_pmMonths;const r=[['SR','Product',...m.map(mL),'Total / Avg'],..._pmArr.map(({p,v,total},i)=>[i+1,p,...m.map(x=>fmtMRaw(v[x]||0,_metric)),fmtMRaw(total,_metric)])];const t={};m.forEach(x=>t[x]=_pmArr.reduce((s,{v})=>s+(v[x]||0),0));r.push(['','TOTAL',...m.map(x=>fmtMRaw(t[x],_metric)),fmtMRaw(_pmArr.reduce((s,x)=>s+x.total,0),_metric)]);dlCSV(r,'BCPL_Product_Month.csv');}
+function dlP2ProductExcel(){const m=_pmMonths;const t={};m.forEach(x=>t[x]=_pmArr.reduce((s,{v})=>s+(v[x]||0),0));dlXLS(['SR','Product',...m.map(mL),'Total / Avg'],_pmArr.map(({p,v,total},i)=>[i+1,p,...m.map(x=>fmtMRaw(v[x]||0,_metric)),fmtMRaw(total,_metric)]),['','TOTAL',...m.map(x=>fmtMRaw(t[x],_metric)),fmtMRaw(_pmArr.reduce((s,x)=>s+x.total,0),_metric)],'BCPL_Product_Month.xls');}
+function dlP2CustomerCSV(){const m=_cmMonths;const r=[['SR','Customer','State',...m.map(mL),'Total / Avg'],..._cmArr.map(({c,v,total,state},i)=>[i+1,c,state||'',...m.map(x=>fmtMRaw(v[x]||0,_metric)),fmtMRaw(total,_metric)])];const t={};m.forEach(x=>t[x]=_cmArr.reduce((s,{v})=>s+(v[x]||0),0));r.push(['','TOTAL','',...m.map(x=>fmtMRaw(t[x],_metric)),fmtMRaw(_cmArr.reduce((s,x)=>s+x.total,0),_metric)]);dlCSV(r,'BCPL_Customer_Month.csv');}
+function dlP2CustomerExcel(){const m=_cmMonths;const t={};m.forEach(x=>t[x]=_cmArr.reduce((s,{v})=>s+(v[x]||0),0));dlXLS(['SR','Customer','State',...m.map(mL),'Total / Avg'],_cmArr.map(({c,v,total,state},i)=>[i+1,c,state||'',...m.map(x=>fmtMRaw(v[x]||0,_metric)),fmtMRaw(total,_metric)]),['','TOTAL','',...m.map(x=>fmtMRaw(t[x],_metric)),fmtMRaw(_cmArr.reduce((s,x)=>s+x.total,0),_metric)],'BCPL_Customer_Month.xls');}
+function buildHLRows(d,metric){if(!d||!d.months)return[];const rows=[['Section','Name',`${mL(d.prev)} Value`,`${mL(d.last)} Value`,'Change','Change %']];d.drops.forEach(x=>rows.push(['Biggest Drop',x.n,fmtMRaw(x.prev,metric),fmtMRaw(x.last,metric),fmtMRaw(x.diff,metric),x.prev>0?((x.diff/x.prev)*100).toFixed(1)+'%':'']));d.gains.forEach(x=>rows.push(['Biggest Gain',x.n,fmtMRaw(x.prev,metric),fmtMRaw(x.last,metric),'+'+fmtMRaw(x.diff,metric),x.prev>0?((x.diff/x.prev)*100).toFixed(1)+'%':'+∞%']));d.consistent.forEach(x=>rows.push(['Active All Months',typeof x.p!=='undefined'?x.p:x.c,'','','','']));d.dropped.forEach(x=>rows.push(['Dropped Off',typeof x.p!=='undefined'?x.p:x.c,'','','','']));return rows;}
+function dlHLCSV(key){const d=key==='prod'?_hlProdData:_hlCustData;dlCSV(buildHLRows(d,_metric),`BCPL_${key==='prod'?'Product':'Customer'}_Insights.csv`);}
+function dlHLExcel(key){const d=key==='prod'?_hlProdData:_hlCustData;const rows=buildHLRows(d,_metric);if(rows.length<2)return;dlXLS(rows[0],rows.slice(1),null,`BCPL_${key==='prod'?'Product':'Customer'}_Insights.xls`);}
+function buildBIRows(metric){if(!_biData||!_biData.last)return[];const d=_biData;const rows=[['Section','Item','Value','Note']];rows.push(['Overall Performance',`${mL(d.prev)} → ${mL(d.last)}`,`${fmtMRaw(d.prevQ,metric)} → ${fmtMRaw(d.lastQ,metric)}`,d.growing?'Growing':'Declining']);d.topProd.forEach((x,i)=>rows.push(['Top Products',`#${i+1} ${x.p}`,fmtMRaw(x.v[d.last]||0,metric),'']));d.topCust.forEach((x,i)=>rows.push(['Top Customers',`#${i+1} ${x.c}`,fmtMRaw(x.v[d.last]||0,metric),'']));d.declProd.forEach(x=>{const pct=x.v[d.prev]>0?((((x.v[d.last]||0)-(x.v[d.prev]||0))/(x.v[d.prev]||1))*100).toFixed(1):0;rows.push(['Declining Products',x.p,fmtMRaw(x.v[d.last]||0,metric),`Dropped ${pct}%`]);});d.declCust.forEach(x=>{const pct=x.v[d.prev]>0?((((x.v[d.last]||0)-(x.v[d.prev]||0))/(x.v[d.prev]||1))*100).toFixed(1):0;rows.push(['Declining Customers',x.c,fmtMRaw(x.v[d.last]||0,metric),`Dropped ${pct}%`]);});d.newCust.forEach(x=>rows.push(['New Customers',x.c,fmtMRaw(x.v[d.last]||0,metric),'New this month']));d.consProd.forEach(x=>rows.push(['Stable Earners',x.p,fmtMRaw(x.total,metric),'Active all months']));return rows;}
+function dlBICSV(){dlCSV(buildBIRows(_metric),'BCPL_BI_Summary.csv');}
+function dlBIExcel(){const rows=buildBIRows(_metric);if(rows.length<2)return;dlXLS(rows[0],rows.slice(1),null,'BCPL_BI_Summary.xls');}
+
+// ══════════════════════════════════════════════════════
+//  PAGE 3 — CUSTOMER INTELLIGENCE (NEW)
+// ══════════════════════════════════════════════════════
+
+// ── Inner tab switcher ─────────────────────────────────
+function swP3(t){
+  document.querySelectorAll('.p3-it').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  document.querySelectorAll('.p3-itab').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p3t-'+t).classList.add('on');
+  if(t==='t1')renderP3Overview();
+  else if(t==='t2')renderP3Growing();
+  else if(t==='t3')renderP3AtRisk();
+  else if(t==='t4'){renderP3CustList();renderP3DetailPanel();}
+}
+
+// ── Build aggregated arrays ────────────────────────────
+function buildP3Data(){
+  _p3cmMonths=getMonthsForPage('p3-from','p3-to');
+  const cat=document.getElementById('p3-cat').value;
+  const prod=SS['p3prod']?.val||'';
+  const rep=document.getElementById('p3-rep').value;
+  const d=DATA.filter(r=>{
+    if(!_p3cmMonths.includes(r.month))return false;
+    if(cat&&r.category!==cat)return false;
+    if(prod&&r.product!==prod)return false;
+    if(rep&&r.sales_rep!==rep)return false;
+    return true;
+  });
+
+  const cm={},cs={};
+  d.forEach(r=>{
+    const c=r.customer||'Unknown';
+    if(!cm[c]){cm[c]={};_p3cmMonths.forEach(m=>cm[c][m]=[]); }
+    if(cm[c][r.month])cm[c][r.month].push(r);
+    if(r.state&&!cs[c])cs[c]=r.state;
+  });
+  const agg={};
+  Object.keys(cm).forEach(c=>{agg[c]={};_p3cmMonths.forEach(m=>{agg[c][m]=aggMetricRows(cm[c][m]||[],_p3metric);});});
+  _p3cmArr=Object.keys(agg).map(c=>({
+    c,state:cs[c]||'',v:agg[c],
+    total:_p3metric==='rate'
+      ?Object.values(agg[c]).filter(x=>x>0).reduce((a,b)=>a+b,0)/(Object.values(agg[c]).filter(x=>x>0).length||1)
+      :_p3cmMonths.reduce((s,m)=>s+(agg[c][m]||0),0)
+  })).sort((a,b)=>b.total-a.total);
+
+  // Classify growing / at-risk
+  _p3growArr=[];_p3atArr=[];
+  if(_p3cmMonths.length>=2){
+    _p3cmArr.forEach(x=>{
+      const vals=_p3cmMonths.map(m=>x.v[m]||0);
+      let ups=0,dns=0;
+      for(let i=1;i<vals.length;i++){if(vals[i]>vals[i-1])ups++;else if(vals[i]<vals[i-1])dns++;}
+      const majority=Math.ceil(vals.length/2);
+      if(ups>=majority)_p3growArr.push(x);
+      else if(dns>=majority)_p3atArr.push(x);
+    });
+  }
+  return d;
+}
+
+function p3HealthScore(x){
+  if(_p3cmMonths.length<2)return{score:0,label:'—',cls:'neu'};
+  const first=_p3cmMonths[0],last=_p3cmMonths[_p3cmMonths.length-1];
+  const fv=x.v[first]||0,lv=x.v[last]||0;
+  if(fv===0&&lv>0)return{score:100,label:'New',cls:'pos'};
+  if(fv===0)return{score:0,label:'—',cls:'neu'};
+  const pct=Math.round(((lv-fv)/fv)*100);
+  if(pct>=30)return{score:pct,label:'Safe',cls:'pos'};
+  if(pct<=-60)return{score:pct,label:'Critical',cls:'neg'};
+  if(pct<=-20)return{score:pct,label:'At Risk',cls:'neg'};
+  return{score:pct,label:'Stable',cls:'neu'};
+}
+
+// ── renderP3 (main entry) ──────────────────────────────
+function renderP3(){
+  const d=buildP3Data();
+  const mlbl=metLabel(_p3metric);
+  const mAgg={};_p3cmMonths.forEach(m=>{
+    const rows=d.filter(r=>r.month===m);
+    mAgg[m]=aggMetricRows(rows,_p3metric);
+  });
+  const tot=_p3metric==='rate'
+    ?(_p3cmMonths.reduce((s,m)=>s+mAgg[m],0)/(_p3cmMonths.filter(m=>mAgg[m]>0).length||1))
+    :_p3cmMonths.reduce((s,m)=>s+mAgg[m],0);
+
+  const kpiC=['navy','purple','orange','green','blue','teal','rose'];
+  const kpiI=['📅','📈','📊','🚚','🎯','💎','⚡'];
+  document.getElementById('p3sc').innerHTML=
+    _p3cmMonths.map((m,i)=>`<div class="ds-stat ds-stat--${kpiC[i%kpiC.length]}"><div class="ds-stat-icon">${kpiI[i%kpiI.length]}</div><div class="ds-stat-ghost-icon">${kpiI[i%kpiI.length]}</div><div class="ds-stat-label">${mL(m)}</div><div class="ds-stat-value">${fmtM(mAgg[m],_p3metric)}</div><div class="ds-stat-caption">${mlbl}</div></div>`).join('')+
+    `<div class="ds-stat ds-stat--green"><div class="ds-stat-icon">🏆</div><div class="ds-stat-ghost-icon">🏆</div><div class="ds-stat-label">${_p3metric==='rate'?'Avg Rate':'Grand Total'}</div><div class="ds-stat-value">${fmtM(tot,_p3metric)}</div><div class="ds-stat-caption">all months</div></div>`;
+  const p3el=document.querySelectorAll('#p3sc .ds-stat-value');
+  _p3cmMonths.forEach((m,i)=>dsCountUp(p3el[i],mAgg[m],{format:v=>fmtM(v,_p3metric)}));
+  dsCountUp(p3el[_p3cmMonths.length],tot,{format:v=>fmtM(v,_p3metric)});
+
+  const active=document.querySelector('.p3-it.on')?.dataset?.t||'t1';
+  if(active==='t1')renderP3Overview();
+  else if(active==='t2')renderP3Growing();
+  else if(active==='t3')renderP3AtRisk();
+  else if(active==='t4'){renderP3CustList();renderP3DetailPanel();}
+}
+
+// ── Tab 1: Overview ────────────────────────────────────
+function renderP3Overview(){
+  cfInit('p3ov','Customer',_p3cmArr.map(x=>x.c));
+  cfInit('p3ov','State',_p3cmArr.map(x=>x.state||''));
+  const qc=(document.getElementById('p3-fi-ov')?.value||'').toLowerCase();
+  const qs=(document.getElementById('p3-fi-ov-st')?.value||'').toLowerCase();
+  const f=_p3cmArr.filter(x=>(!qc||x.c.toLowerCase().includes(qc))&&(!qs||(x.state||'').toLowerCase().includes(qs))&&cfOk('p3ov','Customer',x.c)&&cfOk('p3ov','State',x.state||''));
+  document.getElementById('p3ov-ct').textContent=f.length+' customers';
+  const pm=_p3cmMonths,pm2=pm[pm.length-2],lm=pm[pm.length-1],maxT=f[0]?.total||1;
+  document.getElementById('p3ov-head').innerHTML=
+    `<th class="sr">SR</th><th>Customer ${cfBtn('p3ov','Customer','renderP3Overview')}</th><th>State ${cfBtn('p3ov','State','renderP3Overview')}</th>`+
+    pm.map(m=>`<th class="r">${mL(m)}</th>`).join('')+
+    `<th class="r">Total</th>`+
+    (pm.length>=2?`<th class="r">Δ Change</th><th>Trend</th>`:'')+
+    `<th style="width:55px">Dist.</th>`;
+  document.querySelector('#p3ov-tbl tbody').innerHTML=f.map(({c,state,v,total},i)=>{
+    const isG=_p3growArr.find(x=>x.c===c),isA=_p3atArr.find(x=>x.c===c);
+    const trend=isG?`<span class="trend-chip trend-grow">↑ Growing</span>`:isA?`<span class="trend-chip trend-decl">↓ Declining</span>`:`<span class="trend-chip" style="background:#f8f7f3;color:#6a6760">→ Stable</span>`;
+    return`<tr>
+      <td class="sr">${i+1}</td>
+      <td><span class="rank-dot ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-n'}">${i<3?['🥇','🥈','🥉'][i]:i+1}</span><strong style="color:#191917">${c}</strong></td>
+      <td style="font-size:11px;color:#9d9a93">${state||'—'}</td>
+      ${pm.map(m=>`<td class="r">${v[m]?fmtM(v[m],_p3metric):'—'}</td>`).join('')}
+      <td class="r"><strong style="color:#191917">${fmtM(total,_p3metric)}</strong></td>
+      ${pm.length>=2?`<td class="r">${pillM(v[pm2]||0,v[lm]||0,_p3metric)}</td><td>${trend}</td>`:''}
+      <td><div class="p3-mbar"><div class="p3-mbar-f" style="width:${Math.round(total/maxT*100)}%;background:${C[i%C.length]}"></div></div></td>
+    </tr>`;
+  }).join('');
+  const tBM={};pm.forEach(m=>tBM[m]=f.reduce((s,x)=>s+(x.v[m]||0),0));
+  const gT=f.reduce((s,x)=>s+x.total,0);
+  document.getElementById('p3ov-total').innerHTML=
+    `<td></td><td colspan="2"><strong>Σ Total (${f.length})</strong></td>`+
+    pm.map(m=>`<td class="r"><strong>${fmtM(tBM[m],_p3metric)}</strong></td>`).join('')+
+    `<td class="r"><strong>${fmtM(gT,_p3metric)}</strong></td>`+
+    (pm.length>=2?`<td class="r">${pillM(tBM[pm2]||0,tBM[lm]||0,_p3metric)}</td><td></td>`:'')+
+    `<td></td>`;
+}
+
+// ── Tab 2: Growing ─────────────────────────────────────
+function renderP3Growing(){
+  cfInit('p3gr','Customer',_p3growArr.map(x=>x.c));
+  cfInit('p3gr','State',_p3growArr.map(x=>x.state||''));
+  const q=(document.getElementById('p3-fi-gr')?.value||'').toLowerCase();
+  const f=_p3growArr.filter(x=>(!q||x.c.toLowerCase().includes(q))&&cfOk('p3gr','Customer',x.c)&&cfOk('p3gr','State',x.state||''));
+  document.getElementById('p3gr-ct').textContent=f.length+' growing';
+  const pm=_p3cmMonths,first=pm[0],last=pm[pm.length-1];
+  document.getElementById('p3gr-head').innerHTML=
+    `<th class="sr">SR</th><th>Customer ${cfBtn('p3gr','Customer','renderP3Growing')}</th><th>State ${cfBtn('p3gr','State','renderP3Growing')}</th>`+
+    pm.map(m=>`<th class="r">${mL(m)}</th>`).join('')+
+    `<th class="r">% Growth</th><th>Trend</th><th>Status</th>`;
+  document.querySelector('#p3gr-tbl tbody').innerHTML=f.length
+    ?f.map(({c,state,v},i)=>{
+        const fdm=pm.find(m=>(v[m]||0)>0);
+        const fv=fdm?(v[fdm]||0):0,lv=v[last]||0;
+        const pct=fv>0?Math.round(((lv-fv)/fv)*100):lv>0?100:0;
+        return`<tr>
+          <td class="sr">${i+1}</td>
+          <td><span class="rank-dot ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-n'}">${i<3?['🥇','🥈','🥉'][i]:i+1}</span><strong style="color:#191917">${c}</strong></td>
+          <td style="font-size:11px;color:#9d9a93">${state||'—'}</td>
+          ${pm.map(m=>`<td class="r">${v[m]?fmtM(v[m],_p3metric):'—'}</td>`).join('')}
+          <td class="r" style="color:#15803d;font-weight:700">${pct>=0?'+':''}${pct}%</td>
+          <td><span class="trend-chip trend-grow">📈 Growing</span></td>
+          <td><span class="badge-grow">Growing ↑</span></td>
+        </tr>`;
+      }).join('')
+    :`<tr><td colspan="99" style="text-align:center;padding:30px 0;color:#9d9a93;font-size:12px">No growing customers in this period</td></tr>`;
+}
+
+// ── Tab 3: At Risk ─────────────────────────────────────
+function renderP3AtRisk(){
+  cfInit('p3ar','Customer',_p3atArr.map(x=>x.c));
+  cfInit('p3ar','State',_p3atArr.map(x=>x.state||''));
+  const q=(document.getElementById('p3-fi-ar')?.value||'').toLowerCase();
+  const f=_p3atArr.filter(x=>(!q||x.c.toLowerCase().includes(q))&&cfOk('p3ar','Customer',x.c)&&cfOk('p3ar','State',x.state||''));
+  document.getElementById('p3ar-ct').textContent=f.length+' at risk';
+  const pm=_p3cmMonths,first=pm[0],last=pm[pm.length-1];
+  document.getElementById('p3ar-head').innerHTML=
+    `<th class="sr">SR</th><th>Customer ${cfBtn('p3ar','Customer','renderP3AtRisk')}</th><th>State ${cfBtn('p3ar','State','renderP3AtRisk')}</th>`+
+    pm.map(m=>`<th class="r">${mL(m)}</th>`).join('')+
+    `<th class="r">% Decline</th><th>Trend</th><th>Alert</th>`;
+  document.querySelector('#p3ar-tbl tbody').innerHTML=f.length
+    ?f.map(({c,state,v},i)=>{
+        const fdm=pm.find(m=>(v[m]||0)>0);
+        const fv=fdm?(v[fdm]||0):0,lv=v[last]||0;
+        const pct=fv>0?Math.round(((lv-fv)/fv)*100):0;
+        const isCrit=pct<=-60;
+        return`<tr>
+          <td class="sr">${i+1}</td>
+          <td><span class="rank-dot rank-n">${i+1}</span><strong style="color:#191917">${c}</strong></td>
+          <td style="font-size:11px;color:#9d9a93">${state||'—'}</td>
+          ${pm.map(m=>`<td class="r">${v[m]?fmtM(v[m],_p3metric):'—'}</td>`).join('')}
+          <td class="r" style="color:#b91c1c;font-weight:700">${pct}%</td>
+          <td><span class="trend-chip trend-decl">📉 Declining</span></td>
+          <td>${isCrit?`<span class="badge-crit">🔴 CRITICAL</span>`:`<span class="badge-warn">🟡 WARNING</span>`}</td>
+        </tr>`;
+      }).join('')
+    :`<tr><td colspan="99" style="text-align:center;padding:30px 0;color:#15803d;font-size:12px">✅ No at-risk customers in this period</td></tr>`;
+}
+
+// ── Tab 4: Customer List ───────────────────────────────
+function renderP3CustList(){
+  const q=(document.getElementById('p3-cl-q')?.value||'').toLowerCase();
+  const f=_p3cmArr.filter(x=>!q||x.c.toLowerCase().includes(q));
+  document.getElementById('p3-cl-items').innerHTML=f.map(x=>{
+    const hs=p3HealthScore(x);
+    const scoreDisp=(hs.score>=0?'+':'')+hs.score;
+    return`<div class="p3-cli${_p3selCust===x.c?' sel':''}" onclick="p3SelectCust('${x.c.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">
+      <div>
+        <div class="cn">${x.c}</div>
+        <div class="cs">${x.state||'—'} · ${fmtM(x.total,_p3metric)}</div>
+      </div>
+      <span class="cscore ${hs.cls}">${scoreDisp}</span>
+    </div>`;
+  }).join('');
+}
+
+function p3SelectCust(name){
+  _p3selCust=name;
+  renderP3CustList();
+  renderP3DetailPanel();
+}
+
+// ── Tab 4: Detail Panel ────────────────────────────────
+function renderP3DetailPanel(){
+  const dp=document.getElementById('p3-dp');
+  const x=_p3cmArr.find(x=>x.c===_p3selCust);
+  if(!x){
+    dp.innerHTML=`<div class="p3-empty-state"><div class="ico">🔍</div><div>Select a customer from the list to view full history</div></div>`;
+    return;
+  }
+
+  const hs=p3HealthScore(x);
+  const isG=_p3growArr.find(g=>g.c===x.c);
+  const isA=_p3atArr.find(a=>a.c===x.c);
+  const badgeCls=isG?'grow':isA?'decl':'stable';
+  const badgeTxt=isG?'Growing ↑':isA?'At Risk ↓':'Stable';
+
+  // All rows for this customer within selected months
+  const cat=document.getElementById('p3-cat').value;
+  const prod=SS['p3prod']?.val||'';
+  const rep=document.getElementById('p3-rep').value;
+  const custRows=DATA.filter(r=>{
+    if(r.customer!==x.c)return false;
+    if(!_p3cmMonths.includes(r.month))return false;
+    if(cat&&r.category!==cat)return false;
+    if(prod&&r.product!==prod)return false;
+    if(rep&&r.sales_rep!==rep)return false;
+    return true;
+  });
+
+  const totalOrd=new Set(custRows.map(r=>r.order_id)).size;
+  const totalQty=custRows.reduce((s,r)=>s+(r.qty||0),0);
+  const totalAmt=custRows.reduce((s,r)=>s+(r.amount||0),0);
+  const totalGst=custRows.reduce((s,r)=>s+(r.gst_amount||0),0);
+  const avgOV=totalOrd?Math.round(totalAmt/totalOrd):0;
+  const lastOrderDate=custRows.map(r=>r.dispatch_date).filter(Boolean).sort().reverse()[0]||'—';
+  const scoreDisp=(hs.score>=0?'+':'')+hs.score;
+
+  // Month performance rows
+  const monthPerf=_p3cmMonths.map(m=>{
+    const rows=custRows.filter(r=>r.month===m);
+    return{m,o:new Set(rows.map(r=>r.order_id)).size,q:rows.reduce((s,r)=>s+(r.qty||0),0),a:rows.reduce((s,r)=>s+(r.amount||0),0),g:rows.reduce((s,r)=>s+(r.gst_amount||0),0)};
+  }).filter(r=>r.q>0||r.a>0);
+
+  // Bar chart
+  const maxQ=Math.max(...monthPerf.map(r=>r.q),1);
+  const barsHTML=monthPerf.length?`
+    <div style="margin-bottom:14px">
+      <div class="p3-sec-hd">Monthly Trend (${_p3cmMonths.map(mL).join(' → ')})</div>
+      <div class="p3-mini-bars">
+        ${monthPerf.map(r=>{
+          const h=Math.round((r.q/maxQ)*64)+4;
+          return`<div class="p3-bar-col">
+            <div class="p3-bar-val">${fmt(r.q)}</div>
+            <div class="p3-bar-v" style="height:${h}px;opacity:${(0.45+0.55*(r.q/maxQ)).toFixed(2)}"></div>
+            <div class="p3-bar-lbl">${mL(r.m)}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`:'';
+
+  // Product history rows (sorted by date desc)
+  const allProdRows=custRows.slice().sort((a,b)=>(b.dispatch_date||'').localeCompare(a.dispatch_date||''));
+
+  dp.innerHTML=`
+    <div class="p3-dp-head">
+      <div style="flex:1">
+        <div class="p3-dp-name">${x.c}</div>
+        <div style="margin-top:2px;font-size:11px;color:#9d9a93">${x.state||'—'}</div>
+        <div style="margin-top:6px"><span class="p3-dp-badge ${badgeCls}">${badgeTxt}</span></div>
+      </div>
+    </div>
+
+    <div class="p3-dp-stats">
+      <div class="p3-stat"><div class="sl">Total Orders</div><div class="sv">${fmt(totalOrd)}</div></div>
+      <div class="p3-stat"><div class="sl">Total Qty</div><div class="sv">${fmt(totalQty)}</div></div>
+      <div class="p3-stat"><div class="sl">Avg Order Value</div><div class="sv">${fmtAmt(avgOV)}</div></div>
+      <div class="p3-stat"><div class="sl">Total Amount</div><div class="sv">${fmtAmt(totalAmt)}</div></div>
+      <div class="p3-stat ${hs.cls==='pos'?'hs-pos':hs.cls==='neg'?'hs-neg':''}">
+        <div class="sl">Health Score</div>
+        <div class="sv">${scoreDisp} ${hs.label}</div>
+      </div>
+      <div class="p3-stat"><div class="sl">Last Order</div><div class="sv" style="font-size:12px">${lastOrderDate}</div></div>
+    </div>
+
+    ${barsHTML}
+
+    <div style="margin-bottom:14px">
+      <div class="p3-sec-hd">Month-wise Performance</div>
+      <div class="ds-table-wrap">
+        <table class="ds-table">
+          <thead><tr><th>Month</th><th class="r">Orders</th><th class="r">Qty</th><th class="r">Amount</th><th class="r">GST</th></tr></thead>
+          <tbody>${monthPerf.map(r=>`<tr>
+            <td style="font-weight:600;color:#191917">${mL(r.m)}</td>
+            <td class="r">${r.o||'—'}</td>
+            <td class="r">${fmt(r.q)}</td>
+            <td class="r">${fmtAmt(r.a)}</td>
+            <td class="r">${fmtAmt(r.g)}</td>
+          </tr>`).join('')||'<tr><td colspan="5" style="text-align:center;padding:12px;color:#9d9a93;font-size:11px">No data</td></tr>'}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div class="p3-sec-hd" style="margin-bottom:0">Complete Product History${allProdRows.length>200?' (latest 200)':''}</div>
+      </div>
+      <div class="p3-fi-row">
+        <input type="text" placeholder="⌕  Product…" id="p3dp-fi-prod" oninput="p3FilterHistory()">
+        <input type="text" placeholder="⌕  Order ID…" id="p3dp-fi-ord" oninput="p3FilterHistory()">
+      </div>
+      <div class="ds-table-wrap" style="max-height:340px">
+        <table id="p3dp-hist-tbl" class="ds-table">
+          <thead><tr>
+            <th>Date</th><th>Order ID</th><th>Invoice</th><th>Product</th>
+            <th class="r">Qty</th><th class="r">Rate</th>
+            <th class="r">Amount</th><th class="r">GST</th>
+            <th>State</th><th>Status</th>
+          </tr></thead>
+          <tbody id="p3dp-hist-body">${p3HistRows(allProdRows.slice(0,200))}</tbody>
+        </table>
+      </div>
+    </div>`;
+
+  // Store for filter
+  window._p3dpAllRows=allProdRows;
+}
+
+function p3HistRows(rows){
+  if(!rows.length)return`<tr><td colspan="10" style="text-align:center;padding:14px;color:#9d9a93;font-size:11px">No orders in selected period</td></tr>`;
+  const sc={Complete:'bg-green',Partial:'bg-amber','Balance Cancelled':'bg-red'};
+  return rows.map(r=>`<tr>
+    <td style="font-size:11px;color:#9d9a93;white-space:nowrap">${r.dispatch_date||'—'}</td>
+    <td style="font-size:11px;color:#9d9a93">${r.order_id||'—'}</td>
+    <td style="font-size:11px;color:#9d9a93">${r.invoice_no||r.order_id||'—'}</td>
+    <td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.product||''}">${r.product||'—'}</td>
+    <td class="r"><strong>${fmt(r.qty)}</strong></td>
+    <td class="r">${r.rate?fmtExact(r.rate):'—'}</td>
+    <td class="r"><strong>${r.amount?fmtAmt(r.amount):'—'}</strong></td>
+    <td class="r" style="font-size:11px;color:#9d9a93">${r.gst_amount?fmtAmt(r.gst_amount):'—'}</td>
+    <td style="font-size:11px">${r.state||'—'}</td>
+    <td><span class="badge ${sc[r.dispatch_status]||'bg-gray'}" style="font-size:10px">${r.dispatch_status||'—'}</span></td>
+  </tr>`).join('');
+}
+
+function p3FilterHistory(){
+  const fp=(document.getElementById('p3dp-fi-prod')?.value||'').toLowerCase();
+  const fo=(document.getElementById('p3dp-fi-ord')?.value||'').toLowerCase();
+  const rows=(window._p3dpAllRows||[]).filter(r=>
+    (!fp||(r.product||'').toLowerCase().includes(fp))&&
+    (!fo||(r.order_id||'').toLowerCase().includes(fo))
+  );
+  const body=document.getElementById('p3dp-hist-body');
+  if(body)body.innerHTML=p3HistRows(rows.slice(0,200));
+}
+
+function resetP3(){
+  const dates=DATA.map(r=>r.dispatch_date).filter(Boolean).sort();
+  if(dates.length){document.getElementById('p3-from').value=dates[0];document.getElementById('p3-to').value=dates[dates.length-1];}
+  ['p3-cat','p3-rep'].forEach(id=>document.getElementById(id).value='');
+  ['p3-fi-ov','p3-fi-ov-st','p3-fi-gr','p3-fi-ar'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('global-search').value='';
+  _p3selCust='';
+  pickSS('p3prod','','All');
+  setMetric('qty','p3');
+}
+['p3-from','p3-to','p3-cat','p3-rep'].forEach(id=>document.getElementById(id).addEventListener('change',renderP3));
+
+// ── P3 Export ──────────────────────────────────────────
+function dlP3OvCSV(){
+  const m=_p3cmMonths;
+  dlCSV([['SR','Customer','State',...m.map(mL),'Total'],..._p3cmArr.map(({c,state,v,total},i)=>[i+1,c,state||'',...m.map(x=>fmtMRaw(v[x]||0,_p3metric)),fmtMRaw(total,_p3metric)])],'P3_Overview.csv');
+}
+function dlP3OvExcel(){
+  const m=_p3cmMonths;
+  dlXLS(['SR','Customer','State',...m.map(mL),'Total'],_p3cmArr.map(({c,state,v,total},i)=>[i+1,c,state||'',...m.map(x=>fmtMRaw(v[x]||0,_p3metric)),fmtMRaw(total,_p3metric)]),null,'P3_Overview.xls');
+}
+function dlP3GrCSV(){
+  const m=_p3cmMonths,last=m[m.length-1];
+  dlCSV([['SR','Customer','State',...m.map(mL),'% Growth','Status'],..._p3growArr.map(({c,state,v},i)=>{const fdm=m.find(x=>(v[x]||0)>0);const fv=fdm?(v[fdm]||0):0,lv=v[last]||0;const pct=fv>0?Math.round(((lv-fv)/fv)*100):lv>0?100:0;return[i+1,c,state||'',...m.map(x=>fmtMRaw(v[x]||0,_p3metric)),pct+'%','Growing'];})],'P3_Growing.csv');
+}
+function dlP3GrExcel(){
+  const m=_p3cmMonths,last=m[m.length-1];
+  dlXLS(['SR','Customer','State',...m.map(mL),'% Growth','Status'],_p3growArr.map(({c,state,v},i)=>{const fdm=m.find(x=>(v[x]||0)>0);const fv=fdm?(v[fdm]||0):0,lv=v[last]||0;const pct=fv>0?Math.round(((lv-fv)/fv)*100):lv>0?100:0;return[i+1,c,state||'',...m.map(x=>fmtMRaw(v[x]||0,_p3metric)),pct+'%','Growing'];}),null,'P3_Growing.xls');
+}
+function dlP3ArCSV(){
+  const m=_p3cmMonths,last=m[m.length-1];
+  dlCSV([['SR','Customer','State',...m.map(mL),'% Decline','Alert'],..._p3atArr.map(({c,state,v},i)=>{const fdm=m.find(x=>(v[x]||0)>0);const fv=fdm?(v[fdm]||0):0,lv=v[last]||0;const pct=fv>0?Math.round(((lv-fv)/fv)*100):0;return[i+1,c,state||'',...m.map(x=>fmtMRaw(v[x]||0,_p3metric)),pct+'%',pct<=-60?'CRITICAL':'WARNING'];})],'P3_AtRisk.csv');
+}
+function dlP3ArExcel(){
+  const m=_p3cmMonths,last=m[m.length-1];
+  dlXLS(['SR','Customer','State',...m.map(mL),'% Decline','Alert'],_p3atArr.map(({c,state,v},i)=>{const fdm=m.find(x=>(v[x]||0)>0);const fv=fdm?(v[fdm]||0):0,lv=v[last]||0;const pct=fv>0?Math.round(((lv-fv)/fv)*100):0;return[i+1,c,state||'',...m.map(x=>fmtMRaw(v[x]||0,_p3metric)),pct+'%',pct<=-60?'CRITICAL':'WARNING'];}),null,'P3_AtRisk.xls');
+}
+
+// ══════════════════════════════════════════════════════
+//  PAGE 4 — PENDING ORDERS
+// ══════════════════════════════════════════════════════
+
+// ── P4 State ────────────────────────────────────────────
+let _p4Data=[];
+let _p4Loaded=false;
+let _p4PendListData=[], _p4LedgerData=[], _p4OverdueData=[];
+
+// ── Load pending data from server ───────────────────────
+function loadPendingData(){
+  const url='/api/sales-pending';
+  authFetch(url,{cache:'no-store'})
+    .then(r=>r.json())
+    .then(res=>onPendingData(res))
+    .catch(()=>{
+      if(typeof google!=='undefined'&&google.script){
+        google.script.run
+          .withSuccessHandler(res=>onPendingData(res))
+          .withFailureHandler(e=>p4ShowError('Error: '+e.message))
+          .getPendingOrders();
+      } else p4ShowError('Could not load pending orders data.');
+    });
+}
+
+function p4ShowError(msg){
+  const ldr=document.getElementById('p4-loader');
+  if(ldr)ldr.innerHTML=`<div style="text-align:center;padding:50px 20px">
+    <div style="font-size:36px;margin-bottom:12px">⚠️</div>
+    <div style="color:#b91c1c;font-size:13px;font-weight:700;margin-bottom:6px">${msg}</div>
+    <div style="color:#9d9a93;font-size:11px">Check PENDING_SHEET_NAME in code.gs matches your Google Sheet tab name.</div>
+  </div>`;
+}
+
+function onPendingData(res){
+  const ldr=document.getElementById('p4-loader');
+  const cnt=document.getElementById('p4-main-content');
+  if(res&&res.error){p4ShowError(res.error);return;}
+  _p4Data=res&&res.rows?res.rows:[];
+  _p4Loaded=true;
+
+  // Unique values for dropdowns
+  const p4Prods  =[...new Set(_p4Data.map(r=>r.product).filter(Boolean))].sort();
+  const p4Custs  =[...new Set(_p4Data.map(r=>r.customer).filter(Boolean))].sort();
+  const p4Cats   =[...new Set(_p4Data.map(r=>r.category).filter(Boolean))].sort();
+  const p4Reps   =[...new Set(_p4Data.map(r=>r.sales_rep).filter(Boolean))].sort();
+  const p4States =[...new Set(_p4Data.map(r=>r.state).filter(Boolean))].sort();
+  const p4Stats  =[...new Set(_p4Data.map(r=>r.order_status).filter(Boolean))].sort();
+
+  initSS('p4prod',p4Prods);
+  initSS('p4cust',p4Custs);
+  fill('p4-cat',   p4Cats);
+  fill('p4-rep',   p4Reps);
+  fill('p4-state', p4States);
+  fill('p4-status',p4Stats);
+
+  if(ldr)ldr.style.display='none';
+  if(cnt)cnt.style.display='block';
+  renderP4();
+}
+
+// ── Get filtered P4 data ────────────────────────────────
+function getP4(){
+  const from=document.getElementById('p4-from').value;
+  const to  =document.getElementById('p4-to').value;
+  const cat =document.getElementById('p4-cat').value;
+  const prod=SS['p4prod']?.val||'';
+  const cust=SS['p4cust']?.val||'';
+  const rep =document.getElementById('p4-rep').value;
+  const st  =document.getElementById('p4-state').value;
+  const sts =document.getElementById('p4-status').value;
+  const odOnly=document.getElementById('p4-overdue-only')?.checked||false;
+  const today=new Date().toISOString().slice(0,10);
+  return _p4Data.filter(r=>{
+    if(from&&r.planned_date&&r.planned_date<from)return false;
+    if(to&&r.planned_date&&r.planned_date>to)return false;
+    if(cat&&r.category!==cat)return false;
+    if(prod&&r.product!==prod)return false;
+    if(cust&&r.customer!==cust)return false;
+    if(rep&&r.sales_rep!==rep)return false;
+    if(st&&r.state!==st)return false;
+    if(sts&&r.order_status!==sts)return false;
+    if(odOnly){if(!r.planned_date||r.planned_date>=today||(r.pending_qty||0)<=0)return false;}
+    return true;
+  });
+}
+
+// ── Main render ─────────────────────────────────────────
+function renderP4(){
+  if(!_p4Loaded)return;
+  const d=getP4();
+  const today=new Date().toISOString().slice(0,10);
+
+  // KPI cards
+  const totalOrders =new Set(d.map(r=>r.order_id)).size;
+  const totalPendQty=d.reduce((s,r)=>s+(r.pending_qty||0),0);
+  const totalPendAmt=d.reduce((s,r)=>s+(r.pending_amount||0),0);
+  const totalPendGst=d.reduce((s,r)=>s+(r.pending_gst||0),0);
+  const overdueCount=d.filter(r=>r.planned_date&&r.planned_date<today&&(r.pending_qty||0)>0).length;
+  const pendCusts   =new Set(d.filter(r=>(r.pending_qty||0)>0).map(r=>r.customer)).size;
+
+  document.getElementById('p4sc').innerHTML=`
+    <div class="ds-stat ds-stat--navy"><div class="ds-stat-icon">📋</div><div class="ds-stat-ghost-icon">📋</div><div class="ds-stat-label">Pending Orders</div><div class="ds-stat-value">${fmt(totalOrders)}</div><div class="ds-stat-caption">unique order IDs</div></div>
+    <div class="ds-stat ds-stat--orange"><div class="ds-stat-icon">📦</div><div class="ds-stat-ghost-icon">📦</div><div class="ds-stat-label">Pending Qty</div><div class="ds-stat-value">${fmt(totalPendQty)}</div><div class="ds-stat-caption">units to dispatch</div></div>
+    <div class="ds-stat ds-stat--green"><div class="ds-stat-icon">💰</div><div class="ds-stat-ghost-icon">💰</div><div class="ds-stat-label">Pending Amount</div><div class="ds-stat-value">${fmtAmt(totalPendAmt)}</div><div class="ds-stat-caption">value to be dispatched</div></div>
+    <div class="ds-stat ds-stat--teal"><div class="ds-stat-icon">🧾</div><div class="ds-stat-ghost-icon">🧾</div><div class="ds-stat-label">Pending GST</div><div class="ds-stat-value">${fmtAmt(totalPendGst)}</div><div class="ds-stat-caption">GST on pending</div></div>
+    <div class="ds-stat ds-stat--red"><div class="ds-stat-icon">⚠</div><div class="ds-stat-ghost-icon">⚠</div><div class="ds-stat-label">Overdue Orders</div><div class="ds-stat-value">${fmt(overdueCount)}</div><div class="ds-stat-caption">past planned date</div></div>
+    <div class="ds-stat ds-stat--blue"><div class="ds-stat-icon">🏢</div><div class="ds-stat-ghost-icon">🏢</div><div class="ds-stat-label">Pending Customers</div><div class="ds-stat-value">${pendCusts}</div><div class="ds-stat-caption">awaiting dispatch</div></div>`;
+  const p4el=document.querySelectorAll('#p4sc .ds-stat-value');
+  dsCountUp(p4el[0],totalOrders,{format:fmt});
+  dsCountUp(p4el[1],totalPendQty,{format:fmt});
+  dsCountUp(p4el[2],totalPendAmt,{format:fmtAmt});
+  dsCountUp(p4el[3],totalPendGst,{format:fmtAmt});
+  dsCountUp(p4el[4],overdueCount,{format:fmt});
+  dsCountUp(p4el[5],pendCusts);
+
+  // TABLE 1 — Pending list sorted by planned date (ascending)
+  _p4PendListData=[...d].sort((a,b)=>(a.planned_date||'').localeCompare(b.planned_date||''));
+
+  // TABLE 3 — Ledger grouped by order+customer+product
+  const ldgMap={};
+  d.forEach(r=>{
+    const k=r.order_id+'||'+r.customer+'||'+r.product;
+    if(!ldgMap[k])ldgMap[k]={...r,pending_qty:0,pending_amount:0,pending_gst:0,ordered_qty:0};
+    ldgMap[k].pending_qty   +=r.pending_qty||0;
+    ldgMap[k].pending_amount+=r.pending_amount||0;
+    ldgMap[k].pending_gst   +=r.pending_gst||0;
+    ldgMap[k].ordered_qty   +=r.ordered_qty||0;
+  });
+  _p4LedgerData=Object.values(ldgMap).sort((a,b)=>b.pending_qty-a.pending_qty);
+
+  // TABLE 2 — Overdue: past planned date and still pending
+  _p4OverdueData=_p4LedgerData.filter(r=>r.planned_date&&r.planned_date<today&&(r.pending_qty||0)>0)
+    .sort((a,b)=>(a.planned_date||'').localeCompare(b.planned_date||''));
+
+  renderP4PendingList();
+  renderP4Overdue();
+  renderP4Ledger();
+}
+
+// ── By Customer ─────────────────────────────────────────
+function renderP4ByCust(){
+  if(!_p4CustArr.length)return;
+  cfInit('p4c','Customer',_p4CustArr.map(x=>x.c));
+  cfInit('p4c','State',_p4CustArr.map(x=>x.state||''));
+  const qc=(document.getElementById('p4-fi-cust')?.value||'').toLowerCase();
+  const qs=(document.getElementById('p4-fi-cust-st')?.value||'').toLowerCase();
+  const f=_p4CustArr.filter(x=>(!qc||x.c.toLowerCase().includes(qc))&&(!qs||(x.state||'').toLowerCase().includes(qs))&&cfOk('p4c','Customer',x.c)&&cfOk('p4c','State',x.state||''));
+  const mPq=f[0]?.pq||1;
+  document.getElementById('p4cust-head').innerHTML=`<th class="sr-th">SR</th><th>Customer ${cfBtn('p4c','Customer','renderP4ByCust')}</th><th>State ${cfBtn('p4c','State','renderP4ByCust')}</th><th class="r">Orders</th><th class="r">Pending Qty</th><th class="r">Pending Amount</th><th class="r">Pending GST</th><th style="width:60px">Dist.</th>`;
+  document.getElementById('p4cust-ct').textContent=f.length+' customers';
+  document.querySelector('#p4cust-tbl tbody').innerHTML=f.map((x,i)=>`<tr>
+    <td class="sr-cell">${i+1}</td>
+    <td><span class="rank-dot ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-n'}">${i<3?['🥇','🥈','🥉'][i]:i+1}</span><strong style="color:#191917">${x.c}</strong></td>
+    <td style="font-size:11px;color:#9d9a93">${x.state||'—'}</td>
+    <td class="r">${fmt(x.orders)}</td>
+    <td class="r"><strong style="color:#191917">${fmt(x.pq)}</strong></td>
+    <td class="r"><strong>${fmtAmt(x.pa)}</strong></td>
+    <td class="r">${fmtAmt(x.pg)}</td>
+    <td><div class="mbar"><div class="mbar-f" style="width:${(x.pq/mPq*100).toFixed(0)}%;background:${C[i%C.length]}"></div></div></td>
+  </tr>`).join('');
+  const tPq=f.reduce((s,x)=>s+x.pq,0),tPa=f.reduce((s,x)=>s+x.pa,0),tPg=f.reduce((s,x)=>s+x.pg,0),tOrd=f.reduce((s,x)=>s+x.orders,0);
+  document.getElementById('p4cust-total').innerHTML=`<td></td><td colspan="2"><strong>Σ Total (${f.length})</strong></td><td class="r"><strong>${fmt(tOrd)}</strong></td><td class="r"><strong>${fmt(tPq)}</strong></td><td class="r"><strong>${fmtAmt(tPa)}</strong></td><td class="r"><strong>${fmtAmt(tPg)}</strong></td><td></td>`;
+  const top10=f.slice(0,10);
+  mkChart('p4custChart','bar',{labels:top10.map(x=>x.c.length>18?x.c.slice(0,18)+'…':x.c),datasets:[{label:'Pending Qty',data:top10.map(x=>x.pq),backgroundColor:brandBarFillH,borderColor:'#0d1f3c',borderWidth:2,borderRadius:6,barPercentage:.65,categoryPercentage:.8}]},
+    {indexAxis:'y',plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>c.dataset.label+': '+fmt(c.raw)}}},scales:{x:{grid:{color:'rgba(25,25,23,.05)'},ticks:{callback:v=>fmt(v),font:{size:10}},title:{display:true,text:'Pending Qty',font:{size:10}}},y:{grid:{display:false},ticks:{font:{size:10,weight:'600'},color:'#3a3834'}}},animation:{duration:500}});
+}
+
+// ── By Product ──────────────────────────────────────────
+function renderP4ByProd(){
+  if(!_p4ProdArr.length)return;
+  cfInit('p4p','Product',_p4ProdArr.map(x=>x.p));
+  cfInit('p4p','Category',_p4ProdArr.map(x=>x.cat||''));
+  const qp=(document.getElementById('p4-fi-prod')?.value||'').toLowerCase();
+  const qcat=(document.getElementById('p4-fi-prod-cat')?.value||'').toLowerCase();
+  const f=_p4ProdArr.filter(x=>(!qp||x.p.toLowerCase().includes(qp))&&(!qcat||(x.cat||'').toLowerCase().includes(qcat))&&cfOk('p4p','Product',x.p)&&cfOk('p4p','Category',x.cat||''));
+  const mPq=f[0]?.pq||1;
+  document.getElementById('p4prod-head').innerHTML=`<th class="sr-th">SR</th><th>Product ${cfBtn('p4p','Product','renderP4ByProd')}</th><th>Category ${cfBtn('p4p','Category','renderP4ByProd')}</th><th class="r">Pending Qty</th><th class="r">Pending Amount</th><th class="r">Pending GST</th><th style="width:60px">Dist.</th>`;
+  document.getElementById('p4prod-ct').textContent=f.length+' products';
+  document.querySelector('#p4prod-tbl tbody').innerHTML=f.map((x,i)=>`<tr>
+    <td class="sr-cell">${i+1}</td>
+    <td><span class="rank-dot ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-n'}">${i<3?['🥇','🥈','🥉'][i]:i+1}</span><strong style="color:#191917">${x.p}</strong></td>
+    <td style="font-size:11px;color:#9d9a93">${x.cat||'—'}</td>
+    <td class="r"><strong style="color:#191917">${fmt(x.pq)}</strong></td>
+    <td class="r"><strong>${fmtAmt(x.pa)}</strong></td>
+    <td class="r">${fmtAmt(x.pg)}</td>
+    <td><div class="mbar"><div class="mbar-f" style="width:${(x.pq/mPq*100).toFixed(0)}%;background:${C[i%C.length]}"></div></div></td>
+  </tr>`).join('');
+  const tPq=f.reduce((s,x)=>s+x.pq,0),tPa=f.reduce((s,x)=>s+x.pa,0),tPg=f.reduce((s,x)=>s+x.pg,0);
+  document.getElementById('p4prod-total').innerHTML=`<td></td><td colspan="2"><strong>Σ Total (${f.length} products)</strong></td><td class="r"><strong>${fmt(tPq)}</strong></td><td class="r"><strong>${fmtAmt(tPa)}</strong></td><td class="r"><strong>${fmtAmt(tPg)}</strong></td><td></td>`;
+  const top10=f.slice(0,10);
+  mkChart('p4prodChart','bar',{labels:top10.map(x=>x.p.length>18?x.p.slice(0,18)+'…':x.p),datasets:[{label:'Pending Qty',data:top10.map(x=>x.pq),backgroundColor:brandBarFillH,borderColor:'#0d1f3c',borderWidth:2,borderRadius:6,barPercentage:.65,categoryPercentage:.8}]},
+    {indexAxis:'y',plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>c.dataset.label+': '+fmt(c.raw)}}},scales:{x:{grid:{color:'rgba(25,25,23,.05)'},ticks:{callback:v=>fmt(v),font:{size:10}},title:{display:true,text:'Pending Qty',font:{size:10}}},y:{grid:{display:false},ticks:{font:{size:10,weight:'600'},color:'#3a3834'}}},animation:{duration:500}});
+}
+
+// ── By State ────────────────────────────────────────────
+function renderP4ByState(){
+  if(!_p4StateArr.length)return;
+  const mPq=_p4StateArr[0]?.pq||1;
+  document.getElementById('p4state-head').innerHTML=`<th class="sr-th">SR</th><th>State</th><th class="r">Pending Qty</th><th class="r">Pending Amount</th><th class="r">Pending GST</th><th style="width:60px">Dist.</th>`;
+  document.querySelector('#p4state-tbl tbody').innerHTML=_p4StateArr.map((x,i)=>`<tr>
+    <td class="sr-cell">${i+1}</td>
+    <td><strong style="color:#191917">${x.s}</strong></td>
+    <td class="r"><strong style="color:#191917">${fmt(x.pq)}</strong></td>
+    <td class="r">${fmtAmt(x.pa)}</td>
+    <td class="r">${fmtAmt(x.pg)}</td>
+    <td><div class="mbar"><div class="mbar-f" style="width:${(x.pq/mPq*100).toFixed(0)}%;background:${C[i%C.length]}"></div></div></td>
+  </tr>`).join('');
+  const tPq=_p4StateArr.reduce((s,x)=>s+x.pq,0),tPa=_p4StateArr.reduce((s,x)=>s+x.pa,0),tPg=_p4StateArr.reduce((s,x)=>s+x.pg,0);
+  document.getElementById('p4state-total').innerHTML=`<td></td><td><strong>Σ Total (${_p4StateArr.length})</strong></td><td class="r"><strong>${fmt(tPq)}</strong></td><td class="r"><strong>${fmtAmt(tPa)}</strong></td><td class="r"><strong>${fmtAmt(tPg)}</strong></td><td></td>`;
+}
+
+// ── By Sales Rep ────────────────────────────────────────
+function renderP4ByRep(){
+  if(!_p4RepArr.length)return;
+  const mPq=_p4RepArr[0]?.pq||1;
+  document.getElementById('p4rep-head').innerHTML=`<th class="sr-th">SR</th><th>Sales Rep</th><th class="r">Customers</th><th class="r">Pending Qty</th><th class="r">Pending Amount</th><th class="r">Pending GST</th><th style="width:60px">Dist.</th>`;
+  document.querySelector('#p4rep-tbl tbody').innerHTML=_p4RepArr.map((x,i)=>`<tr>
+    <td class="sr-cell">${i+1}</td>
+    <td><strong style="color:#191917">${x.rep}</strong></td>
+    <td class="r">${x.custs}</td>
+    <td class="r"><strong style="color:#191917">${fmt(x.pq)}</strong></td>
+    <td class="r">${fmtAmt(x.pa)}</td>
+    <td class="r">${fmtAmt(x.pg)}</td>
+    <td><div class="mbar"><div class="mbar-f" style="width:${(x.pq/mPq*100).toFixed(0)}%;background:${C[i%C.length]}"></div></div></td>
+  </tr>`).join('');
+  const tPq=_p4RepArr.reduce((s,x)=>s+x.pq,0),tPa=_p4RepArr.reduce((s,x)=>s+x.pa,0),tPg=_p4RepArr.reduce((s,x)=>s+x.pg,0),tC=_p4RepArr.reduce((s,x)=>s+x.custs,0);
+  document.getElementById('p4rep-total').innerHTML=`<td></td><td><strong>Σ Total (${_p4RepArr.length})</strong></td><td class="r"><strong>${tC}</strong></td><td class="r"><strong>${fmt(tPq)}</strong></td><td class="r"><strong>${fmtAmt(tPa)}</strong></td><td class="r"><strong>${fmtAmt(tPg)}</strong></td><td></td>`;
+}
+
+// ── TABLE 1: Pending Orders List ────────────────────────
+function renderP4PendingList(){
+  cfInit('p4pl','Customer',_p4PendListData.map(r=>r.customer||''));
+  cfInit('p4pl','Product', _p4PendListData.map(r=>r.product||''));
+  const qo=(document.getElementById('p4pl-order')?.value||'').toLowerCase();
+  const qc=(document.getElementById('p4pl-cust')?.value||'').toLowerCase();
+  const qp=(document.getElementById('p4pl-prod')?.value||'').toLowerCase();
+  const f=_p4PendListData.filter(r=>
+    (!qo||r.order_id.toLowerCase().includes(qo))&&
+    (!qc||r.customer.toLowerCase().includes(qc))&&
+    (!qp||r.product.toLowerCase().includes(qp))&&
+    cfOk('p4pl','Customer',r.customer||'')&&
+    cfOk('p4pl','Product',r.product||'')
+  );
+  document.getElementById('p4pl-ct').textContent=fmt(f.length)+' orders';
+  document.getElementById('p4pl-head').innerHTML=
+    `<th class="sr-th">SR</th>`+
+    `<th>Order ID</th>`+
+    `<th>Product Name ${cfBtn('p4pl','Product','renderP4PendingList')}</th>`+
+    `<th>Customer Name ${cfBtn('p4pl','Customer','renderP4PendingList')}</th>`+
+    `<th>Planned Date</th>`+
+    `<th class="r">Quantity</th>`+
+    `<th class="r">Dispatch Qty</th>`+
+    `<th class="r">Pending Qty</th>`;
+  const today=new Date().toISOString().slice(0,10);
+  document.querySelector('#p4pl-tbl tbody').innerHTML=f.slice(0,600).map((r,i)=>{
+    const dispQty=r.dispatch_qty>0?r.dispatch_qty:Math.max(0,(r.ordered_qty||0)-(r.pending_qty||0));
+    const isOD=r.planned_date&&r.planned_date<today&&(r.pending_qty||0)>0;
+    return`<tr${isOD?' style="background:#fff9f9"':''}>
+      <td class="sr-cell">${i+1}</td>
+      <td style="font-size:10px;color:#9d9a93;white-space:nowrap;font-weight:600">${r.order_id||'—'}</td>
+      <td style="font-weight:500;color:#191917">${r.product||'—'}</td>
+      <td style="font-weight:600;color:#191917">${r.customer||'—'}</td>
+      <td style="font-size:11px;white-space:nowrap;${isOD?'color:#dc2626;font-weight:600':'color:#6a6760'}">${r.planned_date||'—'}${isOD?' ⚠':''}</td>
+      <td class="r">${fmt(r.ordered_qty||0)}</td>
+      <td class="r" style="color:#15803d;font-weight:600">${fmt(dispQty)}</td>
+      <td class="r"><strong style="color:${(r.pending_qty||0)>0?'#dc2626':'#9d9a93'}">${fmt(r.pending_qty||0)}</strong></td>
+    </tr>`;
+  }).join('');
+  const tOq=f.reduce((s,r)=>s+(r.ordered_qty||0),0);
+  const tDq=f.reduce((s,r)=>s+(r.dispatch_qty>0?r.dispatch_qty:Math.max(0,(r.ordered_qty||0)-(r.pending_qty||0))),0);
+  const tPq=f.reduce((s,r)=>s+(r.pending_qty||0),0);
+  document.getElementById('p4pl-total').innerHTML=
+    `<td></td><td colspan="3"><strong>Σ Total — ${fmt(f.length)} rows${f.length>600?' (top 600)':''}</strong></td>`+
+    `<td></td>`+
+    `<td class="r"><strong>${fmt(tOq)}</strong></td>`+
+    `<td class="r"><strong style="color:#15803d">${fmt(tDq)}</strong></td>`+
+    `<td class="r"><strong style="color:#dc2626">${fmt(tPq)}</strong></td>`;
+}
+
+function dlP4PendListCSV(){
+  const dq=r=>r.dispatch_qty>0?r.dispatch_qty:Math.max(0,(r.ordered_qty||0)-(r.pending_qty||0));
+  dlCSV([['SR','Order ID','Product Name','Customer Name','Planned Date','Quantity','Dispatch Qty','Pending Qty'],
+    ..._p4PendListData.map((r,i)=>[i+1,r.order_id,r.product,r.customer,r.planned_date||'',fmtN(r.ordered_qty||0),fmtN(dq(r)),fmtN(r.pending_qty||0)]),
+    ['','TOTAL','','','',fmtN(_p4PendListData.reduce((s,r)=>s+(r.ordered_qty||0),0)),fmtN(_p4PendListData.reduce((s,r)=>s+dq(r),0)),fmtN(_p4PendListData.reduce((s,r)=>s+(r.pending_qty||0),0))]
+  ],'P4_Pending_Orders.csv');
+}
+function dlP4PendListExcel(){
+  const dq=r=>r.dispatch_qty>0?r.dispatch_qty:Math.max(0,(r.ordered_qty||0)-(r.pending_qty||0));
+  dlXLS(['SR','Order ID','Product Name','Customer Name','Planned Date','Quantity','Dispatch Qty','Pending Qty'],
+    _p4PendListData.map((r,i)=>[i+1,r.order_id,r.product,r.customer,r.planned_date||'',fmtN(r.ordered_qty||0),fmtN(dq(r)),fmtN(r.pending_qty||0)]),
+    ['','TOTAL','','','',fmtN(_p4PendListData.reduce((s,r)=>s+(r.ordered_qty||0),0)),fmtN(_p4PendListData.reduce((s,r)=>s+dq(r),0)),fmtN(_p4PendListData.reduce((s,r)=>s+(r.pending_qty||0),0))],
+    'P4_Pending_Orders.xls');
+}
+
+// ── TABLE 2: Overdue Orders ──────────────────────────────
+function renderP4Overdue(){
+  cfInit('p4od','Customer',_p4OverdueData.map(r=>r.customer||''));
+  cfInit('p4od','Product', _p4OverdueData.map(r=>r.product||''));
+  const qc=(document.getElementById('p4-fi-od-cust')?.value||'').toLowerCase();
+  const qp=(document.getElementById('p4-fi-od-prod')?.value||'').toLowerCase();
+  const f=_p4OverdueData.filter(r=>
+    (!qc||r.customer.toLowerCase().includes(qc))&&
+    (!qp||r.product.toLowerCase().includes(qp))&&
+    cfOk('p4od','Customer',r.customer||'')&&
+    cfOk('p4od','Product',r.product||'')
+  );
+  document.getElementById('p4od-ct').textContent=f.length+' overdue';
+  document.getElementById('p4od-head').innerHTML=`<th class="sr-th">SR</th><th>Order ID</th><th>Customer ${cfBtn('p4od','Customer','renderP4Overdue')}</th><th>Product ${cfBtn('p4od','Product','renderP4Overdue')}</th><th class="r">Pending Qty</th><th>State</th><th>Sales Rep</th><th>Planned Date</th><th class="r">Days Overdue</th><th class="r">Pending Amount</th>`;
+  const today=new Date().toISOString().slice(0,10);
+  document.querySelector('#p4od-tbl tbody').innerHTML=f.length
+    ?f.map((r,i)=>{
+        const days=r.planned_date?Math.round((new Date(today)-new Date(r.planned_date))/(86400000)):0;
+        const urg=days>30?'bg-red':days>14?'bg-amber':'bg-gray';
+        return`<tr style="background:#fff9f9">
+          <td class="sr-cell">${i+1}</td>
+          <td style="font-size:10px;color:#9d9a93;white-space:nowrap;font-weight:600">${r.order_id||'—'}</td>
+          <td style="color:#191917;font-weight:600">${r.customer||'—'}</td>
+          <td>${r.product||'—'}</td>
+          <td class="r"><strong style="color:#dc2626">${fmt(r.pending_qty)}</strong></td>
+          <td style="font-size:11px">${r.state||'—'}</td>
+          <td style="font-size:11px;color:#9d9a93">${r.sales_rep||'—'}</td>
+          <td style="font-size:11px;color:#dc2626;font-weight:600;white-space:nowrap">${r.planned_date||'—'}</td>
+          <td class="r"><span class="badge ${urg}">${days}d</span></td>
+          <td class="r"><strong style="color:#dc2626">${r.pending_amount?fmtAmt(r.pending_amount):'—'}</strong></td>
+        </tr>`;
+      }).join('')
+    :`<tr><td colspan="10" style="text-align:center;padding:26px;color:#15803d;font-size:12px">✅ No overdue orders — all within planned dates</td></tr>`;
+}
+
+// ── Full Ledger ──────────────────────────────────────────
+function renderP4Ledger(){
+  cfInit('p4ldg','Customer',_p4LedgerData.map(r=>r.customer||''));
+  cfInit('p4ldg','Product', _p4LedgerData.map(r=>r.product||''));
+  cfInit('p4ldg','State',   _p4LedgerData.map(r=>r.state||''));
+  cfInit('p4ldg','Status',  _p4LedgerData.map(r=>r.order_status||''));
+  const fO=(document.getElementById('p4li-order')?.value||'').toLowerCase();
+  const fC=(document.getElementById('p4li-cust')?.value||'').toLowerCase();
+  const fP=(document.getElementById('p4li-prod')?.value||'').toLowerCase();
+  const fS=(document.getElementById('p4li-state')?.value||'').toLowerCase();
+  const f=_p4LedgerData.filter(r=>{
+    if(fO&&!r.order_id.toLowerCase().includes(fO))return false;
+    if(fC&&!r.customer.toLowerCase().includes(fC))return false;
+    if(fP&&!r.product.toLowerCase().includes(fP))return false;
+    if(fS&&!(r.state||'').toLowerCase().includes(fS))return false;
+    if(!cfOk('p4ldg','Customer',r.customer||''))return false;
+    if(!cfOk('p4ldg','Product',r.product||''))return false;
+    if(!cfOk('p4ldg','State',r.state||''))return false;
+    if(!cfOk('p4ldg','Status',r.order_status||''))return false;
+    return true;
+  });
+  const today=new Date().toISOString().slice(0,10);
+  document.getElementById('p4ldg-head').innerHTML=
+    `<th class="sr-th">SR</th><th>Order ID</th>`+
+    `<th>Customer ${cfBtn('p4ldg','Customer','renderP4Ledger')}</th>`+
+    `<th>Product ${cfBtn('p4ldg','Product','renderP4Ledger')}</th>`+
+    `<th>Category</th><th class="r">Ordered Qty</th><th class="r">Pending Qty</th>`+
+    `<th>State ${cfBtn('p4ldg','State','renderP4Ledger')}</th>`+
+    `<th>Sales Rep</th><th>Planned Date</th>`+
+    `<th>Status ${cfBtn('p4ldg','Status','renderP4Ledger')}</th>`+
+    `<th class="r">Pending Amt</th><th class="r">Pending GST</th>`;
+  document.getElementById('p4ldg-ct').textContent=fmt(f.length)+' rows';
+  document.querySelector('#p4ldg-tbl tbody').innerHTML=f.slice(0,600).map((r,i)=>{
+    const isOD=r.planned_date&&r.planned_date<today&&(r.pending_qty||0)>0;
+    const sc={'Fully Placed':'bg-blue','Partially Dispatched':'bg-amber','Pending':'bg-gray'};
+    return`<tr${isOD?' style="background:#fff9f9"':''}>
+      <td class="sr-cell">${i+1}</td>
+      <td style="font-size:10px;color:#9d9a93;white-space:nowrap;font-weight:600">${r.order_id||'—'}</td>
+      <td style="color:#191917;font-weight:600">${r.customer||'—'}</td>
+      <td>${r.product||'—'}</td>
+      <td style="font-size:11px;color:#9d9a93">${r.category||'—'}</td>
+      <td class="r">${fmt(r.ordered_qty)}</td>
+      <td class="r"><strong style="color:${(r.pending_qty||0)>0?'#dc2626':'#9d9a93'}">${fmt(r.pending_qty)}</strong></td>
+      <td style="font-size:11px">${r.state||'—'}</td>
+      <td style="font-size:11px;color:#9d9a93">${r.sales_rep||'—'}</td>
+      <td style="font-size:11px;${isOD?'color:#dc2626;font-weight:600;':''}white-space:nowrap">${r.planned_date||'—'}${isOD?' ⚠':''}</td>
+      <td><span class="badge ${sc[r.order_status]||'bg-gray'}">${r.order_status||'—'}</span></td>
+      <td class="r"><strong>${r.pending_amount?fmtAmt(r.pending_amount):'—'}</strong></td>
+      <td class="r">${r.pending_gst?fmtAmt(r.pending_gst):'—'}</td>
+    </tr>`;
+  }).join('');
+  const tOq=f.reduce((s,r)=>s+(r.ordered_qty||0),0);
+  const tPq=f.reduce((s,r)=>s+(r.pending_qty||0),0);
+  const tPa=f.reduce((s,r)=>s+(r.pending_amount||0),0);
+  const tPg=f.reduce((s,r)=>s+(r.pending_gst||0),0);
+  document.getElementById('p4ldg-total').innerHTML=
+    `<td></td><td colspan="3"><strong>Σ ${fmt(f.length)} rows${f.length>600?' (top 600)':''}</strong></td>`+
+    `<td></td><td class="r"><strong>${fmt(tOq)}</strong></td><td class="r"><strong>${fmt(tPq)}</strong></td>`+
+    `<td colspan="3"></td><td></td><td class="r"><strong>${fmtAmt(tPa)}</strong></td><td class="r"><strong>${fmtAmt(tPg)}</strong></td>`;
+}
+
+// ── Reset ───────────────────────────────────────────────
+function resetP4(){
+  if(!_p4Loaded)return;
+  ['p4-cat','p4-rep','p4-state','p4-status'].forEach(id=>document.getElementById(id).value='');
+  ['p4-from','p4-to'].forEach(id=>document.getElementById(id).value='');
+  ['p4pl-order','p4pl-cust','p4pl-prod',
+   'p4li-order','p4li-cust','p4li-prod','p4li-state',
+   'p4-fi-od-cust','p4-fi-od-prod'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  const cb=document.getElementById('p4-overdue-only');if(cb)cb.checked=false;
+  document.getElementById('global-search').value='';
+  pickSS('p4prod','','All');
+  pickSS('p4cust','','All');
+  renderP4();
+}
+['p4-from','p4-to','p4-cat','p4-rep','p4-state','p4-status'].forEach(id=>{
+  const el=document.getElementById(id);if(el)el.addEventListener('change',()=>{if(_p4Loaded)renderP4();});
+});
+
+// ── P4 Export functions ──────────────────────────────────
+function dlP4CustCSV(){
+  dlCSV([['SR','Customer','State','Orders','Pending Qty','Pending Amount (₹)','Pending GST (₹)'],
+    ..._p4CustArr.map((x,i)=>[i+1,x.c,x.state||'',x.orders,fmtN(x.pq),fmtN(x.pa),fmtN(x.pg)]),
+    ['','TOTAL','',_p4CustArr.reduce((s,x)=>s+x.orders,0),fmtN(_p4CustArr.reduce((s,x)=>s+x.pq,0)),fmtN(_p4CustArr.reduce((s,x)=>s+x.pa,0)),fmtN(_p4CustArr.reduce((s,x)=>s+x.pg,0))]
+  ],'P4_Pending_by_Customer.csv');
+}
+function dlP4CustExcel(){
+  dlXLS(['SR','Customer','State','Orders','Pending Qty','Pending Amount (₹)','Pending GST (₹)'],
+    _p4CustArr.map((x,i)=>[i+1,x.c,x.state||'',x.orders,fmtN(x.pq),fmtN(x.pa),fmtN(x.pg)]),
+    ['','TOTAL','',_p4CustArr.reduce((s,x)=>s+x.orders,0),fmtN(_p4CustArr.reduce((s,x)=>s+x.pq,0)),fmtN(_p4CustArr.reduce((s,x)=>s+x.pa,0)),fmtN(_p4CustArr.reduce((s,x)=>s+x.pg,0))],
+    'P4_Pending_by_Customer.xls');
+}
+function dlP4ProdCSV(){
+  dlCSV([['SR','Product','Category','Pending Qty','Pending Amount (₹)','Pending GST (₹)'],
+    ..._p4ProdArr.map((x,i)=>[i+1,x.p,x.cat||'',fmtN(x.pq),fmtN(x.pa),fmtN(x.pg)]),
+    ['','TOTAL','',fmtN(_p4ProdArr.reduce((s,x)=>s+x.pq,0)),fmtN(_p4ProdArr.reduce((s,x)=>s+x.pa,0)),fmtN(_p4ProdArr.reduce((s,x)=>s+x.pg,0))]
+  ],'P4_Pending_by_Product.csv');
+}
+function dlP4ProdExcel(){
+  dlXLS(['SR','Product','Category','Pending Qty','Pending Amount (₹)','Pending GST (₹)'],
+    _p4ProdArr.map((x,i)=>[i+1,x.p,x.cat||'',fmtN(x.pq),fmtN(x.pa),fmtN(x.pg)]),
+    ['','TOTAL','',fmtN(_p4ProdArr.reduce((s,x)=>s+x.pq,0)),fmtN(_p4ProdArr.reduce((s,x)=>s+x.pa,0)),fmtN(_p4ProdArr.reduce((s,x)=>s+x.pg,0))],
+    'P4_Pending_by_Product.xls');
+}
+function dlP4OverdueCSV(){
+  const today=new Date().toISOString().slice(0,10);
+  dlCSV([['SR','Order ID','Customer','Product','Pending Qty','State','Sales Rep','Planned Date','Days Overdue','Pending Amount (₹)'],
+    ..._p4OverdueData.map((r,i)=>{
+      const days=r.planned_date?Math.round((new Date(today)-new Date(r.planned_date))/86400000):0;
+      return[i+1,r.order_id,r.customer,r.product,fmtN(r.pending_qty),r.state||'',r.sales_rep||'',r.planned_date||'',days,fmtN(r.pending_amount)];
+    })],'P4_Overdue_Orders.csv');
+}
+function dlP4OverdueExcel(){
+  const today=new Date().toISOString().slice(0,10);
+  dlXLS(['SR','Order ID','Customer','Product','Pending Qty','State','Sales Rep','Planned Date','Days Overdue','Pending Amount (₹)'],
+    _p4OverdueData.map((r,i)=>{
+      const days=r.planned_date?Math.round((new Date(today)-new Date(r.planned_date))/86400000):0;
+      return[i+1,r.order_id,r.customer,r.product,fmtN(r.pending_qty),r.state||'',r.sales_rep||'',r.planned_date||'',days,fmtN(r.pending_amount)];
+    }),null,'P4_Overdue_Orders.xls');
+}
+function dlP4LedgerCSV(){
+  dlCSV([['SR','Order ID','Customer','Product','Category','Ordered Qty','Pending Qty','State','Sales Rep','Planned Date','Order Status','Pending Amount (₹)','Pending GST (₹)'],
+    ..._p4LedgerData.map((r,i)=>[i+1,r.order_id,r.customer,r.product,r.category||'',fmtN(r.ordered_qty),fmtN(r.pending_qty),r.state||'',r.sales_rep||'',r.planned_date||'',r.order_status||'',fmtN(r.pending_amount),fmtN(r.pending_gst)]),
+    ['','TOTAL','','','',fmtN(_p4LedgerData.reduce((s,r)=>s+(r.ordered_qty||0),0)),fmtN(_p4LedgerData.reduce((s,r)=>s+(r.pending_qty||0),0)),'','','','',fmtN(_p4LedgerData.reduce((s,r)=>s+(r.pending_amount||0),0)),fmtN(_p4LedgerData.reduce((s,r)=>s+(r.pending_gst||0),0))]
+  ],'P4_Pending_Ledger.csv');
+}
+function dlP4LedgerExcel(){
+  dlXLS(['SR','Order ID','Customer','Product','Category','Ordered Qty','Pending Qty','State','Sales Rep','Planned Date','Order Status','Pending Amount (₹)','Pending GST (₹)'],
+    _p4LedgerData.map((r,i)=>[i+1,r.order_id,r.customer,r.product,r.category||'',fmtN(r.ordered_qty),fmtN(r.pending_qty),r.state||'',r.sales_rep||'',r.planned_date||'',r.order_status||'',fmtN(r.pending_amount),fmtN(r.pending_gst)]),
+    ['','TOTAL','','','',fmtN(_p4LedgerData.reduce((s,r)=>s+(r.ordered_qty||0),0)),fmtN(_p4LedgerData.reduce((s,r)=>s+(r.pending_qty||0),0)),'','','','',fmtN(_p4LedgerData.reduce((s,r)=>s+(r.pending_amount||0),0)),fmtN(_p4LedgerData.reduce((s,r)=>s+(r.pending_gst||0),0))],
+    'P4_Pending_Ledger.xls');
+}
+
+// ══════════════════════════════════════════════════════
+//  TAB SWITCHER (top tabs)
+// ══════════════════════════════════════════════════════
+function sw(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  document.getElementById('t-'+id).classList.add('on');
+  document.getElementById('global-search').value='';
+  if(id==='p2')renderP2();
+  else if(id==='p3')renderP3();
+  else if(id==='p4'){if(!_p4Loaded)loadPendingData();else renderP4();}
+}
+
+// ── INIT ───────────────────────────────────────────────
+loadData(true,true);
+</script>
+</body>
+</html>

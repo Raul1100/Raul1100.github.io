@@ -1,0 +1,1119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rahul | AI & Automation Engineer</title>
+<meta name="description" content="Rahul builds AI agents, full-stack business apps, ML models and automation systems that run a manufacturing company day to day.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============ CONFIG: edit tokens here ============ */
+:root{
+  --bg:#0c0b0a; --bg-2:#141210; --card:#181512; --card-2:#1f1b17;
+  --line:#2a2520; --line-2:#3a332b;
+  --text:#f3ede4; --muted:#a59c8f; --dim:#6f675c;
+  --accent:#ffb547; --accent-2:#ff7a3d; --accent-ink:#1a1206;
+  --ok:#7bd88f;
+  --glow:rgba(255,181,71,.14);
+  --radius:16px;
+  --font-head:'Space Grotesk',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#faf7f2; --bg-2:#f3eee6; --card:#ffffff; --card-2:#f7f2ea;
+  --line:#e6ddd0; --line-2:#d6cab8;
+  --text:#1c1712; --muted:#5f564b; --dim:#8d8376;
+  --accent:#d9840b; --accent-2:#e2541b; --accent-ink:#fff;
+  --ok:#2f9a4a; --glow:rgba(217,132,11,.12);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#faf7f2; --bg-2:#f3eee6; --card:#ffffff; --card-2:#f7f2ea;
+    --line:#e6ddd0; --line-2:#d6cab8;
+    --text:#1c1712; --muted:#5f564b; --dim:#8d8376;
+    --accent:#d9840b; --accent-2:#e2541b; --accent-ink:#fff;
+    --ok:#2f9a4a; --glow:rgba(217,132,11,.12);
+    color-scheme:light;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:clip}
+a{color:inherit;text-decoration:none}
+img{max-width:100%}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+@media (max-width:600px){.wrap{padding:0 16px}}
+.mono{font-family:var(--font-mono)}
+h1,h2,h3{font-family:var(--font-head);letter-spacing:-.02em;line-height:1.1}
+.grad{background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;font-weight:600;font-size:.95rem;border:1px solid var(--line-2);transition:.2s;cursor:pointer;background:transparent;color:var(--text);font-family:inherit}
+.btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{background:var(--accent-2);border-color:var(--accent-2)}
+.chip{display:inline-block;font-family:var(--font-mono);font-size:.72rem;padding:4px 9px;border-radius:6px;background:var(--card-2);border:1px solid var(--line);color:var(--muted)}
+.eyebrow{font-family:var(--font-mono);font-size:.78rem;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:28px;height:1px;background:var(--accent)}
+section{padding:96px 0;position:relative}
+@media (max-width:700px){section{padding:64px 0}}
+.sec-head{max-width:720px;margin-bottom:44px}
+.sec-head h2{font-size:clamp(1.9rem,4vw,2.8rem);margin:14px 0 12px}
+.sec-head p{color:var(--muted);font-size:1.05rem}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}.marquee-track{animation:none!important}}
+
+/* nav */
+nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-family:var(--font-mono);font-weight:500;font-size:.95rem;display:flex;align-items:center;gap:8px}
+.logo b{color:var(--accent)}
+.nav-links{display:flex;gap:28px;font-size:.9rem;color:var(--muted)}
+.nav-links a:hover{color:var(--text)}
+.nav-right{display:flex;gap:10px;align-items:center}
+.icon-btn{width:38px;height:38px;border-radius:9px;border:1px solid var(--line-2);display:grid;place-items:center;background:transparent;color:var(--text);cursor:pointer}
+.icon-btn:hover{border-color:var(--accent)}
+@media (max-width:820px){.nav-links{display:none}.nav-right .btn{display:none}}
+
+/* hero */
+.hero{padding:80px 0 64px;overflow:hidden;position:relative}
+.hero::before{content:"";position:absolute;inset:-20% -10% auto auto;width:640px;height:640px;background:radial-gradient(circle,var(--glow),transparent 65%);pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
+@media (max-width:960px){.hero-grid{grid-template-columns:1fr}}
+.status{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.78rem;color:var(--muted);border:1px solid var(--line);padding:6px 12px;border-radius:999px;background:var(--card)}
+.status i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px color-mix(in srgb,var(--ok) 20%,transparent)}
+.hero h1{font-size:clamp(2.4rem,6vw,4.4rem);margin:22px 0 22px;font-weight:700}
+.hero .lead{font-size:1.12rem;color:var(--muted);max-width:560px;margin-bottom:30px}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap}
+.hero-tags{display:flex;gap:18px;flex-wrap:wrap;margin-top:34px;font-family:var(--font-mono);font-size:.8rem;color:var(--muted)}
+.hero-tags span::before{content:"▸ ";color:var(--accent)}
+
+/* terminal card */
+.term{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:0 30px 80px -30px rgba(0,0,0,.6)}
+.term-bar{display:flex;align-items:center;gap:7px;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--card-2)}
+.term-bar i{width:11px;height:11px;border-radius:50%;background:var(--line-2)}
+.term-bar i:nth-child(1){background:#ff5f57}.term-bar i:nth-child(2){background:#febc2e}.term-bar i:nth-child(3){background:#28c840}
+.term-bar span{margin-left:10px;font-family:var(--font-mono);font-size:.75rem;color:var(--dim)}
+.term-body{padding:18px 18px 20px;font-family:var(--font-mono);font-size:.82rem;line-height:1.85;min-height:300px}
+.term-body .p{color:var(--accent)}
+.term-body .ok{color:var(--ok)}
+.term-body .d{color:var(--dim)}
+.caret{display:inline-block;width:8px;height:1em;background:var(--accent);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:var(--radius);background:var(--card);overflow:hidden}
+.stat{padding:28px 24px;border-right:1px solid var(--line)}
+.stat:last-child{border-right:0}
+.stat b{display:block;font-family:var(--font-head);font-size:2.4rem;font-weight:700;line-height:1}
+.stat b em{font-style:normal;color:var(--accent)}
+.stat span{display:block;margin-top:8px;color:var(--muted);font-size:.9rem}
+@media (max-width:760px){.stats{grid-template-columns:1fr 1fr}.stat:nth-child(2){border-right:0}.stat:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+
+/* marquee */
+.marquee{overflow:hidden;border-block:1px solid var(--line);padding:18px 0;margin-top:64px;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.marquee-track{display:flex;gap:40px;width:max-content;animation:scroll 50s linear infinite}
+.marquee-track span{font-family:var(--font-mono);font-size:.9rem;color:var(--muted);white-space:nowrap}
+.marquee-track span::before{content:"◆ ";color:var(--accent);font-size:.6rem;vertical-align:2px}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+/* about */
+.about-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:40px}
+@media (max-width:900px){.about-grid{grid-template-columns:1fr}}
+.about-text p{color:var(--muted);font-size:1.05rem;margin-bottom:18px}
+.about-text p strong{color:var(--text);font-weight:600}
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
+@media (max-width:640px){.pillars{grid-template-columns:1fr}}
+.pillar{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.pillar h4{font-family:var(--font-head);font-size:1rem;margin-bottom:6px}
+.pillar p{font-size:.88rem;color:var(--muted);margin:0}
+.profile{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px;height:fit-content}
+.avatar{width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;font-family:var(--font-head);font-weight:700;font-size:1.5rem;color:var(--accent-ink);margin-bottom:16px}
+.profile h3{font-size:1.3rem}
+.profile .role{color:var(--muted);font-size:.9rem;margin-bottom:18px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:10px 16px;font-size:.88rem;border-top:1px solid var(--line);padding-top:18px}
+.kv dt{color:var(--dim);font-family:var(--font-mono);font-size:.76rem;padding-top:2px}
+.kv dd{color:var(--text)}
+.profile .btns{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+
+/* filters */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.filter{font-family:var(--font-mono);font-size:.8rem;padding:8px 14px;border-radius:8px;border:1px solid var(--line-2);background:transparent;color:var(--muted);cursor:pointer}
+.filter:hover{color:var(--text)}
+.filter.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.filter small{opacity:.7;margin-left:4px}
+
+/* featured cards */
+.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+@media (max-width:900px){.feat-grid{grid-template-columns:1fr}}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px;display:flex;flex-direction:column;transition:border-color .2s,transform .2s}
+.pcard:hover{border-color:var(--line-2);transform:translateY(-2px)}
+.pcard .top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+.pcard .cat{font-family:var(--font-mono);font-size:.72rem;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+.pcard .num{font-family:var(--font-mono);font-size:.75rem;color:var(--dim)}
+.pcard h3{font-size:1.4rem;margin-bottom:16px}
+.pbr{display:grid;gap:12px;margin-bottom:18px}
+.pbr div{display:grid;grid-template-columns:72px 1fr;gap:12px;font-size:.92rem;color:var(--muted)}
+.pbr b{font-family:var(--font-mono);font-size:.7rem;font-weight:500;color:var(--dim);letter-spacing:.06em;padding-top:3px}
+.pbr .res{color:var(--text)}
+.pbr .res b{color:var(--ok)}
+@media (max-width:480px){.pbr div{grid-template-columns:1fr;gap:2px}}
+.metric{display:inline-flex;align-items:baseline;gap:8px;background:var(--card-2);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:18px;width:fit-content}
+.metric strong{font-family:var(--font-head);font-size:1.4rem;color:var(--accent)}
+.metric span{font-size:.82rem;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:4px}
+.plinks{display:flex;gap:10px;margin-top:18px}
+.plinks a{font-size:.85rem;font-weight:600;color:var(--accent)}
+.plinks a:hover{text-decoration:underline}
+
+/* more systems */
+.more-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:900px){.more-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){.more-grid{grid-template-columns:1fr}}
+.mcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:8px}
+.mcard .cat{font-family:var(--font-mono);font-size:.68rem;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;display:flex;justify-content:space-between}
+.mcard .cat em{font-style:normal;color:var(--ok)}
+.mcard h4{font-family:var(--font-head);font-size:1.05rem}
+.mcard p{font-size:.86rem;color:var(--muted)}
+.mcard .out{font-size:.84rem;color:var(--text)}
+.mcard .out::before{content:"→ ";color:var(--accent)}
+.mcard .tags{margin-top:6px}
+.hidden{display:none!important}
+
+/* process */
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;counter-reset:s}
+@media (max-width:960px){.steps{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.steps{grid-template-columns:1fr}}
+.step{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;position:relative}
+.step::before{counter-increment:s;content:"0" counter(s);font-family:var(--font-mono);font-size:.8rem;color:var(--accent)}
+.step h4{font-family:var(--font-head);font-size:1.05rem;margin:10px 0 8px}
+.step p{font-size:.86rem;color:var(--muted)}
+
+/* experience */
+.timeline{border-left:1px solid var(--line-2);margin-left:6px;padding-left:28px;display:grid;gap:36px}
+.job{position:relative}
+.job::before{content:"";position:absolute;left:-34px;top:6px;width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px var(--glow)}
+.job .when{font-family:var(--font-mono);font-size:.78rem;color:var(--dim)}
+.job h3{font-size:1.35rem;margin:6px 0 2px}
+.job .org{color:var(--accent);font-weight:600;margin-bottom:12px}
+.job ul{list-style:none;display:grid;gap:8px;margin-bottom:14px}
+.job li{color:var(--muted);font-size:.95rem;padding-left:18px;position:relative}
+.job li::before{content:"▸";position:absolute;left:0;color:var(--accent)}
+
+/* skills */
+.skill-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media (max-width:900px){.skill-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.skill-grid{grid-template-columns:1fr}}
+.sk{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
+.sk h4{font-family:var(--font-head);font-size:1rem;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sk h4::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--accent)}
+.sk .tags{gap:6px}
+
+/* contact */
+.contact{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:56px 40px;text-align:center;position:relative;overflow:hidden}
+.contact::before{content:"";position:absolute;inset:auto 0 -60% 0;height:120%;background:radial-gradient(ellipse at center,var(--glow),transparent 60%);pointer-events:none}
+.contact h2{font-size:clamp(2rem,5vw,3.4rem);margin:16px 0 14px;position:relative}
+.contact p{color:var(--muted);max-width:560px;margin:0 auto 28px;position:relative}
+.contact .hero-ctas{justify-content:center;position:relative}
+.contact .eyebrow{justify-content:center}
+.contact .eyebrow::after{content:"";width:28px;height:1px;background:var(--accent)}
+@media (max-width:600px){.contact{padding:40px 20px}}
+/* ============ motion layer ============ */
+.progress{position:fixed;top:0;left:0;right:0;height:2px;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--accent),var(--accent-2));z-index:60;pointer-events:none}
+nav{transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+nav.nav-hide{transform:translateY(-100%)}
+.nav-links{position:relative}
+.nav-links a{transition:color .25s}
+.nav-links a.active{color:var(--text)}
+.nav-ind{position:absolute;bottom:-8px;left:0;height:2px;width:0;border-radius:2px;background:var(--accent);opacity:0;transition:left .45s cubic-bezier(.2,.8,.2,1),width .45s cubic-bezier(.2,.8,.2,1),opacity .25s}
+.status i{position:relative}
+.status i::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--ok);animation:ping 1.8s cubic-bezier(0,0,.2,1) infinite}
+@keyframes ping{75%,100%{transform:scale(2.6);opacity:0}}
+.hero::after{content:"";position:absolute;inset:0;background-image:radial-gradient(var(--line-2) 1px,transparent 1px);background-size:28px 28px;-webkit-mask-image:radial-gradient(ellipse at 70% 30%,#000 5%,transparent 60%);mask-image:radial-gradient(ellipse at 70% 30%,#000 5%,transparent 60%);opacity:.55;pointer-events:none}
+.hero>.wrap,.hero>.marquee{position:relative;z-index:1}
+.hero-glow{position:absolute;left:0;top:0;width:560px;height:560px;margin:-280px 0 0 -280px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 62%);pointer-events:none;z-index:0;opacity:0;transition:opacity .6s}
+.hero:hover .hero-glow{opacity:1}
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .02em .1em;margin:0 -.02em -.1em}
+.w>span{display:inline-block;will-change:transform}
+.shine{background-size:200% auto!important;animation:shine 5s linear infinite}
+@keyframes shine{to{background-position:-200% center}}
+.eyebrow::before{width:var(--ew,28px)}
+.pcard,.mcard,.sk,.step,.pillar,.profile,.stat{position:relative;isolation:isolate}
+.pcard::after,.mcard::after,.sk::after,.step::after,.pillar::after,.profile::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .35s;background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),color-mix(in srgb,var(--accent) 11%,transparent),transparent 45%)}
+.pcard:hover::after,.mcard:hover::after,.sk:hover::after,.step:hover::after,.pillar:hover::after,.profile:hover::after{opacity:1}
+.pcard:hover,.mcard:hover,.sk:hover,.step:hover,.pillar:hover{border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+.mcard,.sk,.step,.pillar{transition:border-color .3s}
+.gsap .btn,.gsap .icon-btn{transition:background .2s,border-color .2s,color .2s}
+.gsap .btn:hover{transform:none}
+.gsap .pcard{transition:border-color .2s}
+.gsap .pcard:hover{transform:none}
+.pcard{transform-style:preserve-3d}
+.timeline{position:relative}
+.tl-fill{position:absolute;left:-1px;top:0;width:2px;height:100%;transform-origin:top;transform:scaleY(0);background:linear-gradient(var(--accent),var(--accent-2))}
+.steps{position:relative;padding-top:22px}
+.steps-line{position:absolute;left:0;right:0;top:0;height:2px;background:var(--line);border-radius:2px;overflow:hidden}
+.steps-line i{position:absolute;inset:0;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+@media (max-width:960px){.steps-line{display:none}.steps{padding-top:0}}
+.marquee:hover{cursor:default}
+.gsap .reveal{opacity:1;transform:none;transition:none}
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+@media (prefers-reduced-motion:reduce){.status i::after,.shine{animation:none}.hero-glow{display:none}}
+
+/* ============ hover previews ============ */
+.pv{position:fixed;left:0;top:0;width:360px;z-index:80;pointer-events:none;opacity:0;transform:translate3d(0,0,0) scale(.94);transform-origin:0 0;transition:opacity .2s ease,transform .25s cubic-bezier(.2,.8,.2,1);background:var(--card);border:1px solid var(--line-2);border-radius:14px;overflow:hidden;box-shadow:0 30px 70px -20px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.02)}
+.pv.on{opacity:1}
+.pv-bar{display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--card-2);border-bottom:1px solid var(--line)}
+.pv-bar i{width:8px;height:8px;border-radius:50%;background:var(--line-2)}
+.pv-bar i:nth-child(1){background:#ff5f57}.pv-bar i:nth-child(2){background:#febc2e}.pv-bar i:nth-child(3){background:#28c840}
+.pv-bar span{margin-left:6px;font:500 11px var(--font-mono);color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pv-body{height:178px;padding:12px;background:var(--bg);position:relative;overflow:hidden;font-size:11px;color:var(--muted)}
+.pv-foot{padding:12px 14px 14px}
+.pv-foot h5{font:600 14px var(--font-head);color:var(--text);margin-bottom:8px}
+.pv-foot ul{list-style:none;display:grid;gap:5px}
+.pv-foot li{font-size:12px;color:var(--muted);padding-left:14px;position:relative;line-height:1.45}
+.pv-foot li::before{content:"▸";position:absolute;left:0;color:var(--accent)}
+.pv-tag{display:inline-flex;margin-top:10px;font:500 10.5px var(--font-mono);padding:3px 8px;border-radius:6px;border:1px solid var(--line-2);color:var(--dim)}
+.pv-tag.live{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,transparent)}
+.pv-hint{font:500 10.5px var(--font-mono);color:var(--dim);border:1px dashed var(--line-2);border-radius:6px;padding:2px 7px}
+@media (pointer:coarse){.pv,.pv-hint{display:none}}
+/* mock building blocks */
+.m-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:9px}
+.m-kpi{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px 8px}
+.m-kpi b{display:block;font:700 15px var(--font-head);color:var(--text);line-height:1.1}
+.m-kpi.r b{color:#ef6b5b}.m-kpi.g b{color:var(--ok)}.m-kpi.a b{color:var(--accent)}
+.m-kpi span{font-size:9.5px}
+.m-bars{display:flex;align-items:flex-end;gap:5px;height:76px;padding:6px 8px 0;background:var(--card);border:1px solid var(--line);border-radius:8px}
+.m-bars i{flex:1;border-radius:3px 3px 0 0;background:linear-gradient(var(--accent),color-mix(in srgb,var(--accent) 35%,transparent));transform-origin:bottom;animation:grow .7s cubic-bezier(.2,.8,.2,1) both}
+.m-bars i.alt{background:color-mix(in srgb,var(--muted) 35%,transparent)}
+@keyframes grow{from{transform:scaleY(0)}}
+.m-table{width:100%;border-collapse:collapse;font-size:10.5px;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.m-table th{text-align:left;font:500 9.5px var(--font-mono);color:var(--dim);padding:6px 8px;border-bottom:1px solid var(--line);text-transform:uppercase}
+.m-table td{padding:5px 8px;border-bottom:1px solid var(--line);color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
+.m-table tr:last-child td{border-bottom:0}
+.m-table td.bad{color:#ef6b5b;font-weight:600}.m-table td.ok{color:var(--ok)}
+.m-pill{display:inline-block;padding:1px 6px;border-radius:5px;font-size:9.5px;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}
+.m-pill.g{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}.m-pill.r{background:rgba(239,107,91,.15);color:#ef6b5b}
+.m-kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;height:100%}
+.m-col{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px}
+.m-col h6{font:500 9px var(--font-mono);color:var(--dim);text-transform:uppercase;margin-bottom:6px;display:flex;justify-content:space-between}
+.m-card{background:var(--card-2);border:1px solid var(--line);border-radius:6px;padding:5px 6px;margin-bottom:5px;font-size:9.5px;color:var(--text);animation:pop .4s both}
+.m-card small{display:block;color:var(--dim);font-size:8.5px}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}}
+.m-hbar{display:grid;grid-template-columns:92px 1fr 38px;align-items:center;gap:8px;margin-bottom:8px;font-size:10.5px}
+.m-hbar div{height:9px;border-radius:5px;background:var(--line);overflow:hidden}
+.m-hbar div i{display:block;height:100%;border-radius:5px;background:var(--accent);transform-origin:left;animation:growx .8s cubic-bezier(.2,.8,.2,1) both}
+.m-hbar div i.r{background:#ef6b5b}.m-hbar div i.g{background:var(--ok)}
+.m-hbar b{text-align:right;color:var(--text);font-weight:600}
+@keyframes growx{from{transform:scaleX(0)}}
+.m-chat{display:flex;flex-direction:column;gap:6px}
+.m-msg{max-width:78%;padding:6px 9px;border-radius:10px;font-size:10.5px;line-height:1.4;animation:pop .4s both}
+.m-msg.u{align-self:flex-end;background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--text);border-bottom-right-radius:3px}
+.m-msg.b{background:var(--card);border:1px solid var(--line);color:var(--text);border-bottom-left-radius:3px}
+.m-tool{align-self:flex-start;font:500 9px var(--font-mono);color:var(--ok);border:1px dashed color-mix(in srgb,var(--ok) 40%,transparent);padding:2px 6px;border-radius:5px}
+.m-steps{display:flex;justify-content:space-between;position:relative;margin:8px 4px 14px}
+.m-steps::before{content:"";position:absolute;left:8px;right:8px;top:7px;height:2px;background:var(--line)}
+.m-steps span{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:9px;width:20%;text-align:center}
+.m-steps span i{width:16px;height:16px;border-radius:50%;background:var(--card-2);border:2px solid var(--line-2)}
+.m-steps span.d i{background:var(--ok);border-color:var(--ok)}.m-steps span.c i{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 4px var(--glow)}
+.m-form{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.m-field{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:5px 7px}
+.m-field small{display:block;font-size:8.5px;color:var(--dim);text-transform:uppercase;font-family:var(--font-mono)}
+.m-field b{font-size:10.5px;color:var(--text);font-weight:500}
+.m-btn{grid-column:1/-1;text-align:center;background:var(--accent);color:var(--accent-ink);border-radius:6px;padding:6px;font-weight:600;font-size:10.5px}
+.m-flow{position:absolute;inset:0}
+.m-flow .e{fill:none;stroke:var(--line-2);stroke-width:1.2}
+.m-flow .e.f{stroke:var(--ok);stroke-dasharray:4 4;animation:flow .8s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-8}}
+.m-box{position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px;transform-style:preserve-3d;animation:spin 9s linear infinite}
+.m-box div{position:absolute;inset:0;border:1px solid color-mix(in srgb,var(--accent) 60%,transparent);background:color-mix(in srgb,var(--accent) 14%,var(--card));display:grid;place-items:center;font:700 10px var(--font-head);color:var(--accent)}
+.m-box div:nth-child(1){transform:translateZ(42px)}.m-box div:nth-child(2){transform:rotateY(180deg) translateZ(42px)}.m-box div:nth-child(3){transform:rotateY(90deg) translateZ(42px)}
+.m-box div:nth-child(4){transform:rotateY(-90deg) translateZ(42px)}.m-box div:nth-child(5){transform:rotateX(90deg) translateZ(42px)}.m-box div:nth-child(6){transform:rotateX(-90deg) translateZ(42px)}
+@keyframes spin{from{transform:rotateX(-22deg) rotateY(0)}to{transform:rotateX(-22deg) rotateY(360deg)}}
+.m-scene{position:absolute;inset:0;perspective:500px}
+.m-dl{position:absolute;left:12px;bottom:12px;display:flex;gap:5px}
+.m-dl span{font:500 9px var(--font-mono);padding:2px 6px;border:1px solid var(--line-2);border-radius:4px}
+.m-doc{display:grid;grid-template-columns:1.1fr .9fr;gap:10px;height:100%}
+.m-doc .sheet{background:#fbf8f2;color:#2a241c;border-radius:6px;padding:8px;font-size:8.5px;line-height:1.5}
+.m-doc .sheet h6{font:700 10px var(--font-head);color:#1f6b3a;margin-bottom:4px;border-bottom:1px solid #d9d0c2;padding-bottom:3px}
+.m-doc .sheet div{display:flex;justify-content:space-between;border-bottom:1px dotted #d9d0c2}
+.m-svg{width:100%;height:100%}
+.m-legend{display:flex;gap:10px;font-size:9.5px;margin-top:6px}
+.m-legend i{display:inline-block;width:10px;height:3px;border-radius:2px;margin-right:4px;vertical-align:middle}
+@media (prefers-reduced-motion:reduce){.m-bars i,.m-hbar div i,.m-card,.m-msg,.m-box,.m-flow .e.f{animation:none}}
+
+footer{padding:36px 0;color:var(--dim);font-size:.85rem;font-family:var(--font-mono)}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"></div>
+
+<nav>
+  <div class="wrap">
+    <a href="#top" class="logo"><b>&gt;_</b> rahul.dev</a>
+    <div class="nav-links">
+      <a href="#about">About</a><a href="#work">Work</a><a href="#systems">Systems</a><a href="#experience">Experience</a><a href="#skills">Skills</a><a href="#contact">Contact</a>
+    </div>
+    <div class="nav-right">
+      <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">◐</button>
+      <a class="btn primary" id="navResume" href="#" download>Resume ↓</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div class="reveal">
+      <span class="status"><i></i> Open to full-time &amp; freelance roles</span>
+      <h1>I turn messy business operations into <span class="grad">AI-powered software.</span></h1>
+      <p class="lead" id="heroLead"></p>
+      <div class="hero-ctas">
+        <a href="#work" class="btn primary">See my work →</a>
+        <a href="#contact" class="btn">Let's talk</a>
+      </div>
+      <div class="hero-tags"><span>AI agents &amp; RAG</span><span>Full-stack React / Node</span><span>n8n &amp; Apps Script automation</span></div>
+    </div>
+    <div class="term reveal" aria-hidden="true">
+      <div class="term-bar"><i></i><i></i><i></i><span>~/rahul/systems</span></div>
+      <div class="term-body" id="term"></div>
+    </div>
+  </div>
+  <div class="wrap" style="margin-top:64px">
+    <div class="stats reveal" id="stats"></div>
+  </div>
+  <div class="marquee"><div class="marquee-track" id="marquee"></div></div>
+</header>
+
+<section id="about">
+  <div class="wrap about-grid">
+    <div class="about-text reveal">
+      <div class="eyebrow">01 · About</div>
+      <h2 style="font-size:clamp(1.9rem,4vw,2.8rem);margin:14px 0 22px">I build the software a manufacturing company runs on.</h2>
+      <p>At <strong>Biopapro Cutleries</strong>, a manufacturer of paper straws and wooden cutlery, I build internal software end to end. I talk to the people who do the work, map the process, and then ship the tool myself: front end, back end, data, AI and deployment.</p>
+      <p>That covers <strong>40+ systems across Sales, Production, Purchase, Order-to-Delivery, Stock, Finance and Admin</strong>. They include an AI procurement agent, a full CRM, n8n AI agents and dozens of Apps Script tools. Teams use them every day.</p>
+      <p>I'm now looking to bring that range to a product or IT team, or to build the same thing for clients.</p>
+      <div class="pillars">
+        <div class="pillar"><h4>End-to-end ownership</h4><p>Requirements → UI → API → data → AI → deploy → support.</p></div>
+        <div class="pillar"><h4>Real users, daily</h4><p>Sales, finance, production and management all run on these tools.</p></div>
+        <div class="pillar"><h4>Automate the boring</h4><p>Triggers, webhooks, schedulers and agents replace manual work.</p></div>
+      </div>
+    </div>
+    <aside class="profile reveal" id="profile"></aside>
+  </div>
+</section>
+
+<section id="work" style="background:var(--bg-2)">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">02 · Selected work</div>
+      <h2>Flagship systems</h2>
+      <p>Each one began as a real problem inside the business. The card shows what was broken, what I built, and what changed.</p>
+    </div>
+    <div class="filters" id="featFilters"></div>
+    <div class="feat-grid" id="featGrid"></div>
+  </div>
+</section>
+
+<section id="systems">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">03 · Full scope</div>
+      <h2><span id="moreCount"></span> more systems in production</h2>
+      <p>Operational tools, dashboards, reconciliations and factory automations. These are the smaller pieces that keep the business running.</p>
+    </div>
+    <div class="filters" id="moreFilters"></div>
+    <div class="more-grid" id="moreGrid"></div>
+  </div>
+</section>
+
+<section id="process" style="background:var(--bg-2)">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">04 · How I build</div>
+      <h2>From a messy spreadsheet to a live system</h2>
+      <p>I use the same five steps whether it's a 50-line Apps Script or a full-stack AI agent.</p>
+    </div>
+    <div class="steps" id="steps"></div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">05 · Experience</div>
+      <h2>Where I've worked</h2>
+    </div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+</section>
+
+<section id="skills" style="background:var(--bg-2)">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">06 · Stack</div>
+      <h2>Tools I ship with</h2>
+    </div>
+    <div class="skill-grid" id="skillGrid"></div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="contact reveal">
+      <div class="eyebrow">07 · Contact</div>
+      <h2>Have a process that should <span class="grad">run itself?</span></h2>
+      <p>I'm open to full-time roles and freelance projects in AI agents, automation, internal tools and dashboards. Tell me what's slow and I'll tell you how I'd fix it.</p>
+      <div class="hero-ctas" id="contactBtns"></div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><span id="foot"></span><span>Built by hand · <a href="#top">back to top ↑</a></span></div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* =====================================================================
+   CONFIG: everything you'll want to edit lives below.
+   Leave a link as "" and its button is hidden automatically.
+   ===================================================================== */
+const ME = {
+  name: "Rahul Gurav",
+  initials: "RG",
+  title: "AI Engineer",
+  company: "Biopapro Cutleries Pvt. Ltd",
+  education: "Master's in Computer Science, 2025",
+  experience: "AI Engineer since 2025 + 6-month traineeship",
+  location: "Parel, Mumbai",
+  email: "rahulgurav866@gmail.com",
+  github: "https://github.com/Raul1100",
+  linkedin: "https://www.linkedin.com/in/rahul-gurav-77a987241/",
+  resume: "",                         // TODO: resume.pdf (put file next to index.html)
+  lead: "I design, code and ship complete products: AI agents with RAG and tool-calling, full-stack React + Node apps, ML models and automation pipelines. All of them run in production for real teams."
+};
+
+const STATS = [
+  {n:15, s:"", l:"Flagship systems"},
+  {n:40, s:"+", l:"Tools in daily use"},
+  {n:7,  s:"", l:"Departments served"},
+  {n:179,s:"", l:"Nodes in my largest n8n workflow"}
+];
+
+const STACK = ["Python","TypeScript","React","Node.js","Express","FastAPI","LangGraph","RAG","Tool calling","OpenRouter","Claude","ChatGPT","Gemini","n8n","Google Apps Script","Google Sheets API","REST APIs","Tailwind","Three.js","Postman","Git","Render"];
+
+/* ---------- Flagship projects ---------- */
+const FEATURED = [
+  {cat:"AI", title:"Procurement AI Agent",
+   p:"Stock, targets, in-transit goods, import POs, payments and landed cost were scattered across many sheets. Answering a simple purchase question meant digging by hand.",
+   b:"A full-stack procurement platform with planning, import-PO, payment, landed-cost, vendor-comparison and QC dashboards, plus a LangGraph tool-calling agent backed by local RAG search and a procurement knowledge graph.",
+   r:"The purchase team plans, tracks imports and asks questions in plain English instead of hunting through sheets.",
+   tags:["React","TypeScript","Node.js","LangGraph","RAG","Recharts","Sheets API","Vitest"], demo:"demos/procurement-agent/", code:""},
+  {cat:"AI", title:"FactoIntel: Factory Intelligence Platform",
+   p:"Production, stock and labour data lived across many Google Sheets, and stock errors such as negative balances or IMS edits with no matching entry surfaced days later.",
+   b:"A React + TypeScript and Express app that reads 6 spreadsheets. It has dashboards for all five production departments, a GRN batch tracker, and FG/RM IMS audits that compare form entries with the IMS sheet day by day and label the root cause of every negative balance. It also covers labour and machine capacity, monthly targets, stock-cover forecasts, and an AI layer (daily brief, anomaly scan, chat) via OpenRouter.",
+   r:"Stock problems show up with a root cause attached (e.g. 'dispatch beyond available stock'), and one health score covers inventory, production, labour, machines and data integrity.",
+   tags:["React","TypeScript","Express","Google Sheets API","OpenRouter","Recharts","Tailwind"], demo:"demos/factointel/", code:""},
+  {cat:"Full-Stack", title:"Sales CRM with Role-Based Access",
+   p:"Orders, dispatch, follow-ups, grievances and leads lived in separate sheets and forms, and anyone could see everything.",
+   b:"A 24-page CRM with Google login and admin / CRM / dispatch roles. It covers order entry with auto IDs and stock checks, dispatch with photo upload, reorder-risk prediction, pipeline, grievances, WhatsApp, reports and an AI assistant for lead generation.",
+   r:"Sales, CRM and dispatch work in one system, and each role sees only what it needs.",
+   tags:["React","Vite","Node.js","Express","Google OAuth","OpenRouter","node-cron"], demo:"demos/crm/", code:""},
+  {cat:"ML", personal:true, title:"Demand Forecasting: 6 Models, One Backtest",
+   p:"Purchase and production planning need demand forecasts weeks ahead, and the right method isn't obvious until you test them all on the same data.",
+   b:"A browser app that simulates 3 years of weekly demand for 10 SKUs (trend, seasonality, a festive-season bump, promotions) and compares six hand-written models: naive, seasonal naive, moving average, Holt-Winters, ridge regression on lag and calendar features, and an ensemble. It runs a 4-fold rolling-origin backtest over an 8-week horizon and includes an automated leakage test.",
+   r:"On the sample data the Holt-Winters + ridge ensemble reaches 11.9% WAPE, 18% less error than seasonal naive, and every model passes the leakage test.",
+   metric:["11.9%","WAPE (−18% vs seasonal naive)"],
+   tags:["JavaScript","Holt-Winters","Ridge regression","Time series","Chart.js"], demo:"demos/demand-forecasting/", code:""},
+  {cat:"ML", personal:true, title:"B2B Churn Prediction + RFM",
+   p:"A sales team can only call so many customers a week, so it needs to know which active accounts are about to go quiet.",
+   b:"Simulates 520 B2B customers with their own ordering rhythms, takes monthly snapshots with seven behavioural features, and trains a logistic regression in the browser on a time-based split. It compares the model with a 60-day inactivity rule, recency ranking and RFM segments, and explains each risk score.",
+   r:"On the test snapshot, calling the riskiest 20% reaches 77% of churners and 62% of revenue at risk (AUC 0.95), against 61% when ranking by days since last order.",
+   metric:["77%","of churners reached in the top 20%"],
+   tags:["JavaScript","Logistic regression","RFM","Chart.js"], demo:"demos/churn-rfm/", code:""},
+  {cat:"Automation", title:"AI Marketing Team (n8n, 179 nodes)",
+   p:"Planning, writing, designing and posting content every day took hours, and nobody tracked results.",
+   b:"An n8n workflow that acts as a full marketing team. An AI strategist plans the week, a copywriter drafts posts, images are generated and reviewed by an AI art director, and videos are made with Google Veo. Approved posts go out to LinkedIn, Instagram, Facebook and WhatsApp from an approvals dashboard.",
+   r:"Content goes from plan to published in one click, and performance, AI cost and errors are reported automatically.",
+   tags:["n8n","OpenAI","Gemini / Veo","Meta Graph API","LinkedIn API","WhatsApp Cloud API"], demo:"demos/n8n/#marketing", code:""},
+  {cat:"Automation", title:"WhatsApp AI Lead Qualifier (n8n)",
+   p:"WhatsApp enquiries arrived at all hours, and new leads waited too long for a reply.",
+   b:"A 45-node AI agent that handles text, voice notes (transcribed) and images. It tells existing customers apart from new leads, qualifies them with chat memory, updates the CRM sheet and books calendar slots, with a human-takeover switch.",
+   r:"Every enquiry gets an instant reply, and the sales team can step in on any chat.",
+   tags:["n8n","OpenAI","WhatsApp Cloud API","Google Calendar","Sheets"], demo:"demos/n8n/#whatsapp", code:""},
+  {cat:"Automation", title:"Export Lead Generator (n8n)",
+   p:"The founder's \"Dream 100\" export list needed qualified overseas buyers, and finding them by hand was slow.",
+   b:"An n8n pipeline that scrapes B2B buyer leads country by country through SerpApi, enriches contacts with RocketReach, de-duplicates them and feeds a prospecting sheet.",
+   r:"A steady, de-duplicated stream of export prospects with no manual searching.",
+   tags:["n8n","SerpApi","RocketReach","Google Sheets"], demo:"demos/n8n/#export", code:""},
+  {cat:"Full-Stack", title:"Export O2D & Sales Tracker",
+   p:"Export orders went through 10 hand-offs (stock checks, packing material, QC, container booking and dispatch) across five people and several sheets. Nobody could see which step an order was stuck on.",
+   b:"An Apps Script web app with two modules. Export O2D tracks every order through 10 SLA-timed steps with planned vs actual dates, holiday-aware due dates, per-person task lists, email hand-offs and a dispatch form. Export Sales generates commercial invoices and packing lists, ready to print as PDFs.",
+   r:"Each person sees only their pending steps, delays are visible per order and per person, and export paperwork comes out of the same data.",
+   tags:["Google Apps Script","JavaScript","HTML/CSS","Google Sheets","Gmail"], demo:"demos/export-tracker/", code:""},
+  {cat:"Dashboards", title:"CEO Command Center: FastAPI Migration",
+   p:"The CEO dashboard, originally built by a colleague, ran on a single Node/Express server that read 8 Google Sheets, and its AI chat slowed down every startup.",
+   b:"I ported every endpoint to FastAPI as separate, tested Python services. I kept the original's exact number handling (JS-style rounding, header lookups, fallbacks) so no figure changed. I also lazy-loaded the LangGraph chat, added a one-click Render blueprint, narrowed the production sheet reads, and did a full design pass on the UI.",
+   r:"Same numbers, now on a typed, testable Python back end that is easier to extend.",
+   tags:["FastAPI","Python","LangGraph","Google Sheets API","Render","pytest"], demo:"demos/ceo-command-center/", code:""},
+  {cat:"Full-Stack", title:"Packaging Design Studio (3D)",
+   p:"Every box, wrapper and export carton needed a designer plus separate print and loading calculations.",
+   b:"A browser design tool. You pick a product, size the box, edit text and colours, and see a live 3D mockup with a fold animation. It exports print-ready PDF, SVG and DXF die-lines, and includes a wrapping-paper designer and a 3D container-loading planner.",
+   r:"Designs, printer files and loading plans take minutes, with no designer needed.",
+   tags:["Three.js","JavaScript","jsPDF","JSZip","SVG / DXF"], demo:"demos/pack-studio/", code:""},
+  {cat:"Full-Stack", title:"TDS & Spec Sheet Generator",
+   p:"Every customer enquiry needed a technical data sheet and a dimensioned drawing, made by hand in Word.",
+   b:"A standalone tool that generates branded TDS sheets, dimensioned product drawings and customer spec documents for straws and wooden cutlery from a few inputs.",
+   r:"Spec documents go out the same day instead of after a design round-trip.",
+   tags:["JavaScript","SVG","HTML/CSS","PDF"], demo:"demos/tds-generator/", code:""},
+  {cat:"ML", personal:true, title:"Sales Intelligence & Forecasting",
+   p:"Sales data usually ends up in monthly reports, with no view of trends, expected revenue or which customers matter most.",
+   b:"A dashboard over 24 months of simulated orders: revenue trend with a 3-month Holt-Winters forecast and 80% band, product growth, top customers, RFM segments and a state filter. A question box maps plain-English questions to exact queries. It's rule-based, not an LLM.",
+   r:"Questions like 'top 5 customers last 3 months' or 'forecast next quarter' get exact answers from the data in one step.",
+   tags:["JavaScript","Holt-Winters","RFM","Chart.js"], demo:"demos/sales-intelligence/", code:""},
+  {cat:"Dashboards", personal:true, title:"Production Pulse",
+   p:"Daily production plans and actual output are often tracked separately, so shortfalls only show up the next day.",
+   b:"A single-page app for five departments: enter the day's plan per department and compare it with shift output pro-rated to the time of day. It shows on track / behind / critical status, a 14-day attainment trend, machine downtime and labour panels, and saved shift-handover notes.",
+   r:"Supervisors can see which department is falling behind while the shift is still running.",
+   tags:["JavaScript","Chart.js","localStorage"], demo:"demos/production-pulse/", code:""},
+  {cat:"Dashboards", personal:true, title:"O2D Order Tracking System",
+   p:"Orders pass through many hand-offs, and it's hard to see where each one is or which stage is slipping.",
+   b:"Tracks every order through 8 stages from confirmation to payment. Planned dates come from per-stage SLAs in working days and ripple forward when a stage slips. It has list and board views, late and due-today filters, a per-order timeline with one-click 'mark done', and a new-order form.",
+   r:"Late orders, and the exact stage they're stuck at, are visible at a glance along with on-time performance per stage.",
+   tags:["JavaScript","HTML/CSS","localStorage"], demo:"demos/o2d-tracker/", code:""},
+];
+
+/* ---------- Supporting systems ---------- */
+const MORE = [
+  ["Stock & Purchase","CEO Stock Dashboard","FG and RM stock valued at cost from the stock and SKU-cost sheets.","Stock value at a glance for management.",["Apps Script","HTML/CSS"]],
+  ["Stock & Purchase","IMS Stock Dashboard","Combines finished-goods and raw-material sheets with SKU costing and galla (location) tracking.","One view of all inventory.",["Apps Script","HTML/CSS"]],
+  ["Stock & Purchase","IMS In/Out Dashboard","Logs every FG/RM in and out entry plus dispatch responses.","Daily stock movement in one place.",["Apps Script"]],
+  ["Stock & Purchase","Stock & Dispatch MIS","Dispatch vs monthly targets with fuzzy product-name mapping and an unmatched-items log.","Target tracking with data-quality checks.",["Apps Script"]],
+  ["Stock & Purchase","Import Purchase Management","The whole import PO lifecycle: suppliers, POs, PIs, SOB dates, advances and payments.","Imports and payments tracked end to end.",["Apps Script","HTML/CSS"]],
+  ["Stock & Purchase","Procurement Stock Snapshots","Saves a daily FG/RM snapshot to build stock history.","Day-by-day stock trend for planning.",["Apps Script"]],
+  ["Stock & Purchase","Indent Tracker","Manager and team indent requests with an inbox, PO-number search and auto-generated keys.","No lost purchase requests.",["Apps Script"]],
+  ["Stock & Purchase","Job Work Tracker","Outward and inward job-work entries linked to GRNs from the RM inventory.","Material at vendors always accounted for.",["Apps Script"]],
+  ["Sales & Finance","Sales Dashboard + Customer Scoring","A sales dashboard with an MIS score page that ranks customers.","Customers ranked by value.",["Apps Script","JavaScript"]],
+  ["Sales & Finance","Sales Head Portal","A portal covering General Trade and Institutional channels.","Channel-wise sales view.",["Apps Script","HTML/CSS"]],
+  ["Sales & Finance","OS Ageing Dashboard","Outstanding receivables in 0–30 / 31–60 / 61–90 / 90+ day buckets.","Overdue invoices surfaced early.",["Apps Script"]],
+  ["Sales & Finance","Gross Margin Dashboard","Gross margin per product from dispatch data and SKU costs.","Margin by product.",["Apps Script"]],
+  ["Sales & Finance","Invoice Matching System","Fuzzy invoice-number matching across sheets with value-mismatch analysis.","Mismatches listed automatically.",["Apps Script"]],
+  ["Sales & Finance","Enquiry Capture Tracker","A sales enquiry tracker migrated from Apps Script to a Node.js app on the same sheet.","Faster, standalone enquiry tracking.",["Node.js","Express","Sheets API"]],
+  ["Sales & Finance","Old Customer Lead Tracker","Re-contact tracker with last-sale date and contact details.","Structured win-back calls.",["Apps Script"]],
+  ["Sales & Finance","NBD Tracker","New business development tracked as incoming and outgoing streams.","Pipeline split by direction.",["Apps Script"]],
+  ["Sales & Finance","Cost Budgeting & Cash Voucher Apps","Cost budgeting, a founder finance dashboard and a digital cash voucher book.","Spend tracked against budget.",["Apps Script"]],
+  ["Sales & Finance","Wastage Sale Records","Waste-material sale challans in a 17-column register.","Scrap revenue fully recorded.",["Apps Script"]],
+  ["Production","5-Form Production Suite","Packing, Cutter, Selection, Automatic and Cutlery entry forms with SKU-filtered product lists.","Clean, consistent shop-floor data.",["Apps Script","HTML/CSS"]],
+  ["Production","Straw Production Tracking","A 5-stage flow (Slitting → Production → Sharp Edge → Wrapping → Packing) with reference IDs and GRNs.","Batch traceable through every stage.",["Apps Script"]],
+  ["Production","Production Machine Dashboard","Machine-wise output with a summary and a built-in user guide.","Machine output in one view.",["Apps Script","HTML/CSS"]],
+  ["Production","Labour & Attendance Dashboard","Labour targets, output and attendance from the labour sheet.","Output vs target per worker.",["Apps Script"]],
+  ["Production","Capacity Assessment","Machine and manpower capacity mapping across the factory.","Real capacity numbers for planning.",["Apps Script"]],
+  ["Production","Wrapping Machine Form","Production entries that post RM usage out of stock and FG into stock.","Stock updated straight from production.",["Apps Script"]],
+  ["Operations","O2D Dispatch Form","A dispatch web app with split-GRN support that writes to the IMS ledger.","Dispatch and stock always in sync.",["Apps Script"]],
+  ["Operations","CRM O2D Task Tracker","An order-to-delivery task view over FMS sheets on a 5-minute trigger.","Order tasks visible to the CRM team.",["Apps Script"]],
+  ["Operations","New CRM FMS","A Node.js rebuild of the CRM covering order and invoice steps.","Faster, beyond Apps Script limits.",["Node.js","Express","Sheets API"]],
+  ["Operations","FMS → CRM Sync Scripts","Copies order and payment follow-up blocks between FMS sheets by Order ID.","No double entry.",["Apps Script"]],
+  ["Operations","Sheet Sync Agent","A standalone timer that pulls new orders and invoices into 4 FMS sheets.","Sync runs even when web apps sleep.",["Apps Script"]],
+  ["Operations","React FMS Tracker","FMS tasks (sample requests, purchase) by member with deadlines.","Overdue, today and upcoming per person.",["React","Vite","Node.js"]],
+  ["Operations","Daily Task FMS","A daily task tracker with caching and per-employee report pages.","Team task status in one place.",["Apps Script","Node.js","MongoDB"]]
+];
+
+const STEPS = [
+  ["Sit with the users","Shadow the people doing the work, map the current process and define the decisions the tool has to support."],
+  ["Wire up the data","Connect sheets, databases and APIs. Clean the data, validate it and give every record a single key."],
+  ["Model & analyse","Add the logic: KPIs, forecasts, churn scores, matching rules, or an LLM agent with tools and RAG."],
+  ["Build the interface","Ship a dashboard, a web app or a chat/WhatsApp agent, designed for the person using it at 9 AM."],
+  ["Automate & hand off","Triggers, schedulers, alerts and deploy on Render or Apps Script, then document it and support it."]
+];
+
+const JOBS = [
+  {when:"2025 – Present", role:"AI Engineer", org:"Biopapro Cutleries Pvt. Ltd (BCPL) · Mumbai",
+   pts:[
+    "Build internal software across sales, production, purchase, order-to-dispatch, stock and finance: 40+ tools and apps in daily use.",
+    "Shipped a LangGraph procurement agent with tool calling and RAG, plus a role-based CRM with order-to-dispatch, SCOT tracking and an in-app AI assistant.",
+    "Built FactoIntel, a factory-intelligence app with day-by-day IMS audits, root-cause labels for negative stock and an AI daily brief.",
+    "Built AI automations in n8n: a 179-node marketing team, a WhatsApp lead qualifier and an export lead generator.",
+   ],
+   tags:["React","Node.js","LangGraph","OpenRouter","n8n","Apps Script","Python"]},
+  {when:"May 2025 – Oct 2025", role:"Nets & Security App Trainee", org:"Proceedit Company",
+   pts:[
+    "Performed security assessments and backend analysis for enterprise applications.",
+    "Wrote Python scripts to support backend analysis and automation.",
+    "Tested and validated APIs with Postman, and prepared technical documentation and improvement reports.",
+    "Researched Hyperledger FireFly and AWS blockchain technologies.",
+   ],
+   tags:["Python","Postman","API testing","Security assessment"]},
+  {when:"2023 – 2025", role:"Master's in Computer Science", org:"N G Acharya & D K Marathe College, Mumbai",
+   pts:["Bachelor's in Business Administration from the same college (2019 – 2022); HSC (2017 – 2019)."],
+   tags:[]}
+];
+
+const SKILLS = [
+  ["AI & LLM",["Prompt engineering","Agentic AI","Tool calling","LLM workflows","LangGraph","RAG","OpenRouter","Claude","ChatGPT","Gemini"]],
+  ["Automation",["n8n","Google Apps Script","Google Workspace","Webhooks","WhatsApp Cloud API"]],
+  ["Frontend",["React","TypeScript","Tailwind","Recharts","Three.js","HTML/CSS"]],
+  ["Backend",["Node.js","Express","FastAPI","Python","REST APIs","Google Sheets API"]],
+  ["Programming",["Python","JavaScript","TypeScript","Google Apps Script"]],
+  ["Data & ML",["Time-series forecasting","Logistic regression","RFM segmentation"]],
+  ["Testing & security",["Postman","API testing","Security assessment"]],
+  ["Ship & run",["Git","GitHub","Render"]]
+];
+
+/* ===================== RENDER (no need to edit) ===================== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const chips = arr => arr.map(t => `<span class="chip">${esc(t)}</span>`).join('');
+
+document.title = `${ME.name} | ${ME.title}`;
+$('#heroLead').textContent = ME.lead;
+$('#foot').textContent = `© ${new Date().getFullYear()} ${ME.name}`;
+const navResume = $('#navResume');
+if (ME.resume) navResume.href = ME.resume; else navResume.style.display = 'none';
+
+$('#stats').innerHTML = STATS.map(s => `<div class="stat"><b><span data-count="${s.n}">0</span><em>${s.s}</em></b><span>${s.l}</span></div>`).join('');
+$('#marquee').innerHTML = [...STACK, ...STACK].map(t => `<span>${esc(t)}</span>`).join('');
+
+const links = [
+  ME.email && `<a class="btn primary" href="mailto:${esc(ME.email)}">Email me</a>`,
+  ME.linkedin && `<a class="btn" href="${esc(ME.linkedin)}" target="_blank" rel="noopener">LinkedIn</a>`,
+  ME.github && `<a class="btn" href="${esc(ME.github)}" target="_blank" rel="noopener">GitHub</a>`,
+  ME.resume && `<a class="btn" href="${esc(ME.resume)}" download>Resume ↓</a>`
+].filter(Boolean);
+$('#contactBtns').innerHTML = links.join('') || `<span class="chip">Add email / LinkedIn / GitHub in the ME config</span>`;
+
+$('#profile').innerHTML = `
+  <div class="avatar">${esc(ME.initials)}</div>
+  <h3>${esc(ME.name)}</h3>
+  <div class="role">${esc(ME.title)}</div>
+  <dl class="kv">
+    <dt>company</dt><dd>${esc(ME.company)}</dd>
+    <dt>focus</dt><dd>AI agents, full-stack apps, automation</dd>
+    <dt>domain</dt><dd>Manufacturing ops (in-house tech)</dd>
+    <dt>education</dt><dd>${esc(ME.education)}</dd>
+    <dt>experience</dt><dd>${esc(ME.experience)}</dd>
+    <dt>location</dt><dd>${esc(ME.location)}</dd>
+  </dl>
+  <div class="btns">${links.slice(0,2).join('')}</div>`;
+
+/* featured */
+function renderFeatured(filter){
+  $('#featGrid').innerHTML = FEATURED.map((p,i) => ({p,i})).filter(({p}) => filter==='All' || p.cat===filter).map(({p,i}) => `
+    <article class="pcard reveal in">
+      <div class="top"><span class="cat">${esc(p.cat)}${p.personal ? ' <span class="pv-hint" style="color:var(--ok);border-style:solid;margin-left:6px">personal project · sample data</span>' : ''}</span><span style="display:flex;gap:8px;align-items:center"><span class="pv-hint">hover · preview</span><span class="num">${String(i+1).padStart(2,'0')}</span></span></div>
+      <h3>${esc(p.title)}</h3>
+      ${p.metric ? `<div class="metric"><strong>${esc(p.metric[0])}</strong><span>${esc(p.metric[1])}</span></div>` : ''}
+      <div class="pbr">
+        <div><b>PROBLEM</b><span>${esc(p.p)}</span></div>
+        <div><b>BUILT</b><span>${esc(p.b)}</span></div>
+        <div class="res"><b>RESULT</b><span>${esc(p.r)}</span></div>
+      </div>
+      <div class="tags">${chips(p.tags)}</div>
+      ${(p.demo||p.code) ? `<div class="plinks">${p.demo?`<a href="${esc(p.demo)}" target="_blank" rel="noopener">▶ Live demo</a>`:''}${p.code?`<a href="${esc(p.code)}" target="_blank" rel="noopener">&lt;/&gt; Code</a>`:''}</div>` : ''}
+    </article>`).join('');
+}
+function filterBar(el, cats, counts, onPick){
+  el.innerHTML = cats.map((c,i) => `<button class="filter${i?'':' active'}" data-c="${esc(c)}">${esc(c)}<small>${counts[c]}</small></button>`).join('');
+  el.addEventListener('click', e => {
+    const b = e.target.closest('.filter'); if(!b) return;
+    el.querySelectorAll('.filter').forEach(x => x.classList.toggle('active', x===b));
+    onPick(b.dataset.c);
+  });
+}
+const count = (arr, key) => arr.reduce((m,x) => (m[key(x)] = (m[key(x)]||0)+1, m), {All:arr.length});
+const fCounts = count(FEATURED, p => p.cat);
+filterBar($('#featFilters'), Object.keys(fCounts), fCounts, renderFeatured);
+renderFeatured('All');
+
+/* more */
+$('#moreCount').textContent = MORE.length;
+$('#moreGrid').innerHTML = MORE.map(([cat,t,d,o,tg]) => `
+  <div class="mcard" data-c="${esc(cat)}">
+    <div class="cat"><span>${esc(cat)}</span><em>● LIVE</em></div>
+    <h4>${esc(t)}</h4><p>${esc(d)}</p><div class="out">${esc(o)}</div>
+    <div class="tags">${chips(tg)}</div>
+  </div>`).join('');
+const mCounts = count(MORE, m => m[0]);
+filterBar($('#moreFilters'), Object.keys(mCounts), mCounts, c => {
+  document.querySelectorAll('.mcard').forEach(m => m.classList.toggle('hidden', c!=='All' && m.dataset.c!==c));
+});
+
+$('#steps').innerHTML = STEPS.map(([h,p]) => `<div class="step reveal"><h4>${esc(h)}</h4><p>${esc(p)}</p></div>`).join('');
+$('#timeline').innerHTML = JOBS.map(j => `
+  <div class="job reveal"><div class="when">${esc(j.when)}</div><h3>${esc(j.role)}</h3><div class="org">${esc(j.org)}</div>
+  <ul>${j.pts.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="tags">${chips(j.tags)}</div></div>`).join('');
+$('#skillGrid').innerHTML = SKILLS.map(([h,t]) => `<div class="sk reveal"><h4>${esc(h)}</h4><div class="tags">${chips(t)}</div></div>`).join('');
+
+/* terminal typing */
+const TERM = [
+  ['p','$ ','whoami'], ['', '', ME.name.toLowerCase()+' — '+ME.title.toLowerCase()],
+  ['p','$ ','ls ./shipped --count'], ['ok','',`${FEATURED.length} flagship · ${MORE.length} supporting · all in production`],
+  ['p','$ ','cat stack.txt'], ['d','','react · node · langgraph · n8n · python'],
+  ['p','$ ','./agent ask "pending import POs?"'], ['ok','✓ ','3 POs in transit · ₹ landed cost ready'],
+  ['p','$ ','status'], ['ok','● ','open to work']
+];
+(function typeTerm(){
+  const el = $('#term'); let line = 0;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function next(){
+    if(line >= TERM.length){ el.insertAdjacentHTML('beforeend','<span class="p">$ </span><span class="caret"></span>'); return; }
+    const [cls,pre,txt] = TERM[line++];
+    const row = document.createElement('div');
+    row.innerHTML = `<span class="${cls}">${esc(pre)}</span><span class="${cls==='p'?'':cls}"></span>`;
+    el.appendChild(row);
+    const span = row.lastChild;
+    if(reduce || cls!=='p'){ span.textContent = txt; setTimeout(next, reduce?0:260); return; }
+    let i=0; (function t(){ span.textContent = txt.slice(0,++i); i<txt.length ? setTimeout(t,28) : setTimeout(next,220); })();
+  }
+  next();
+})();
+
+/* reveal + counters (fallback when GSAP is unavailable or motion is reduced) */
+const MOTION = !!window.gsap && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!MOTION) {
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if(!e.isIntersecting) return;
+  e.target.classList.add('in');
+  e.target.querySelectorAll('[data-count]').forEach(c => {
+    const end = +c.dataset.count, t0 = performance.now();
+    (function tick(t){ const k = Math.min(1,(t-t0)/1100); c.textContent = Math.round(end*(1-Math.pow(1-k,3))); if(k<1) requestAnimationFrame(tick); })(t0);
+  });
+  io.unobserve(e.target);
+}), {threshold:.12});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+}
+
+/* theme — circular reveal from the button where View Transitions are supported */
+const root = document.documentElement;
+try { const t = localStorage.getItem('theme'); if(t) root.dataset.theme = t; } catch(e){}
+$('#themeBtn').addEventListener('click', e => {
+  const apply = () => {
+    const cur = root.dataset.theme || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    root.dataset.theme = cur === 'light' ? 'dark' : 'light';
+    try { localStorage.setItem('theme', root.dataset.theme); } catch(e){}
+  };
+  if (!document.startViewTransition || !MOTION) return apply();
+  const x = e.clientX, y = e.clientY, r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+  document.startViewTransition(apply).ready.then(() => root.animate(
+    { clipPath: [`circle(0 at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
+    { duration: 650, easing: 'cubic-bezier(.4,0,.2,1)', pseudoElement: '::view-transition-new(root)' }));
+});
+</script>
+
+<script src="demos/n8n/graphs.js"></script>
+<script>
+/* ===================== HOVER PREVIEWS =====================
+   Each system gets a small mock UI + 3 highlights. n8n projects draw their real graph. */
+(function () {
+  if (!matchMedia('(pointer: fine)').matches) return;
+  const E = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  /* ---- renderers ---- */
+  const R = {
+    img: s => `<img src="${s.src}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top left">`,
+    dash: s => `<div class="m-kpis">${s.kpis.map(([l, v, c]) => `<div class="m-kpi ${c || ''}"><b>${E(v)}</b><span>${E(l)}</span></div>`).join('')}</div>
+      <div class="m-bars">${s.bars.map((h, i) => `<i class="${s.alt && i % 2 ? 'alt' : ''}" style="height:${h}%;animation-delay:${i * 40}ms"></i>`).join('')}</div>`,
+    table: s => `<table class="m-table"><tr>${s.cols.map(c => `<th>${E(c)}</th>`).join('')}</tr>${s.rows.map(r => `<tr>${r.map(c => {
+      const cls = String(c).startsWith('!') ? 'bad' : String(c).startsWith('+') ? 'ok' : ''; const v = cls ? String(c).slice(1) : c;
+      return `<td class="${cls}">${String(v).startsWith('#') ? `<span class="m-pill ${v.slice(1, 2)}">${E(v.slice(3))}</span>` : E(v)}</td>`; }).join('')}</tr>`).join('')}</table>`,
+    kanban: s => `<div class="m-kanban">${s.cols.map(([h, cards], ci) => `<div class="m-col"><h6>${E(h)}<span>${cards.length}</span></h6>${cards.map(([t, sub], i) => `<div class="m-card" style="animation-delay:${(ci * 2 + i) * 60}ms">${E(t)}<small>${E(sub)}</small></div>`).join('')}</div>`).join('')}</div>`,
+    hbars: s => (s.head ? `<div style="margin-bottom:10px;color:var(--text);font-weight:600;font-size:11px">${E(s.head)}</div>` : '') +
+      s.rows.map(([l, v, c, t], i) => `<div class="m-hbar"><span>${E(l)}</span><div><i class="${c || ''}" style="width:${Math.abs(v)}%;animation-delay:${i * 60}ms"></i></div><b>${E(t ?? v + '%')}</b></div>`).join(''),
+    chat: s => `<div class="m-chat">${s.msgs.map(([w, t], i) => w === 't' ? `<span class="m-tool" style="animation-delay:${i * 120}ms">⚙ ${E(t)}</span>` : `<div class="m-msg ${w}" style="animation-delay:${i * 120}ms">${E(t)}</div>`).join('')}</div>`,
+    steps: s => `<div class="m-steps">${s.steps.map((t, i) => `<span class="${i < s.at ? 'd' : i === s.at ? 'c' : ''}"><i></i>${E(t)}</span>`).join('')}</div>${s.then ? R[s.then.k](s.then) : ''}`,
+    form: s => `<div class="m-form">${s.fields.map(([l, v]) => `<div class="m-field"><small>${E(l)}</small><b>${E(v)}</b></div>`).join('')}<div class="m-btn">${E(s.btn || 'Submit')}</div></div>`,
+    chart: s => {
+      const W = 330, H = 120, n = s.a.length + s.f.length, x = i => 10 + i * (W - 20) / (n - 1), max = Math.max(...s.a, ...s.f) * 1.15, y = v => H - 8 - v / max * (H - 20);
+      const pa = s.a.map((v, i) => `${x(i)},${y(v)}`).join(' '), off = s.a.length - 1;
+      const pf = [s.a[off], ...s.f].map((v, i) => `${x(off + i)},${y(v)}`).join(' ');
+      const band = [s.a[off], ...s.f].map((v, i) => `${x(off + i)},${y(v * 1.12)}`).join(' ') + ' ' + [s.a[off], ...s.f].map((v, i) => `${x(off + i)},${y(v * .88)}`).reverse().join(' ');
+      return `<svg class="m-svg" viewBox="0 0 ${W} ${H}" style="height:128px"><polygon points="${band}" fill="var(--glow)"/><polyline points="${pa}" fill="none" stroke="var(--muted)" stroke-width="2"/><polyline points="${pf}" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-dasharray="5 4"/><line x1="${x(off)}" y1="6" x2="${x(off)}" y2="${H - 6}" stroke="var(--line-2)" stroke-dasharray="2 3"/></svg>
+        <div class="m-legend"><span><i style="background:var(--muted)"></i>Actual</span><span><i style="background:var(--accent)"></i>Forecast</span><span style="margin-left:auto;color:var(--text)">${E(s.note)}</span></div>`;
+    },
+    flow: s => {
+      const g = window.N8N_GRAPHS && window.N8N_GRAPHS[s.g]; if (!g) return '';
+      const xs = g.nodes.map(n => n[2]), ys = g.nodes.map(n => n[3]), minX = Math.min(...xs), minY = Math.min(...ys), w = Math.max(...xs) - minX + 64, h = Math.max(...ys) - minY + 64;
+      const col = t => /rigger|^webhook$/.test(t) ? '#ff8a4c' : /^(agent|openAi|lmChat|outputParser|memory)|Tool$/.test(t) ? '#b18cff' : /^(google|gmail)/.test(t) ? '#4fc38a' : /^(httpRequest|facebook|whatsApp|respond)/.test(t) ? '#5aa9ff' : /^code$/.test(t) ? '#e7c75f' : '#8f877c';
+      const edges = g.edges.map(([a, b, sub], i) => { const A = g.nodes[a], B = g.nodes[b]; const x1 = A[2] - minX + 64, y1 = A[3] - minY + 32, x2 = B[2] - minX, y2 = B[3] - minY + 32, dx = Math.max(30, (x2 - x1) / 2);
+        return sub ? '' : `<path class="e ${i % 3 === 0 ? 'f' : ''}" d="M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}"/>`; }).join('');
+      const nodes = g.nodes.map(n => `<rect x="${n[2] - minX}" y="${n[3] - minY}" width="64" height="64" rx="12" fill="${col(n[1])}" opacity=".85"/>`).join('');
+      return `<svg class="m-flow" viewBox="-40 -40 ${w + 80} ${h + 80}" preserveAspectRatio="xMidYMid meet" style="stroke-width:${Math.max(w, h) / 160}">${edges}${nodes}</svg>
+        <div style="position:absolute;left:10px;bottom:8px;font:500 9.5px var(--font-mono);color:var(--dim)">${g.nodes.length} nodes · real graph from n8n</div>`;
+    },
+    box: s => `<div class="m-scene"><div class="m-box"><div>${E(s.label)}</div><div>${E(s.label)}</div><div>🌿</div><div>🌿</div><div></div><div></div></div></div><div class="m-dl">${['PDF', 'SVG', 'DXF', 'PNG'].map(t => `<span>${t}</span>`).join('')}</div>`,
+    doc: s => `<div class="m-doc"><div class="sheet"><h6>${E(s.title)}</h6>${s.rows.map(([a, b]) => `<div><span>${E(a)}</span><b>${E(b)}</b></div>`).join('')}</div>
+      <svg class="m-svg" viewBox="0 0 120 150"><g fill="none" stroke="var(--accent)" stroke-width="1.6"><ellipse cx="60" cy="34" rx="22" ry="28"/><path d="M54 61 L56 140 Q60 146 64 140 L66 61"/></g><g stroke="var(--muted)" stroke-width=".8" fill="var(--muted)" font-size="8" font-family="monospace"><line x1="100" y1="6" x2="100" y2="142"/><text x="104" y="78" stroke="none" writing-mode="tb">160mm</text><line x1="38" y1="70" x2="82" y2="70"/><text x="46" y="80" stroke="none">44mm</text></g></svg></div>`,
+  };
+
+  /* ---- specs for flagship projects (keyed by title) ---- */
+  const FEAT = {
+  'Procurement AI Agent': { k: 'chat', msgs: [['u', 'Which products need a reorder this month?'], ['t', 'get_planning_month · run_data_health_check'], ['b', '3 products are short after open orders: Wooden Spoon (−240 CTN), Ice Cream Scoop (−180), Bubble Tea Straw (−95).'], ['t', 'cited: Planning · Oct 2026']],
+      hl: ['LangGraph agent with tools, local RAG and a knowledge graph', 'Planning, import POs, payments, landed cost, QC in one app', 'Every number the agent states is cited back to a sheet'] },
+    'FactoIntel: Factory Intelligence Platform': { k: 'dash', kpis: [['Health score', '62', 'a'], ['FG stock', '3,713 ctn'], ['Negative SKUs', '2', 'r']], bars: [60, 72, 65, 80, 70, 76, 68, 84, 79, 88, 74, 82], hl: ['Day-by-day IMS audit with root-cause labels', 'Five production departments, labour and machine capacity', 'AI daily brief, anomaly scan and chat'] },
+    'Sales CRM with Role-Based Access': { k: 'dash', kpis: [['Revenue booked', '₹31.4L', 'g'], ['Pending ctn', '517', 'a'], ['Below benchmark', '4', 'r']], bars: [40, 55, 48, 70, 62, 80, 74, 90, 68, 85, 95, 78], hl: ['Google login with admin / CRM / dispatch roles', 'Order entry → GRN-linked dispatch with photo proof', 'AI boss report + reorder-risk prediction'] },
+    'Demand Forecasting: 6 Models, One Backtest': { k: 'chart', a: [62, 70, 66, 74, 80, 77, 85, 82, 90], f: [94, 91, 98, 102], note: 'WAPE 11.9%', hl: ['6 hand-written models, 4-fold rolling backtest', 'Automated leakage test on every model', 'Ensemble: 11.9% WAPE, 18% below seasonal naive'] },
+    'B2B Churn Prediction + RFM': { k: 'hbars', head: 'Churners reached by calling the top 20%', rows: [['Churn model', 77, 'g'], ['Recency rank', 61, ''], ['60-day rule', 60, ''], ['Random', 22, 'r']], hl: ['Logistic regression trained in the browser', 'Time-based split, no leakage', '77% of churners in the top 20% (AUC 0.95)'] },
+    'AI Marketing Team (n8n, 179 nodes)': { k: 'flow', g: 'marketing', hl: ['10 triggers: plan, create, publish, report, budget', 'AI strategist, copywriter, art director + Veo video', 'Approval dashboard served straight from webhooks'] },
+    'WhatsApp AI Lead Qualifier (n8n)': { k: 'flow', g: 'whatsapp', hl: ['Text, voice notes (transcribed) and images', 'Separate agents for customers vs new leads', 'Human takeover switch per chat'] },
+    'Export Lead Generator (n8n)': { k: 'flow', g: 'export', hl: ['Country rotation with 3 parallel B2B searches', 'Contact scraping, MX check, RocketReach enrichment', 'Gmail pitch draft written for every lead'] },
+    'Export O2D & Sales Tracker': { k: 'steps', steps: ['Analyze', 'RM check', 'Packing', 'QC', 'Dispatch'], at: 3, then: { k: 'table', cols: ['Order', 'Client', 'Step', 'Owner'], rows: [['OPE-19', 'GREENLEAF-AU', '#a:QC check', 'Aman'], ['OPE-12', 'HARBOR-UK', '#r:Late 2d', 'Pallavi'], ['OPE-15', 'NORDIC-01', '#g:Dispatched', 'Lakshay']] }, hl: ['10 SLA-timed steps with planned vs actual', 'Per-person task lists and email hand-offs', 'Commercial invoice and packing list generator'] },
+    'CEO Command Center: FastAPI Migration': { k: 'hbars', head: 'Department penalty score (0 = perfect)', rows: [['Dispatch', 8, 'g', '−8'], ['Production', 22, '', '−22'], ['Purchase', 15, '', '−15'], ['Receivables', 41, 'r', '−41'], ['Sales', 12, 'g', '−12']], hl: ['Express → FastAPI port with faithful number handling', 'LangGraph chat lazy-loaded, no more slow startups', 'One-click Render deploy + full design pass'] },
+    'Packaging Design Studio (3D)': { k: 'box', label: 'BioPapro', hl: ['Live 3D mockup with fold animation', 'Print-ready PDF, SVG and DXF die-lines', 'Wrapper designer + container loading planner'] },
+    'TDS & Spec Sheet Generator': { k: 'doc', title: 'TDS · Wooden Spoon 160mm', rows: [['Material', 'Birch wood'], ['Length', '160 ± 1 mm'], ['Width', '44 mm'], ['Thickness', '1.6 mm'], ['Pcs / carton', '5,000'], ['Food grade', 'Yes'], ['Shelf life', '24 months']], hl: ['Branded TDS from a few inputs', 'Dimensioned product drawings', 'Straws and wooden cutlery ranges'] },
+    'Sales Intelligence & Forecasting': { k: 'chart', a: [3.8, 3.3, 4.0, 4.1, 5.3, 4.9, 5.2, 5.0, 4.2], f: [4.9, 4.2, 4.1], note: '3-mo HW forecast', hl: ['3-month Holt-Winters forecast with 80% band', 'RFM segments, product growth, state filter', 'Rule-based question box with exact answers'] },
+    'Production Pulse': { k: 'dash', alt: true, kpis: [['Attainment', '94%', 'a'], ['On track', '2 / 5'], ['Downtime', '431 min', 'r']], bars: [80, 72, 65, 60, 90, 84, 55, 49, 70, 66, 88, 80], hl: ['Plan entry per department, saved locally', 'Live pro-rated status: on track / behind / critical', 'Machine downtime, labour, shift handover'] },
+    'O2D Order Tracking System': { k: 'steps', steps: ['Confirmed', 'Production', 'Packed', 'Dispatched', 'Paid'], at: 2, then: { k: 'table', cols: ['Order', 'Stage', 'Next due'], rows: [['ORD-2439', '#r:Planned', '3d late'], ['ORD-2448', '#a:Packed', 'today'], ['ORD-2436', '#g:Dispatched', '14 Oct']] }, hl: ['8 stages with SLA-based planned dates', 'Slips ripple forward to later stages', 'List, board, timeline and one-click mark done'] },
+  };
+
+  /* ---- supporting systems: category templates + seeded variety, with a few overrides ---- */
+  const seed = s => { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0) % 1000) / 1000; };
+  const ITEMS = ['Wooden Fork 160', 'Wooden Spoon 160', 'Ice Cream Scoop', 'Paper Straw 8mm', 'Bubble Straw 12mm', 'Kraft Roll 120g'];
+  const MORE_OVR = {
+    'OS Ageing Dashboard': { k: 'hbars', head: 'Outstanding by age', rows: [['0–30 days', 64, 'g', '₹18.2L'], ['31–60 days', 38, '', '₹9.6L'], ['61–90 days', 21, '', '₹4.1L'], ['90+ days', 14, 'r', '₹2.7L']] },
+    'Gross Margin Dashboard': { k: 'hbars', head: 'Gross margin by product', rows: [['Bubble Straw', 38, 'g'], ['Wooden Spoon', 31, ''], ['Paper Straw 8mm', 26, ''], ['Ice Cream Scoop', 19, 'r']] },
+    'Invoice Matching System': { k: 'table', cols: ['Invoice', 'Sheet A', 'Sheet B', 'Match'], rows: [['INV-2601', '₹42,300', '₹42,300', '+exact'], ['INV 2604', '₹18,900', '₹18,450', '!value'], ['inv/2607', '₹9,120', '₹9,120', '+fuzzy'], ['INV-2611', '₹33,000', '—', '!missing']] },
+    '5-Form Production Suite': { k: 'form', fields: [['Form', 'Packing'], ['Unit', 'UNIT 2'], ['Product', 'Wooden Spoon 160'], ['GRN', 'GRN-5104'], ['Cartons', '48'], ['Supervisor', 'A. Patil']], btn: 'Submit entry' },
+    'Wrapping Machine Form': { k: 'form', fields: [['Machine', 'Wrapper #3'], ['Shift', 'Day'], ['RM used', 'Wrapper roll 18 kg'], ['FG made', '62 ctn'], ['RM → stock', '−18 kg'], ['FG → stock', '+62 ctn']], btn: 'Post to IMS' },
+    'Straw Production Tracking': { k: 'steps', steps: ['Slitting', 'Production', 'Sharp edge', 'Wrapping', 'Packing'], at: 3, then: { k: 'table', cols: ['Batch', 'Stage', 'Qty'], rows: [['GRN-5121', '#a:Wrapping', '1.2L pcs'], ['GRN-5118', '#g:Packed', '96 ctn']] } },
+    'Import Purchase Management': { k: 'steps', steps: ['PO', 'PI', 'Loaded', 'At port', 'Paid'], at: 2, then: { k: 'table', cols: ['PO', 'Supplier', 'Status'], rows: [['DEMO/48', 'Northwind', '#a:In transit'], ['DEMO/51', 'Lotus Pkg', '#g:Delivered']] } },
+    'Capacity Assessment': { k: 'hbars', head: 'Machine utilisation', rows: [['Cutter line', 86, 'r'], ['Selection', 64, ''], ['Automatic', 72, ''], ['Packing', 48, 'g']] },
+    'Labour & Attendance Dashboard': { k: 'hbars', head: 'Output vs target today', rows: [['Packing team', 104, 'g', '104%'], ['Selection', 92, '', '92%'], ['Cutter', 78, 'r', '78%'], ['Attendance', 94, 'g', '94%']].map(r => [r[0], Math.min(100, r[1]), r[2], r[3]]) },
+    'CRM O2D Task Tracker': { k: 'kanban', cols: [['Today', [['ORD-2431', 'dispatch'], ['ORD-2433', 'invoice']]], ['Overdue', [['ORD-2419', 'payment F/U']]], ['Upcoming', [['ORD-2440', 'packing']]], ['Done', [['ORD-2428', 'paid']]]] },
+    'React FMS Tracker': { k: 'kanban', cols: [['Overdue', [['Sample · Café Aroma', 'Priya']]], ['Today', [['PO approval', 'Arjun'], ['Sample courier', 'Kavya']]], ['Upcoming', [['Vendor visit', 'Arjun']]], ['Done', [['RM indent', 'Priya']]]] },
+  };
+  function moreSpec(cat, title, desc, out) {
+    if (MORE_OVR[title]) return MORE_OVR[title];
+    const r = seed(title), n = (a, b) => Math.round(a + r() * (b - a));
+    if (cat === 'Stock & Purchase') return { k: 'table', cols: ['Item', 'Type', 'Stock', 'Value'], rows: ITEMS.slice(0, 5).map((it, i) => [it, i > 3 ? 'RM' : 'FG', `${n(40, 900)} ${i > 3 ? 'kg' : 'ctn'}`, i === 2 && r() > .4 ? `!₹${n(1, 9)}.${n(1, 9)}L` : `₹${n(1, 9)}.${n(1, 9)}L`]) };
+    if (cat === 'Sales & Finance') return { k: 'dash', kpis: [['This month', `₹${n(12, 38)}.${n(1, 9)}L`, 'g'], ['Customers', String(n(40, 160))], ['Flagged', String(n(2, 9)), 'r']], bars: Array.from({ length: 12 }, () => n(30, 95)) };
+    if (cat === 'Production') return { k: 'hbars', head: 'Output vs target', rows: ['Machine A', 'Machine B', 'Machine C', 'Machine D'].map((m, i) => { const v = n(55, 100); return [m, v, v < 70 ? 'r' : v > 92 ? 'g' : '']; }) };
+    return { k: 'kanban', cols: [['Today', [[`ORD-${n(2400, 2450)}`, 'dispatch'], [`ORD-${n(2400, 2450)}`, 'invoice']]], ['Overdue', [[`ORD-${n(2400, 2450)}`, 'payment']]], ['Upcoming', [[`ORD-${n(2400, 2450)}`, 'packing']]], ['Done', [[`ORD-${n(2400, 2450)}`, 'synced']]]] };
+  }
+
+  /* ---- real screenshots of each app (captured by _build/capture_previews.py) ---- */
+  const SHOT = {
+    'Procurement AI Agent': 'procurement', 'Sales CRM with Role-Based Access': 'crm', 'FactoIntel: Factory Intelligence Platform': 'factointel',
+    'Demand Forecasting: 6 Models, One Backtest': 'forecasting', 'B2B Churn Prediction + RFM': 'churn',
+    'AI Marketing Team (n8n, 179 nodes)': 'marketing', 'WhatsApp AI Lead Qualifier (n8n)': 'whatsapp', 'Export Lead Generator (n8n)': 'export-leads',
+    'Export O2D & Sales Tracker': 'export-tracker', 'CEO Command Center: FastAPI Migration': 'ceo', 'Packaging Design Studio (3D)': 'pack-studio',
+    'TDS & Spec Sheet Generator': 'tds', 'Sales Intelligence & Forecasting': 'sales-intel', 'Production Pulse': 'production', 'O2D Order Tracking System': 'o2d',
+  };
+  const shotSrc = t => SHOT[t] && 'img/previews/' + SHOT[t] + '.webp';
+  const preload = () => Object.keys(SHOT).forEach(t => { const i = new Image(); i.src = shotSrc(t); });
+  if (window.requestIdleCallback) requestIdleCallback(preload, { timeout: 3000 }); else setTimeout(preload, 1500);
+
+  /* ---- popover ---- */
+  const pv = document.createElement('div'); pv.className = 'pv'; pv.setAttribute('aria-hidden', 'true'); document.body.appendChild(pv);
+  let curKey = null, px = 0, py = 0, tx = 0, ty = 0, raf = 0;
+  const place = () => { px += (tx - px) * .22; py += (ty - py) * .22; pv.style.transform = `translate3d(${px}px,${py}px,0) scale(${pv.classList.contains('on') ? 1 : .94})`; if (Math.abs(tx - px) + Math.abs(ty - py) > .5) raf = requestAnimationFrame(place); else raf = 0; };
+  function target(e) {
+    const w = pv.offsetWidth || 360, h = pv.offsetHeight || 340, m = 18;
+    tx = e.clientX + m + w > innerWidth ? e.clientX - w - m : e.clientX + m;
+    ty = Math.min(Math.max(12, e.clientY - h / 2), innerHeight - h - 12);
+    if (!raf) raf = requestAnimationFrame(place);
+  }
+  function show(key, title, spec, hl, live, e) {
+    if (curKey !== key) {
+      curKey = key;
+      pv.innerHTML = `<div class="pv-bar"><i></i><i></i><i></i><span>${E(title)}</span></div><div class="pv-body"${spec.k === 'img' ? ' style="padding:0;height:205px"' : ''}>${R[spec.k](spec)}</div>
+        <div class="pv-foot"><h5>${E(title)}</h5><ul>${hl.map(x => `<li>${E(x)}</li>`).join('')}</ul>
+        <span class="pv-tag ${live ? 'live' : ''}">${live ? '▶ screenshot of the live app · open it with "Live demo"' : 'illustration · sample data'}</span></div>`;
+      if (!pv.classList.contains('on')) { const w = 360; px = tx = e.clientX + 18 + w > innerWidth ? e.clientX - w - 18 : e.clientX + 18; py = ty = e.clientY - 170; }
+    }
+    pv.classList.add('on'); target(e);
+  }
+  const hide = () => { pv.classList.remove('on'); curKey = null; if (!raf) raf = requestAnimationFrame(place); };
+
+  document.addEventListener('pointermove', e => {
+    const fc = e.target.closest('#featGrid .pcard'), mc = !fc && e.target.closest('.mcard');
+    if (fc) {
+      const title = fc.querySelector('h3').textContent, p = FEATURED.find(x => x.title === title), spec = FEAT[title];
+      if (spec) return show('f:' + title, title, shotSrc(title) ? { k: 'img', src: shotSrc(title) } : spec, spec.hl, !!(p && p.demo), e);
+    } else if (mc) {
+      const title = mc.querySelector('h4').textContent, m = MORE.find(x => x[1] === title);
+      if (m) return show('m:' + title, title, moreSpec(m[0], m[1], m[2], m[3]), [m[2], m[3]], false, e);
+    }
+    if (curKey) hide();
+  }, { passive: true });
+  addEventListener('scroll', () => curKey && hide(), { passive: true });
+})();
+</script>
+
+<script>
+/* ===================== MOTION ===================== */
+(function () {
+  if (!MOTION) return;
+  gsap.registerPlugin(ScrollTrigger);
+  root.classList.add('gsap');
+  const fine = matchMedia('(pointer: fine)').matches;
+  const ease = 'power3.out';
+
+  // Split text into masked words; words inside .grad keep the gradient.
+  function split(el) {
+    const words = [];
+    const walk = (node, grad) => [...node.childNodes].forEach(n => {
+      if (n.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(p => {
+          if (!p) return;
+          if (/^\s+$/.test(p)) { frag.appendChild(document.createTextNode(' ')); return; }
+          const w = document.createElement('span'), i = document.createElement('span');
+          w.className = 'w'; if (grad) i.className = 'grad shine'; i.textContent = p;
+          w.appendChild(i); frag.appendChild(w); words.push(i);
+        });
+        n.replaceWith(frag);
+      } else if (n.nodeType === 1 && !n.classList.contains('w')) {
+        const g = grad || n.classList.contains('grad');
+        n.classList.remove('grad'); walk(n, g);
+      }
+    });
+    walk(el, false);
+    return words;
+  }
+
+  // Decode-style text scramble for mono labels.
+  function scramble(el) {
+    const final = el.textContent, chars = '!<>-_\\/[]{}=+*^?#01';
+    const o = { p: 0 };
+    gsap.to(o, { p: 1, duration: .9, ease: 'none', onUpdate() {
+      const n = Math.floor(o.p * final.length);
+      el.textContent = final.slice(0, n) + [...final.slice(n)].map(c => c === ' ' ? ' ' : chars[Math.random() * chars.length | 0]).join('');
+    }, onComplete() { el.textContent = final; } });
+  }
+  const eyebrowText = el => [...el.childNodes].find(n => n.nodeType === 3 && n.textContent.trim());
+
+  /* ---- scroll progress + nav ---- */
+  gsap.to('.progress', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: .3 } });
+  const nav = $('nav');
+  ScrollTrigger.create({ start: 'top -120', end: 'max', onUpdate: s => nav.classList.toggle('nav-hide', s.direction === 1 && s.scroll() > 120) });
+  ScrollTrigger.create({ start: 0, end: 120, onLeaveBack: () => nav.classList.remove('nav-hide') });
+  const navLinks = $('.nav-links'), ind = document.createElement('span');
+  ind.className = 'nav-ind'; navLinks.appendChild(ind);
+  const moveInd = a => { if (!a) { ind.style.opacity = 0; return; } ind.style.left = a.offsetLeft + 'px'; ind.style.width = a.offsetWidth + 'px'; ind.style.opacity = 1; };
+  const allLinks = navLinks.querySelectorAll('a');
+  allLinks.forEach((a, i) => {
+    const sec = document.querySelector(a.getAttribute('href')); if (!sec) return;
+    const last = i === allLinks.length - 1; // the last section can't scroll up to mid-screen
+    ScrollTrigger.create({ trigger: sec, start: last ? 'top 85%' : 'top 45%', end: last ? 'max' : 'bottom 45%', onToggle: s => {
+      if (s.isActive) { navLinks.querySelectorAll('a').forEach(x => x.classList.toggle('active', x === a)); moveInd(a); }
+      else if (a.classList.contains('active')) { a.classList.remove('active'); moveInd(null); }
+    } });
+  });
+
+  /* ---- hero intro ---- */
+  const h1Words = split($('.hero h1'));
+  gsap.timeline({ defaults: { ease: 'power4.out' } })
+    .from('.status', { y: 14, opacity: 0, duration: .6 })
+    .from(h1Words, { yPercent: 115, rotate: 5, duration: 1.1, stagger: .045 }, '-=.35')
+    .from('#heroLead', { y: 18, opacity: 0, duration: .8 }, '-=.75')
+    .from('.hero-ctas .btn', { y: 18, opacity: 0, duration: .6, stagger: .08 }, '-=.6')
+    .from('.hero-tags span', { x: -12, opacity: 0, duration: .5, stagger: .07 }, '-=.45')
+    .from('.term', { y: 50, opacity: 0, rotateX: 14, transformPerspective: 1000, duration: 1.2 }, .35);
+  gsap.to('.term', { yPercent: -10, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+
+  // cursor-following glow
+  const hero = $('.hero'), glow = document.createElement('div');
+  glow.className = 'hero-glow'; hero.prepend(glow);
+  if (fine) {
+    const gx = gsap.quickTo(glow, 'x', { duration: .8, ease }), gy = gsap.quickTo(glow, 'y', { duration: .8, ease });
+    hero.addEventListener('pointermove', e => { const r = hero.getBoundingClientRect(); gx(e.clientX - r.left); gy(e.clientY - r.top); });
+  }
+
+  /* ---- stats + counters ---- */
+  gsap.from('.stat', { y: 24, opacity: 0, duration: .8, stagger: .08, ease, scrollTrigger: { trigger: '#stats', start: 'top 92%' } });
+  document.querySelectorAll('[data-count]').forEach(c => {
+    const o = { v: 0 };
+    gsap.to(o, { v: +c.dataset.count, duration: 1.8, ease: 'power2.out', scrollTrigger: { trigger: c, start: 'top 95%' }, onUpdate: () => c.textContent = Math.round(o.v) });
+  });
+
+  /* ---- marquee reacts to scroll velocity ---- */
+  const track = $('#marquee'); track.style.animation = 'none';
+  let mx = 0, half = 0, boost = 0, base = .55;
+  const measure = () => half = track.scrollWidth / 2;
+  measure(); addEventListener('resize', measure); document.fonts?.ready.then(measure);
+  ScrollTrigger.create({ onUpdate: s => boost = gsap.utils.clamp(-10, 10, s.getVelocity() / 220) });
+  $('.marquee').addEventListener('pointerenter', () => base = .12);
+  $('.marquee').addEventListener('pointerleave', () => base = .55);
+  gsap.ticker.add((t, dt) => {
+    mx -= (base + Math.abs(boost)) * dt / 16; boost *= .93;
+    if (half && -mx >= half) mx += half;
+    track.style.transform = `translate3d(${mx}px,0,0) skewX(${(-boost * .8).toFixed(2)}deg)`;
+  });
+
+  /* ---- section headings ---- */
+  document.querySelectorAll('.eyebrow').forEach(eb => {
+    const t = eyebrowText(eb);
+    gsap.fromTo(eb, { '--ew': '0px', opacity: 0 }, { '--ew': '28px', opacity: 1, duration: .9, ease,
+      scrollTrigger: { trigger: eb, start: 'top 88%', onEnter: () => t && scramble(t) } });
+  });
+  document.querySelectorAll('.sec-head h2, #about h2, .contact h2').forEach(h => {
+    const words = split(h);
+    gsap.from(words, { yPercent: 115, rotate: 4, duration: 1, stagger: .04, ease: 'power4.out', scrollTrigger: { trigger: h, start: 'top 88%' } });
+  });
+  gsap.utils.toArray('.sec-head p, .about-text p').forEach(p =>
+    gsap.from(p, { y: 22, opacity: 0, duration: .9, ease, scrollTrigger: { trigger: p, start: 'top 90%' } }));
+
+  /* ---- staggered blocks ---- */
+  const batch = (sel, from) => {
+    gsap.set(sel, from);
+    ScrollTrigger.batch(sel, { start: 'top 90%', once: true,
+      onEnter: els => gsap.to(els, { y: 0, x: 0, opacity: 1, scale: 1, duration: .85, ease, stagger: .08, overwrite: true }) });
+  };
+  batch('.pillar', { y: 30, opacity: 0 });
+  batch('.profile', { y: 40, opacity: 0 });
+  batch('.filters', { y: 16, opacity: 0 });
+  batch('#featGrid .pcard', { y: 50, opacity: 0, scale: .97 });
+  batch('.mcard', { y: 30, opacity: 0 });
+  batch('.step', { y: 30, opacity: 0 });
+  batch('.sk', { y: 30, opacity: 0 });
+  batch('.job', { x: -20, opacity: 0 });
+  gsap.from('.contact', { scale: .95, opacity: 0, duration: 1, ease, scrollTrigger: { trigger: '.contact', start: 'top 85%' } });
+  gsap.from('#contactBtns > *', { y: 16, opacity: 0, duration: .6, stagger: .08, ease, scrollTrigger: { trigger: '.contact', start: 'top 70%' } });
+
+  // re-animate cards whenever a filter swaps them
+  new MutationObserver(() => gsap.fromTo('#featGrid .pcard', { y: 26, opacity: 0, scale: .97 }, { y: 0, opacity: 1, scale: 1, duration: .6, stagger: .05, ease, overwrite: true }))
+    .observe($('#featGrid'), { childList: true });
+  $('#moreFilters').addEventListener('click', e => {
+    if (!e.target.closest('.filter')) return;
+    requestAnimationFrame(() => gsap.fromTo('.mcard:not(.hidden)', { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: .5, stagger: .03, ease, overwrite: true }));
+  });
+
+  /* ---- process line + timeline draw ---- */
+  const sl = document.createElement('div'); sl.className = 'steps-line'; sl.innerHTML = '<i></i>'; $('#steps').prepend(sl);
+  gsap.to('.steps-line i', { scaleX: 1, ease: 'none', scrollTrigger: { trigger: '#steps', start: 'top 85%', end: 'bottom 55%', scrub: .5 } });
+  const tf = document.createElement('div'); tf.className = 'tl-fill'; $('#timeline').prepend(tf);
+  gsap.to(tf, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '#timeline', start: 'top 75%', end: 'bottom 55%', scrub: .5 } });
+
+  /* ---- pointer effects: spotlight, tilt, magnetic ---- */
+  if (!fine) return;
+  document.addEventListener('pointermove', e => {
+    const c = e.target.closest('.pcard,.mcard,.sk,.step,.pillar,.profile'); if (!c) return;
+    const r = c.getBoundingClientRect();
+    c.style.setProperty('--mx', `${e.clientX - r.left}px`); c.style.setProperty('--my', `${e.clientY - r.top}px`);
+  }, { passive: true });
+
+  const tilt = (el, max) => {
+    el.addEventListener('pointermove', e => {
+      const r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+      gsap.to(el, { rotateY: px * max, rotateX: -py * max, transformPerspective: 900, duration: .5, ease: 'power2.out' });
+    });
+    el.addEventListener('pointerleave', () => gsap.to(el, { rotateX: 0, rotateY: 0, duration: .8, ease: 'elastic.out(1,.5)' }));
+  };
+  tilt($('.term'), 8);
+  $('#featGrid').addEventListener('pointerover', e => {
+    const c = e.target.closest('.pcard'); if (c && !c.dataset.tilt) { c.dataset.tilt = 1; tilt(c, 4); }
+  });
+
+  document.querySelectorAll('.btn, .icon-btn').forEach(b => {
+    b.addEventListener('pointermove', e => {
+      const r = b.getBoundingClientRect();
+      gsap.to(b, { x: (e.clientX - r.left - r.width / 2) * .25, y: (e.clientY - r.top - r.height / 2) * .35, duration: .4, ease: 'power2.out' });
+    });
+    b.addEventListener('pointerleave', () => gsap.to(b, { x: 0, y: 0, duration: .7, ease: 'elastic.out(1,.4)' }));
+  });
+})();
+</script>
+</body>
+</html>

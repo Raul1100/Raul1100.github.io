@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demand Forecasting Backtest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/demo.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>window.APP={"name": "Forecast Studio", "short": "FS", "tagline": "Demand planning", "accent": "#e8890c", "workspace": "Cutlery & straws · 10 SKUs", "nav": [{"id": "overview", "title": "Overview", "icon": "home", "desc": "Backtest results across 10 SKUs, 4 folds and an 8-week horizon."}, {"id": "explorer", "title": "Forecast explorer", "icon": "chart", "desc": "Pick a SKU, model and fold to compare the forecast with held-out actuals."}, {"id": "accuracy", "title": "SKU accuracy", "icon": "grid", "desc": "WAPE for every model on every SKU."}, {"id": "method", "title": "Methodology", "icon": "book", "desc": "Data, models and how the backtest avoids leakage."}], "notifications": [["Backtest finished", "6 models x 4 folds x 10 SKUs"], ["Leakage test passed", "All models only saw history before each origin"], ["Ensemble is the best model", "Lowest WAPE this run"]]};</script>
+<script src="../_shared/demo.js"></script>
+<script src="core.js"></script>
+</head>
+<body>
+<header class="top">
+  <h1>Demand Forecasting · 6 models, one backtest</h1>
+  <span class="sub">10 SKUs · 156 weeks · 8-week horizon · 4-fold rolling origin</span>
+  <span class="spacer"></span>
+  <span class="badge" id="leak">running leakage test…</span>
+  <button id="regen">↻ New sample data</button>
+</header>
+<main>
+  <div data-view="overview" class="grid g4" id="kpis"></div>
+  <div data-view="overview" class="grid g-side">
+    <div class="card"><h2>Leaderboard <small>WAPE = Σ|error| ÷ Σ actual, all SKUs × folds</small></h2><table id="board"></table></div>
+    <div class="card"><h2>Error by fold <small>lower is better</small></h2><div class="chart sm"><canvas id="foldChart"></canvas></div>
+      <p class="note" style="margin-top:10px">Each fold forecasts 8 unseen weeks from a later origin. Models only receive history before the origin; the leakage test scrambles every value after the origin and confirms that no forecast changes.</p></div>
+  </div>
+  <div data-view="explorer" class="card">
+    <h2>Forecast vs actual
+      <small style="display:flex;gap:8px;align-items:center;font-family:Inter">
+        <select id="sku"></select><select id="model"></select><select id="fold"></select>
+      </small></h2>
+    <div class="chart"><canvas id="fcChart"></canvas></div>
+  </div>
+  <div data-view="accuracy" class="card"><h2>WAPE per SKU <small>best model per row highlighted</small></h2><div style="overflow-x:auto"><table id="skuTable"></table></div></div>
+  <div data-view="method" class="card"><h2>How it works</h2><p class="note">data is generated in the browser (trend, yearly seasonality, a festive-season bump for cutlery, random promotions and noise). The models are hand-written in JavaScript: naive, seasonal naive, an 8-week moving average, additive Holt-Winters (grid-searched α/β/γ on one-step error), ridge regression on lag and calendar features with recursive multi-step forecasting, and an HW + ridge ensemble. Source: <span class="mono">demos/demand-forecasting/core.js</span>.</p></div>
+</main>
+<script>
+let seed = 7, data, bt, charts = {};
+const C = ['#ffb547', '#7bd88f', '#5aa9ff', '#b18cff', '#ef6b5b', '#a59c8f'];
+function run() {
+  data = Forecast.makeData(seed); bt = Forecast.backtest(data);
+  const leak = Forecast.leakageTest(data), ok = leak.every(x => x.pass);
+  $('#leak').className = 'badge ' + (ok ? 'ok' : 'bad'); $('#leak').textContent = ok ? `✓ leakage test passed (${leak.length}/${leak.length} models)` : '✗ leakage detected';
+  const rows = Object.entries(bt.res).sort((a, b) => a[1].wape - b[1].wape), base = bt.res['Seasonal naive'].wape, best = rows[0];
+  const weekly = data.reduce((s, d) => s + d.y.slice(-8).reduce((a, b) => a + b, 0), 0) / 8;
+  $('#kpis').innerHTML = [
+    ['Best model', best[0], 'acc'], ['Best WAPE', pct(best[1].wape), 'ok'],
+    ['vs seasonal naive', (base > best[1].wape ? '−' : '+') + pct(Math.abs(1 - best[1].wape / base)) + ' error', 'ok'],
+    ['Error avoided / week', '~' + num(weekly * (base - best[1].wape)) + ' ctn', '']].map(([l, v, c]) => `<div class="card kpi ${c}"><b style="font-size:${v.length > 14 ? 17 : 26}px">${esc(v)}</b><span>${l}</span></div>`).join('');
+  const maxW = Math.max(...rows.map(r => r[1].wape));
+  $('#board').innerHTML = '<tr><th>#</th><th>Model</th><th class="num">WAPE</th><th></th><th class="num">Bias</th><th class="num">vs seasonal naive</th></tr>' +
+    rows.map(([n, r], i) => `<tr class="${i ? '' : 'best'}"><td class="mono">${i + 1}</td><td>${n}</td><td class="num"><b>${pct(r.wape)}</b></td><td><div class="bar"><i class="${i ? '' : 'ok'}" style="width:${r.wape / maxW * 100}%"></i></div></td><td class="num">${r.bias > 0 ? '+' : ''}${pct(r.bias)}</td><td class="num" style="color:${r.wape < base ? 'var(--ok)' : r.wape > base ? 'var(--bad)' : 'var(--muted)'}">${n === 'Seasonal naive' ? 'baseline' : (r.wape < base ? '−' : '+') + pct(Math.abs(1 - r.wape / base))}</td></tr>`).join('');
+  // per-SKU table
+  const names = rows.map(r => r[0]);
+  $('#skuTable').innerHTML = `<tr><th>SKU</th>${names.map(n => `<th class="num">${n.split(' (')[0]}</th>`).join('')}</tr>` + data.map((d, k) => {
+    const vals = names.map(n => bt.res[n].perSku[k]), mn = Math.min(...vals);
+    return `<tr><td>${d.name}</td>${vals.map(v => `<td class="num" style="${v === mn ? 'color:var(--ok);font-weight:600' : ''}">${pct(v)}</td>`).join('')}</tr>`; }).join('');
+  // fold chart
+  charts.fold?.destroy();
+  charts.fold = new Chart($('#foldChart'), { type: 'line', data: { labels: bt.origins.map((o, i) => 'Fold ' + (i + 1)),
+    datasets: names.map((n, i) => ({ label: n, data: bt.res[n].folds.map(v => +(v * 100).toFixed(2)), borderColor: C[i], backgroundColor: C[i], tension: .3, pointRadius: 3 })) },
+    options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } }, scales: { y: { ticks: { callback: v => v + '%' } } } } });
+  // selectors
+  if (!$('#sku').options.length) {
+    $('#sku').innerHTML = data.map((d, i) => `<option value="${i}">${d.name}</option>`).join('');
+    $('#fold').innerHTML = bt.origins.map((o, i) => `<option value="${i}">Fold ${i + 1} (week ${o + 1})</option>`).join('');
+    ['sku', 'model', 'fold'].forEach(id => $('#' + id).onchange = drawFc);
+  }
+  $('#model').innerHTML = names.map(n => `<option>${n}</option>`).join(''); $('#model').value = best[0];
+  drawFc();
+}
+function drawFc() {
+  const s = data[+$('#sku').value], o = bt.origins[+$('#fold').value], name = $('#model').value, H = Forecast.H;
+  const fc = Forecast.MODELS[name](s.y.slice(0, o), H), from = o - 40;
+  const labels = s.y.slice(from, o + H).map((_, i) => 'W' + (from + i + 1));
+  const hist = s.y.slice(from, o + H).map((v, i) => from + i < o ? v : null), act = s.y.slice(from, o + H).map((v, i) => from + i >= o - 1 ? v : null);
+  const pred = labels.map((_, i) => from + i === o - 1 ? s.y[o - 1] : from + i >= o ? Math.round(fc[from + i - o]) : null);
+  const w = fc.reduce((a, v, i) => a + Math.abs(v - s.y[o + i]), 0) / s.y.slice(o, o + H).reduce((a, b) => a + b, 0);
+  charts.fc?.destroy();
+  charts.fc = new Chart($('#fcChart'), { type: 'line', data: { labels, datasets: [
+    { label: 'History', data: hist, borderColor: '#a59c8f', pointRadius: 0, tension: .25 },
+    { label: 'Actual (held out)', data: act, borderColor: '#7bd88f', pointRadius: 2, tension: .25 },
+    { label: `${name} · WAPE ${pct(w)}`, data: pred, borderColor: '#ffb547', borderDash: [6, 4], pointRadius: 2, tension: .25 }] },
+    options: { maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, scales: { y: { title: { display: true, text: 'cartons / week' } } } } });
+}
+$('#regen').onclick = () => { seed = Math.floor(Math.random() * 1e6); $('#sku').innerHTML = ''; run(); };
+run();
+</script>
+</body>
+</html>

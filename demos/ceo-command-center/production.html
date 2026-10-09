@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="fixtures.js"></script><script src="demo-api.js"></script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Production Dashboard</title>
+<script>window.API_TOKEN = "";</script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="shared.css"/>
+<script src="shared.js"></script>
+<style>
+/* box-sizing reset + body font-family/background/color moved to shared.css */
+body{font-size:13px;min-height:100vh}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:#ccc9c0;border-radius:4px}
+
+/* ── PAGE HEADER — Phase 3 v2 ──
+   .top-header was a REAL, actually-rendered navy gradient bar (unlike sales.html's dead one —
+   checked before touching it) — replaced with .ds-header (shared.css). Its 3 embedded live
+   stats (Total Input/Wastage KG, Entries) moved into a proper .ds-stat-row below the header,
+   same treatment every other page gives its headline numbers, instead of being crammed into
+   the header bar itself.
+   .today-banner and its .tb-* rules were DEAD CSS (confirmed via grep — no HTML uses them; the
+   "Today's Banner" JS computation in renderKPI() computes tInp/tWst/etc. but never writes them
+   anywhere either) — deleted as part of the same cleanup pass, not converted to anything. */
+
+/* .dept-bar-grid/.dept-bar-card/.dbc-* were also dead CSS (confirmed via grep, zero HTML
+   usage) — deleted, not converted. */
+
+/* ── TAB BAR ── */
+.tab-bar{background:#fff;border-bottom:2px solid #e5e2db;padding:0 20px;display:flex;gap:0;position:sticky;top:0;z-index:100;overflow-x:auto}
+.tab-btn{padding:12px 18px;font-size:11px;font-weight:700;color:#6a6760;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;display:flex;align-items:center;gap:6px;white-space:nowrap;letter-spacing:.3px;transition:all .2s}
+.tab-btn.active{color:#059669;border-bottom-color:#059669}
+.tab-btn:hover:not(.active){color:#3a3834;background:#f8f7f3}
+.tab-icon{font-size:13px}
+
+/* ── Tab Pages ── */
+.tab-page{display:none;padding:16px 20px;flex-direction:column;gap:14px}
+.tab-page.active{display:flex;animation:pageIn .18s ease-out}
+/* Wow Factor v2, Technique 5 — dept-tab switching gets a brief cross-fade+slide, matching the
+   app-wide pattern (index.html's .page.active, sales.html's .page.on). */
+@keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Dept Header ── */
+.dept-header{background:#fff;border:1px solid #e5e2db;border-radius:12px;padding:20px 24px}
+.dept-title-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.dept-title{font-size:14px;font-weight:800;color:#191917;letter-spacing:-.2px}
+.dept-badge{background:#fef3c7;color:#b45309;border:1px solid #fcd34d;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.5px}
+.dept-meta{font-size:11px;color:#6a6760}
+.dept-meta strong{color:#3a3834}
+
+/* ── Time Filters ── */
+.time-filters{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tf-btn{background:#f8f7f3;border:1.5px solid #e5e2db;color:#6a6760;font-size:10px;font-weight:700;padding:5px 12px;border-radius:6px;cursor:pointer;transition:all .15s;letter-spacing:.3px}
+.tf-btn.active{background:#059669;border-color:#059669;color:#fff}
+.tf-btn:hover:not(.active){background:#e5e2db;color:#3a3834}
+.tf-date{border:1.5px solid #e5e2db;border-radius:6px;padding:4px 8px;font-size:11px;color:#3a3834;background:#f8f7f3;outline:none}
+.tf-arrow{color:#9d9a93;font-size:12px}
+.btn-export-csv{background:#fff;border:1.5px solid #059669;color:#059669;font-size:10px;font-weight:700;padding:5px 12px;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:5px}
+.btn-export-csv:hover{background:#f0fdf4}
+
+/* ── KPI Row — Phase 3 v2: .kpi-row/.kpi-card (real, used by all 5 dept tabs via renderDept())
+   replaced with shared.css's .ds-stat-row/.ds-stat. Same 5 per-metric colors kept (this page
+   doesn't have one single department accent either — each tab already color-codes its own KPIs
+   green/red/orange/blue/purple), same hex values, just re-expressed as .ds-stat--{color}
+   modifiers (3px left border + value text color) instead of .kpi-val's text-only coloring. */
+.ds-stat--green .ds-stat-value{color:#059669}.ds-stat--green{border-left-color:#059669}
+.ds-stat--red .ds-stat-value{color:#dc2626}.ds-stat--red{border-left-color:#dc2626}
+.ds-stat--orange .ds-stat-value{color:#d97706}.ds-stat--orange{border-left-color:#d97706}
+.ds-stat--blue .ds-stat-value{color:#2563eb}.ds-stat--blue{border-left-color:#2563eb}
+.ds-stat--purple .ds-stat-value{color:#7c3aed}.ds-stat--purple{border-left-color:#7c3aed}
+
+/* ── Two-col layout ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.two-col{grid-template-columns:1fr}}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+@media(max-width:1100px){.three-col{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.three-col{grid-template-columns:1fr}}
+
+/* ── Table Cards ── */
+.tbl-card{background:#fff;border:1px solid #e5e2db;border-radius:10px;overflow:hidden}
+.tbl-card-head{padding:12px 16px;border-bottom:1px solid #e5e2db;display:flex;align-items:center;justify-content:space-between}
+.tbl-card-title{font-size:11px;font-weight:800;color:#191917;text-transform:uppercase;letter-spacing:.5px}
+.tbl-card-sub{font-size:10px;color:#9d9a93;font-weight:600}
+.tbl-scroll{max-height:600px;overflow-y:auto}
+/* Phase 3 v2: every real table (all 8 are inside .tbl-card, confirmed 8 <table> = 8 .tbl-card
+   1:1 via grep) now gets .ds-table added to the <table> tag itself, which fully supersedes the
+   navy .tbl-card thead th, the zebra-striping (explicitly "no zebra-striping" per spec — this
+   page had it, others didn't), and the bare table/th/td/tr:hover rules below. .tbl-card/
+   .tbl-card-head/.tbl-scroll (the outer card+title-bar wrapper, not navy) are untouched —
+   only the navy: false statement inside them (the table's own header) needed replacing. */
+/* Real bug fix: shared.css's `.ds-table thead th{text-align:left}` (3-part selector: 1 class +
+   2 element types) has HIGHER specificity than this page's own `th.r{text-align:right}` (1 class
+   + 1 element type) — CSS specificity compares class-count first (tied at 1), then element-type
+   count, where shared.css's rule has more. So every numeric column header in this table was
+   silently stuck left-aligned while its data cells (matched by the unrelated, unaffected `td.r`
+   half of this same rule) stayed correctly right-aligned underneath — headers and numbers never
+   shared a right edge. `.ds-table th.r` (2 classes + 1 type) outranks `.ds-table thead th` (1
+   class + 2 types) on class-count alone, so this scoped variant reliably wins. */
+th.r,td.r{text-align:right;font-family:var(--font-mono)}
+.ds-table th.r{text-align:right}
+.prod-name{font-weight:600;color:#191917;max-width:180px;overflow:hidden;text-overflow:ellipsis}
+.waste-bar{width:80px;height:6px;background:#f8f7f3;border-radius:3px;display:inline-block;vertical-align:middle;margin-right:4px}
+.waste-bar-f{height:100%;border-radius:3px}
+
+/* ── Alert badges ── */
+/* Phase 3 v2: retinted to the .ds-pill visual treatment (rounded-full, 12%-opacity fill, no
+   border) — kept the SAME class names since alertBadge() and 4 other call sites build these as
+   plain strings ('badge-high' etc.), so retinting in place needed zero JS changes. */
+.badge-high{background:rgba(220,38,38,.12);color:var(--status-danger);border:none;border-radius:999px;padding:3px 10px;font-size:10px;font-weight:700}
+.badge-med{background:rgba(217,119,6,.12);color:var(--status-warning);border:none;border-radius:999px;padding:3px 10px;font-size:10px;font-weight:700}
+.badge-low, .badge-ok{background:rgba(22,163,74,.12);color:var(--status-success);border:none;border-radius:999px;padding:3px 10px;font-size:10px;font-weight:700}
+
+/* .kpi-overview/.kpi-ov-* were also dead CSS (confirmed via grep, zero HTML usage) — deleted. */
+
+/* ── Stage Overview ── */
+.stage-section{background:#fff;border-bottom:1px solid #e5e2db;padding:14px 24px 16px}
+.stage-section-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.stage-sec-icon{font-size:15px;color:#059669}
+.stage-sec-title{font-size:12px;font-weight:800;color:#191917;letter-spacing:.5px;text-transform:uppercase}
+.stage-sec-legend{font-size:11px;color:#6a6760;font-weight:400}
+.stage-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+@media(max-width:1100px){.stage-cards{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.stage-cards{grid-template-columns:1fr 1fr}}
+.stage-card{background:#f8f7f3;border:1px solid #e5e2db;border-radius:12px;padding:17px 19px}
+.sc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.sc-name{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px}
+.sc-yield{font-size:10px;font-weight:700;padding:2px 8px;border-radius:12px;white-space:nowrap}
+.sc-yield.good{background:#dcfce7;color:#15803d}.sc-yield.warn{background:#fef3c7;color:#92400e}.sc-yield.bad{background:#fee2e2;color:#dc2626}
+.sc-prog{height:5px;background:#e5e2db;border-radius:3px;margin-bottom:12px;overflow:hidden}
+.sc-prog-fill{height:100%;border-radius:3px;transition:width .6s}
+.sc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.sc-stat{}
+.sc-stat-val{font-size:13px;font-weight:800;color:#191917;line-height:1.1}
+.sc-stat-val.green{color:#059669}.sc-stat-val.red{color:#dc2626}.sc-stat-val.blue{color:#2563eb}
+.sc-stat-lbl{font-size:9px;color:#9d9a93;font-weight:700;text-transform:uppercase;margin-top:1px;letter-spacing:.3px}
+.sc-stat-sub{font-size:9px;color:#2563eb;font-weight:600;margin-top:1px}
+
+/* ── Wastage Chart ── */
+.wastage-section{background:#fff;border:1px solid #e5e2db;border-radius:12px;margin:14px 20px;padding:20px 24px}
+.wastage-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.wastage-title{font-size:11px;font-weight:800;color:#059669;letter-spacing:.5px;text-transform:uppercase}
+.wastage-sub{font-size:10px;color:#9d9a93;font-weight:400;text-transform:uppercase;letter-spacing:.3px;margin-top:2px}
+.wastage-row{display:flex;align-items:center;gap:12px;margin-bottom:9px}
+.wastage-label{width:82px;font-size:11px;font-weight:600;color:#3a3834;text-align:right;flex-shrink:0}
+.wastage-bar-wrap{flex:1;height:26px;background:#f8f7f3;border-radius:6px;overflow:hidden}
+.wastage-bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:10px;transition:width .6s;min-width:2px}
+.wastage-bar-val{font-size:11px;font-weight:700;color:#fff;white-space:nowrap}
+.wastage-axis{display:flex;justify-content:space-between;padding-left:94px;margin-top:6px}
+.wastage-axis span{font-size:9px;color:#9d9a93}
+.wastage-warn-icon{color:#f59e0b;font-size:14px}
+
+/* ── Footer ── */
+.dash-footer{background:#0a1628;color:#6a6760;font-size:10px;padding:8px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;bottom:0}
+.footer-left{display:flex;align-items:center;gap:16px}
+.footer-dot{width:7px;height:7px;border-radius:50%;background:#10b981;display:inline-block;animation:pulse 1.5s infinite}
+.footer-right{color:#4b5563}
+
+/* ── Loader ── */
+#loader{position:fixed;inset:0;background:#0a1628;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:14px}
+.spinner{width:36px;height:36px;border:3px solid rgba(255,255,255,.1);border-top-color:#10b981;border-radius:50%;animation:spin .8s linear infinite}
+/* @keyframes spin moved to shared.css */
+.load-txt{color:#6a6760;font-size:12px}
+.err-box{background:#1f2937;border:1px solid #dc2626;border-radius:10px;padding:20px;color:#f87171;text-align:center;max-width:400px}
+.no-data{padding:40px;text-align:center;color:#9d9a93;font-size:13px}
+.no-data .icon{font-size:28px;margin-bottom:8px}
+
+/* .dept-summary-grid/.ds-card/.ds-dept/.ds-inp/.ds-sub/.ds-waste were also dead CSS (confirmed
+   via grep, zero HTML usage) — deleted. Also worth noting: this old .ds-card/.ds-dept/.ds-inp
+   naming collided with the new shared.css .ds-* design-system prefix (Phase 3 Step 1) — one
+   more reason to remove rather than leave lying around. */
+</style>
+</head>
+<body>
+<div id="loader"><div class="spinner"></div><div class="load-txt">Loading production data…</div></div>
+
+<!-- PAGE HEADER — #hdr-sync kept exactly where JS expects it (loadData() sets its innerHTML to
+     "LAST SYNC<br>...", untouched). The page-level Total Input/Wastage/Entries KPI row that used
+     to sit below this header was removed at the user's request — each department tab already has
+     its own KPI row (see .ds-stat-row#sel-kpis etc. below), so this was a redundant summary. -->
+<div class="ds-header">
+  <div class="ds-header-left">
+    <div class="ds-header-icon" style="color:#059669">🏭</div>
+    <div>
+      <div class="ds-header-title">Production Dashboard</div>
+      <div class="ds-header-sub">Auto-refresh every 5 minutes</div>
+    </div>
+  </div>
+  <div class="ds-header-actions">
+    <span id="hdr-sync" style="font-size:11px;color:var(--ink-3);font-family:var(--font-mono);text-align:right;line-height:1.4">Last Sync<br>—</span>
+    <button class="ds-btn-primary" onclick="loadData()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 018-8 8 8 0 015.66 2.34L21 10"/><path d="M21 4v6h-6"/></svg>
+      Refresh
+    </button>
+  </div>
+</div>
+<!-- PRODUCTION BY STAGE OVERVIEW -->
+<div class="stage-section">
+  <div class="stage-section-head">
+    <span class="stage-sec-icon">⚡</span>
+    <span class="stage-sec-title">PRODUCTION BY STAGE</span>
+    <span class="stage-sec-legend"> — Input · Output · KG Lost · Yield per stage</span>
+  </div>
+  <div class="stage-cards" id="stage-cards">
+    <div class="stage-card" style="grid-column:1/-1;text-align:center;color:#9d9a93;padding:20px;font-size:12px">Loading stage data…</div>
+  </div>
+</div>
+
+<!-- WASTAGE BY STAGE CHART -->
+<div class="wastage-section">
+  <div class="wastage-head">
+    <div>
+      <div class="wastage-title">WASTAGE BY STAGE</div>
+      <div class="wastage-sub">Process loss in KG — the higher the bar, the more material is being lost</div>
+    </div>
+    <span class="wastage-warn-icon">⚠</span>
+  </div>
+  <div id="wastage-bars"></div>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('selection',this)"><span class="tab-icon">🌿</span>SELECTION</button>
+  <button class="tab-btn" onclick="switchTab('cutter',this)"><span class="tab-icon">✂️</span>CUTTER</button>
+  <button class="tab-btn" onclick="switchTab('automatic',this)"><span class="tab-icon">⚙️</span>AUTOMATIC</button>
+  <button class="tab-btn" onclick="switchTab('packing',this)"><span class="tab-icon">📦</span>PACKING</button>
+  <button class="tab-btn" onclick="switchTab('cutlery',this)"><span class="tab-icon">🍴</span>CUTLERY</button>
+  <button class="tab-btn" onclick="switchTab('weekly',this)"><span class="tab-icon">📅</span>WEEKLY</button>
+</div>
+
+<!-- SELECTION TAB -->
+<div class="tab-page active" id="tab-selection">
+  <div class="dept-header">
+    <div class="dept-title-row">
+      <div class="dept-title">SELECTION DEPARTMENT DASHBOARD</div>
+      <div class="dept-badge" id="sel-age">—</div>
+    </div>
+    <div class="dept-meta" id="sel-meta">Loading…</div>
+    <div style="height:10px"></div>
+    <div class="time-filters">
+      <button class="tf-btn active" onclick="setTf('sel','all',this)">ALL TIME</button>
+      <button class="tf-btn" onclick="setTf('sel','today',this)">TODAY</button>
+      <button class="tf-btn" onclick="setTf('sel','7d',this)">LAST 7D</button>
+      <button class="tf-btn" onclick="setTf('sel','week',this)">LAST WEEK</button>
+      <button class="tf-btn" onclick="setTf('sel','30d',this)">LAST 30D</button>
+      <button class="tf-btn" onclick="setTf('sel','month',this)">THIS MONTH</button>
+      <input type="date" class="tf-date" id="sel-from" onchange="setTf('sel','custom',null)">
+      <span class="tf-arrow">→</span>
+      <input type="date" class="tf-date" id="sel-to" onchange="setTf('sel','custom',null)">
+      <button class="btn-export-csv" onclick="exportCSV('Selection')">↓ EXPORT CSV</button>
+    </div>
+  </div>
+  <div class="ds-stat-row" id="sel-kpis"></div>
+  <div class="tbl-card">
+    <div class="tbl-card-head"><span class="tbl-card-title">Product Performance</span><span class="tbl-card-sub" id="sel-prod-count">—</span></div>
+    <div class="tbl-scroll"><table class="ds-table"><thead><tr><th>Product</th><th class="r">Input KG</th><th class="r">Output KG</th><th class="r">Waste KG</th><th class="r">Waste %</th><th class="r">Labour</th></tr></thead><tbody id="sel-prod-tbl"></tbody></table></div>
+  </div>
+</div>
+
+<!-- CUTTER TAB -->
+<div class="tab-page" id="tab-cutter">
+  <div class="dept-header">
+    <div class="dept-title-row"><div class="dept-title">CUTTER DEPARTMENT DASHBOARD</div><div class="dept-badge" id="cut-age">—</div></div>
+    <div class="dept-meta" id="cut-meta">Loading…</div>
+    <div style="height:10px"></div>
+    <div class="time-filters">
+      <button class="tf-btn active" onclick="setTf('cut','all',this)">ALL TIME</button>
+      <button class="tf-btn" onclick="setTf('cut','today',this)">TODAY</button>
+      <button class="tf-btn" onclick="setTf('cut','7d',this)">LAST 7D</button>
+      <button class="tf-btn" onclick="setTf('cut','week',this)">LAST WEEK</button>
+      <button class="tf-btn" onclick="setTf('cut','30d',this)">LAST 30D</button>
+      <button class="tf-btn" onclick="setTf('cut','month',this)">THIS MONTH</button>
+      <input type="date" class="tf-date" id="cut-from" onchange="setTf('cut','custom',null)">
+      <span class="tf-arrow">→</span>
+      <input type="date" class="tf-date" id="cut-to" onchange="setTf('cut','custom',null)">
+      <button class="btn-export-csv" onclick="exportCSV('Cutter')">↓ EXPORT CSV</button>
+    </div>
+  </div>
+  <div class="ds-stat-row" id="cut-kpis"></div>
+  <div class="tbl-card">
+    <div class="tbl-card-head"><span class="tbl-card-title">Product Performance</span><span class="tbl-card-sub" id="cut-prod-count">—</span></div>
+    <div class="tbl-scroll"><table class="ds-table"><thead><tr><th>Product</th><th>Machine</th><th class="r">Input KG</th><th class="r">Output KG</th><th class="r">Waste KG</th><th class="r">Waste %</th></tr></thead><tbody id="cut-prod-tbl"></tbody></table></div>
+  </div>
+</div>
+
+<!-- AUTOMATIC TAB -->
+<div class="tab-page" id="tab-automatic">
+  <div class="dept-header">
+    <div class="dept-title-row"><div class="dept-title">AUTOMATIC DEPARTMENT DASHBOARD</div><div class="dept-badge" id="aut-age">—</div></div>
+    <div class="dept-meta" id="aut-meta">Loading…</div>
+    <div style="height:10px"></div>
+    <div class="time-filters">
+      <button class="tf-btn active" onclick="setTf('aut','all',this)">ALL TIME</button>
+      <button class="tf-btn" onclick="setTf('aut','today',this)">TODAY</button>
+      <button class="tf-btn" onclick="setTf('aut','7d',this)">LAST 7D</button>
+      <button class="tf-btn" onclick="setTf('aut','week',this)">LAST WEEK</button>
+      <button class="tf-btn" onclick="setTf('aut','30d',this)">LAST 30D</button>
+      <button class="tf-btn" onclick="setTf('aut','month',this)">THIS MONTH</button>
+      <input type="date" class="tf-date" id="aut-from" onchange="setTf('aut','custom',null)">
+      <span class="tf-arrow">→</span>
+      <input type="date" class="tf-date" id="aut-to" onchange="setTf('aut','custom',null)">
+      <button class="btn-export-csv" onclick="exportCSV('Automatic')">↓ EXPORT CSV</button>
+    </div>
+  </div>
+  <div class="ds-stat-row" id="aut-kpis"></div>
+  <div class="tbl-card">
+    <div class="tbl-card-head"><span class="tbl-card-title">Product Performance</span><span class="tbl-card-sub" id="aut-prod-count">—</span></div>
+    <div class="tbl-scroll"><table class="ds-table"><thead><tr><th>Product</th><th>Machine</th><th class="r">Input KG</th><th class="r">Output KG</th><th class="r">Waste KG</th><th class="r">Waste %</th></tr></thead><tbody id="aut-prod-tbl"></tbody></table></div>
+  </div>
+</div>
+
+<!-- PACKING TAB -->
+<div class="tab-page" id="tab-packing">
+  <div class="dept-header">
+    <div class="dept-title-row"><div class="dept-title">PACKING DEPARTMENT DASHBOARD</div><div class="dept-badge" id="pak-age">—</div></div>
+    <div class="dept-meta" id="pak-meta">Loading…</div>
+    <div style="height:10px"></div>
+    <div class="time-filters">
+      <button class="tf-btn active" onclick="setTf('pak','all',this)">ALL TIME</button>
+      <button class="tf-btn" onclick="setTf('pak','today',this)">TODAY</button>
+      <button class="tf-btn" onclick="setTf('pak','7d',this)">LAST 7D</button>
+      <button class="tf-btn" onclick="setTf('pak','week',this)">LAST WEEK</button>
+      <button class="tf-btn" onclick="setTf('pak','30d',this)">LAST 30D</button>
+      <button class="tf-btn" onclick="setTf('pak','month',this)">THIS MONTH</button>
+      <input type="date" class="tf-date" id="pak-from" onchange="setTf('pak','custom',null)">
+      <span class="tf-arrow">→</span>
+      <input type="date" class="tf-date" id="pak-to" onchange="setTf('pak','custom',null)">
+      <button class="btn-export-csv" onclick="exportCSV('Packing')">↓ EXPORT CSV</button>
+    </div>
+  </div>
+  <div class="ds-stat-row" id="pak-kpis"></div>
+  <div class="tbl-card">
+    <div class="tbl-card-head"><span class="tbl-card-title">Product Performance</span><span class="tbl-card-sub" id="pak-prod-count">—</span></div>
+    <div class="tbl-scroll"><table class="ds-table"><thead><tr><th>Product</th><th>Customer</th><th class="r">Qty Used</th><th class="r">Cartons</th><th class="r">Pcs</th></tr></thead><tbody id="pak-prod-tbl"></tbody></table></div>
+  </div>
+</div>
+
+<!-- CUTLERY TAB -->
+<div class="tab-page" id="tab-cutlery">
+  <div class="dept-header">
+    <div class="dept-title-row"><div class="dept-title">CUTLERY DEPARTMENT DASHBOARD</div><div class="dept-badge" id="cutl-age">—</div></div>
+    <div class="dept-meta" id="cutl-meta">Loading…</div>
+    <div style="height:10px"></div>
+    <div class="time-filters">
+      <button class="tf-btn active" onclick="setTf('cutl','all',this)">ALL TIME</button>
+      <button class="tf-btn" onclick="setTf('cutl','today',this)">TODAY</button>
+      <button class="tf-btn" onclick="setTf('cutl','7d',this)">LAST 7D</button>
+      <button class="tf-btn" onclick="setTf('cutl','week',this)">LAST WEEK</button>
+      <button class="tf-btn" onclick="setTf('cutl','30d',this)">LAST 30D</button>
+      <button class="tf-btn" onclick="setTf('cutl','month',this)">THIS MONTH</button>
+      <input type="date" class="tf-date" id="cutl-from" onchange="setTf('cutl','custom',null)">
+      <span class="tf-arrow">→</span>
+      <input type="date" class="tf-date" id="cutl-to" onchange="setTf('cutl','custom',null)">
+      <button class="btn-export-csv" onclick="exportCSV('Cutlery')">↓ EXPORT CSV</button>
+    </div>
+  </div>
+  <div class="ds-stat-row" id="cutl-kpis"></div>
+  <div class="tbl-card">
+    <div class="tbl-card-head"><span class="tbl-card-title">Product Performance</span><span class="tbl-card-sub" id="cutl-prod-count">—</span></div>
+    <div class="tbl-scroll"><table class="ds-table"><thead><tr><th>Product</th><th>Machine</th><th class="r">Input KG</th><th class="r">Pcs</th><th class="r">Boxes</th></tr></thead><tbody id="cutl-prod-tbl"></tbody></table></div>
+  </div>
+</div>
+
+<!-- WEEKLY TAB -->
+<div class="tab-page" id="tab-weekly">
+  <div class="tbl-card" style="margin-bottom:14px">
+    <div class="tbl-card-head"><span class="tbl-card-title">Week-by-Week Production Report</span><span class="tbl-card-sub" id="weekly-count">—</span></div>
+    <div class="tbl-scroll"><table class="ds-table"><thead><tr><th>Week</th><th class="r">Total Input KG</th><th class="r">Total Output KG</th><th class="r">Wastage KG</th><th class="r">Wastage %</th><th class="r">Entries</th><th>Grade</th></tr></thead><tbody id="weekly-tbl"></tbody></table></div>
+  </div>
+  <div class="two-col">
+    <div class="tbl-card">
+      <div class="tbl-card-head"><span class="tbl-card-title">Dept Contribution by Week</span><span class="tbl-card-sub">Selection · Cutter · Automatic · Packing · Cutlery</span></div>
+      <div class="tbl-scroll"><table class="ds-table"><thead><tr><th>Week</th><th class="r">Selection</th><th class="r">Cutter</th><th class="r">Automatic</th><th class="r">Packing</th><th class="r">Cutlery</th></tr></thead><tbody id="weekly-dept-tbl"></tbody></table></div>
+    </div>
+    <div class="tbl-card">
+      <div class="tbl-card-head"><span class="tbl-card-title">Best & Worst Weeks</span><span class="tbl-card-sub">By wastage %</span></div>
+      <div class="tbl-scroll"><table class="ds-table"><thead><tr><th>Rank</th><th>Week</th><th class="r">Wastage %</th><th>Badge</th></tr></thead><tbody id="weekly-rank-tbl"></tbody></table></div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="dash-footer">
+  <div class="footer-left">
+    <span><span class="footer-dot"></span> Connected to Google Sheets</span>
+    <span id="footer-refresh">↻ Auto-refresh in 5:00</span>
+  </div>
+  <div class="footer-right">© 2026 Biopapro Production Dashboard</div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────
+let ALL = [];
+const TF = { sel:'all', cut:'all', aut:'all', pak:'all', cutl:'all' };
+const DEPT_MAP = { sel:'Selection', cut:'Cutter', aut:'Automatic', pak:'Packing', cutl:'Cutlery' };
+let _refreshTimer = null, _refreshSecs = 300;
+
+// ── Helpers ────────────────────────────────────────────
+const fmt  = (n,d=0) => { const v=Number(n); return isNaN(v)?'—':v.toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d}); };
+const pct  = (a,b)   => b ? ((a/b)*100).toFixed(1)+'%' : '—';
+const fmtD = s => { if(!s)return'—'; const [y,m,d]=s.split('-'); const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${mo[+m-1]} ${+d}`; };
+const today = () => new Date().toISOString().split('T')[0];
+const daysAgo = n => { const d=new Date(); d.setDate(d.getDate()-n); return d.toISOString().split('T')[0]; };
+// Real bug fix: this computed the most recent Sunday (getDay()===0) through today — i.e. "this
+// week so far", an in-progress partial week — while every button using it is labeled LAST WEEK,
+// promising the previous COMPLETED week. startOfLastWeek/endOfLastWeek below compute the actual
+// previous Monday–Sunday week (day = Mon=1..Sun=7, matching ISO/business-week convention and the
+// reference codebase's own lastweek preset), used together as a real bounded range instead of
+// startOfWeek()..today().
+const startOfLastWeek = () => { const d=new Date(); const day=d.getDay()||7; d.setDate(d.getDate()-day-6); return d.toISOString().split('T')[0]; };
+const endOfLastWeek   = () => { const d=new Date(); const day=d.getDay()||7; d.setDate(d.getDate()-day); return d.toISOString().split('T')[0]; };
+const startOfMonth = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`; };
+
+function alertBadge(wpct) {
+  const v = parseFloat(wpct);
+  if(v >= 15) return '<span class="badge-high">HIGH</span>';
+  if(v >= 8)  return '<span class="badge-med">MEDIUM</span>';
+  if(v >= 3)  return '<span class="badge-low">LOW</span>';
+  return '<span class="badge-ok">OK</span>';
+}
+function trendBadge(cur, avg) {
+  if(!avg) return '—';
+  const d = ((cur-avg)/avg*100).toFixed(0);
+  if(d > 10) return `<span style="color:#dc2626;font-weight:700">↑ ${d}%</span>`;
+  if(d < -10) return `<span style="color:#059669;font-weight:700">↓ ${Math.abs(d)}%</span>`;
+  return `<span style="color:#6a6760">→ ${d}%</span>`;
+}
+
+// ── Date filter ────────────────────────────────────────
+function filterByTf(rows, prefix) {
+  const tf = TF[prefix];
+  const fromEl = document.getElementById(prefix+'-from');
+  const toEl   = document.getElementById(prefix+'-to');
+  let from='', to='';
+
+  if(tf==='all')  { from=''; to=''; }
+  else if(tf==='today')  { from=today(); to=today(); }
+  else if(tf==='7d')     { from=daysAgo(6); to=today(); }
+  else if(tf==='week')   { from=startOfLastWeek(); to=endOfLastWeek(); }
+  else if(tf==='30d')    { from=daysAgo(29); to=today(); }
+  else if(tf==='month')  { from=startOfMonth(); to=today(); }
+  else if(tf==='custom') { from=fromEl?.value||''; to=toEl?.value||''; }
+
+  if(fromEl && tf!=='custom') fromEl.value = from;
+  if(toEl   && tf!=='custom') toEl.value   = to;
+
+  return rows.filter(r => {
+    if(!r.date) return false;
+    if(from && r.date < from) return false;
+    if(to   && r.date > to)   return false;
+    return true;
+  });
+}
+
+function setTf(prefix, tf, btn) {
+  TF[prefix] = tf;
+  if(btn) {
+    document.querySelectorAll(`#tab-${DEPT_MAP[prefix].toLowerCase()} .tf-btn`).forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  renderDept(prefix);
+}
+
+// ── Data loading ───────────────────────────────────────
+const API_BASE = (location.protocol === 'file:') ? 'http://localhost:3000' : '';
+
+// window.API_TOKEN is injected server-side (see app/main.py's Jinja2Templates wiring) — every
+// /api/* call needs it since Phase 1.5 added a shared-bearer-token auth gate.
+function authFetch(url, opts) {
+  opts = opts || {};
+  opts.headers = Object.assign({}, opts.headers, {Authorization: 'Bearer ' + (window.API_TOKEN || '')});
+  return fetch(url, opts);
+}
+
+async function loadData() {
+  document.getElementById('loader').style.display='flex';
+  try {
+    const prodRes = await authFetch(API_BASE+'/api/production').then(r=>r.json());
+    if(!prodRes.ok) throw new Error(prodRes.error||'API error');
+    ALL = prodRes.rows||[];
+    document.getElementById('hdr-sync').innerHTML = `LAST SYNC<br>${new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}`;
+    renderAll();
+  } catch(e) {
+    document.getElementById('loader').innerHTML = `<div class="err-box">Error: ${e.message}<br><br><button onclick="loadData()" style="background:#10b981;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:700">RETRY</button></div>`;
+    return;
+  }
+  document.getElementById('loader').style.display='none';
+  scheduleRefresh();
+}
+
+function scheduleRefresh() {
+  if(_refreshTimer) clearInterval(_refreshTimer);
+  _refreshSecs = 300;
+  _refreshTimer = setInterval(()=>{
+    _refreshSecs--;
+    const m = Math.floor(_refreshSecs/60), s = _refreshSecs%60;
+    document.getElementById('footer-refresh').textContent = `↻ AUTO-REFRESH IN ${m}:${String(s).padStart(2,'0')}`;
+    if(_refreshSecs<=0){ clearInterval(_refreshTimer); loadData(); }
+  },1000);
+}
+
+function renderAll() {
+  renderKPI();
+  renderStageOverview();
+  renderDept('sel'); renderDept('cut'); renderDept('aut'); renderDept('pak'); renderDept('cutl');
+  renderWeekly();
+}
+
+function renderStageOverview() {
+  const DEPTS = ['Selection','Cutter','Automatic','Packing','Cutlery'];
+  const NAME_COLOR = {Selection:'#f59e0b',Cutter:'#10b981',Automatic:'#ef4444',Packing:'#d97706',Cutlery:'#ec4899'};
+  const WBAR_COLOR = {Selection:'#f59e0b',Cutter:'#f97316',Automatic:'#ef4444',Packing:'#8b5cf6',Cutlery:'#ec4899'};
+
+  const stages = DEPTS.map(dept => {
+    const rows = ALL.filter(r => r.dept === dept);
+    const inp  = rows.reduce((s,r) => s + r.input_kg,  0);
+    const out  = rows.reduce((s,r) => s + r.output_kg, 0);
+    const wst  = rows.reduce((s,r) => s + r.wastage_kg,0);
+    const pcs  = rows.reduce((s,r) => s + r.pcs,       0);
+    const cart = rows.reduce((s,r) => s + r.cartons,   0);
+    const yld  = inp ? ((inp - wst) / inp * 100) : 0;
+    return { dept, inp, out, wst, pcs, cart, yld };
+  });
+
+  const cardsEl = document.getElementById('stage-cards');
+  if (cardsEl) {
+    cardsEl.innerHTML = stages.map(d => {
+      const yldCls   = d.yld >= 90 ? 'good' : d.yld >= 70 ? 'warn' : 'bad';
+      const barColor = d.yld >= 90 ? '#10b981' : d.yld >= 70 ? '#f59e0b' : '#ef4444';
+
+      let outVal, outLbl, extraLine = '';
+      if (d.dept === 'Packing')        { outVal = fmt(d.cart);     outLbl = 'CARTONS'; }
+      else if (d.dept === 'Cutlery')   { outVal = fmt(d.cart);     outLbl = 'BOXES';   }
+      else if (d.dept === 'Automatic') { outVal = fmt(d.cart||0);  outLbl = 'CARTONS';
+        if (d.out) extraLine = `<div class="sc-stat-sub">+${fmt(d.out,0)} KG FG</div>`; }
+      else                             { outVal = fmt(d.out, 1);   outLbl = 'KG OUT';  }
+
+      return `<div class="stage-card">
+        <div class="sc-head">
+          <div class="sc-name" style="color:${NAME_COLOR[d.dept]}">${d.dept.toUpperCase()}</div>
+          <div class="sc-yield ${yldCls}">${d.yld.toFixed(1)}% yield</div>
+        </div>
+        <div class="sc-prog"><div class="sc-prog-fill" style="width:${Math.min(d.yld,100).toFixed(1)}%;background:${barColor}"></div></div>
+        <div class="sc-stats">
+          <div class="sc-stat">
+            <div class="sc-stat-val">${fmt(d.inp,0)}</div>
+            <div class="sc-stat-lbl">KG IN</div>
+          </div>
+          <div class="sc-stat">
+            <div class="sc-stat-val blue">${outVal}</div>
+            <div class="sc-stat-lbl">${outLbl}</div>
+            ${extraLine}
+          </div>
+          <div class="sc-stat">
+            <div class="sc-stat-val red">${fmt(d.wst,1)}</div>
+            <div class="sc-stat-lbl">KG LOST</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  const barsEl = document.getElementById('wastage-bars');
+  if (!barsEl) return;
+  const maxWst = Math.max(...stages.map(d => d.wst), 1);
+  const scaleMax = Math.ceil(maxWst / 5000) * 5000;
+  const ticks = [0, scaleMax*0.25, scaleMax*0.5, scaleMax*0.75, scaleMax];
+  barsEl.innerHTML = stages.map(d => {
+    const pct = (d.wst / maxWst * 100).toFixed(1);
+    return `<div class="wastage-row">
+      <div class="wastage-label">${d.dept}</div>
+      <div class="wastage-bar-wrap">
+        <div class="wastage-bar-fill" style="width:${pct}%;background:${WBAR_COLOR[d.dept]}">
+          <span class="wastage-bar-val">${fmt(d.wst,0)}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('') +
+  `<div class="wastage-axis">${ticks.map(t=>`<span>${fmt(t,0)}</span>`).join('')}</div>`;
+}
+
+// ── Weekly Report Tab ───────────────────────────────────
+function renderWeekly() {
+  // Group by ISO week
+  function getWeek(dateStr) {
+    const d = new Date(dateStr);
+    const day = d.getDay()||7;
+    d.setDate(d.getDate()+4-day);
+    const y = d.getFullYear();
+    const jan1 = new Date(y,0,1);
+    return `${y}-W${String(Math.ceil(((d-jan1)/86400000+1)/7)).padStart(2,'0')}`;
+  }
+  function weekLabel(wk) {
+    const [yr,wn] = wk.split('-W');
+    const jan1 = new Date(+yr,0,1);
+    const mon = new Date(jan1.getTime()+(+wn-1)*7*86400000-(jan1.getDay()||7)*86400000+86400000);
+    return mon.toLocaleDateString('en-IN',{day:'2-digit',month:'short'});
+  }
+
+  const weekMap = {};
+  for(const r of ALL) {
+    if(!r.date) continue;
+    const wk = getWeek(r.date);
+    if(!weekMap[wk]) weekMap[wk]={wk, inp:0, out:0, wst:0, n:0, depts:{}};
+    weekMap[wk].inp += r.input_kg;
+    weekMap[wk].out += r.output_kg;
+    weekMap[wk].wst += r.wastage_kg;
+    weekMap[wk].n++;
+    weekMap[wk].depts[r.dept] = (weekMap[wk].depts[r.dept]||0) + r.input_kg;
+  }
+  const weeks = Object.values(weekMap).sort((a,b)=>b.wk.localeCompare(a.wk)).slice(0,12);
+  document.getElementById('weekly-count').textContent = `${weeks.length} weeks`;
+
+  document.getElementById('weekly-tbl').innerHTML = weeks.map((w,i)=>{
+    const wp = w.inp?(w.wst/w.inp*100):0;
+    const wpCls = wp>15?'badge-high':wp>10?'badge-med':'badge-low';
+    const grade = wp<8?'A+':wp<11?'A':wp<14?'B':'C';
+    const gradeCls = grade==='A+'?'badge-low':grade==='A'?'badge-low':grade==='B'?'badge-med':'badge-high';
+    return `<tr>
+      <td><strong>${weekLabel(w.wk)}</strong> <span style="font-size:9px;color:#9d9a93">(${w.wk})</span></td>
+      <td class="r">${fmt(w.inp,0)}</td>
+      <td class="r">${fmt(w.out,0)}</td>
+      <td class="r" style="color:#dc2626">${fmt(w.wst,0)}</td>
+      <td class="r"><span class="${wpCls}">${wp.toFixed(1)}%</span></td>
+      <td class="r">${w.n}</td>
+      <td><span class="${gradeCls}">${grade}</span></td>
+    </tr>`;
+  }).join('');
+
+  const depts = ['Selection','Cutter','Automatic','Packing','Cutlery'];
+  document.getElementById('weekly-dept-tbl').innerHTML = weeks.map(w=>`<tr>
+    <td><strong>${weekLabel(w.wk)}</strong></td>
+    ${depts.map(d=>`<td class="r">${fmt(w.depts[d]||0,0)}</td>`).join('')}
+  </tr>`).join('');
+
+  const ranked = [...weeks].sort((a,b)=>(a.wst/a.inp)-(b.wst/b.inp));
+  document.getElementById('weekly-rank-tbl').innerHTML = ranked.map((w,i)=>{
+    const wp = w.inp?(w.wst/w.inp*100):0;
+    const cls = i<3?'badge-low':i>=ranked.length-3?'badge-high':'badge-med';
+    const emoji = i===0?'🏆':i===1?'🥈':i===2?'🥉':i>=ranked.length-1?'💀':i>=ranked.length-3?'⚠️':'';
+    return `<tr>
+      <td>${emoji} #${i+1}</td>
+      <td>${weekLabel(w.wk)} (${w.wk})</td>
+      <td class="r"><span class="${cls}">${wp.toFixed(1)}%</span></td>
+      <td><span class="${cls}">${i<3?'Best':i>=ranked.length-3?'Worst':''}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── KPI Tab ────────────────────────────────────────────
+function renderKPI() {
+  const depts = ['Selection','Cutter','Automatic','Packing','Cutlery'];
+  const DCOLORS = {Selection:'#7c3aed',Cutter:'#2563eb',Automatic:'#059669',Packing:'#d97706',Cutlery:'#dc2626'};
+
+  // ── Today's Banner
+  const todayStr = today();
+  const todayRows = ALL.filter(r=>r.date===todayStr);
+  const tInp = todayRows.reduce((s,r)=>s+r.input_kg,0);
+  const tWst = todayRows.reduce((s,r)=>s+r.wastage_kg,0);
+  const tPcs = todayRows.filter(r=>r.dept==='Cutlery').reduce((s,r)=>s+r.pcs,0);
+  const tCar = todayRows.filter(r=>r.dept==='Packing').reduce((s,r)=>s+r.cartons,0);
+  const tWp  = tInp?(tWst/tInp*100):0;
+  const todayLabel = new Date(todayStr).toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+}
+
+// ── Per-dept rendering ─────────────────────────────────
+function renderDept(prefix) {
+  const dept = DEPT_MAP[prefix];
+  const rows = filterByTf(ALL.filter(r=>r.dept===dept), prefix);
+  const inp  = rows.reduce((s,r)=>s+r.input_kg,0);
+  const out  = rows.reduce((s,r)=>s+r.output_kg,0);
+  const wst  = rows.reduce((s,r)=>s+r.wastage_kg,0);
+  const pcs  = rows.reduce((s,r)=>s+r.pcs,0);
+  const cart = rows.reduce((s,r)=>s+r.cartons,0);
+  const lab  = rows.reduce((s,r)=>s+r.labour,0);
+  const wp   = inp?(wst/inp*100):0;
+  const eff  = inp?(out/inp*100):0;
+  const days = new Set(rows.map(r=>r.date)).size;
+  // Real backend fields added once production.py's fetch range was widened past its old A:S
+  // cutoff (see MIGRATION_NOTES.md) — only present on the departments that actually have them.
+  const loose  = rows.reduce((s,r)=>s+(r.loose_fg_kg||0),0);
+  const bundle = rows.reduce((s,r)=>s+(r.rubber_bundle_kg||0),0);
+  const boxesPacked = rows.reduce((s,r)=>s+(r.boxes_packed||0),0);
+
+  // Age badge
+  const allDates = rows.map(r=>r.date).filter(Boolean).sort();
+  const lastDate = allDates[allDates.length-1]||'';
+  const ageEl = document.getElementById(prefix+'-age');
+  if(lastDate && ageEl) {
+    const diff = Math.floor((new Date()-new Date(lastDate))/(1000*86400));
+    ageEl.textContent = diff===0?'TODAY':diff===1?'1 DAY AGO':`${diff} DAYS AGO`;
+    ageEl.style.background = diff>3?'#fef2f2':diff>1?'#fffbeb':'#f0fdf4';
+    ageEl.style.color = diff>3?'#dc2626':diff>1?'#b45309':'#059669';
+    ageEl.style.border = `1px solid ${diff>3?'#fca5a5':diff>1?'#fcd34d':'#86efac'}`;
+  }
+
+  // Meta
+  const metaEl = document.getElementById(prefix+'-meta');
+  const allRows = ALL.filter(r=>r.dept===dept);
+  if(metaEl) metaEl.innerHTML = `<strong>${dept.toUpperCase()} PRODUCTION DATA</strong> · <strong>${rows.length} / ${allRows.length} ROWS</strong> · LAST ENTRY ${lastDate||'—'}`;
+
+  // KPIs — standardized app-wide, per the user's "make it all the same way" request. Every
+  // department's own backend row (app/services/production.py) actually captures a real
+  // wastage_kg column — Automatic/Packing/Cutlery just never surfaced it as a KPI despite `wst`/
+  // `wp` already being computed above for every dept. All 5 now show WASTAGE + WASTAGE % the
+  // same way, using the same formula. "Efficiency" used to mean two different things under the
+  // same label (Selection: output÷labour: a real per-person productivity rate; Cutter/Automatic:
+  // output÷input: a material yield rate) — split into two honestly-named, never-conflated
+  // metrics: YIELD % (output÷input, wherever output_kg is a real captured value — Selection/
+  // Cutter/Automatic) and EFFICIENCY (output÷labour, wherever BOTH are real — only Selection).
+  // Packing already captures real labour (col16) but never displayed it either — added, matching
+  // Selection. Cutter/Automatic/Cutlery's labour is hardcoded 0 in the backend (never captured
+  // from the sheet) — deliberately not shown as a KPI there; a "0" would misleadingly read as
+  // "zero people worked" rather than "not tracked".
+  let kpis = [];
+  if(dept==='Selection') kpis=[
+    {val:fmt(inp,1),raw:inp,dfmt:v=>fmt(v,1),unit:'KG',label:'TOTAL GONI WEIGHT',sub:'Input KG',cls:'green'},
+    {val:fmt(out,1),raw:out,dfmt:v=>fmt(v,1),unit:'KG',label:'TOTAL BUNDLE WEIGHT',sub:'Output KG',cls:'blue'},
+    {val:fmt(wst,1),raw:wst,dfmt:v=>fmt(v,1),unit:'KG',label:'WASTAGE',sub:'Input − Output',cls:'red'},
+    {val:wp.toFixed(1),raw:wp,dfmt:v=>v.toFixed(1),unit:'%',label:'WASTAGE %',sub:'Wastage ÷ Input × 100',cls:'orange'},
+    {val:fmt(lab),raw:lab,dfmt:v=>fmt(v),unit:'PPL',label:'TOTAL LABOUR',cls:'purple',sub:'People count'},
+    {val:out&&lab?(out/lab).toFixed(1):'—',raw:out&&lab?(out/lab):null,dfmt:v=>v.toFixed(1),unit:'KG/P',label:'EFFICIENCY',sub:'Output ÷ Labour',cls:'blue'},
+  ];
+  else if(dept==='Cutter') kpis=[
+    {val:fmt(inp,1),raw:inp,dfmt:v=>fmt(v,1),unit:'KG',label:'INPUT QTY',sub:'Raw material input',cls:'green'},
+    {val:fmt(out,1),raw:out,dfmt:v=>fmt(v,1),unit:'KG',label:'OUTPUT QTY',sub:'Processed output',cls:'blue'},
+    {val:fmt(wst,1),raw:wst,dfmt:v=>fmt(v,1),unit:'KG',label:'WASTAGE',sub:'Input − Output',cls:'red'},
+    {val:wp.toFixed(1),raw:wp,dfmt:v=>v.toFixed(1),unit:'%',label:'WASTAGE %',sub:'Wastage ÷ Input × 100',cls:'orange'},
+    {val:days,raw:days,unit:'DAYS',label:'PRODUCTION DAYS',sub:'Active days',cls:'purple'},
+    {val:eff.toFixed(1),raw:eff,dfmt:v=>v.toFixed(1),unit:'%',label:'YIELD %',sub:'Output ÷ Input',cls:'blue'},
+  ];
+  else if(dept==='Automatic') kpis=[
+    {val:fmt(inp,1),raw:inp,dfmt:v=>fmt(v,1),unit:'KG',label:'MACHINE INPUT',sub:'Total input KG',cls:'green'},
+    {val:fmt(cart),raw:cart,dfmt:v=>fmt(v),unit:'CTN',label:'FG CARTONS',sub:'FG IMS · finished goods',cls:'green'},
+    {val:fmt(out,1),raw:out,dfmt:v=>fmt(v,1),unit:'KG',label:'FG OUTPUT',sub:'FG IMS · KG equivalent',cls:'blue'},
+    {val:fmt(loose,1),raw:loose,dfmt:v=>fmt(v,1),unit:'KG',label:'LOOSE FG',sub:'RM IMS · semi-finished',cls:'purple'},
+    {val:fmt(bundle,1),raw:bundle,dfmt:v=>fmt(v,1),unit:'KG',label:'RUBBER BUNDLE',sub:'RM IMS · bundle output',cls:'purple'},
+    {val:fmt(wst,1),raw:wst,dfmt:v=>fmt(v,1),unit:'KG',label:'WASTAGE',sub:'Input − Output',cls:'red'},
+    {val:wp.toFixed(1),raw:wp,dfmt:v=>v.toFixed(1),unit:'%',label:'WASTAGE %',sub:'Wastage ÷ Input × 100',cls:'orange'},
+  ];
+  else if(dept==='Packing') kpis=[
+    {val:fmt(inp,1),raw:inp,dfmt:v=>fmt(v,1),unit:'KG/Units',label:'CONSUMED QTY',sub:'Material consumed',cls:'green'},
+    {val:fmt(cart),raw:cart,dfmt:v=>fmt(v),unit:'CTN',label:'TOTAL CARTONS',sub:'Cartons packed',cls:'blue'},
+    {val:fmt(wst,1),raw:wst,dfmt:v=>fmt(v,1),unit:'KG',label:'WASTAGE',sub:'Consumed − Packed, where tracked',cls:'red'},
+    {val:wp.toFixed(1),raw:wp,dfmt:v=>v.toFixed(1),unit:'%',label:'WASTAGE %',sub:'Wastage ÷ Consumed × 100',cls:'orange'},
+    {val:fmt(lab),raw:lab,dfmt:v=>fmt(v),unit:'PPL',label:'TOTAL LABOUR',cls:'purple',sub:'People count'},
+    {val:cart&&lab?(cart/lab).toFixed(1):'—',raw:cart&&lab?(cart/lab):null,dfmt:v=>v.toFixed(1),unit:'CTN/P',label:'EFFICIENCY',sub:'Cartons ÷ Labour (real output unit here is Cartons, not KG)',cls:'blue'},
+  ];
+  else if(dept==='Cutlery') kpis=[
+    {val:fmt(pcs),raw:pcs,dfmt:v=>fmt(v),unit:'PCS',label:'MACHINE READING',sub:'Machine reading (PCS)',cls:'green'},
+    {val:fmt(boxesPacked),raw:boxesPacked,dfmt:v=>fmt(v),unit:'CTN',label:'BOXES PACKED',sub:'Real output — distinct from Boxes Used',cls:'green'},
+    {val:fmt(wst,1),raw:wst,dfmt:v=>fmt(v,1),unit:'KG',label:'WASTAGE',sub:'Input − Output',cls:'red'},
+    {val:wp.toFixed(1),raw:wp,dfmt:v=>v.toFixed(1),unit:'%',label:'WASTAGE %',sub:'Wastage ÷ Input × 100',cls:'orange'},
+    {val:fmt(lab),raw:lab,dfmt:v=>fmt(v),unit:'PPL',label:'TOTAL LABOUR',cls:'purple',sub:'People count'},
+    {val:boxesPacked&&lab?(boxesPacked/lab).toFixed(1):'—',raw:boxesPacked&&lab?(boxesPacked/lab):null,dfmt:v=>v.toFixed(1),unit:'BOX/P',label:'EFFICIENCY',sub:'Boxes Packed ÷ Labour',cls:'blue'},
+  ];
+
+  document.getElementById(prefix+'-kpis').innerHTML = kpis.map(k=>`
+    <div class="ds-stat ds-stat--${k.cls}">
+      <div class="ds-stat-label">${k.label}</div>
+      <div class="ds-stat-value"><span class="cu-num">${k.val}</span> <span style="font-size:11px;font-weight:700;color:var(--ink-4)">${k.unit}</span></div>
+      <div class="ds-stat-caption">${k.sub||''}</div>
+    </div>`).join('');
+  const cuEls = document.querySelectorAll('#'+prefix+'-kpis .cu-num');
+  kpis.forEach((k,i)=>{ if(k.raw!=null) dsCountUp(cuEls[i], k.raw, {format:k.dfmt||(v=>String(Math.round(v)))}); });
+
+  // Product table
+  const prodMap={};
+  rows.forEach(r=>{
+    const p=r.product||'Unknown';
+    if(!prodMap[p]) prodMap[p]={inp:0,out:0,wst:0,pcs:0,cart:0,lab:0,machine:r.machine||'—',customer:r.customer||'—'};
+    prodMap[p].inp+=r.input_kg; prodMap[p].out+=r.output_kg; prodMap[p].wst+=r.wastage_kg;
+    prodMap[p].pcs+=r.pcs; prodMap[p].cart+=r.cartons; prodMap[p].lab+=r.labour;
+  });
+  const prods = Object.entries(prodMap).sort((a,b)=>b[1].inp-a[1].inp);
+  const prodCount = document.getElementById(prefix+'-prod-count');
+  if(prodCount) prodCount.textContent = `${prods.length} products`;
+
+  let prodHtml='';
+  if(!prods.length){ prodHtml='<tr><td colspan="10" class="no-data"><div class="icon">📋</div>No data for selected period</td></tr>'; }
+  else {
+    const maxInp = prods[0]?.[1]?.inp || 1;
+    prodHtml = prods.map(([p,v])=>{
+      const wp2 = v.inp?(v.wst/v.inp*100):0;
+      const barW = (v.inp/maxInp*100).toFixed(0);
+      if(dept==='Packing') return `<tr><td class="prod-name" title="${p}">${p}</td><td>${v.customer}</td><td class="r">${fmt(v.inp,1)}</td><td class="r">${fmt(v.cart)}</td><td class="r">${fmt(v.pcs)}</td></tr>`;
+      if(dept==='Cutlery') return `<tr><td class="prod-name" title="${p}">${p}</td><td>${v.machine}</td><td class="r">${fmt(v.inp,1)}</td><td class="r">${fmt(v.pcs)}</td><td class="r">${fmt(v.cart)}</td></tr>`;
+      if(dept==='Selection') return `<tr><td class="prod-name" title="${p}">${p}</td><td class="r">${fmt(v.inp,1)}</td><td class="r" style="color:#059669">${fmt(v.out,1)}</td><td class="r" style="color:#dc2626">${fmt(v.wst,1)}</td><td class="r" style="color:${wp2>15?'#dc2626':wp2>8?'#d97706':'#059669'}">${wp2.toFixed(1)}%</td><td class="r">${fmt(v.lab)}</td></tr>`;
+      return `<tr><td class="prod-name" title="${p}">${p}</td><td>${v.machine}</td><td class="r">${fmt(v.inp,1)}</td><td class="r" style="color:#059669">${fmt(v.out,1)}</td><td class="r" style="color:#dc2626">${fmt(v.wst,1)}</td><td class="r" style="color:${wp2>15?'#dc2626':wp2>8?'#d97706':'#059669'}">${wp2.toFixed(1)}%</td></tr>`;
+    }).join('');
+  }
+  document.getElementById(prefix+'-prod-tbl').innerHTML = prodHtml;
+
+  // Daily table
+  const byDate={};
+  rows.forEach(r=>{ if(!r.date)return; if(!byDate[r.date])byDate[r.date]={in:0,out:0,wst:0,pcs:0,cart:0,shift:r.shift}; byDate[r.date].in+=r.input_kg; byDate[r.date].out+=r.output_kg; byDate[r.date].wst+=r.wastage_kg; byDate[r.date].pcs+=r.pcs; byDate[r.date].cart+=r.cartons; });
+  const dates = Object.keys(byDate).sort().reverse();
+  const daysCount = document.getElementById(prefix+'-days-count');
+  if(daysCount) daysCount.textContent = `${dates.length} days`;
+
+  const avgCart = cart&&days?(cart/days):0;
+  const avgPcs  = pcs&&days?(pcs/days):0;
+
+  const alertTbl = document.getElementById(prefix+'-alert-tbl');
+  if(!alertTbl) return;
+  alertTbl.innerHTML = dates.map((d)=>{
+    const v=byDate[d];
+    const wp2 = v.in?(v.wst/v.in*100):0;
+    const eff2 = v.in?(v.out/v.in*100):0;
+    if(dept==='Packing') return `<tr><td><strong>${fmtD(d)}</strong></td><td class="r">${fmt(v.cart)}</td><td class="r">${fmt(v.pcs)}</td><td class="r">${fmt(v.in,1)}</td><td>${trendBadge(v.cart,avgCart)}</td></tr>`;
+    if(dept==='Cutlery') return `<tr><td><strong>${fmtD(d)}</strong></td><td>${v.shift||'—'}</td><td class="r">${fmt(v.in,1)}</td><td class="r">${fmt(v.pcs)}</td><td>${trendBadge(v.pcs,avgPcs)}</td></tr>`;
+    if(dept==='Automatic') return `<tr><td><strong>${fmtD(d)}</strong></td><td class="r">${fmt(v.in,1)}</td><td class="r">${fmt(v.out,1)}</td><td class="r" style="color:${eff2<70?'#dc2626':eff2<85?'#d97706':'#059669'}">${eff2.toFixed(1)}%</td><td>${eff2>=85?'<span class="badge-ok">GOOD</span>':eff2>=70?'<span class="badge-med">AVERAGE</span>':'<span class="badge-high">LOW</span>'}</td></tr>`;
+    return `<tr><td><strong>${fmtD(d)}</strong></td><td class="r">${fmt(v.in,1)}</td><td class="r">${fmt(v.out,1)}</td><td class="r" style="color:${wp2>15?'#dc2626':wp2>8?'#d97706':'#059669'}">${wp2.toFixed(1)}%</td><td>${alertBadge(wp2)}</td></tr>`;
+  }).join('') || '<tr><td colspan="5" class="no-data"><div class="icon">📅</div>No data for selected period</td></tr>';
+}
+
+// ── CSV Export ─────────────────────────────────────────
+function exportCSV(dept) {
+  const prefix = {Selection:'sel',Cutter:'cut',Automatic:'aut',Packing:'pak',Cutlery:'cutl'}[dept];
+  const rows = filterByTf(ALL.filter(r=>r.dept===dept), prefix);
+  const cols = ['date','product','grn','input_kg','output_kg','wastage_kg','shift','machine','pcs','cartons','labour','status'];
+  const csv = [cols.join(','), ...rows.map(r=>cols.map(c=>JSON.stringify(r[c]??'')).join(','))].join('\n');
+  const a=document.createElement('a'); a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download=`${dept}_${new Date().toISOString().split('T')[0]}.csv`; a.click();
+}
+
+// ── Tab switching ──────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+function switchTabByName(name) {
+  const btn = [...document.querySelectorAll('.tab-btn')].find(b=>b.textContent.trim().toLowerCase().includes(name.toLowerCase()));
+  if(btn) { switchTab(name,btn); btn.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+}
+
+// ── Init ───────────────────────────────────────────────
+loadData();
+</script>
+</body>
+</html>

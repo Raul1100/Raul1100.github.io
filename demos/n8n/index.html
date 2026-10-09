@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>n8n Workflows — Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#141210; --panel:#1b1814; --panel-2:#221e19; --line:#2f2922; --line-2:#433a30;
+  --text:#f3ede4; --muted:#a59c8f; --dim:#6f675c; --accent:#ffb547; --ok:#7bd88f;
+  --c-trigger:#ff8a4c; --c-ai:#b18cff; --c-google:#4fc38a; --c-api:#5aa9ff; --c-logic:#9a9187; --c-code:#e7c75f;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font:14px/1.5 Inter,system-ui,sans-serif;overflow:hidden;display:grid;grid-template-rows:auto 1fr}
+header{display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--line);background:var(--panel);flex-wrap:wrap}
+.brand{font:500 13px 'JetBrains Mono',monospace;color:var(--muted)}
+.brand b{color:var(--accent)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{font:500 12.5px Inter,sans-serif;padding:7px 12px;border-radius:8px;border:1px solid var(--line-2);background:transparent;color:var(--muted);cursor:pointer}
+.tab:hover{color:var(--text)}
+.tab.on{background:var(--accent);border-color:var(--accent);color:#1a1206}
+.tab small{opacity:.7;margin-left:6px;font-family:'JetBrains Mono',monospace}
+.spacer{flex:1}
+.ctrl{display:flex;gap:6px;align-items:center}
+.ctrl button,.ctrl select{font:500 12.5px Inter,sans-serif;height:32px;padding:0 11px;border-radius:8px;border:1px solid var(--line-2);background:var(--panel-2);color:var(--text);cursor:pointer}
+.ctrl button.run{background:var(--ok);border-color:var(--ok);color:#0f1a12;font-weight:600}
+.ctrl select{max-width:220px}
+main{position:relative;display:grid;grid-template-columns:1fr 320px;min-height:0}
+@media (max-width:860px){main{grid-template-columns:1fr}aside{display:none}}
+#stage{position:relative;overflow:hidden;cursor:grab;background-color:var(--bg);background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:22px 22px}
+#stage.drag{cursor:grabbing}
+svg{position:absolute;inset:0;width:100%;height:100%}
+.edge{fill:none;stroke:var(--line-2);stroke-width:2}
+.edge.sub{stroke-dasharray:5 5;stroke-width:1.5}
+.edge.lit{stroke:var(--ok);stroke-dasharray:8 6;animation:flow .6s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-14}}
+.node rect.box{fill:var(--panel-2);stroke:var(--line-2);stroke-width:1.5;transition:stroke .2s,fill .2s}
+.node:hover rect.box{stroke:var(--accent)}
+.node.lit rect.box{stroke:var(--ok);fill:#1d2a20}
+.node.dim{opacity:.35}
+.node text.ic{font:700 15px 'JetBrains Mono',monospace;text-anchor:middle;dominant-baseline:central}
+.node text.lb{font:500 11px Inter,sans-serif;fill:var(--muted);text-anchor:middle}
+.node.lit text.lb{fill:var(--text)}
+.node .tick{opacity:0;transition:opacity .2s}
+.node.lit .tick{opacity:1}
+#tip{position:absolute;pointer-events:none;background:#0d0c0a;border:1px solid var(--line-2);border-radius:8px;padding:8px 10px;font-size:12px;opacity:0;transition:opacity .12s;z-index:5;max-width:260px}
+#tip b{display:block;font-weight:600}
+#tip span{color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px}
+aside{border-left:1px solid var(--line);background:var(--panel);padding:20px;overflow-y:auto}
+aside h1{font-size:18px;line-height:1.25;margin-bottom:6px}
+aside p{color:var(--muted);font-size:13px;margin-bottom:14px}
+aside h3{font:500 11px 'JetBrains Mono',monospace;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin:18px 0 10px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kpi{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:10px}
+.kpi b{display:block;font-size:20px}
+.kpi span{font-size:11px;color:var(--muted)}
+.legend{display:grid;gap:7px}
+.legend div{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)}
+.legend i{width:10px;height:10px;border-radius:3px}
+.legend em{margin-left:auto;font-style:normal;font-family:'JetBrains Mono',monospace;color:var(--text)}
+ul.does{list-style:none;display:grid;gap:8px}
+ul.does li{font-size:13px;color:var(--muted);padding-left:16px;position:relative}
+ul.does li::before{content:"▸";position:absolute;left:0;color:var(--accent)}
+.log{font:12px/1.7 'JetBrains Mono',monospace;color:var(--muted);background:#0d0c0a;border:1px solid var(--line);border-radius:10px;padding:10px;height:150px;overflow-y:auto}
+.log .ok{color:var(--ok)}
+.note{font-size:11.5px;color:var(--dim);margin-top:16px}
+.ribbon{max-width:calc(100vw - 24px);overflow:hidden;text-overflow:ellipsis;position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:20;background:#1c1712;color:#ffb547;font:500 12px/1 Inter,system-ui,sans-serif;padding:9px 14px;border-radius:999px;box-shadow:0 6px 24px rgba(0,0,0,.35);text-decoration:none;white-space:nowrap;border:1px solid #3a332b}
+</style>
+</head>
+<body>
+<header>
+  <span class="brand"><b>n8n</b> · workflows</span>
+  <div class="tabs" id="tabs"></div>
+  <span class="spacer"></span>
+  <div class="ctrl">
+    <select id="trigger" aria-label="Trigger to run from"></select>
+    <button class="run" id="run">▶ Simulate run</button>
+    <button id="fit" title="Fit to screen">Fit</button>
+    <button id="zin" aria-label="Zoom in">+</button>
+    <button id="zout" aria-label="Zoom out">−</button>
+  </div>
+</header>
+<main>
+  <div id="stage"><svg id="svg"><g id="vp"><g id="edges"></g><g id="nodes"></g></g></svg><div id="tip"></div></div>
+  <aside id="side"></aside>
+</main>
+<a class="ribbon" href="../../#work">Real workflow graphs · credentials &amp; prompts removed · ← back to portfolio</a>
+
+<script src="graphs.js"></script>
+<script>
+const G = window.N8N_GRAPHS;
+const INFO = {
+  marketing: { blurb: 'One workflow that runs the whole social media pipeline: weekly AI planning, daily post + image + video creation, an approval dashboard served from n8n webhooks, multi-channel publishing and performance tracking.',
+    does: ['Saturday: AI strategist plans the week from brand guide, festivals and past performance', 'Weekdays: AI copywriter drafts posts, an AI art director judges generated images, Veo makes videos', 'Approval dashboard (HTML served by webhooks): edit, regenerate, skip, schedule, upload own image', 'Publishes to LinkedIn, Instagram, Facebook and WhatsApp campaigns', 'Nightly: AI cost budget check, performance pull, error and publishing alerts by email'] },
+  whatsapp: { blurb: 'A WhatsApp Business agent that answers every enquiry instantly: it understands text, voice notes and images, separates existing customers from new leads, qualifies leads with memory and books meetings.',
+    does: ['Voice notes are downloaded and transcribed; images are analysed', 'Looks up the number to route customers vs. new leads to different AI agents', 'Lead agent qualifies (product, quantity, location, urgency) and updates the CRM sheet', 'Can create calendar meetings as a tool call', 'Human takeover: a bot-control switch per chat pauses the AI'] },
+  export: { blurb: 'A weekly agent that finds overseas B2B buyers country by country, enriches them with real contacts and drafts a personalised pitch email for each one.',
+    does: ['Rotates through target countries; runs 3 parallel searches (importers, HORECA distributors, direct buyers)', 'Scrapes homepage and contact page for real emails; finds the LinkedIn page', 'Verifies email domains (MX) and enriches decision makers via RocketReach', 'De-duplicates against everything already in the lead sheet', 'Writes a Gmail draft pitch per lead and logs a run summary'] },
+};
+const CAT = t => /trigger$|Trigger$|^webhook$|^scheduleTrigger$|^errorTrigger$/i.test(t) ? 'trigger'
+  : /^(agent|openAi|lmChat|outputParser|memory|chainLlm|.*Tool$)/i.test(t) ? 'ai'
+  : /^(googleSheets|googleDrive|gmail|googleCalendar|googleSlides)/i.test(t) ? 'google'
+  : /^(httpRequest|facebookGraphApi|whatsApp|linkedIn|respondToWebhook)/i.test(t) ? 'api'
+  : /^code$/i.test(t) ? 'code' : 'logic';
+const CAT_NAME = { trigger: 'Triggers', ai: 'AI / LLM', google: 'Google Workspace', api: 'APIs & webhooks', code: 'Code', logic: 'Logic & data' };
+const ICON = t => ({ scheduleTrigger: '⏱', webhook: '⚡', whatsAppTrigger: '⚡', manualTrigger: '▶', errorTrigger: '!', agent: 'AI', openAi: 'AI',
+  googleSheets: '▦', googleSheetsTool: '▦', googleDrive: '△', gmail: '✉', googleCalendarTool: '◷', httpRequest: '⇄', code: '{}', if: 'IF', switch: '⑂',
+  merge: '⋈', set: '✎', wait: '…', respondToWebhook: '↩', facebookGraphApi: 'f', whatsApp: 'W', noOp: '·', splitInBatches: '⟳', outputParserStructured: '{ }' })[t]
+  || (/^lmChat/.test(t) ? '◆' : /^memory/.test(t) ? '◎' : '•');
+const prettyType = t => t.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, c => c.toUpperCase());
+
+const svg = document.getElementById('svg'), vp = document.getElementById('vp'), stage = document.getElementById('stage'), tip = document.getElementById('tip');
+const NS = 'http://www.w3.org/2000/svg', W = 64;
+const mk = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent && parent.appendChild(e); return e; };
+let cur, view = { x: 0, y: 0, k: 1 }, nodeEls = [], edgeEls = [], running = null;
+
+function draw(key) {
+  cur = key; stopRun();
+  const g = G[key]; const eg = document.getElementById('edges'), ng = document.getElementById('nodes');
+  eg.innerHTML = ''; ng.innerHTML = ''; nodeEls = []; edgeEls = [];
+  g.edges.forEach(([s, d, sub]) => {
+    const a = g.nodes[s], b = g.nodes[d];
+    let p;
+    if (sub) { // sub-node (model, memory, tool) plugs into the bottom of its agent
+      const x1 = a[2] + W / 2, y1 = a[3], x2 = b[2] + W / 2, y2 = b[3] + W;
+      p = `M${x1},${y1} C${x1},${y1 - 50} ${x2},${y2 + 50} ${x2},${y2}`;
+    } else {
+      const x1 = a[2] + W, y1 = a[3] + W / 2, x2 = b[2], y2 = b[3] + W / 2, dx = Math.max(40, Math.abs(x2 - x1) / 2);
+      p = `M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}`;
+    }
+    edgeEls.push(mk('path', { d: p, class: 'edge' + (sub ? ' sub' : '') }, eg));
+  });
+  g.nodes.forEach(([name, type, x, y], i) => {
+    const c = CAT(type), el = mk('g', { class: 'node', transform: `translate(${x},${y})` }, ng);
+    const isTrig = c === 'trigger';
+    mk('rect', { class: 'box', width: W, height: W, rx: isTrig ? 26 : 10 }, el);
+    if (isTrig) mk('rect', { width: W, height: W, rx: 26, fill: 'none', stroke: `var(--c-${c})`, 'stroke-width': 1, opacity: .5 }, el);
+    mk('rect', { x: 0, y: W - 4, width: W, height: 4, rx: 2, fill: `var(--c-${c})` }, el);
+    const ic = mk('text', { class: 'ic', x: W / 2, y: W / 2 - 2, fill: `var(--c-${c})` }, el); ic.textContent = ICON(type);
+    const lb = mk('text', { class: 'lb', x: W / 2, y: W + 16 }, el); lb.textContent = name.length > 22 ? name.slice(0, 21) + '…' : name;
+    const tk = mk('g', { class: 'tick' }, el); mk('circle', { cx: W - 4, cy: 4, r: 8, fill: 'var(--ok)' }, tk);
+    const t = mk('text', { x: W - 4, y: 4, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: '#0f1a12', 'font-size': 10, 'font-weight': 700 }, tk); t.textContent = '✓';
+    el.addEventListener('pointerenter', () => { tip.innerHTML = `<b>${name.replace(/</g, '&lt;')}</b><span>${prettyType(type)} · ${CAT_NAME[c]}</span>`; tip.style.opacity = 1; });
+    el.addEventListener('pointerleave', () => tip.style.opacity = 0);
+    nodeEls.push(el);
+  });
+  side(key); triggers(key); fit();
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.k === key));
+  history.replaceState(null, '', '#' + key);
+}
+
+function side(key) {
+  const g = G[key], cats = {};
+  g.nodes.forEach(n => { const c = CAT(n[1]); cats[c] = (cats[c] || 0) + 1; });
+  const ai = cats.ai || 0, trig = cats.trigger || 0;
+  document.getElementById('side').innerHTML = `
+    <h1>${g.title}</h1><p>${INFO[key].blurb}</p>
+    <div class="kpis"><div class="kpi"><b>${g.nodes.length}</b><span>nodes</span></div><div class="kpi"><b>${trig}</b><span>triggers</span></div><div class="kpi"><b>${ai}</b><span>AI nodes</span></div></div>
+    <h3>What it does</h3><ul class="does">${INFO[key].does.map(d => `<li>${d}</li>`).join('')}</ul>
+    <h3>Node mix</h3><div class="legend">${Object.keys(CAT_NAME).filter(c => cats[c]).map(c => `<div><i style="background:var(--c-${c})"></i>${CAT_NAME[c]}<em>${cats[c]}</em></div>`).join('')}</div>
+    <h3>Run log</h3><div class="log" id="log">Press ▶ Simulate run to trace an execution path.</div>
+    <p class="note">This is the real graph exported from my n8n instance. Node names and wiring are unchanged; credentials, prompts, sheet IDs and contact data are stripped. The run is a visual simulation.</p>`;
+}
+
+function triggers(key) {
+  const sel = document.getElementById('trigger');
+  sel.innerHTML = G[key].nodes.map((n, i) => [n, i]).filter(([n]) => CAT(n[1]) === 'trigger').map(([n, i]) => `<option value="${i}">${n[0]}</option>`).join('');
+}
+
+/* ---- simulated execution: breadth-first along main connections ---- */
+function stopRun() { if (running) clearTimeout(running); running = null; nodeEls.forEach(n => n.classList.remove('lit', 'dim')); edgeEls.forEach(e => e.classList.remove('lit')); }
+function run() {
+  stopRun();
+  const g = G[cur], start = +document.getElementById('trigger').value, out = {}, subs = {};
+  g.edges.forEach(([s, d, sub], i) => sub ? (subs[d] ??= []).push([s, i]) : (out[s] ??= []).push([d, i]));
+  nodeEls.forEach(n => n.classList.add('dim'));
+  const log = document.getElementById('log'); log.innerHTML = '';
+  const seen = new Set([start]); let frontier = [start], step = 0;
+  const light = i => { nodeEls[i].classList.remove('dim'); nodeEls[i].classList.add('lit'); (subs[i] || []).forEach(([s, e]) => { nodeEls[s].classList.remove('dim'); nodeEls[s].classList.add('lit'); edgeEls[e].classList.add('lit'); }); log.insertAdjacentHTML('beforeend', `<div><span class="ok">✓</span> ${g.nodes[i][0]}</div>`); log.scrollTop = log.scrollHeight; };
+  const tick = () => {
+    if (!frontier.length) { log.insertAdjacentHTML('beforeend', `<div class="ok">— execution finished · ${seen.size} nodes</div>`); log.scrollTop = log.scrollHeight; running = null; return; }
+    frontier.forEach(light);
+    follow(frontier.map(i => g.nodes[i]));
+    const next = [];
+    frontier.forEach(i => (out[i] || []).forEach(([d, e]) => { edgeEls[e].classList.add('lit'); if (!seen.has(d)) { seen.add(d); next.push(d); } }));
+    frontier = next; step++;
+    running = setTimeout(tick, 380);
+  };
+  tick();
+}
+
+/* camera glides so the running nodes stay in view (unless the user is dragging) */
+let anim = null;
+function follow(nodes) {
+  if (drag || !nodes.length) return;
+  const r = stage.getBoundingClientRect(), cx = nodes.reduce((s, n) => s + n[2], 0) / nodes.length + W / 2, cy = nodes.reduce((s, n) => s + n[3], 0) / nodes.length + W / 2;
+  const sx = view.x + cx * view.k, sy = view.y + cy * view.k;
+  if (sx > r.width * .2 && sx < r.width * .75 && sy > r.height * .15 && sy < r.height * .85) return;
+  const tx = r.width * .4 - cx * view.k, ty = r.height * .5 - cy * view.k, fx = view.x, fy = view.y, t0 = performance.now();
+  cancelAnimationFrame(anim);
+  const step = t => { const k = Math.min(1, (t - t0) / 600), e = 1 - Math.pow(1 - k, 3); view.x = fx + (tx - fx) * e; view.y = fy + (ty - fy) * e; apply(); if (k < 1) anim = requestAnimationFrame(step); };
+  anim = requestAnimationFrame(step);
+}
+
+/* ---- pan & zoom ---- */
+const apply = () => vp.setAttribute('transform', `translate(${view.x},${view.y}) scale(${view.k})`);
+// whole=true fits everything; otherwise open at a readable zoom from the left (trigger) side
+function fit(whole) {
+  const n = G[cur].nodes, xs = n.map(a => a[2]), ys = n.map(a => a[3]);
+  const minX = Math.min(...xs) - 40, maxX = Math.max(...xs) + W + 40, minY = Math.min(...ys) - 40, maxY = Math.max(...ys) + W + 40;
+  const r = stage.getBoundingClientRect(), fitK = Math.min(r.width / (maxX - minX), r.height / (maxY - minY), 1.2);
+  const k = whole === true ? fitK : Math.max(fitK, Math.min(.6, r.height / (maxY - minY)));
+  const x = k === fitK ? (r.width - (maxX - minX) * k) / 2 - minX * k : 30 - minX * k;
+  view = { k, x, y: (r.height - (maxY - minY) * k) / 2 - minY * k }; apply();
+}
+const zoomAt = (f, cx, cy) => { const k = Math.min(3, Math.max(.08, view.k * f)); view.x = cx - (cx - view.x) * k / view.k; view.y = cy - (cy - view.y) * k / view.k; view.k = k; apply(); };
+stage.addEventListener('wheel', e => { e.preventDefault(); const r = stage.getBoundingClientRect(); zoomAt(e.deltaY < 0 ? 1.12 : 1 / 1.12, e.clientX - r.left, e.clientY - r.top); }, { passive: false });
+let drag = null;
+stage.addEventListener('pointerdown', e => { drag = { x: e.clientX - view.x, y: e.clientY - view.y }; stage.classList.add('drag'); stage.setPointerCapture(e.pointerId); });
+stage.addEventListener('pointermove', e => {
+  const r = stage.getBoundingClientRect(); tip.style.left = (e.clientX - r.left + 14) + 'px'; tip.style.top = (e.clientY - r.top + 14) + 'px';
+  if (drag) { view.x = e.clientX - drag.x; view.y = e.clientY - drag.y; apply(); }
+});
+stage.addEventListener('pointerup', () => { drag = null; stage.classList.remove('drag'); });
+document.getElementById('fit').onclick = () => fit(true);
+document.getElementById('zin').onclick = () => { const r = stage.getBoundingClientRect(); zoomAt(1.25, r.width / 2, r.height / 2); };
+document.getElementById('zout').onclick = () => { const r = stage.getBoundingClientRect(); zoomAt(.8, r.width / 2, r.height / 2); };
+document.getElementById('run').onclick = run;
+addEventListener('resize', () => fit());
+
+document.getElementById('tabs').innerHTML = Object.keys(G).map(k => `<button class="tab" data-k="${k}">${G[k].title}<small>${G[k].nodes.length}</small></button>`).join('');
+document.getElementById('tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (b) draw(b.dataset.k); });
+const start = location.hash.slice(1);
+draw(G[start] ? start : 'marketing');
+</script>
+</body>
+</html>

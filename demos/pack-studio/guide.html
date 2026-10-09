@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BioPapro Design Hub · User guide</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<style>
+:root{
+  --bg:#f5f6f2; --surface:#ffffff; --surface-2:#f8f9f6; --line:#e4e7e0; --line-2:#d3d8cf;
+  --ink:#17211b; --muted:#5d6861; --soft:#8b948e;
+  --brand:#1f7a3a; --brand-d:#17602d; --brand-l:#e7f3ea; --brand-ll:#f3f9f4;
+  --warn:#8a5a00; --warn-l:#fff6dd; --blue:#1d5fd1; --blue-l:#eaf1fd;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 Poppins,'Segoe UI',Arial,sans-serif}
+svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.top{position:sticky;top:0;z-index:10;height:64px;display:flex;align-items:center;gap:16px;padding:0 20px;background:var(--surface);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;white-space:nowrap;text-decoration:none;color:inherit}
+.logo img{height:46px}
+.logo .vsep{width:1px;height:30px;background:var(--line-2)}
+.logo b{font-size:16px;font-weight:700;display:block;line-height:1.1}
+.logo small{font-size:11.5px;color:var(--muted)}
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:3px;gap:2px;margin-left:18px}
+.seg a{padding:7px 14px;border-radius:9px;font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.seg a:hover{color:var(--ink)}
+.seg a.on{background:var(--surface);color:var(--brand);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.grow{flex:1}
+.btn{border:1px solid var(--line-2);background:var(--surface);padding:8px 14px;border-radius:10px;font:600 13px Poppins,sans-serif;cursor:pointer;color:var(--ink);display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+.btn:hover{background:var(--surface-2)}
+.layout{display:grid;grid-template-columns:270px minmax(0,1fr);max-width:1200px;margin:0 auto;gap:36px;padding:28px 24px 80px}
+nav.toc{position:sticky;top:88px;align-self:start;max-height:calc(100vh - 110px);overflow:auto;font-size:13.5px}
+nav.toc b{display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--soft);margin:18px 0 6px}
+nav.toc b:first-child{margin-top:0}
+nav.toc a{display:block;color:var(--muted);text-decoration:none;padding:4px 10px;border-left:2px solid transparent;line-height:1.4}
+nav.toc a:hover{color:var(--ink)}
+nav.toc a.on{color:var(--brand);border-left-color:var(--brand);font-weight:600;background:var(--brand-ll)}
+article{min-width:0}
+h1{font-size:30px;line-height:1.2;margin:0 0 8px;text-wrap:balance}
+.lead{font-size:16.5px;color:var(--muted);max-width:68ch;margin:0 0 26px}
+h2{font-size:23px;margin:56px 0 6px;padding-top:6px;text-wrap:balance;display:flex;align-items:center;gap:10px}
+h2 .n{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:9px;background:var(--brand);color:#fff;font-size:15px}
+h2+.sub{color:var(--muted);margin:0 0 18px;max-width:68ch}
+h3{font-size:17px;margin:34px 0 8px}
+p,li{max-width:70ch}
+ol.steps{counter-reset:s;list-style:none;padding:0;margin:12px 0}
+ol.steps>li{counter-increment:s;position:relative;padding:2px 0 10px 40px}
+ol.steps>li:before{content:counter(s);position:absolute;left:0;top:2px;width:26px;height:26px;border-radius:50%;background:var(--brand-l);color:var(--brand-d);font-weight:700;font-size:13px;display:grid;place-items:center}
+ul{padding-left:20px}
+figure{margin:16px 0 22px}
+figure img{width:100%;height:auto;border-radius:12px;border:1px solid var(--line);box-shadow:0 2px 14px rgba(16,24,20,.08);display:block;background:#fff}
+figcaption{font-size:13px;color:var(--muted);margin-top:8px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0 8px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card b{display:block;font-size:15px;margin-bottom:4px}
+.card p{font-size:13.5px;color:var(--muted);margin:0 0 8px}
+.card a{font-size:13px;font-weight:600;color:var(--brand);text-decoration:none}
+.note{border-radius:12px;padding:12px 16px;margin:14px 0;font-size:14px;max-width:72ch}
+.note b:first-child{display:block;margin-bottom:2px}
+.tip{background:var(--brand-ll);border:1px solid #c6e3cd}
+.tip b:first-child{color:var(--brand-d)}
+.imp{background:var(--warn-l);border:1px solid #f0d58a}
+.imp b:first-child{color:var(--warn)}
+.info{background:var(--blue-l);border:1px solid #c9daf8}
+.info b:first-child{color:var(--blue)}
+.tw{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:14px;background:var(--surface);border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+th{text-align:left;font-size:12.5px;color:var(--muted);font-weight:600;background:var(--surface-2);padding:9px 12px;border-bottom:1px solid var(--line)}
+td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td b{white-space:nowrap}
+.k{display:inline-block;font-size:12px;font-weight:600;background:var(--surface);border:1px solid var(--line-2);border-bottom-width:2px;border-radius:7px;padding:0 7px;white-space:nowrap}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:1px 9px;border-radius:20px;background:var(--brand-l);color:var(--brand-d)}
+details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 16px;margin:8px 0;max-width:76ch}
+details summary{cursor:pointer;font-weight:600;padding:12px 0;list-style:none;display:flex;justify-content:space-between;gap:10px}
+details summary::-webkit-details-marker{display:none}
+details summary:after{content:"+";color:var(--soft);font-weight:500}
+details[open] summary:after{content:"–"}
+details>div{padding:0 0 12px;color:var(--muted);font-size:14px}
+.swatch{display:inline-block;width:22px;border-top:3px solid #e0262b;vertical-align:middle;margin-right:6px}
+.swatch.f{border-top:3px dashed #1f6feb}
+footer{color:var(--soft);font-size:12.5px;margin-top:60px;border-top:1px solid var(--line);padding-top:16px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:static;max-height:none;border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--surface)}.top{overflow-x:auto}.seg{display:none}}
+@media print{.top,nav.toc,.noprint{display:none!important}.layout{display:block;padding:0}body{background:#fff;font-size:11.5pt}h2{break-before:page;margin-top:0}figure,table,.note{break-inside:avoid}figure img{box-shadow:none}details{border:0;padding:0}details>div{display:block!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="index.html"><img src="logo.png" alt="BioPapro"><span class="vsep"></span><div><b>Design Hub</b><small>User guide</small></div></a>
+  <nav class="seg">
+    <a href="index.html">Packaging</a>
+    <a href="documents.html">Product documents</a>
+    <a class="on" href="guide.html">Guide</a>
+  </nav>
+  <div class="grow"></div>
+  <button class="btn noprint" onclick="window.print()"><svg class="i" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M6 14h12v7H6z"/></svg>Print / save as PDF</button>
+</header>
+
+<div class="layout">
+<nav class="toc" id="toc">
+  <b>Start here</b>
+  <a href="#start">What Design Hub does</a>
+  <a href="#which-file">Which file goes to whom</a>
+  <b>Packaging (boxes)</b>
+  <a href="#pk-product">1 · Pick the product</a>
+  <a href="#pk-size">2 · Box type & size</a>
+  <a href="#pk-design">3 · Design the box</a>
+  <a href="#pk-download">4 · Download</a>
+  <a href="#pk-3d">Using the 3D view</a>
+  <a href="#pk-flat">Flat print layout</a>
+  <a href="#pk-save">Saving your work</a>
+  <b>Wrapping paper</b>
+  <a href="#wrapping">Make a wrapper</a>
+  <b>Product documents (TDS)</b>
+  <a href="#docs">The four documents</a>
+  <a href="#doc-straw">Paper straw TDS</a>
+  <a href="#doc-rm">Raw material TDS</a>
+  <a href="#doc-fg">Finished cutlery TDS</a>
+  <a href="#doc-spec">Customer product spec</a>
+  <a href="#photo-edit">Moving &amp; resizing photos</a>
+  <a href="#photos">Taking good photos</a>
+  <b>Help</b>
+  <a href="#faq">Common problems</a>
+  <a href="#words">Words used in this tool</a>
+</nav>
+
+<article>
+<h1 id="start">BioPapro Design Hub – user guide</h1>
+<p class="lead">Design Hub makes our packaging and product documents in the browser: boxes with a 3D preview, printed wrapping paper, and TDS sheets in the same format as the TDS folder. Nothing to install; open the link and start.</p>
+
+<div class="cards">
+  <div class="card"><b>Packaging – boxes</b><p>Shelf boxes, shipping cartons and counter displays. See the box in 3D, change text and colours, download print and die files.</p><a href="#pk-product">How to make a box →</a></div>
+  <div class="card"><b>Wrapping paper</b><p>Printed wrappers for individually wrapped cutlery and straws, with a printer's proof and paper usage.</p><a href="#wrapping">How to make a wrapper →</a></div>
+  <div class="card"><b>Product documents</b><p>Straw TDS, raw material TDS, finished cutlery TDS and customer product specifications.</p><a href="#docs">How to make a TDS →</a></div>
+</div>
+
+<div class="note info"><b>Link to open</b>https://biopapro-pack-studio.onrender.com — works in Chrome or Edge on any PC. Use a laptop or desktop; phones work but the screen is small.</div>
+
+<h3 id="which-file">Which file goes to whom</h3>
+<div class="tw"><table>
+<tr><th>Sending to</th><th>Download this</th><th>Where to find it</th></tr>
+<tr><td><b>Customer / sales / WhatsApp</b></td><td>Product photo (PNG). For websites and Amazon: Photo with no background.</td><td>Packaging → step 4 Download</td></tr>
+<tr><td><b>Box printer</b></td><td>Print file, actual size (PDF). If they ask for an editable file: Artwork + cut lines (SVG).</td><td>Packaging → step 4 Download</td></tr>
+<tr><td><b>Die-maker</b></td><td>Die-maker files (ZIP with a DXF and a labelled drawing).</td><td>Packaging → step 4 Download</td></tr>
+<tr><td><b>Wrapper printer</b></td><td>Artwork (SVG) for printing, Proof PDF for approval.</td><td>Packaging → step 2 → Wrapping paper</td></tr>
+<tr><td><b>Customer approval of a wrapper</b></td><td>Proof PDF (has a sign / date box).</td><td>Packaging → step 2 → Wrapping paper</td></tr>
+<tr><td><b>Customer / QA asking for a TDS or spec</b></td><td>Download PDF. Customer specs also come as Word.</td><td>Product documents</td></tr>
+</table></div>
+
+<!-- ======================= PACKAGING ======================= -->
+<h2 id="pk-product"><span class="n">1</span>Pick the product</h2>
+<p class="sub">Every box starts from one of our products. The left panel walks you through 4 steps: Product → Box size → Design → Download. Use <span class="k">Next →</span> and <span class="k">← Back</span> at the bottom, or click a step number at the top.</p>
+<figure><img src="guide/pk-1-product.jpg" alt="Packaging page, step 1: product list on the left, 3D box on the right" loading="lazy"><figcaption>Step 1. Choose a product on the left; the 3D box on the right updates straight away.</figcaption></figure>
+<ol class="steps">
+  <li>Open the link. The first time, a short welcome card appears; click <span class="k">Let's start</span>.</li>
+  <li>Use the filter buttons (<i>Paper straws, Wooden cutlery, Displays, Cartons</i>) to narrow the list.</li>
+  <li>Click a product card. The box size, artwork and colours are filled in for you. A green tick shows which one is selected.</li>
+  <li>Click <span class="k">Next: Box size →</span>.</li>
+</ol>
+<div class="note tip"><b>Tip</b>Picking a product is only a starting point. Everything can be changed in the next steps.</div>
+
+<h2 id="pk-size"><span class="n">2</span>Box type &amp; size</h2>
+<figure><img src="guide/pk-2-size.jpg" alt="Step 2: four box types and the inside size fields" loading="lazy"><figcaption>Step 2. Choose the type of box, then check the inside size.</figcaption></figure>
+<ol class="steps">
+  <li><b>Choose the box type:</b> <i>Shelf box</i> (tuck-in lid, retail), <i>Shipping carton</i> (corrugated, export), <i>Counter display</i> (open tray with a back card), or <i>Wrapping paper</i> (see the <a href="#wrapping">Wrapping paper</a> section).</li>
+  <li><b>Check the inside size</b> in millimetres: Length, Width, Height. Enter the space the product needs <u>inside</u> the box; the board thickness is added automatically.</li>
+  <li><b>For straws, let it work out the size:</b> under <i>Auto-size for straws</i>, enter how many straws, their thickness and length, tick <i>paper-wrapped</i> if they are, and click <span class="k">Work out the box size for me</span>.</li>
+  <li><b>Choose the board</b> (white board, kraft, 3-ply or 5-ply corrugated). This changes the weight and cost figures, and the inside colour in 3D.</li>
+</ol>
+<div class="note imp"><b>Important</b>The sizes in the product list are a starting point. Before sending anything to the die-maker, check the inside size against a real sample of the product.</div>
+
+<h2 id="pk-design"><span class="n">3</span>Design the box</h2>
+<figure><img src="guide/pk-3-design.jpg" alt="Step 3: text fields, colour themes and board colour" loading="lazy"><figcaption>Step 3. Change the words and colours. The 3D box updates as you type.</figcaption></figure>
+<ul>
+  <li><b>Words on the box:</b> brand name, product name, size line, pieces in the box (shown in the round badge) and the slogan in the bottom band.</li>
+  <li><b>Colour theme:</b> one click changes all colours together (Eco green, Natural kraft, Café brown, and more).</li>
+  <li><b>Board colour:</b> White, Brown kraft or Coloured. <b>Background pattern:</b> Plain, Leaves, Stripes or Dots.</li>
+  <li><b>Logo:</b> click the logo box or drag a file onto it. A PNG with no background looks best.</li>
+  <li><b>Back &amp; side panel text</b> (click to open): features, specifications, product description, manufacturer details and the barcode number.</li>
+  <li><b>Custom colours:</b> pick exact colours instead of a theme.</li>
+  <li><b>Use your own artwork on one side:</b> choose a side (for example the Front) and upload a finished design made in CorelDRAW or Photoshop. Leave 3 mm extra on every edge.</li>
+</ul>
+<div class="note imp"><b>Before printing</b>The address, FSSAI number and barcode on the back panel are examples. Replace them with the real details for the product.</div>
+
+<h2 id="pk-download"><span class="n">4</span>Download</h2>
+<figure><img src="guide/pk-4-download.jpg" alt="Step 4: download options grouped by who they are for" loading="lazy"><figcaption>Step 4. Pick the file for the person you are sending it to.</figcaption></figure>
+<div class="tw"><table>
+<tr><th>File</th><th>What it is</th><th>Use it for</th></tr>
+<tr><td><b>Product photo</b> <span class="pill">PNG</span></td><td>High-quality picture of the 3D box exactly as it looks on screen.</td><td>WhatsApp, quotations, catalogue</td></tr>
+<tr><td><b>Photo with no background</b> <span class="pill">PNG</span></td><td>Same picture without the background.</td><td>Website, Amazon, presentations</td></tr>
+<tr><td><b>Print file, actual size</b> <span class="pill">PDF</span></td><td>The flat box with artwork, cut lines (red) and fold lines (blue) at real size.</td><td>Box printer. Print at 100%.</td></tr>
+<tr><td><b>Artwork + cut lines</b> <span class="pill">SVG</span></td><td>Same as the PDF but editable.</td><td>Printer or designer using CorelDRAW / Illustrator</td></tr>
+<tr><td><b>Each side as an image</b> <span class="pill">ZIP</span></td><td>Front, back, sides and top as separate pictures.</td><td>Designers, catalogue</td></tr>
+<tr><td><b>Die-maker files</b> <span class="pill">ZIP</span></td><td>DXF drawing in millimetres plus a labelled drawing.</td><td>Die-maker (cutting die)</td></tr>
+<tr><td><b>Save project</b> <span class="pill">JSON</span></td><td>Your whole design, to open again later.</td><td>Keeping or sharing a design</td></tr>
+</table></div>
+<p>The <span class="k">Download</span> button in the top bar always brings you to this step.</p>
+
+<h3 id="pk-3d">Using the 3D view</h3>
+<figure><img src="guide/pk-6-fold.jpg" alt="3D box half folded" loading="lazy"><figcaption>Watch it fold: the flat sheet folding into the box.</figcaption></figure>
+<div class="tw"><table>
+<tr><th>To do this</th><th>Do this</th></tr>
+<tr><td>Turn the box</td><td>Click and drag on the box</td></tr>
+<tr><td>Zoom in or out</td><td>Mouse wheel (or pinch on a touchpad)</td></tr>
+<tr><td>Jump to a view</td><td>Top-left buttons: <span class="k">Angle</span> <span class="k">Front</span> <span class="k">Side</span> <span class="k">Top</span> <span class="k">Back</span>; <span class="k">Reset</span> fixes the zoom</td></tr>
+<tr><td>See it fold from flat</td><td><span class="k">▶ Watch it fold</span>, or drag the Flat ↔ Box slider</td></tr>
+<tr><td>Open the lid / see straws inside</td><td><span class="k">Open lid</span> (shelf boxes and cartons)</td></tr>
+<tr><td>Change the background or spin it</td><td>Top-right: three background dots and <span class="k">Spin</span></td></tr>
+</table></div>
+
+<h3 id="pk-flat">Flat print layout</h3>
+<p>Click <span class="k">Flat print layout</span> in the top bar (or <span class="k">Both</span> to see it next to the 3D view). This is the box opened out flat, exactly as the printer and die-maker see it.</p>
+<figure><img src="guide/pk-5-flat.jpg" alt="Flat print layout with cut and fold lines and costing figures" loading="lazy"><figcaption>Flat layout. <span class="swatch"></span>red = cut, <span class="swatch f"></span>blue dashed = fold. The figures at the bottom help with costing.</figcaption></figure>
+<ul>
+  <li><b>Panel names</b> shows or hides the labels (FRONT, SIDE, TOP…). <b>Fit to screen</b> resets the view. Scroll to zoom, drag to move.</li>
+  <li><b>Flat sheet size</b> – size of the board before folding.</li>
+  <li><b>Board per box</b> – grams of board for one box (and boxes per kg).</li>
+  <li><b>Best printing sheet</b> – how many boxes fit on standard printing sheets (20×30", 23×36", 25×36", 28×40").</li>
+  <li><b>Cutting / folding rule</b> – total length of cut and fold lines; the die-maker prices the die on this.</li>
+</ul>
+
+<h3 id="pk-save">Saving your work</h3>
+<ul>
+  <li>Your latest design is remembered automatically <b>in this browser on this computer</b>.</li>
+  <li>To keep a design safely, or to send it to a colleague, use <span class="k">Save project</span> (step 4). It downloads a small <code>.json</code> file.</li>
+  <li>To continue later, click <span class="k">Open project</span> and choose that file.</li>
+</ul>
+<div class="note imp"><b>Important</b>Clearing the browser history or using another computer starts fresh. Use Save project for anything you want to keep.</div>
+
+<!-- ======================= WRAPPING ======================= -->
+<h2 id="wrapping"><span class="n">W</span>Wrapping paper</h2>
+<p class="sub">For individually wrapped cutlery (a printed sheet that folds around the piece) and straw wrappers (a narrow printed strip).</p>
+<figure><img src="guide/wrap-1.jpg" alt="Wrapping paper designer with the proof, paper per piece and a wrapped preview" loading="lazy"><figcaption>Wrapping paper. Left: settings. Middle: the proof. Right: paper per piece, roll plan and how it looks wrapped.</figcaption></figure>
+<ol class="steps">
+  <li>Go to <b>Packaging → step 2</b> and click <span class="k">Wrapping paper</span>. Use <span class="k">← Back to boxes</span> to return.</li>
+  <li>Choose <b>Cutlery wrapper</b> or <b>Straw wrapper</b> at the top.</li>
+  <li><b>Product:</b> pick from <i>From your products</i>. The sheet size is worked out for you (for a 160 mm fork: 100 × 210 mm, folds 10 | 20 | 40 | 20 | 10 mm, 10 mm seals).</li>
+  <li><b>Sheet size:</b> to set your own size, turn off <i>Size automatically from product</i> and type the width, height, seal size and fold panels (left to right, separated by commas).</li>
+  <li><b>Paper:</b> choose the paper (Kraft, KLD = kraft with LD/PE coating, White) and the GSM. The weight per piece updates.</li>
+  <li><b>Print:</b> main text and second line, ink colour, surface or reverse print, number of colours, drawing size, eye marks, and whether to show the BioPapro logo.</li>
+  <li><b>Proof details:</b> job ID, customer name and design name. These appear in the proof's title box.</li>
+  <li><b>Roll &amp; quantity:</b> roll width and number of pieces, to see how many wrappers fit across the roll and the roll length needed.</li>
+  <li>Download: <span class="k">Proof PDF</span> for customer approval (it has a sign / date box), <span class="k">Artwork (SVG)</span> at actual size for the printer.</li>
+</ol>
+<div class="note tip"><b>Tip</b>In the artwork file, fold and seal lines are on a separate layer called "Guides". Ask the printer to switch that layer off when printing.</div>
+
+<!-- ======================= DOCUMENTS ======================= -->
+<h2 id="docs"><span class="n">T</span>Product documents (TDS)</h2>
+<p class="sub">Click <span class="k">Product documents</span> in the top bar. The page on the right is exactly what gets downloaded.</p>
+<div class="tw"><table>
+<tr><th>Document</th><th>Page</th><th>Used for</th><th>Drive folder it matches</th></tr>
+<tr><td><b>Paper straw TDS</b></td><td>A4 portrait</td><td>Straw size, ply, GSM, weight, with a dimensioned photo</td><td>TDS OF PAPER STRAW</td></tr>
+<tr><td><b>Raw material TDS</b></td><td>A4 portrait</td><td>Raw cutlery piece: weight, pcs per kg, wastage, drawing</td><td>TDS OF RAW MATERIALS</td></tr>
+<tr><td><b>Finished cutlery TDS</b></td><td>A4 landscape</td><td>Thickness, packing, box weight and size, two photos</td><td>TDS OF WOODEN CUTLERIES</td></tr>
+<tr><td><b>Customer product spec</b></td><td>A4, 1–2 pages</td><td>Customer-specific packing details, PDF and Word</td><td>PRODUCT DETAILS</td></tr>
+</table></div>
+<h3>The same 4 steps for every document</h3>
+<ol class="steps">
+  <li>Click the document type (four cards at the top left).</li>
+  <li>Under <b>Start from</b>, choose an existing product. All products from the TDS folder are there (14 straws, 8 raw materials, 53 cutlery items, 6 customer specs). Click <span class="k">Blank</span> for a new one.</li>
+  <li>Change what you need and upload the photo(s).</li>
+  <li>Click <span class="k">Download PDF</span> (and <span class="k">Word</span> for customer specs). The file name follows the Drive folder style, for example <i>8X197MM PLAIN WHITE PAPER STRAW.pdf</i>.</li>
+</ol>
+
+<h3 id="doc-straw">Paper straw TDS</h3>
+<figure><img src="guide/doc-1-straw.jpg" alt="Paper straw TDS with fields on the left and the sheet on the right" loading="lazy"><figcaption>Paper straw TDS. The example photo is a placeholder; use a real straw photo.</figcaption></figure>
+<ul>
+  <li>Fill in product name, diameter, length, ply, GSM and the <b>weight per straw</b>. The weight for 100 pcs is calculated.</li>
+  <li>The green box shows a calculated weight as a check. <b>The sheet prints the weight you type</b>, so enter the measured value.</li>
+  <li>Enter the <b>measured inner and outer diameter</b>. They appear on the drawing.</li>
+  <li><b>Photo:</b> click the dashed box on the page (or drag a photo file onto it), or use <span class="k">Upload</span> on the left. One photo of the straw lying flat is used at the top right and, turned upright, for the drawing.</li>
+  <li><b>Arrows:</b> drag the <span style="color:#e3131b;font-weight:700">red dots</span> on the page so the arrows touch the edges of the straw. The <span style="color:#1d5fd1;font-weight:700">blue dots</span> move the line and label. The dots never print.</li>
+</ul>
+
+<h3 id="doc-rm">Raw material TDS</h3>
+<figure><img src="guide/doc-2-rm.jpg" alt="Raw material TDS for a 160 mm spoon with dimension arrows" loading="lazy"><figcaption>Raw material TDS. Each measurement in the list matches one arrow on the drawing.</figcaption></figure>
+<ul>
+  <li>Fill in weight, pcs per kg, wastage and thickness.</li>
+  <li><b>Shape</b> (spoon, fork, knife, scoop) decides which measurements are drawn.</li>
+  <li>Type each measurement in the list (head length, head width, neck width, total length, handle end width…).</li>
+  <li>Upload a photo of the piece lying flat with the <b>head to the left</b>. Use <i>Zoom</i>, <i>Left/right</i>, <i>Up/down</i> so the piece fills the strip; <i>Photo strip width/height</i> resizes the strip.</li>
+  <li>Drag the dots so each arrow touches the right edges. <span class="k">Reset arrow positions</span> puts them back.</li>
+</ul>
+
+<h3 id="doc-fg">Finished cutlery TDS</h3>
+<figure><img src="guide/doc-3-fg.jpg" alt="Finished cutlery TDS in landscape with packing details and two photos" loading="lazy"><figcaption>Finished cutlery TDS. Top photo: loose pieces. Bottom photo: the packed packet.</figcaption></figure>
+<ul>
+  <li>Company name is pre-filled as <b>BIOPAPRO CUTLERIES PVT. LTD.</b></li>
+  <li>Fill in thickness, pieces per packet, box weight, pieces per box and box size (L × W × H).</li>
+  <li>The green box checks your numbers: grams per piece, pieces per kg and packets per box.</li>
+  <li><b>Extra line</b> is for special cases such as round sticks (<i>1 KG = 371 PCS</i>).</li>
+  <li>Upload two photos: loose pieces (top) and the packed packet (bottom).</li>
+</ul>
+
+<h3 id="doc-spec">Customer product spec</h3>
+<figure><img src="guide/doc-4-spec.jpg" alt="Customer product specification with editable sections" loading="lazy"><figcaption>Customer spec. Sections and lines can be added, removed or moved.</figcaption></figure>
+<ul>
+  <li><b>Header:</b> date, customer name and product name.</li>
+  <li><b>Photos:</b> <span class="k">+ Add photos</span>. The first photo sits on its own row; up to 3 more go side by side below. A red border is added automatically.</li>
+  <li><b>Details:</b> each section (Product Details, Packaging Material, Packaging Details, Documents…) has label / value lines. Use <span class="k">+ Add line</span>, ✕ to remove, ↑ to move a section up, and <i>+ Add a section…</i> for Wrapping Paper, Tissue Paper or Inner Carton details.</li>
+  <li><b>Checks:</b> a yellow message appears if the net weight is not gross − tare, or pieces per carton is not pieces × packets. Fix the numbers before sending.</li>
+  <li>Download as <span class="k">Download PDF</span> or <span class="k">Word</span> (Word can be edited further).</li>
+</ul>
+<div class="note imp"><b>Check before sending</b>The product list was copied from the existing Drive files, including any mistakes in them. Two existing specs have net weights that don't add up (Rebel Foods, Bistro); the yellow check will point these out.</div>
+
+<h3 id="photo-edit">Moving and resizing photos (like Word)</h3>
+<div class="tip"><b>You usually don't need to adjust anything.</b> When you add a photo, the tool finds the product in it, trims the empty background, fits it neatly in its spot, and keeps it inside the page. On the drawing, the length lines move to the ends of the product and the width arrows move to its edges by themselves. Use the steps below only if you want to change something.</div>
+<div class="tw"><table>
+<tr><th>To do this</th><th>Do this</th></tr>
+<tr><td>Add a photo</td><td>Click a dashed <i>“+ Click or drop a photo here”</i> box on the page, or drag a photo file onto it</td></tr>
+<tr><td>Select a photo</td><td>Click it. A blue frame with handles and a small black toolbar appear</td></tr>
+<tr><td>Move it</td><td>Drag the photo</td></tr>
+<tr><td>Make it bigger or smaller</td><td>Drag a <b>corner</b> handle (keeps the shape). Hold <span class="k">Shift</span> to change the shape freely</td></tr>
+<tr><td>Make the frame wider / taller only</td><td>Drag a handle in the middle of a side</td></tr>
+<tr><td>Zoom into the photo inside its frame</td><td>Scroll the mouse wheel over the selected photo, or toolbar <span class="k">＋</span> <span class="k">－</span></td></tr>
+<tr><td>Slide the photo inside its frame</td><td>Hold <span class="k">Alt</span> and drag</td></tr>
+<tr><td>Make the big faded logo behind the page lighter, darker or remove it</td><td>Left side, under <i>Start from</i>: <span class="k">Background logo</span> → Light / Darker / None</td></tr>
+<tr><td>Change how the photo fits</td><td>Toolbar: <span class="k">Auto fit</span> (normal, product fitted neatly) · <span class="k">Whole photo</span> (nothing cut off) · <span class="k">Fill frame</span> (photo covers the whole spot)</td></tr>
+<tr><td>An arrow is on the wrong spot</td><td>Drag its dot. That arrow then stays where you put it. <span class="k">Reset arrow positions</span> makes all arrows follow the product again</td></tr>
+<tr><td>Turn, replace or remove</td><td>Toolbar <span class="k">↻</span>, <span class="k">Replace</span>, <span class="k">Remove</span></td></tr>
+<tr><td>Start again</td><td>Toolbar <span class="k">Reset</span> puts the photo back in its standard place and size</td></tr>
+<tr><td>Deselect</td><td>Click an empty part of the page, or press <span class="k">Esc</span></td></tr>
+</table></div>
+<p>On the <b>customer spec</b>, photos stay in rows; drag a corner (or use <span class="k">＋ Bigger</span> / <span class="k">－ Smaller</span>) to change their size. The blue frame, handles and toolbar never print.</p>
+<div class="note imp"><b>Photo won't upload?</b>Use <b>JPG or PNG</b>. iPhone photos in <b>HEIC</b> format can't be used: on the iPhone set Camera → Formats → <i>Most Compatible</i>, or send the photo through WhatsApp first (that turns it into a JPG). The tool shows a message if a photo can't be read.</div>
+
+<h3 id="photos">Taking good product photos</h3>
+<ul>
+  <li>Lay the product <b>flat</b> on a plain <b>grey or white</b> sheet, horizontal, head to the left.</li>
+  <li>Use daylight or a bright white light; avoid strong shadows.</li>
+  <li>Hold the phone straight above the product, not at an angle, and fill most of the photo with the product.</li>
+  <li>Phone photos are fine; large photos are reduced automatically.</li>
+</ul>
+
+<!-- ======================= HELP ======================= -->
+<h2 id="faq"><span class="n">?</span>Common problems</h2>
+<details><summary>The 3D box is not showing</summary><div>Reload the page. If it still doesn't show, the computer's graphics may be switched off in the browser: in Chrome go to Settings → System and turn on <i>Use graphics acceleration when available</i>, then restart Chrome. The flat layout and all downloads work even without 3D.</div></details>
+<details><summary>Product documents say "Loading document fonts…" for a while</summary><div>The first time, the page downloads the document fonts (about 10 seconds on a slow connection). After that it opens quickly.</div></details>
+<details><summary>The printed box or proof is the wrong size</summary><div>In the print window choose <b>Actual size / 100%</b>, not "Fit to page". The wrapping-paper proof is printed slightly smaller to fit A4; the sizes written on it and the artwork SVG are the real sizes.</div></details>
+<details><summary>Where did my download go?</summary><div>Downloads go to your normal Downloads folder. In Chrome press <span class="k">Ctrl</span> + <span class="k">J</span> to see the list.</div></details>
+<details><summary>My design disappeared</summary><div>Designs are remembered only in the same browser on the same computer, and are lost if the browser history is cleared. Always use <b>Save project</b> for work you want to keep.</div></details>
+<details><summary>The Word file looks a little different from the PDF</summary><div>Word draws borders, bullets and spacing in its own way. Use the PDF for sending; use Word only when the customer needs to edit the spec.</div></details>
+<details><summary>A product or size is missing from the list</summary><div>Start from the closest product and change the values, or use <b>Blank</b>. Ask the admin to add it to the product library so it's there for everyone.</div></details>
+
+<h3 id="words">Words used in this tool</h3>
+<div class="tw"><table>
+<tr><th>Word</th><th>Meaning</th></tr>
+<tr><td><b>Dieline / flat layout</b></td><td>The box opened out flat, showing where to cut and fold.</td></tr>
+<tr><td><b>Cut line / fold (crease) line</b></td><td>Red = the die cuts here. Blue dashed = the board is folded here.</td></tr>
+<tr><td><b>Bleed</b></td><td>3 mm of extra artwork around the edges, so no white shows if the cut is slightly off.</td></tr>
+<tr><td><b>Ply / flute</b></td><td>Layers of corrugated board. 3-ply for light boxes, 5-ply for export cartons.</td></tr>
+<tr><td><b>GSM</b></td><td>Grams per square metre: how heavy (thick) the paper or board is.</td></tr>
+<tr><td><b>KLD</b></td><td>Kraft paper laminated with LD (polythene) coating, used for wrappers.</td></tr>
+<tr><td><b>Eye mark</b></td><td>Small black square the wrapping machine reads to cut each wrapper in the right place.</td></tr>
+<tr><td><b>Proof</b></td><td>A preview for the customer to check and sign before printing.</td></tr>
+<tr><td><b>TDS</b></td><td>Technical Data Sheet: the product's specifications on one page.</td></tr>
+</table></div>
+
+<footer>BioPapro Design Hub · user guide · updated October 2026. Screenshots use example photos; your screen will show your real product.</footer>
+</article>
+</div>
+<script>
+/* highlight the current section in the contents list */
+const links = [...document.querySelectorAll('#toc a')], map = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+const obs = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { links.forEach(l => l.classList.remove('on')); const a = map.get(e.target.id); if (a) a.classList.add('on'); } }); }, { rootMargin: '-80px 0px -70% 0px' });
+map.forEach((a, id) => { const el = document.getElementById(id); if (el) obs.observe(el); });
+</script>
+<a href="../../#work" style="position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:99999;background:#1c1712;color:#ffb547;font:500 12px/1 Inter,system-ui,sans-serif;padding:9px 14px;border-radius:999px;box-shadow:0 6px 24px rgba(0,0,0,.25);text-decoration:none;white-space:nowrap">Portfolio demo · ← back to portfolio</a></body>
+</html>

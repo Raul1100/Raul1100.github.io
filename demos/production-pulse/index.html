@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Production Pulse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../_shared/demo.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>window.APP={"name": "Shopfloor", "short": "Sf", "tagline": "Production tracking", "accent": "#7c3aed", "workspace": "Plant 1 · 5 departments", "nav": [{"id": "today", "title": "Today", "icon": "factory", "desc": "Plan vs actual for every department, pro-rated to the time of day."}, {"id": "trends", "title": "Trends", "icon": "chart", "desc": "Plan vs actual and 14-day attainment."}, {"id": "machines", "title": "Machines & labour", "icon": "cog", "desc": "Downtime, availability and output per head."}, {"id": "handover", "title": "Shift handover", "icon": "clipboard", "desc": "Notes passed between Day and Night shifts."}, {"id": "method", "title": "Methodology", "icon": "book", "desc": "How plans, actuals and status are calculated."}], "notifications": [["Cutlery kits behind plan", "Below 95% of the pro-rated target"], ["CUT-03 downtime", "Blade change logged on Day shift"], ["Night shift handover due", "At 20:00"]]};</script>
+<script src="../_shared/demo.js"></script>
+<style>
+.dept{display:grid;gap:8px}
+.dept .top{display:flex;justify-content:space-between;align-items:center}
+.dept h3{font:600 14px 'Space Grotesk',Inter,sans-serif}
+.dept .nums{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.dept .nums b{color:var(--text);font-size:18px;font-family:'Space Grotesk',Inter,sans-serif}
+.dept input{width:100%;text-align:right}
+.att{height:10px;border-radius:5px;background:var(--line);overflow:hidden;position:relative}
+.att i{position:absolute;inset:0 auto 0 0;border-radius:5px;transition:width .5s}
+.att::after{content:"";position:absolute;left:100%;top:-3px;bottom:-3px;width:2px;background:var(--muted)}
+textarea{width:100%;min-height:70px;resize:vertical}
+.notes{display:grid;gap:8px;margin-top:12px;max-height:220px;overflow:auto}
+.note-item{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px}
+.note-item small{display:block;color:var(--dim);font:500 11px 'JetBrains Mono',monospace;margin-bottom:3px}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Production Pulse</h1>
+  <span class="sub">plan vs actual · 5 departments · same-day</span>
+  <span class="spacer"></span>
+  <label class="f" style="grid-auto-flow:column;align-items:center;gap:8px">Date <select id="date"></select></label>
+  <span class="badge" id="live"></span>
+</header>
+<main>
+  <div data-view="today" class="grid g4" id="kpis"></div>
+  <div data-view="today" class="grid g5" id="depts"></div>
+  <div data-view="trends" class="grid g2">
+    <div class="card"><h2>Plan vs actual <small id="pvaNote"></small></h2><div class="chart"><canvas id="pva"></canvas></div></div>
+    <div class="card"><h2>Attainment, last 14 days <small>actual ÷ plan</small></h2><div class="chart"><canvas id="trend"></canvas></div></div>
+  </div>
+  <div data-view="machines" class="grid g-side">
+    <div class="card"><h2>Machines <small id="mNote"></small></h2><table id="machines"></table></div>
+    <div class="card"><h2>Labour <small>planned vs present</small></h2><table id="labour"></table></div>
+  </div>
+  <div data-view="handover" class="card"><h2>Shift handover <small>saved in your browser</small></h2>
+    <div class="grid g-side">
+      <div><textarea id="noteTxt" placeholder="e.g. Cutter line 2 blade changed at 14:10, running 15 min behind. Night shift: finish GRN-5121 first."></textarea>
+        <div style="display:flex;gap:8px;margin-top:8px"><select id="noteShift"><option>Day → Night</option><option>Night → Day</option></select><select id="noteDept"></select><button class="primary" id="saveNote">Save handover</button></div></div>
+      <div class="notes" id="notes"></div>
+    </div>
+  </div>
+  <div data-view="method" class="card"><h2>How it works</h2><p class="note">a single-page app. Plans you type are saved per date and department in localStorage. "Actual" comes from simulated shift entries (seeded, so the history is stable). For today it only counts the part of each shift that has already run, so the numbers move during the day. Status: on track ≥ 95% of the pro-rated plan, behind 80–95%, critical below 80%.</p></div>
+</main>
+<script>
+const DEPTS = [
+  { k: 'sel', name: 'Selection', unit: 'kg', plan: 900, machines: ['SEL-01', 'SEL-02'], crew: 16 },
+  { k: 'cut', name: 'Cutter', unit: 'kg', plan: 760, machines: ['CUT-01', 'CUT-02', 'CUT-03', 'CUT-04'], crew: 10 },
+  { k: 'aut', name: 'Automatic', unit: 'kg', plan: 640, machines: ['AUTO-01', 'AUTO-02', 'AUTO-03'], crew: 9 },
+  { k: 'pck', name: 'Packing', unit: 'ctn', plan: 120, machines: ['PACK-L1', 'PACK-L2'], crew: 14 },
+  { k: 'ctl', name: 'Cutlery kits', unit: 'boxes', plan: 30, machines: ['KIT-01'], crew: 6 },
+];
+const today = new Date(); today.setHours(0, 0, 0, 0);
+const DATES = Array.from({ length: 15 }, (_, i) => { const d = new Date(today); d.setDate(d.getDate() - i); return d; });
+const key = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`, label = d => d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+const plans = store.get('pp-plans', {}), notes = store.get('pp-notes', []);
+const planOf = (d, dep) => plans[key(d) + dep.k] ?? dep.plan;
+
+// Seeded per (date, dept): 2 shifts, each machine contributes, with occasional downtime.
+function shifts(d, dep) {
+  const r = rng(+key(d).replace(/-/g, '') * 7 + dep.k.charCodeAt(0));
+  return ['Day', 'Night'].map(sh => dep.machines.map(m => {
+    const down = r() < .12 ? Math.round(30 + r() * 120) : Math.round(r() * 15);
+    const out = dep.plan / 2 / dep.machines.length * (0.82 + r() * 0.3) * (1 - down / 480); // capacity-driven, independent of the plan typed in
+    return { sh, m, down, out };
+  }));
+}
+// Fraction of each shift elapsed (Day 08–20, Night 20–08) for the live "today" view.
+function elapsed(d) {
+  if (key(d) !== key(today)) return [1, 1];
+  const h = new Date().getHours() + new Date().getMinutes() / 60;
+  return [Math.min(1, Math.max(0, (h - 8) / 12)), h >= 20 ? (h - 20) / 12 : 0];
+}
+function day(d) {
+  const ef = elapsed(d);
+  return DEPTS.map(dep => {
+    const s = shifts(d, dep), act = s.reduce((a, sh, i) => a + sh.reduce((x, m) => x + m.out, 0) * ef[i], 0);
+    const due = planOf(d, dep) * (ef[0] + ef[1]) / 2, att = due ? act / due : 0;
+    return { dep, plan: planOf(d, dep), due, act, att, status: due === 0 ? 'Not started' : att >= .95 ? 'On track' : att >= .8 ? 'Behind' : 'Critical', s, ef };
+  });
+}
+const pill = s => `<span class="pill ${s === 'On track' ? 'ok' : s === 'Behind' ? 'warn' : s === 'Critical' ? 'bad' : 'mute'}">${s}</span>`;
+let pva, trend;
+function render() {
+  const d = DATES[+$('#date').value], rows = day(d), isToday = key(d) === key(today);
+  $('#live').className = 'badge ' + (isToday ? 'ok' : ''); $('#live').textContent = isToday ? `● live · ${new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}` : 'closed day';
+  const crit = rows.filter(r => r.status === 'Critical'), downtime = rows.reduce((a, r) => a + r.s.flat().reduce((x, m) => x + m.down, 0), 0);
+  const overall = rows.reduce((a, r) => a + Math.min(r.att, 1.2), 0) / rows.length;
+  $('#kpis').innerHTML = [['Overall attainment', pct(overall, 0), overall >= .95 ? 'ok' : overall >= .8 ? 'acc' : 'bad'], ['Departments on track', `${rows.filter(r => r.status === 'On track').length} / ${rows.length}`, ''],
+    ['Needs attention', crit.length ? crit.map(c => c.dep.name).join(', ') : 'None', crit.length ? 'bad' : 'ok'], ['Machine downtime', `${downtime} min`, downtime > 300 ? 'bad' : '']]
+    .map(([l, v, c]) => `<div class="card kpi ${c}"><b style="font-size:${String(v).length > 12 ? 16 : 26}px">${v}</b><span>${l}</span></div>`).join('');
+  $('#depts').innerHTML = rows.map(r => `<div class="card dept"><div class="top"><h3>${r.dep.name}</h3>${pill(r.status)}</div>
+    <div class="nums"><span>Actual<br><b>${num(r.act)}</b> ${r.dep.unit}</span><span style="text-align:right">${isToday ? 'Due so far' : 'Plan'}<br><b>${num(r.due)}</b></span></div>
+    <div class="att"><i style="width:${Math.min(100, r.att * 100)}%;background:${r.status === 'On track' ? 'var(--ok)' : r.status === 'Behind' ? 'var(--warn)' : 'var(--bad)'}"></i></div>
+    <label class="f">Day plan (${r.dep.unit})<input type="number" min="0" data-k="${r.dep.k}" value="${r.plan}"></label></div>`).join('');
+  $('#depts').querySelectorAll('input').forEach(inp => inp.onchange = () => { plans[key(d) + inp.dataset.k] = Math.max(0, +inp.value || 0); store.set('pp-plans', plans); render(); });
+  pva?.destroy();
+  pva = new Chart($('#pva'), { type: 'bar', data: { labels: rows.map(r => r.dep.name), datasets: [
+    { label: isToday ? 'Due so far' : 'Plan', data: rows.map(r => Math.round(r.due)), backgroundColor: 'rgba(165,156,143,.4)', borderRadius: 4 },
+    { label: 'Actual', data: rows.map(r => Math.round(r.act)), backgroundColor: rows.map(r => r.status === 'On track' ? '#7bd88f' : r.status === 'Behind' ? '#ffb547' : '#ef6b5b'), borderRadius: 4 }] },
+    options: { maintainAspectRatio: false, scales: { y: { type: 'logarithmic', title: { display: true, text: 'units (log scale)' } } } } });
+  $('#pvaNote').textContent = 'mixed units, log scale';
+  const hist = DATES.slice(0, 14).reverse(), C = ['#ffb547', '#7bd88f', '#5aa9ff', '#b18cff', '#ef6b5b'];
+  trend?.destroy();
+  trend = new Chart($('#trend'), { type: 'line', data: { labels: hist.map(label), datasets: DEPTS.map((dep, i) => ({ label: dep.name, borderColor: C[i], backgroundColor: C[i], pointRadius: 2, tension: .3,
+    data: hist.map(h => { const r = day(h)[i]; return r.due ? Math.round(r.att * 100) : null; }) })) },
+    options: { maintainAspectRatio: false, scales: { y: { suggestedMin: 60, suggestedMax: 115, ticks: { callback: v => v + '%' } } } } });
+  const ms = rows.flatMap(r => r.dep.machines.map((m, j) => { const a = r.s.map(sh => sh[j]); const out = a.reduce((x, s, i) => x + s.out * r.ef[i], 0), down = a.reduce((x, s) => x + s.down, 0);
+    return { dept: r.dep.name, m, out, down, unit: r.dep.unit, eff: Math.max(0, 1 - down / 960) }; })).sort((a, b) => b.down - a.down);
+  $('#mNote').textContent = 'sorted by downtime';
+  $('#machines').innerHTML = '<tr><th>Machine</th><th>Dept</th><th class="num">Output</th><th class="num">Downtime</th><th>Availability</th></tr>' + ms.map(m =>
+    `<tr><td class="mono">${m.m}</td><td>${m.dept}</td><td class="num">${num(m.out)} ${m.unit}</td><td class="num" style="color:${m.down > 60 ? 'var(--bad)' : 'inherit'}">${m.down} min</td><td style="width:22%"><div class="bar"><i class="${m.eff > .95 ? 'ok' : m.eff < .85 ? 'bad' : ''}" style="width:${m.eff * 100}%"></i></div></td></tr>`).join('');
+  const lr = rng(+key(d).replace(/-/g, ''));
+  $('#labour').innerHTML = '<tr><th>Dept</th><th class="num">Planned</th><th class="num">Present</th><th class="num">Output / head</th></tr>' + rows.map(r => {
+    const present = Math.max(1, r.dep.crew - Math.floor(lr() * 3)); return `<tr><td>${r.dep.name}</td><td class="num">${r.dep.crew}</td><td class="num" style="color:${present < r.dep.crew ? 'var(--accent)' : 'var(--ok)'}">${present}</td><td class="num">${(r.act / present).toFixed(1)} ${r.dep.unit}</td></tr>`; }).join('');
+  renderNotes();
+}
+function renderNotes() {
+  const d = key(DATES[+$('#date').value]), list = notes.filter(n => n.date === d);
+  $('#notes').innerHTML = list.length ? list.slice().reverse().map(n => `<div class="note-item"><small>${n.shift} · ${n.dept} · ${n.time}</small>${esc(n.text)}</div>`).join('') : '<p class="note">No handover notes for this date yet.</p>';
+}
+$('#date').innerHTML = DATES.map((d, i) => `<option value="${i}">${i ? label(d) : 'Today · ' + label(d)}</option>`).join('');
+$('#noteDept').innerHTML = DEPTS.map(d => `<option>${d.name}</option>`).join('');
+$('#date').onchange = render;
+$('#saveNote').onclick = () => { const t = $('#noteTxt').value.trim(); if (!t) return;
+  notes.push({ date: key(DATES[+$('#date').value]), shift: $('#noteShift').value, dept: $('#noteDept').value, text: t, time: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) });
+  store.set('pp-notes', notes); $('#noteTxt').value = ''; renderNotes(); };
+render(); setInterval(() => key(DATES[+$('#date').value]) === key(today) && render(), 60000);
+</script>
+</body>
+</html>

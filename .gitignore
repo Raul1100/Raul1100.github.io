@@ -1,0 +1,4 @@
+_build/
+.claude/
+img$1.png
+*.log
