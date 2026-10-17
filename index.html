@@ -354,6 +354,8 @@ nav.nav-hide{transform:translateY(-100%)}
 footer{padding:36px 0;color:var(--dim);font-size:.85rem;font-family:var(--font-mono)}
 footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 </style>
+<style>.contact-plain{margin-top:22px;font:500 14px/1.9 var(--mono, monospace);color:var(--muted, #999)}.contact-plain a{color:inherit;text-decoration:underline;text-underline-offset:3px}.contact-plain a:hover{color:var(--accent, #f5a524)}</style>
+<noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
 </head>
 <body>
 <div class="progress" aria-hidden="true"></div>
@@ -366,7 +368,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
     </div>
     <div class="nav-right">
       <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">◐</button>
-      <a class="btn primary" id="navResume" href="#" download>Resume ↓</a>
+      <a class="btn primary" id="navResume" href="Rahul_Gurav_Resume.pdf" download>Resume ↓</a>
     </div>
   </div>
 </nav>
@@ -374,9 +376,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 <header class="hero" id="top">
   <div class="wrap hero-grid">
     <div class="reveal">
-      <span class="status"><i></i> Open to full-time &amp; freelance roles</span>
+      <span class="status"><i></i> Open to full-time roles</span>
       <h1>I turn messy business operations into <span class="grad">AI-powered software.</span></h1>
-      <p class="lead" id="heroLead"></p>
+      <p class="lead" id="heroLead">I design, code and ship complete products: AI agents with RAG and tool calling, full-stack React + Node apps and n8n automation pipelines that teams use every day.</p>
       <div class="hero-ctas">
         <a href="#work" class="btn primary">See my work →</a>
         <a href="#contact" class="btn">Let's talk</a>
@@ -385,13 +387,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
     </div>
     <div class="term reveal" aria-hidden="true">
       <div class="term-bar"><i></i><i></i><i></i><span>~/rahul/systems</span></div>
-      <div class="term-body" id="term"></div>
+      <div class="term-body" id="term"><div><span class="p">$ </span><span class="">whoami</span></div><div><span class=""></span><span class="">rahul gurav — ai engineer</span></div><div><span class="p">$ </span><span class="">ls ./shipped --count</span></div><div><span class="ok"></span><span class="ok">15 flagship · 31 supporting · all in production</span></div><div><span class="p">$ </span><span class="">cat stack.txt</span></div><div><span class="d"></span><span class="d">react · node · langgraph · n8n · python</span></div><div><span class="p">$ </span><span class="">./agent ask "pending import POs?"</span></div><div><span class="ok">✓ </span><span class="ok">3 POs in transit · ₹ landed cost ready</span></div><div><span class="p">$ </span><span class="">status</span></div><div><span class="ok">● </span><span class="ok">open to work</span></div><span class="p">$ </span></div>
     </div>
   </div>
   <div class="wrap" style="margin-top:64px">
-    <div class="stats reveal" id="stats"></div>
+    <div class="stats reveal" id="stats"><div class="stat"><b><span data-count="15">15</span><em></em></b><span>Flagship systems</span></div><div class="stat"><b><span data-count="40">40</span><em>+</em></b><span>Tools in daily use</span></div><div class="stat"><b><span data-count="7">7</span><em></em></b><span>Departments served</span></div><div class="stat"><b><span data-count="179">179</span><em></em></b><span>Nodes in my largest n8n workflow</span></div></div>
   </div>
-  <div class="marquee"><div class="marquee-track" id="marquee"></div></div>
+  <div class="marquee"><div class="marquee-track" id="marquee"><span>Python</span><span>TypeScript</span><span>React</span><span>Node.js</span><span>Express</span><span>FastAPI</span><span>LangGraph</span><span>RAG</span><span>Tool calling</span><span>OpenRouter</span><span>Claude</span><span>ChatGPT</span><span>Gemini</span><span>n8n</span><span>Google Apps Script</span><span>Google Sheets API</span><span>REST APIs</span><span>Tailwind</span><span>Three.js</span><span>Postman</span><span>Git</span><span>Render</span><span>Python</span><span>TypeScript</span><span>React</span><span>Node.js</span><span>Express</span><span>FastAPI</span><span>LangGraph</span><span>RAG</span><span>Tool calling</span><span>OpenRouter</span><span>Claude</span><span>ChatGPT</span><span>Gemini</span><span>n8n</span><span>Google Apps Script</span><span>Google Sheets API</span><span>REST APIs</span><span>Tailwind</span><span>Three.js</span><span>Postman</span><span>Git</span><span>Render</span></div></div>
 </header>
 
 <section id="about">
@@ -408,7 +410,19 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
         <div class="pillar"><h4>Automate the boring</h4><p>Triggers, webhooks, schedulers and agents replace manual work.</p></div>
       </div>
     </div>
-    <aside class="profile reveal" id="profile"></aside>
+    <aside class="profile reveal" id="profile">
+  <div class="avatar">RG</div>
+  <h3>Rahul Gurav</h3>
+  <div class="role">AI Engineer</div>
+  <dl class="kv">
+    <dt>company</dt><dd>Biopapro Cutleries Pvt. Ltd</dd>
+    <dt>focus</dt><dd>AI agents, full-stack apps, automation</dd>
+    <dt>domain</dt><dd>Manufacturing ops (in-house tech)</dd>
+    <dt>education</dt><dd>M.Sc. Computer Science, 2025</dd>
+    <dt>experience</dt><dd>AI Engineer since 2025 + 6-month traineeship</dd>
+    <dt>location</dt><dd>Parel, Mumbai</dd>
+  </dl>
+  <div class="btns"><a class="btn primary" href="mailto:rahulgurav866@gmail.com">Email me</a><a class="btn" href="https://www.linkedin.com/in/rahul-gurav-77a987241/" target="_blank" rel="noopener">LinkedIn</a></div></aside>
   </div>
 </section>
 
@@ -419,8 +433,188 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
       <h2>Flagship systems</h2>
       <p>Each one began as a real problem inside the business. The card shows what was broken, what I built, and what changed.</p>
     </div>
-    <div class="filters" id="featFilters"></div>
-    <div class="feat-grid" id="featGrid"></div>
+    <div class="filters" id="featFilters"><button class="filter active" data-c="All">All<small>15</small></button><button class="filter" data-c="AI">AI<small>2</small></button><button class="filter" data-c="Full-Stack">Full-Stack<small>4</small></button><button class="filter" data-c="ML">ML<small>3</small></button><button class="filter" data-c="Automation">Automation<small>3</small></button><button class="filter" data-c="Dashboards">Dashboards<small>3</small></button></div>
+    <div class="feat-grid" id="featGrid">
+    <article class="pcard reveal in">
+      <div class="top"><span class="cat">AI</span><span><span class="pv-hint">hover · preview</span><span class="num">01</span></span></div>
+      <h3>Procurement AI Agent</h3>
+      
+      <div class="pbr">
+        <div><b>PROBLEM</b><span>Stock, targets, in-transit goods, import POs, payments and landed cost were scattered across many sheets. Answering a simple purchase question meant digging by hand.</span></div>
+        <div><b>BUILT</b><span>A full-stack procurement platform with planning, import-PO, payment, landed-cost, vendor-comparison and QC dashboards, plus a LangGraph tool-calling agent backed by local RAG search and a procurement knowledge graph.</span></div>
+        <div class="res"><b>RESULT</b><span>The purchase team plans, tracks imports and asks questions in plain English instead of hunting through sheets.</span></div>
+      </div>
+      <div class="tags"><span class="chip">React</span><span class="chip">TypeScript</span><span class="chip">Node.js</span><span class="chip">LangGraph</span><span class="chip">RAG</span><span class="chip">Recharts</span><span class="chip">Sheets API</span><span class="chip">Vitest</span></div>
+      <div class="plinks"><a href="demos/procurement-agent/" target="_blank" rel="noopener">▶ Live demo</a></div>
+    </article>
+    <article class="pcard reveal in">
+      <div class="top"><span class="cat">AI</span><span><span class="pv-hint">hover · preview</span><span class="num">02</span></span></div>
+      <h3>FactoIntel: Factory Intelligence Platform</h3>
+      
+      <div class="pbr">
+        <div><b>PROBLEM</b><span>Production, stock and labour data lived across many Google Sheets, and stock errors such as negative balances or IMS edits with no matching entry surfaced days later.</span></div>
+        <div><b>BUILT</b><span>A React + TypeScript and Express app that reads 6 spreadsheets. It has dashboards for all five production departments, a GRN batch tracker, and FG/RM IMS audits that compare form entries with the IMS sheet day by day and label the root cause of every negative balance. It also covers labour and machine capacity, monthly targets, stock-cover forecasts, and an AI layer (daily brief, anomaly scan, chat) via OpenRouter.</span></div>
+        <div class="res"><b>RESULT</b><span>Stock problems show up with a root cause attached (e.g. 'dispatch beyond available stock'), and one health score covers inventory, production, labour, machines and data integrity.</span></div>
+      </div>
+      <div class="tags"><span class="chip">React</span><span class="chip">TypeScript</span><span class="chip">Express</span><span class="chip">Google Sheets API</span><span class="chip">OpenRouter</span><span class="chip">Recharts</span><span class="chip">Tailwind</span></div>
+      <div class="plinks"><a href="demos/factointel/" target="_blank" rel="noopener">▶ Live demo</a></div>
+    </article>
+    <article class="pcard reveal in">
+      <div class="top"><span class="cat">Full-Stack</span><span><span class="pv-hint">hover · preview</span><span class="num">03</span></span></div>
+      <h3>Sales CRM with Role-Based Access</h3>
+      
+      <div class="pbr">
+        <div><b>PROBLEM</b><span>Orders, dispatch, follow-ups, grievances and leads lived in separate sheets and forms, and anyone could see everything.</span></div>
+        <div><b>BUILT</b><span>A 24-page CRM with Google login and admin / CRM / dispatch roles. It covers order entry with auto IDs and stock checks, dispatch with photo upload, reorder-risk prediction, pipeline, grievances, WhatsApp, reports and an AI assistant for lead generation.</span></div>
+        <div class="res"><b>RESULT</b><span>Sales, CRM and dispatch work in one system, and each role sees only what it needs.</span></div>
+      </div>
+      <div class="tags"><span class="chip">React</span><span class="chip">Vite</span><span class="chip">Node.js</span><span class="chip">Express</span><span class="chip">Google OAuth</span><span class="chip">OpenRouter</span><span class="chip">node-cron</span></div>
+      <div class="plinks"><a href="demos/crm/" target="_blank" rel="noopener">▶ Live demo</a></div>
+    </article>
+    <article class="pcard reveal in">
+      <div class="top"><span class="cat">ML</span><span><span class="pv-hint">hover · preview</span><span class="num">04</span></span></div>
+      <h3>Demand Forecasting: 6 Models, One Backtest</h3>
+      <div class="metric"><strong>11.9%</strong><span>WAPE (−18% vs seasonal naive)</span></div>
+      <div class="pbr">
+        <div><b>PROBLEM</b><span>Purchase and production planning need demand forecasts weeks ahead, and the right method isn't obvious until you test them all on the same data.</span></div>
+        <div><b>BUILT</b><span>A browser app that simulates 3 years of weekly demand for 10 SKUs (trend, seasonality, a festive-season bump, promotions) and compares six hand-written models: naive, seasonal naive, moving average, Holt-Winters, ridge regression on lag and calendar features, and an ensemble. It runs a 4-fold rolling-origin backtest over an 8-week horizon and includes an automated leakage test.</span></div>
+        <div class="res"><b>RESULT</b><span>On the sample data the Holt-Winters + ridge ensemble reaches 11.9% WAPE, 18% less error than seasonal naive, and every model passes the leakage test.</span></div>
+      </div>
+      <div class="tags"><span class="chip">JavaScript</span><span class="chip">Holt-Winters</span><span class="chip">Ridge regression</span><span class="chip">Time series</span><span class="chip">Chart.js</span></div>
+      <div class="plinks"><a href="demos/demand-forecasting/" target="_blank" rel="noopener">▶ Live demo</a></div>
+    </article>
+    <article class="pcard reveal in">
+      <div class="top"><span class="cat">ML</span><span><span class="pv-hint">hover · preview</span><span class="num">05</span></span></div>
+      <h3>B2B Churn Prediction + RFM</h3>
+      <div class="metric"><strong>77%</strong><span>of churners reached in the top 20%</span></div>
+      <div class="pbr">
+        <div><b>PROBLEM</b><span>A sales team can only call so many customers a week, so it needs to know which active accounts are about to go quiet.</span></div>
+        <div><b>BUILT</b><span>Simulates 520 B2B customers with their own ordering rhythms, takes monthly snapshots with seven behavioural features, and trains a logistic regression in the browser on a time-based split. It compares the model with a 60-day inactivity rule, recency ranking and RFM segments, and explains each risk score.</span></div>
+        <div class="res"><b>RESULT</b><span>On the test snapshot, calling the riskiest 20% reaches 77% of churners and 62% of revenue at risk (AUC 0.95), against 61% when ranking by days since last order.</span></div>
+      </div>
+      <div class="tags"><span class="chip">JavaScript</span><span class="chip">Logistic regression</span><span class="chip">RFM</span><span class="chip">Chart.js</span></div>
+      <div class="plinks"><a href="demos/churn-rfm/" target="_blank" rel="noopener">▶ Live demo</a></div>
+    </article>
+    <article class="pcard reveal in">
+      <div class="top"><span class="cat">Automation</span><span><span class="pv-hint">hover · preview</span><span class="num">06</span></span></div>
+      <h3>AI Marketing Team (n8n, 179 nodes)</h3>
+      
+      <div class="pbr">
+        <div><b>PROBLEM</b><span>Planning, writing, designing and posting content every day took hours, and nobody tracked results.</span></div>
+        <div><b>BUILT</b><span>An n8n workflow that acts as a full marketing team. An AI strategist plans the week, a copywriter drafts posts, images are generated and reviewed by an AI art director, and videos are made with Google Veo. Approved posts go out to LinkedIn, Instagram, Facebook and WhatsApp from an approvals dashboard.</span></div>
+        <div class="res"><b>RESULT</b><span>Content goes from plan to published in one click, and performance, AI cost and errors are reported automatically.</span></div>
+      </div>
+      <div class="tags"><span class="chip">n8n</span><span class="chip">OpenAI</span><span class="chip">Gemini / Veo</span><span class="chip">Meta Graph API</span><span class="chip">LinkedIn API</span><span class="chip">WhatsApp Cloud API</span></div>
+      <div class="plinks"><a href="demos/n8n/#marketing" target="_blank" rel="noopener">▶ Live demo</a></div>
+    </article>
+    <article class="pcard reveal in">
+      <div class="top"><span class="cat">Automation</span><span><span class="pv-hint">hover · preview</span><span class="num">07</span></span></div>
+      <h3>WhatsApp AI Lead Qualifier (n8n)</h3>
+      
+      <div class="pbr">
+        <div><b>PROBLEM</b><span>WhatsApp enquiries arrived at all hours, and new leads waited too long for a reply.</span></div>
+        <div><b>BUILT</b><span>A 45-node AI agent that handles text, voice notes (transcribed) and images. It tells existing customers apart from new leads, qualifies them with chat memory, updates the CRM sheet and books calendar slots, with a human-takeover switch.</span></div>
+        <div class="res"><b>RESULT</b><span>Every enquiry gets an instant reply, and the sales team can step in on any chat.</span></div>
+      </div>
+      <div class="tags"><span class="chip">n8n</span><span class="chip">OpenAI</span><span class="chip">WhatsApp Cloud API</span><span class="chip">Google Calendar</span><span class="chip">Sheets</span></div>
+      <div class="plinks"><a href="demos/n8n/#whatsapp" target="_blank" rel="noopener">▶ Live demo</a></div>
+    </article>
+    <article class="pcard reveal in">
+      <div class="top"><span class="cat">Automation</span><span><span class="pv-hint">hover · preview</span><span class="num">08</span></span></div>
+      <h3>Export Lead Generator (n8n)</h3>
+      
+      <div class="pbr">
+        <div><b>PROBLEM</b><span>The founder's "Dream 100" export list needed qualified overseas buyers, and finding them by hand was slow.</span></div>
+        <div><b>BUILT</b><span>An n8n pipeline that scrapes B2B buyer leads country by country through SerpApi, enriches contacts with RocketReach, de-duplicates them and feeds a prospecting sheet.</span></div>
+        <div class="res"><b>RESULT</b><span>A steady, de-duplicated stream of export prospects with no manual searching.</span></div>
+      </div>
+      <div class="tags"><span class="chip">n8n</span><span class="chip">SerpApi</span><span class="chip">RocketReach</span><span class="chip">Google Sheets</span></div>
+      <div class="plinks"><a href="demos/n8n/#export" target="_blank" rel="noopener">▶ Live demo</a></div>
+    </article>
+    <article class="pcard reveal in">
+      <div class="top"><span class="cat">Full-Stack</span><span><span class="pv-hint">hover · preview</span><span class="num">09</span></span></div>
+      <h3>Export O2D &amp; Sales Tracker</h3>
+      
+      <div class="pbr">
+        <div><b>PROBLEM</b><span>Export orders went through 10 hand-offs (stock checks, packing material, QC, container booking and dispatch) across five people and several sheets. Nobody could see which step an order was stuck on.</span></div>
+        <div><b>BUILT</b><span>An Apps Script web app with two modules. Export O2D tracks every order through 10 SLA-timed steps with planned vs actual dates, holiday-aware due dates, per-person task lists, email hand-offs and a dispatch form. Export Sales generates commercial invoices and packing lists, ready to print as PDFs.</span></div>
+        <div class="res"><b>RESULT</b><span>Each person sees only their pending steps, delays are visible per order and per person, and export paperwork comes out of the same data.</span></div>
+      </div>
+      <div class="tags"><span class="chip">Google Apps Script</span><span class="chip">JavaScript</span><span class="chip">HTML/CSS</span><span class="chip">Google Sheets</span><span class="chip">Gmail</span></div>
+      <div class="plinks"><a href="demos/export-tracker/" target="_blank" rel="noopener">▶ Live demo</a></div>
+    </article>
+    <article class="pcard reveal in">
+      <div class="top"><span class="cat">Dashboards</span><span><span class="pv-hint">hover · preview</span><span class="num">10</span></span></div>
+      <h3>CEO Command Center: FastAPI Migration</h3>
+      
+      <div class="pbr">
+        <div><b>PROBLEM</b><span>The CEO dashboard, originally built by a colleague, ran on a single Node/Express server that read 8 Google Sheets, and its AI chat slowed down every startup.</span></div>
+        <div><b>BUILT</b><span>I ported every endpoint to FastAPI as separate, tested Python services. I kept the original's exact number handling (JS-style rounding, header lookups, fallbacks) so no figure changed. I also lazy-loaded the LangGraph chat, added a one-click Render blueprint, narrowed the production sheet reads, and did a full design pass on the UI.</span></div>
+        <div class="res"><b>RESULT</b><span>Same numbers, now on a typed, testable Python back end that is easier to extend.</span></div>
+      </div>
+      <div class="tags"><span class="chip">FastAPI</span><span class="chip">Python</span><span class="chip">LangGraph</span><span class="chip">Google Sheets API</span><span class="chip">Render</span><span class="chip">pytest</span></div>
+      <div class="plinks"><a href="demos/ceo-command-center/" target="_blank" rel="noopener">▶ Live demo</a></div>
+    </article>
+    <article class="pcard reveal in">
+      <div class="top"><span class="cat">Full-Stack</span><span><span class="pv-hint">hover · preview</span><span class="num">11</span></span></div>
+      <h3>Packaging Design Studio (3D)</h3>
+      
+      <div class="pbr">
+        <div><b>PROBLEM</b><span>Every box, wrapper and export carton needed a designer plus separate print and loading calculations.</span></div>
+        <div><b>BUILT</b><span>A browser design tool. You pick a product, size the box, edit text and colours, and see a live 3D mockup with a fold animation. It exports print-ready PDF, SVG and DXF die-lines, and includes a wrapping-paper designer and a 3D container-loading planner.</span></div>
+        <div class="res"><b>RESULT</b><span>Designs, printer files and loading plans take minutes, with no designer needed.</span></div>
+      </div>
+      <div class="tags"><span class="chip">Three.js</span><span class="chip">JavaScript</span><span class="chip">jsPDF</span><span class="chip">JSZip</span><span class="chip">SVG / DXF</span></div>
+      <div class="plinks"><a href="demos/pack-studio/" target="_blank" rel="noopener">▶ Live demo</a></div>
+    </article>
+    <article class="pcard reveal in">
+      <div class="top"><span class="cat">Full-Stack</span><span><span class="pv-hint">hover · preview</span><span class="num">12</span></span></div>
+      <h3>TDS &amp; Spec Sheet Generator</h3>
+      
+      <div class="pbr">
+        <div><b>PROBLEM</b><span>Every customer enquiry needed a technical data sheet and a dimensioned drawing, made by hand in Word.</span></div>
+        <div><b>BUILT</b><span>A standalone tool that generates branded TDS sheets, dimensioned product drawings and customer spec documents for straws and wooden cutlery from a few inputs.</span></div>
+        <div class="res"><b>RESULT</b><span>Spec documents go out the same day instead of after a design round-trip.</span></div>
+      </div>
+      <div class="tags"><span class="chip">JavaScript</span><span class="chip">SVG</span><span class="chip">HTML/CSS</span><span class="chip">PDF</span></div>
+      <div class="plinks"><a href="demos/tds-generator/" target="_blank" rel="noopener">▶ Live demo</a></div>
+    </article>
+    <article class="pcard reveal in">
+      <div class="top"><span class="cat">ML</span><span><span class="pv-hint">hover · preview</span><span class="num">13</span></span></div>
+      <h3>Sales Intelligence &amp; Forecasting</h3>
+      
+      <div class="pbr">
+        <div><b>PROBLEM</b><span>Sales data usually ends up in monthly reports, with no view of trends, expected revenue or which customers matter most.</span></div>
+        <div><b>BUILT</b><span>A dashboard over 24 months of simulated orders: revenue trend with a 3-month Holt-Winters forecast and 80% band, product growth, top customers, RFM segments and a state filter. A question box maps plain-English questions to exact queries. It's rule-based, not an LLM.</span></div>
+        <div class="res"><b>RESULT</b><span>Questions like 'top 5 customers last 3 months' or 'forecast next quarter' get exact answers from the data in one step.</span></div>
+      </div>
+      <div class="tags"><span class="chip">JavaScript</span><span class="chip">Holt-Winters</span><span class="chip">RFM</span><span class="chip">Chart.js</span></div>
+      <div class="plinks"><a href="demos/sales-intelligence/" target="_blank" rel="noopener">▶ Live demo</a></div>
+    </article>
+    <article class="pcard reveal in">
+      <div class="top"><span class="cat">Dashboards</span><span><span class="pv-hint">hover · preview</span><span class="num">14</span></span></div>
+      <h3>Production Pulse</h3>
+      
+      <div class="pbr">
+        <div><b>PROBLEM</b><span>Daily production plans and actual output are often tracked separately, so shortfalls only show up the next day.</span></div>
+        <div><b>BUILT</b><span>A single-page app for five departments: enter the day's plan per department and compare it with shift output pro-rated to the time of day. It shows on track / behind / critical status, a 14-day attainment trend, machine downtime and labour panels, and saved shift-handover notes.</span></div>
+        <div class="res"><b>RESULT</b><span>Supervisors can see which department is falling behind while the shift is still running.</span></div>
+      </div>
+      <div class="tags"><span class="chip">JavaScript</span><span class="chip">Chart.js</span><span class="chip">localStorage</span></div>
+      <div class="plinks"><a href="demos/production-pulse/" target="_blank" rel="noopener">▶ Live demo</a></div>
+    </article>
+    <article class="pcard reveal in">
+      <div class="top"><span class="cat">Dashboards</span><span><span class="pv-hint">hover · preview</span><span class="num">15</span></span></div>
+      <h3>O2D Order Tracking System</h3>
+      
+      <div class="pbr">
+        <div><b>PROBLEM</b><span>Orders pass through many hand-offs, and it's hard to see where each one is or which stage is slipping.</span></div>
+        <div><b>BUILT</b><span>Tracks every order through 8 stages from confirmation to payment. Planned dates come from per-stage SLAs in working days and ripple forward when a stage slips. It has list and board views, late and due-today filters, a per-order timeline with one-click 'mark done', and a new-order form.</span></div>
+        <div class="res"><b>RESULT</b><span>Late orders, and the exact stage they're stuck at, are visible at a glance along with on-time performance per stage.</span></div>
+      </div>
+      <div class="tags"><span class="chip">JavaScript</span><span class="chip">HTML/CSS</span><span class="chip">localStorage</span></div>
+      <div class="plinks"><a href="demos/o2d-tracker/" target="_blank" rel="noopener">▶ Live demo</a></div>
+    </article></div>
   </div>
 </section>
 
@@ -428,11 +622,166 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="eyebrow">03 · Full scope</div>
-      <h2><span id="moreCount"></span> more systems in production</h2>
+      <h2><span id="moreCount">31</span> more systems in production</h2>
       <p>Operational tools, dashboards, reconciliations and factory automations. These are the smaller pieces that keep the business running.</p>
     </div>
-    <div class="filters" id="moreFilters"></div>
-    <div class="more-grid" id="moreGrid"></div>
+    <div class="filters" id="moreFilters"><button class="filter active" data-c="All">All<small>31</small></button><button class="filter" data-c="Stock &amp; Purchase">Stock &amp; Purchase<small>8</small></button><button class="filter" data-c="Sales &amp; Finance">Sales &amp; Finance<small>10</small></button><button class="filter" data-c="Production">Production<small>6</small></button><button class="filter" data-c="Operations">Operations<small>7</small></button></div>
+    <div class="more-grid" id="moreGrid">
+  <div class="mcard" data-c="Stock &amp; Purchase">
+    <div class="cat"><span>Stock &amp; Purchase</span><em>● LIVE</em></div>
+    <h4>CEO Stock Dashboard</h4><p>FG and RM stock valued at cost from the stock and SKU-cost sheets.</p><div class="out">Stock value at a glance for management.</div>
+    <div class="tags"><span class="chip">Apps Script</span><span class="chip">HTML/CSS</span></div>
+  </div>
+  <div class="mcard" data-c="Stock &amp; Purchase">
+    <div class="cat"><span>Stock &amp; Purchase</span><em>● LIVE</em></div>
+    <h4>IMS Stock Dashboard</h4><p>Combines finished-goods and raw-material sheets with SKU costing and galla (location) tracking.</p><div class="out">One view of all inventory.</div>
+    <div class="tags"><span class="chip">Apps Script</span><span class="chip">HTML/CSS</span></div>
+  </div>
+  <div class="mcard" data-c="Stock &amp; Purchase">
+    <div class="cat"><span>Stock &amp; Purchase</span><em>● LIVE</em></div>
+    <h4>IMS In/Out Dashboard</h4><p>Logs every FG/RM in and out entry plus dispatch responses.</p><div class="out">Daily stock movement in one place.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Stock &amp; Purchase">
+    <div class="cat"><span>Stock &amp; Purchase</span><em>● LIVE</em></div>
+    <h4>Stock &amp; Dispatch MIS</h4><p>Dispatch vs monthly targets with fuzzy product-name mapping and an unmatched-items log.</p><div class="out">Target tracking with data-quality checks.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Stock &amp; Purchase">
+    <div class="cat"><span>Stock &amp; Purchase</span><em>● LIVE</em></div>
+    <h4>Import Purchase Management</h4><p>The whole import PO lifecycle: suppliers, POs, PIs, SOB dates, advances and payments.</p><div class="out">Imports and payments tracked end to end.</div>
+    <div class="tags"><span class="chip">Apps Script</span><span class="chip">HTML/CSS</span></div>
+  </div>
+  <div class="mcard" data-c="Stock &amp; Purchase">
+    <div class="cat"><span>Stock &amp; Purchase</span><em>● LIVE</em></div>
+    <h4>Procurement Stock Snapshots</h4><p>Saves a daily FG/RM snapshot to build stock history.</p><div class="out">Day-by-day stock trend for planning.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Stock &amp; Purchase">
+    <div class="cat"><span>Stock &amp; Purchase</span><em>● LIVE</em></div>
+    <h4>Indent Tracker</h4><p>Manager and team indent requests with an inbox, PO-number search and auto-generated keys.</p><div class="out">No lost purchase requests.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Stock &amp; Purchase">
+    <div class="cat"><span>Stock &amp; Purchase</span><em>● LIVE</em></div>
+    <h4>Job Work Tracker</h4><p>Outward and inward job-work entries linked to GRNs from the RM inventory.</p><div class="out">Material at vendors always accounted for.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Sales &amp; Finance">
+    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
+    <h4>Sales Dashboard + Customer Scoring</h4><p>A sales dashboard with an MIS score page that ranks customers.</p><div class="out">Customers ranked by value.</div>
+    <div class="tags"><span class="chip">Apps Script</span><span class="chip">JavaScript</span></div>
+  </div>
+  <div class="mcard" data-c="Sales &amp; Finance">
+    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
+    <h4>Sales Head Portal</h4><p>A portal covering General Trade and Institutional channels.</p><div class="out">Channel-wise sales view.</div>
+    <div class="tags"><span class="chip">Apps Script</span><span class="chip">HTML/CSS</span></div>
+  </div>
+  <div class="mcard" data-c="Sales &amp; Finance">
+    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
+    <h4>OS Ageing Dashboard</h4><p>Outstanding receivables in 0–30 / 31–60 / 61–90 / 90+ day buckets.</p><div class="out">Overdue invoices surfaced early.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Sales &amp; Finance">
+    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
+    <h4>Gross Margin Dashboard</h4><p>Gross margin per product from dispatch data and SKU costs.</p><div class="out">Margin by product.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Sales &amp; Finance">
+    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
+    <h4>Invoice Matching System</h4><p>Fuzzy invoice-number matching across sheets with value-mismatch analysis.</p><div class="out">Mismatches listed automatically.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Sales &amp; Finance">
+    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
+    <h4>Enquiry Capture Tracker</h4><p>A sales enquiry tracker migrated from Apps Script to a Node.js app on the same sheet.</p><div class="out">Faster, standalone enquiry tracking.</div>
+    <div class="tags"><span class="chip">Node.js</span><span class="chip">Express</span><span class="chip">Sheets API</span></div>
+  </div>
+  <div class="mcard" data-c="Sales &amp; Finance">
+    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
+    <h4>Old Customer Lead Tracker</h4><p>Re-contact tracker with last-sale date and contact details.</p><div class="out">Structured win-back calls.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Sales &amp; Finance">
+    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
+    <h4>NBD Tracker</h4><p>New business development tracked as incoming and outgoing streams.</p><div class="out">Pipeline split by direction.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Sales &amp; Finance">
+    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
+    <h4>Cost Budgeting &amp; Cash Voucher Apps</h4><p>Cost budgeting, a founder finance dashboard and a digital cash voucher book.</p><div class="out">Spend tracked against budget.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Sales &amp; Finance">
+    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
+    <h4>Wastage Sale Records</h4><p>Waste-material sale challans in a 17-column register.</p><div class="out">Scrap revenue fully recorded.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Production">
+    <div class="cat"><span>Production</span><em>● LIVE</em></div>
+    <h4>5-Form Production Suite</h4><p>Packing, Cutter, Selection, Automatic and Cutlery entry forms with SKU-filtered product lists.</p><div class="out">Clean, consistent shop-floor data.</div>
+    <div class="tags"><span class="chip">Apps Script</span><span class="chip">HTML/CSS</span></div>
+  </div>
+  <div class="mcard" data-c="Production">
+    <div class="cat"><span>Production</span><em>● LIVE</em></div>
+    <h4>Straw Production Tracking</h4><p>A 5-stage flow (Slitting → Production → Sharp Edge → Wrapping → Packing) with reference IDs and GRNs.</p><div class="out">Batch traceable through every stage.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Production">
+    <div class="cat"><span>Production</span><em>● LIVE</em></div>
+    <h4>Production Machine Dashboard</h4><p>Machine-wise output with a summary and a built-in user guide.</p><div class="out">Machine output in one view.</div>
+    <div class="tags"><span class="chip">Apps Script</span><span class="chip">HTML/CSS</span></div>
+  </div>
+  <div class="mcard" data-c="Production">
+    <div class="cat"><span>Production</span><em>● LIVE</em></div>
+    <h4>Labour &amp; Attendance Dashboard</h4><p>Labour targets, output and attendance from the labour sheet.</p><div class="out">Output vs target per worker.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Production">
+    <div class="cat"><span>Production</span><em>● LIVE</em></div>
+    <h4>Capacity Assessment</h4><p>Machine and manpower capacity mapping across the factory.</p><div class="out">Real capacity numbers for planning.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Production">
+    <div class="cat"><span>Production</span><em>● LIVE</em></div>
+    <h4>Wrapping Machine Form</h4><p>Production entries that post RM usage out of stock and FG into stock.</p><div class="out">Stock updated straight from production.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Operations">
+    <div class="cat"><span>Operations</span><em>● LIVE</em></div>
+    <h4>O2D Dispatch Form</h4><p>A dispatch web app with split-GRN support that writes to the IMS ledger.</p><div class="out">Dispatch and stock always in sync.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Operations">
+    <div class="cat"><span>Operations</span><em>● LIVE</em></div>
+    <h4>CRM O2D Task Tracker</h4><p>An order-to-delivery task view over FMS sheets on a 5-minute trigger.</p><div class="out">Order tasks visible to the CRM team.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Operations">
+    <div class="cat"><span>Operations</span><em>● LIVE</em></div>
+    <h4>New CRM FMS</h4><p>A Node.js rebuild of the CRM covering order and invoice steps.</p><div class="out">Faster, beyond Apps Script limits.</div>
+    <div class="tags"><span class="chip">Node.js</span><span class="chip">Express</span><span class="chip">Sheets API</span></div>
+  </div>
+  <div class="mcard" data-c="Operations">
+    <div class="cat"><span>Operations</span><em>● LIVE</em></div>
+    <h4>FMS → CRM Sync Scripts</h4><p>Copies order and payment follow-up blocks between FMS sheets by Order ID.</p><div class="out">No double entry.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Operations">
+    <div class="cat"><span>Operations</span><em>● LIVE</em></div>
+    <h4>Sheet Sync Agent</h4><p>A standalone timer that pulls new orders and invoices into 4 FMS sheets.</p><div class="out">Sync runs even when web apps sleep.</div>
+    <div class="tags"><span class="chip">Apps Script</span></div>
+  </div>
+  <div class="mcard" data-c="Operations">
+    <div class="cat"><span>Operations</span><em>● LIVE</em></div>
+    <h4>React FMS Tracker</h4><p>FMS tasks (sample requests, purchase) by member with deadlines.</p><div class="out">Overdue, today and upcoming per person.</div>
+    <div class="tags"><span class="chip">React</span><span class="chip">Vite</span><span class="chip">Node.js</span></div>
+  </div>
+  <div class="mcard" data-c="Operations">
+    <div class="cat"><span>Operations</span><em>● LIVE</em></div>
+    <h4>Daily Task FMS</h4><p>A daily task tracker with caching and per-employee report pages.</p><div class="out">Team task status in one place.</div>
+    <div class="tags"><span class="chip">Apps Script</span><span class="chip">Node.js</span><span class="chip">MongoDB</span></div>
+  </div></div>
   </div>
 </section>
 
@@ -443,7 +792,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
       <h2>From a messy spreadsheet to a live system</h2>
       <p>I use the same five steps whether it's a 50-line Apps Script or a full-stack AI agent.</p>
     </div>
-    <div class="steps" id="steps"></div>
+    <div class="steps" id="steps"><div class="step reveal"><h4>Sit with the users</h4><p>Shadow the people doing the work, map the current process and define the decisions the tool has to support.</p></div><div class="step reveal"><h4>Wire up the data</h4><p>Connect sheets, databases and APIs. Clean the data, validate it and give every record a single key.</p></div><div class="step reveal"><h4>Model &amp; analyse</h4><p>Add the logic: KPIs, forecasts, churn scores, matching rules, or an LLM agent with tools and RAG.</p></div><div class="step reveal"><h4>Build the interface</h4><p>Ship a dashboard, a web app or a chat/WhatsApp agent, designed for the person using it at 9 AM.</p></div><div class="step reveal"><h4>Automate &amp; hand off</h4><p>Triggers, schedulers, alerts and deploy on Render or Apps Script, then document it and support it.</p></div></div>
   </div>
 </section>
 
@@ -453,7 +802,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
       <div class="eyebrow">05 · Experience</div>
       <h2>Where I've worked</h2>
     </div>
-    <div class="timeline" id="timeline"></div>
+    <div class="timeline" id="timeline">
+  <div class="job reveal"><div class="when">2025 – Present</div><h3>AI Engineer</h3><div class="org">Biopapro Cutleries Pvt. Ltd (BCPL) · Mumbai</div>
+  <ul><li>Build internal software across sales, production, purchase, order-to-dispatch, stock and finance: 40+ tools and apps in daily use.</li><li>Shipped a LangGraph procurement agent with tool calling and RAG, plus a role-based CRM with order-to-dispatch, SCOT tracking and an in-app AI assistant.</li><li>Built FactoIntel, a factory-intelligence app with day-by-day IMS audits, root-cause labels for negative stock and an AI daily brief.</li><li>Built AI automations in n8n: a 179-node marketing team, a WhatsApp lead qualifier and an export lead generator.</li></ul><div class="tags"><span class="chip">React</span><span class="chip">Node.js</span><span class="chip">LangGraph</span><span class="chip">OpenRouter</span><span class="chip">n8n</span><span class="chip">Apps Script</span><span class="chip">Python</span></div></div>
+  <div class="job reveal"><div class="when">May 2025 – Oct 2025</div><h3>Nets &amp; Security App Trainee</h3><div class="org">Proceedit Company</div>
+  <ul><li>Performed security assessments and backend analysis for enterprise applications.</li><li>Wrote Python scripts to support backend analysis and automation.</li><li>Tested and validated APIs with Postman, and prepared technical documentation and improvement reports.</li><li>Researched Hyperledger FireFly and AWS blockchain technologies.</li></ul><div class="tags"><span class="chip">Python</span><span class="chip">Postman</span><span class="chip">API testing</span><span class="chip">Security assessment</span></div></div>
+  <div class="job reveal"><div class="when">2023 – 2025</div><h3>M.Sc. Computer Science</h3><div class="org">N G Acharya &amp; D K Marathe College, Mumbai</div>
+  <ul><li>B.Sc. Computer Science from the same college (2019 – 2022).</li></ul><div class="tags"></div></div></div>
   </div>
 </section>
 
@@ -463,7 +818,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
       <div class="eyebrow">06 · Stack</div>
       <h2>Tools I ship with</h2>
     </div>
-    <div class="skill-grid" id="skillGrid"></div>
+    <div class="skill-grid" id="skillGrid"><div class="sk reveal"><h4>AI &amp; LLM</h4><div class="tags"><span class="chip">Prompt engineering</span><span class="chip">Agentic AI</span><span class="chip">Tool calling</span><span class="chip">LLM workflows</span><span class="chip">LangGraph</span><span class="chip">RAG</span><span class="chip">OpenRouter</span><span class="chip">Claude</span><span class="chip">ChatGPT</span><span class="chip">Gemini</span></div></div><div class="sk reveal"><h4>Automation</h4><div class="tags"><span class="chip">n8n</span><span class="chip">Google Apps Script</span><span class="chip">Google Workspace</span><span class="chip">Webhooks</span><span class="chip">WhatsApp Cloud API</span></div></div><div class="sk reveal"><h4>Frontend</h4><div class="tags"><span class="chip">React</span><span class="chip">TypeScript</span><span class="chip">Tailwind</span><span class="chip">Recharts</span><span class="chip">Three.js</span><span class="chip">HTML/CSS</span></div></div><div class="sk reveal"><h4>Backend</h4><div class="tags"><span class="chip">Node.js</span><span class="chip">Express</span><span class="chip">FastAPI</span><span class="chip">Python</span><span class="chip">REST APIs</span><span class="chip">Google Sheets API</span></div></div><div class="sk reveal"><h4>Programming</h4><div class="tags"><span class="chip">Python</span><span class="chip">JavaScript</span><span class="chip">TypeScript</span><span class="chip">Google Apps Script</span></div></div><div class="sk reveal"><h4>Data &amp; ML</h4><div class="tags"><span class="chip">Time-series forecasting</span><span class="chip">Logistic regression</span><span class="chip">RFM segmentation</span></div></div><div class="sk reveal"><h4>Testing &amp; security</h4><div class="tags"><span class="chip">Postman</span><span class="chip">API testing</span><span class="chip">Security assessment</span></div></div><div class="sk reveal"><h4>Ship &amp; run</h4><div class="tags"><span class="chip">Git</span><span class="chip">GitHub</span><span class="chip">Render</span></div></div></div>
   </div>
 </section>
 
@@ -472,13 +827,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
     <div class="contact reveal">
       <div class="eyebrow">07 · Contact</div>
       <h2>Have a process that should <span class="grad">run itself?</span></h2>
-      <p>I'm open to full-time roles and freelance projects in AI agents, automation, internal tools and dashboards. Tell me what's slow and I'll tell you how I'd fix it.</p>
-      <div class="hero-ctas" id="contactBtns"></div>
+      <p>I'm looking for a full-time role building AI agents, automation, internal tools and dashboards. Tell me what your team needs and I'll show you how I'd build it.</p>
+      <div class="hero-ctas" id="contactBtns"><a class="btn primary" href="mailto:rahulgurav866@gmail.com">Email me</a><a class="btn" href="https://www.linkedin.com/in/rahul-gurav-77a987241/" target="_blank" rel="noopener">LinkedIn</a><a class="btn" href="https://github.com/Raul1100" target="_blank" rel="noopener">GitHub</a><a class="btn" href="Rahul_Gurav_Resume.pdf" download="">Resume ↓</a></div>
+      <p class="contact-plain">Email: <a href="mailto:rahulgurav866@gmail.com">rahulgurav866@gmail.com</a><br>LinkedIn: <a href="https://www.linkedin.com/in/rahul-gurav-77a987241/" target="_blank" rel="noopener">linkedin.com/in/rahul-gurav-77a987241</a><br>GitHub: <a href="https://github.com/Raul1100" target="_blank" rel="noopener">github.com/Raul1100</a><br>Resume: <a href="Rahul_Gurav_Resume.pdf" download>Rahul_Gurav_Resume.pdf</a></p>
     </div>
   </div>
 </section>
 
-<footer><div class="wrap"><span id="foot"></span><span>Built by hand · <a href="#top">back to top ↑</a></span></div></footer>
+<footer><div class="wrap"><span id="foot">© 2026 Rahul Gurav</span><span>Built by hand · <a href="#top">back to top ↑</a></span></div></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -679,7 +1035,7 @@ $('#foot').textContent = `© ${new Date().getFullYear()} ${ME.name}`;
 const navResume = $('#navResume');
 if (ME.resume) navResume.href = ME.resume; else navResume.style.display = 'none';
 
-$('#stats').innerHTML = STATS.map(s => `<div class="stat"><b><span data-count="${s.n}">0</span><em>${s.s}</em></b><span>${s.l}</span></div>`).join('');
+$('#stats').innerHTML = STATS.map(s => `<div class="stat"><b><span data-count="${s.n}">${s.n}</span><em>${s.s}</em></b><span>${s.l}</span></div>`).join('');
 $('#marquee').innerHTML = [...STACK, ...STACK].map(t => `<span>${esc(t)}</span>`).join('');
 
 const links = [
@@ -761,7 +1117,7 @@ const TERM = [
   ['p','$ ','status'], ['ok','● ','open to work']
 ];
 (function typeTerm(){
-  const el = $('#term'); let line = 0;
+  const el = $('#term'); el.innerHTML = ''; let line = 0;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   function next(){
     if(line >= TERM.length){ el.insertAdjacentHTML('beforeend','<span class="p">$ </span><span class="caret"></span>'); return; }
@@ -777,7 +1133,8 @@ const TERM = [
 })();
 
 /* reveal + counters (fallback when GSAP is unavailable or motion is reduced) */
-const MOTION = !!window.gsap && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+const PRERENDER = /[?&]prerender\b/.test(location.search);
+const MOTION = !PRERENDER && !!window.gsap && !matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (!MOTION) {
 const io = new IntersectionObserver(es => es.forEach(e => {
   if(!e.isIntersecting) return;
@@ -1010,7 +1367,9 @@ $('#themeBtn').addEventListener('click', e => {
 
   /* ---- hero intro ---- */
   const h1Words = split($('.hero h1'));
-  gsap.timeline({ defaults: { ease: 'power4.out' } })
+  const intro = gsap.timeline({ defaults: { ease: 'power4.out' } });
+  setTimeout(() => intro.progress(1), 3500); // never leave the hero half-drawn on throttled renderers
+  intro
     .from('.status', { y: 14, opacity: 0, duration: .6 })
     .from(h1Words, { yPercent: 115, rotate: 5, duration: 1.1, stagger: .045 }, '-=.35')
     .from('#heroLead', { y: 18, opacity: 0, duration: .8 }, '-=.75')
