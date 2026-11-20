@@ -5,268 +5,294 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rahul Gurav | AI Engineer</title>
 <meta name="description" content="Rahul Gurav, AI Engineer in Mumbai. AI agents, LLM workflows, n8n automation and full-stack business apps, with live demos.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://raul1100.github.io/">
 <meta property="og:title" content="Rahul Gurav | AI Engineer">
 <meta property="og:description" content="AI agents, LLM workflows, n8n automation and full-stack business apps, with live demos.">
 <meta property="og:image" content="https://raul1100.github.io/img/previews/procurement.webp">
+<meta property="og:url" content="https://raul1100.github.io/">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23163A82'/%3E%3Cpath d='M8 23V9h6.5a4 4 0 0 1 0 8H8m6.5 0L19 23' fill='none' stroke='%23EEF3FF' stroke-width='2.2'/%3E%3Ccircle cx='24' cy='12' r='2.4' fill='%239FD8FF'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Martian+Mono:wdth,wght@75..112.5,300..500&display=swap" rel="stylesheet">
 <style>
-/* ============ CONFIG: edit tokens here ============ */
+/* ============ tokens: light = drafting film, dark = blueprint ============ */
 :root{
-  --bg:#0c0b0a; --bg-2:#141210; --card:#181512; --card-2:#1f1b17;
-  --line:#2a2520; --line-2:#3a332b;
-  --text:#f3ede4; --muted:#a59c8f; --dim:#6f675c;
-  --accent:#ffb547; --accent-2:#ff7a3d; --accent-ink:#1a1206;
-  --ok:#7bd88f;
-  --glow:rgba(255,181,71,.14);
-  --radius:16px;
-  --font-head:'Space Grotesk',system-ui,sans-serif;
-  --font-body:'Inter',system-ui,sans-serif;
-  --font-mono:'JetBrains Mono',ui-monospace,monospace;
-  color-scheme:dark;
-}
-:root[data-theme="light"]{
-  --bg:#faf7f2; --bg-2:#f3eee6; --card:#ffffff; --card-2:#f7f2ea;
-  --line:#e6ddd0; --line-2:#d6cab8;
-  --text:#1c1712; --muted:#5f564b; --dim:#8d8376;
-  --accent:#d9840b; --accent-2:#e2541b; --accent-ink:#fff;
-  --ok:#2f9a4a; --glow:rgba(217,132,11,.12);
+  --paper:#E9EDF0; --card:#F3F6F8; --card-2:#E1E7EC;
+  --ink:#14223A; --graphite:#566175; --dim:#7B8597;
+  --hair:#BCC5D0; --line-2:#9AA6B6;
+  --cobalt:#1F44C7; --red:#D33B2C; --ok:#1E8E4E;
+  --bp:#163A82; --bp-ink:#EEF3FF; --bp-dim:rgba(238,243,255,.64); --bp-line:rgba(238,243,255,.36); --bp-accent:#9FD8FF;
+  --bp-grid:rgba(238,243,255,.09); --bp-grid-2:rgba(238,243,255,.035);
+  --font-head:"Archivo",system-ui,sans-serif; --font-body:"Archivo",system-ui,sans-serif; --font-mono:"Martian Mono",ui-monospace,monospace;
+  /* names the preview widgets use */
+  --bg:var(--paper); --line:var(--hair); --text:var(--ink); --muted:var(--graphite); --accent:var(--cobalt); --accent-ink:#fff; --glow:rgba(31,68,199,.12);
   color-scheme:light;
 }
-@media (prefers-color-scheme: light){
-  :root:not([data-theme="dark"]){
-    --bg:#faf7f2; --bg-2:#f3eee6; --card:#ffffff; --card-2:#f7f2ea;
-    --line:#e6ddd0; --line-2:#d6cab8;
-    --text:#1c1712; --muted:#5f564b; --dim:#8d8376;
-    --accent:#d9840b; --accent-2:#e2541b; --accent-ink:#fff;
-    --ok:#2f9a4a; --glow:rgba(217,132,11,.12);
-    color-scheme:light;
-  }
+:root[data-theme="dark"]{
+  --paper:#0F2A63; --card:#13306F; --card-2:#183A80;
+  --ink:#EEF3FF; --graphite:#B4C3E6; --dim:#8EA2CF;
+  --hair:rgba(238,243,255,.2); --line-2:rgba(238,243,255,.34);
+  --cobalt:#9FD8FF; --red:#FF8A73; --ok:#5EE3A0;
+  --bp:#0A2052; --accent-ink:#0B1F4B; --glow:rgba(159,216,255,.14);
+  color-scheme:dark;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;overflow-x:clip}
-body{background:var(--bg);color:var(--text);font-family:var(--font-body);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:clip}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0F2A63; --card:#13306F; --card-2:#183A80;
+  --ink:#EEF3FF; --graphite:#B4C3E6; --dim:#8EA2CF;
+  --hair:rgba(238,243,255,.2); --line-2:rgba(238,243,255,.34);
+  --cobalt:#9FD8FF; --red:#FF8A73; --ok:#5EE3A0;
+  --bp:#0A2052; --accent-ink:#0B1F4B; --glow:rgba(159,216,255,.14);
+  color-scheme:dark;
+}}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:clip}
 a{color:inherit;text-decoration:none}
-img{max-width:100%}
-.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
-@media (max-width:600px){.wrap{padding:0 16px}}
-.mono{font-family:var(--font-mono)}
-h1,h2,h3{font-family:var(--font-head);letter-spacing:-.02em;line-height:1.1}
-.grad{background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;font-weight:600;font-size:.95rem;border:1px solid var(--line-2);transition:.2s;cursor:pointer;background:transparent;color:var(--text);font-family:inherit}
-.btn:hover{border-color:var(--accent);transform:translateY(-1px)}
-.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.btn.primary:hover{background:var(--accent-2);border-color:var(--accent-2)}
-.chip{display:inline-block;font-family:var(--font-mono);font-size:.72rem;padding:4px 9px;border-radius:6px;background:var(--card-2);border:1px solid var(--line);color:var(--muted)}
-.eyebrow{font-family:var(--font-mono);font-size:.78rem;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:10px}
-.eyebrow::before{content:"";width:28px;height:1px;background:var(--accent)}
-section{padding:96px 0;position:relative}
-@media (max-width:700px){section{padding:64px 0}}
-.sec-head{max-width:720px;margin-bottom:44px}
-.sec-head h2{font-size:clamp(1.9rem,4vw,2.8rem);margin:14px 0 12px}
-.sec-head p{color:var(--muted);font-size:1.05rem}
-.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
-.reveal.in{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}.marquee-track{animation:none!important}}
+img{display:block;max-width:100%}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px}
+.bp :focus-visible{outline-color:var(--bp-accent)}
+.wrap{width:min(1240px,100% - 48px);margin-inline:auto}
+@media (max-width:600px){.wrap{width:calc(100% - 32px)}}
+h1,h2,h3,h4{font-family:var(--font-head);font-stretch:125%;font-weight:800;letter-spacing:-.02em;line-height:1}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-/* nav */
-nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
-.logo{font-family:var(--font-mono);font-weight:500;font-size:.95rem;display:flex;align-items:center;gap:8px}
-.logo b{color:var(--accent)}
-.nav-links{display:flex;gap:28px;font-size:.9rem;color:var(--muted)}
-.nav-links a:hover{color:var(--text)}
-.nav-right{display:flex;gap:10px;align-items:center}
-.icon-btn{width:38px;height:38px;border-radius:9px;border:1px solid var(--line-2);display:grid;place-items:center;background:transparent;color:var(--text);cursor:pointer}
-.icon-btn:hover{border-color:var(--accent)}
-@media (max-width:820px){.nav-links{display:none}.nav-right .btn{display:none}}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:48px;padding:0 22px;border:1px solid currentColor;border-radius:4px;background:none;font-weight:600;font-size:15px;font-stretch:110%;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.btn.solid{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.solid:hover{background:var(--cobalt);border-color:var(--cobalt);color:var(--accent-ink)}
+.btn:not(.solid):hover{background:color-mix(in srgb,currentColor 10%,transparent)}
+.bp .btn.solid{background:var(--bp-ink);color:var(--bp);border-color:var(--bp-ink)}
+.bp .btn.solid:hover{background:var(--bp-accent);border-color:var(--bp-accent);color:#0B1F4B}
 
-/* hero */
-.hero{padding:80px 0 64px;overflow:hidden;position:relative}
-.hero::before{content:"";position:absolute;inset:-20% -10% auto auto;width:640px;height:640px;background:radial-gradient(circle,var(--glow),transparent 65%);pointer-events:none}
-.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
-@media (max-width:960px){.hero-grid{grid-template-columns:1fr}}
-.status{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.78rem;color:var(--muted);border:1px solid var(--line);padding:6px 12px;border-radius:999px;background:var(--card)}
-.status i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px color-mix(in srgb,var(--ok) 20%,transparent)}
-.hero h1{font-size:clamp(2.4rem,6vw,4.4rem);margin:22px 0 22px;font-weight:700}
-.hero .lead{font-size:1.12rem;color:var(--muted);max-width:560px;margin-bottom:30px}
-.hero-ctas{display:flex;gap:12px;flex-wrap:wrap}
-.hero-tags{display:flex;gap:18px;flex-wrap:wrap;margin-top:34px;font-family:var(--font-mono);font-size:.8rem;color:var(--muted)}
-.hero-tags span::before{content:"▸ ";color:var(--accent)}
+/* blueprint surface */
+.bp{background-color:var(--bp);color:var(--bp-ink);
+  background-image:linear-gradient(var(--bp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--bp-grid) 1px,transparent 1px),linear-gradient(var(--bp-grid-2) 1px,transparent 1px),linear-gradient(90deg,var(--bp-grid-2) 1px,transparent 1px);
+  background-size:120px 120px,120px 120px,24px 24px,24px 24px;background-position:-1px -1px}
 
-/* terminal card */
-.term{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:0 30px 80px -30px rgba(0,0,0,.6)}
-.term-bar{display:flex;align-items:center;gap:7px;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--card-2)}
-.term-bar i{width:11px;height:11px;border-radius:50%;background:var(--line-2)}
-.term-bar i:nth-child(1){background:#ff5f57}.term-bar i:nth-child(2){background:#febc2e}.term-bar i:nth-child(3){background:#28c840}
-.term-bar span{margin-left:10px;font-family:var(--font-mono);font-size:.75rem;color:var(--dim)}
-.term-body{padding:18px 18px 20px;font-family:var(--font-mono);font-size:.82rem;line-height:1.85;min-height:300px}
-.term-body .p{color:var(--accent)}
-.term-body .ok{color:var(--ok)}
-.term-body .d{color:var(--dim)}
-.caret{display:inline-block;width:8px;height:1em;background:var(--accent);vertical-align:-2px;animation:blink 1s steps(1) infinite}
-@keyframes blink{50%{opacity:0}}
+/* ============ nav ============ */
+.bar{position:fixed;inset:0 0 auto;z-index:60;height:64px;display:flex;align-items:center;color:var(--bp-ink);border-bottom:1px solid transparent;transition:background .3s,color .3s,border-color .3s}
+.bar.solid{background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--ink);border-color:var(--hair)}
+.bar .wrap{display:flex;align-items:center;gap:28px}
+.brand{font:800 16px var(--font-head);font-stretch:125%;letter-spacing:-.01em;white-space:nowrap}
+.links{display:flex;gap:24px;margin-left:auto;font-size:14.5px}
+.links a{opacity:.72;transition:opacity .2s;position:relative;padding:4px 0}
+.links a:hover,.links a.on{opacity:1}
+.links a.on::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;background:currentColor}
+.bar-tools{display:flex;gap:10px;align-items:center}
+.icon-btn{width:38px;height:38px;border:1px solid currentColor;border-radius:4px;display:grid;place-items:center;background:none;cursor:pointer;opacity:.8}
+.icon-btn:hover{opacity:1}
+.icon-btn svg{width:17px;height:17px}
+.bar .btn{height:38px;padding:0 16px;font-size:14px}
+@media (max-width:860px){.links{display:none}.bar-tools{margin-left:auto}}
 
-/* stats */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:var(--radius);background:var(--card);overflow:hidden}
-.stat{padding:28px 24px;border-right:1px solid var(--line)}
-.stat:last-child{border-right:0}
-.stat b{display:block;font-family:var(--font-head);font-size:2.4rem;font-weight:700;line-height:1}
-.stat b em{font-style:normal;color:var(--accent)}
-.stat span{display:block;margin-top:8px;color:var(--muted);font-size:.9rem}
-@media (max-width:760px){.stats{grid-template-columns:1fr 1fr}.stat:nth-child(2){border-right:0}.stat:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+/* ============ hero ============ */
+.hero{position:relative;min-height:100svh;padding:120px 0 64px;overflow:hidden;display:flex;align-items:center}
+.frame{position:absolute;inset:80px 22px 22px;border:1px solid var(--bp-line);pointer-events:none}
+.zones{position:absolute;display:flex;font:400 10px var(--font-mono);color:var(--bp-dim)}
+.zones.x{left:0;right:0;top:0;height:16px;border-bottom:1px solid var(--bp-line)}
+.zones.y{top:16px;bottom:0;left:0;width:16px;flex-direction:column;border-right:1px solid var(--bp-line)}
+.zones span{flex:1;display:grid;place-items:center}
+.zones.x span+span{border-left:1px solid var(--bp-line)}
+.zones.y span+span{border-top:1px solid var(--bp-line)}
+.hero .wrap{position:relative;z-index:2}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);grid-template-areas:"copy fig" "copy tb";gap:28px 56px;align-items:start}
+.copy{grid-area:copy;padding-top:8px}
+.name-box{display:inline-block}
+.dim{position:relative;display:flex;align-items:center;justify-content:center;height:14px;border-inline:1px solid var(--bp-dim);color:var(--bp-dim);font:400 11.5px/1 var(--font-mono);margin-bottom:22px}
+.dim::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:currentColor}
+.dim span{position:relative;background:var(--bp);padding:0 12px}
+.name{font-size:clamp(4.2rem,12vw,11.2rem);font-weight:850;line-height:.84;letter-spacing:-.04em}
+.name .ln{display:block;overflow:hidden;padding-bottom:.06em}
+.name .ch{display:inline-block}
+.lead{max-width:33ch;font-size:clamp(1.15rem,1.55vw,1.38rem);line-height:1.5;color:var(--bp-ink);opacity:.9;margin:36px 0 32px}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+.fig{grid-area:fig;position:relative;margin:0}
+.fig svg{width:100%;height:auto;overflow:visible}
+.fig .ln{fill:none;stroke:var(--bp-ink);stroke-width:1.4}
+.fig .box{fill:rgba(238,243,255,.05)}
+.fig .thin{stroke-width:.8;stroke:var(--bp-dim)}
+.fig .cl{stroke-dasharray:16 4 2 4;stroke:var(--bp-dim);stroke-width:.8}
+.fig .lbl{fill:var(--bp-ink);font:500 13.5px var(--font-body)}
+.fig .ann{fill:var(--bp-dim);font:400 10.5px var(--font-mono)}
+.fig .core-lbl{fill:var(--bp-ink);font:800 15px var(--font-head);font-stretch:125%}
+.fig .pk{fill:var(--bp-accent)}
+.fig .pk-g{opacity:0;transition:opacity .6s}
+.fig.live .pk-g{opacity:1}
+.tb{grid-area:tb;justify-self:end;width:min(100%,460px);border:1px solid var(--bp-line);display:grid;grid-template-columns:1fr 1fr;background:rgba(8,26,70,.45);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.tb > div{padding:9px 13px;border-bottom:1px solid var(--bp-line)}
+.tb > div:nth-child(even){border-left:1px solid var(--bp-line)}
+.tb > div.full{grid-column:1/-1;border-left:0}
+.tb > div:nth-last-child(-n+2){border-bottom:0}
+.tb dt{font-size:11.5px;font-stretch:80%;color:var(--bp-dim);font-weight:500}
+.tb dd{font-size:14.5px;font-weight:600}
+.tb .full dd{font:800 17px var(--font-head);font-stretch:125%;letter-spacing:-.01em}
+.tb .live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#5EE3A0;margin-right:7px;box-shadow:0 0 0 4px rgba(94,227,160,.18)}
+.cad{position:absolute;inset:0;pointer-events:none;z-index:1;opacity:0;transition:opacity .25s}
+.hero.aim .cad{opacity:1}
+.cad i{position:absolute;background:var(--bp-accent);opacity:.55}
+.cad .cx{left:0;right:0;top:0;height:1px}
+.cad .cy{top:0;bottom:0;left:0;width:1px}
+.cad b{position:absolute;left:0;top:0;font:400 10.5px var(--font-mono);color:var(--bp-accent);background:rgba(8,26,70,.7);padding:3px 7px;white-space:nowrap}
+@media (pointer:fine){.hero{cursor:crosshair}.hero a,.hero button{cursor:pointer}}
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr;grid-template-areas:"copy" "fig" "tb"}
+  .tb{justify-self:stretch;width:100%}
+  .fig{max-width:620px}
+}
+@media (max-width:600px){.frame{inset:72px 10px 10px}.zones{display:none}.hero{padding-top:104px}}
 
-/* marquee */
-.marquee{overflow:hidden;border-block:1px solid var(--line);padding:18px 0;margin-top:64px;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
-.marquee-track{display:flex;gap:40px;width:max-content;animation:scroll 50s linear infinite}
-.marquee-track span{font-family:var(--font-mono);font-size:.9rem;color:var(--muted);white-space:nowrap}
-.marquee-track span::before{content:"◆ ";color:var(--accent);font-size:.6rem;vertical-align:2px}
-@keyframes scroll{to{transform:translateX(-50%)}}
+/* ============ sections ============ */
+.curtain{position:relative;z-index:1;background:var(--paper)}
+.sec{padding:clamp(84px,11vw,150px) 0;border-top:1px solid var(--hair)}
+.sec-head{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:20px 56px;align-items:end;margin-bottom:clamp(40px,5vw,64px)}
+.sec-head h2{font-size:clamp(2.4rem,5.6vw,4.8rem);line-height:.95}
+.sec-head p{color:var(--graphite);max-width:46ch;font-size:1.06rem}
+@media (max-width:860px){.sec-head{grid-template-columns:1fr}}
 
 /* about */
-.about-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:40px}
-@media (max-width:900px){.about-grid{grid-template-columns:1fr}}
-.about-text p{color:var(--muted);font-size:1.05rem;margin-bottom:18px}
-.about-text p strong{color:var(--text);font-weight:600}
-.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
-@media (max-width:640px){.pillars{grid-template-columns:1fr}}
-.pillar{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
-.pillar h4{font-family:var(--font-head);font-size:1rem;margin-bottom:6px}
-.pillar p{font-size:.88rem;color:var(--muted);margin:0}
-.profile{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px;height:fit-content}
-.avatar{width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;font-family:var(--font-head);font-weight:700;font-size:1.5rem;color:var(--accent-ink);margin-bottom:16px}
-.profile h3{font-size:1.3rem}
-.profile .role{color:var(--muted);font-size:.9rem;margin-bottom:18px}
-.kv{display:grid;grid-template-columns:auto 1fr;gap:10px 16px;font-size:.88rem;border-top:1px solid var(--line);padding-top:18px}
-.kv dt{color:var(--dim);font-family:var(--font-mono);font-size:.76rem;padding-top:2px}
-.kv dd{color:var(--text)}
-.profile .btns{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+.about{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:clamp(40px,6vw,88px)}
+.about .big{font-size:clamp(1.5rem,2.55vw,2.15rem);line-height:1.32;font-weight:500;letter-spacing:-.012em;max-width:29ch}
+.about .rest p{color:var(--graphite);max-width:60ch;margin-top:20px}
+.about .rest strong{color:var(--ink);font-weight:600}
+.facts{border-top:2px solid var(--ink);align-self:start}
+.facts div{display:grid;grid-template-columns:120px 1fr;gap:16px;padding:13px 0;border-bottom:1px solid var(--hair);font-size:15px}
+.facts dt{color:var(--graphite)}
+.facts .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.facts .acts .btn{height:42px;font-size:14px}
+@media (max-width:860px){.about{grid-template-columns:1fr}}
 
-/* filters */
-.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
-.filter{font-family:var(--font-mono);font-size:.8rem;padding:8px 14px;border-radius:8px;border:1px solid var(--line-2);background:transparent;color:var(--muted);cursor:pointer}
-.filter:hover{color:var(--text)}
-.filter.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.filter small{opacity:.7;margin-left:4px}
+/* selected work */
+.wl{border-top:2px solid var(--ink)}
+.ws{border-bottom:1px solid var(--hair)}
+.ws-h{font:inherit;letter-spacing:normal}
+.ws-row{width:100%;display:grid;grid-template-columns:64px minmax(0,1fr) minmax(0,230px) 96px 24px;align-items:center;gap:20px;padding:24px 0;background:none;border:0;text-align:left;cursor:pointer}
+.ws-ref{font:400 11.5px var(--font-mono);color:var(--dim)}
+.ws-ttl{font:750 clamp(1.25rem,2.5vw,2.1rem)/1.12 var(--font-head);font-stretch:118%;letter-spacing:-.018em;transition:transform .4s cubic-bezier(.2,.8,.2,1),color .2s}
+.ws-row:hover .ws-ttl,.ws.open .ws-ttl{color:var(--cobalt)}
+.ws-row:hover .ws-ttl{transform:translateX(8px)}
+.ws-stack{color:var(--graphite);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ws-cat{font-size:13.5px;color:var(--graphite);justify-self:end}
+.ws-plus{position:relative;width:16px;height:16px;justify-self:end;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.ws-plus::before,.ws-plus::after{content:"";position:absolute;background:var(--ink);left:0;right:0;top:7.5px;height:1.5px}
+.ws-plus::after{transform:rotate(90deg)}
+.ws.open .ws-plus{transform:rotate(45deg)}
+.ws-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .6s cubic-bezier(.2,.8,.2,1)}
+.ws.open .ws-panel{grid-template-rows:1fr}
+.ws-panel > div{overflow:hidden;min-height:0}
+.ws-body{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(28px,4vw,56px);padding:8px 0 52px 84px}
+.shot{position:relative;margin:30px 34px 0 0;align-self:start}
+.shot img{width:100%;height:auto;border:1px solid var(--ink);background:var(--card)}
+.shot .dx,.shot .dy{position:absolute;display:flex;align-items:center;justify-content:center;color:var(--graphite);font:400 10.5px/1 var(--font-mono);transition:transform .7s .2s cubic-bezier(.2,.8,.2,1)}
+.shot .dx{left:0;right:0;top:-24px;height:12px;border-inline:1px solid currentColor;transform:scaleX(0)}
+.shot .dy{top:0;bottom:0;right:-26px;width:12px;border-block:1px solid currentColor;transform:scaleY(0)}
+.shot .dx::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:currentColor}
+.shot .dy::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:1px;background:currentColor}
+.shot .dx span,.shot .dy span{position:relative;background:var(--paper);padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:86%}
+.shot .dy span{writing-mode:vertical-rl;padding:8px 0;max-width:none;max-height:86%}
+.ws.open .shot .dx{transform:scaleX(1)}
+.ws.open .shot .dy{transform:scaleY(1)}
+.pbr .met{font-size:16px;color:var(--graphite);margin-bottom:22px;max-width:44ch}
+.pbr .met b{display:block;font:850 clamp(2.4rem,4vw,3.4rem)/1 var(--font-head);font-stretch:125%;color:var(--cobalt);letter-spacing:-.03em;margin-bottom:4px}
+.pbr h4{font:650 13.5px var(--font-body);font-stretch:100%;letter-spacing:0;color:var(--graphite);margin:18px 0 4px}
+.pbr p{font-size:16px;max-width:58ch}
+.pbr .stack{font-size:14px;color:var(--graphite);margin:20px 0 22px}
+@media (max-width:980px){.ws-row{grid-template-columns:44px minmax(0,1fr) 24px}.ws-stack,.ws-cat{display:none}.ws-body{grid-template-columns:1fr;padding-left:0}}
 
-/* featured cards */
-.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-@media (max-width:900px){.feat-grid{grid-template-columns:1fr}}
-.pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px;display:flex;flex-direction:column;transition:border-color .2s,transform .2s}
-.pcard:hover{border-color:var(--line-2);transform:translateY(-2px)}
-.pcard .top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
-.pcard .cat{font-family:var(--font-mono);font-size:.72rem;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
-.pcard .num{font-family:var(--font-mono);font-size:.75rem;color:var(--dim)}
-.pcard h3{font-size:1.4rem;margin-bottom:16px}
-.pbr{display:grid;gap:12px;margin-bottom:18px}
-.pbr div{display:grid;grid-template-columns:72px 1fr;gap:12px;font-size:.92rem;color:var(--muted)}
-.pbr b{font-family:var(--font-mono);font-size:.7rem;font-weight:500;color:var(--dim);letter-spacing:.06em;padding-top:3px}
-.pbr .res{color:var(--text)}
-.pbr .res b{color:var(--ok)}
-@media (max-width:480px){.pbr div{grid-template-columns:1fr;gap:2px}}
-.metric{display:inline-flex;align-items:baseline;gap:8px;background:var(--card-2);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:18px;width:fit-content}
-.metric strong{font-family:var(--font-head);font-size:1.4rem;color:var(--accent)}
-.metric span{font-size:.82rem;color:var(--muted)}
-.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:4px}
-.plinks{display:flex;gap:10px;margin-top:18px}
-.plinks a{font-size:.85rem;font-weight:600;color:var(--accent)}
-.plinks a:hover{text-decoration:underline}
+/* systems parts list */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px}
+.filter{height:36px;padding:0 14px;border:1px solid var(--hair);border-radius:4px;background:none;font-size:14px;color:var(--graphite);cursor:pointer;transition:.2s}
+.filter:hover{border-color:var(--ink);color:var(--ink)}
+.filter.active{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.filter small{margin-left:7px;opacity:.6;font-size:12px}
+.parts{width:100%;border-collapse:collapse;font-size:15px}
+.parts th{text-align:left;font-size:13px;font-weight:600;font-stretch:90%;color:var(--graphite);padding:11px 12px;border-top:2px solid var(--ink);border-bottom:1px solid var(--ink)}
+.parts td{padding:15px 12px;border-bottom:1px solid var(--hair);vertical-align:top;transition:background .15s}
+.parts td.no{font:400 11.5px/2 var(--font-mono);color:var(--dim);width:58px}
+.parts td.sys{font-weight:600;width:24%}
+.parts td.what{color:var(--graphite)}
+.parts td.what i{font-style:normal;color:var(--ink)}
+.parts td.dept,.parts td.mat{color:var(--graphite);font-size:14px}
+.parts td.dept{white-space:nowrap}
+.parts tr.part:hover td{background:color-mix(in srgb,var(--cobalt) 6%,transparent)}
+.parts tr.hidden{display:none}
+@media (max-width:860px){
+  .parts thead{display:none}
+  .parts,.parts tbody{display:block}
+  .parts tr.part{display:grid;grid-template-columns:44px 1fr;column-gap:8px;padding:14px 0;border-bottom:1px solid var(--hair)}
+  .parts tr.part.hidden{display:none}
+  .parts td{border:0;padding:2px 0}
+  .parts td.no{grid-row:span 4}
+  .parts td:not(.no){grid-column:2}
+  .parts td.sys{width:auto}
+  .parts td.dept{white-space:normal;margin-top:4px}
+  .parts td.dept,.parts td.mat{font-size:13px}
+}
 
-/* more systems */
-.more-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-@media (max-width:900px){.more-grid{grid-template-columns:1fr 1fr}}
-@media (max-width:600px){.more-grid{grid-template-columns:1fr}}
-.mcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:8px}
-.mcard .cat{font-family:var(--font-mono);font-size:.68rem;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;display:flex;justify-content:space-between}
-.mcard .cat em{font-style:normal;color:var(--ok)}
-.mcard h4{font-family:var(--font-head);font-size:1.05rem}
-.mcard p{font-size:.86rem;color:var(--muted)}
-.mcard .out{font-size:.84rem;color:var(--text)}
-.mcard .out::before{content:"→ ";color:var(--accent)}
-.mcard .tags{margin-top:6px}
-.hidden{display:none!important}
+/* method */
+.steps{list-style:none;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:28px;position:relative;padding-top:52px;counter-reset:s}
+.steps::before{content:"";position:absolute;left:0;right:0;top:15px;height:1px;background:var(--ink)}
+.steps li{position:relative;counter-increment:s}
+.steps li::before{content:counter(s);position:absolute;top:-52px;left:0;width:31px;height:31px;border:1px solid var(--ink);border-radius:50%;background:var(--paper);display:grid;place-items:center;font:400 11.5px var(--font-mono)}
+.steps h3{font-size:1.22rem;font-stretch:112%;letter-spacing:-.01em;margin-bottom:10px;line-height:1.15}
+.steps p{color:var(--graphite);font-size:15px}
+@media (max-width:980px){.steps{grid-template-columns:1fr;padding:0 0 0 52px;gap:30px}.steps::before{left:15px;right:auto;top:0;bottom:0;width:1px;height:auto}.steps li::before{top:-2px;left:-52px}}
 
-/* process */
-.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;counter-reset:s}
-@media (max-width:960px){.steps{grid-template-columns:1fr 1fr}}
-@media (max-width:560px){.steps{grid-template-columns:1fr}}
-.step{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;position:relative}
-.step::before{counter-increment:s;content:"0" counter(s);font-family:var(--font-mono);font-size:.8rem;color:var(--accent)}
-.step h4{font-family:var(--font-head);font-size:1.05rem;margin:10px 0 8px}
-.step p{font-size:.86rem;color:var(--muted)}
+/* experience: revision table */
+.revs{width:100%;border-collapse:collapse}
+.revs th{text-align:left;font-size:13px;font-weight:600;font-stretch:90%;color:var(--graphite);padding:11px 12px;border-top:2px solid var(--ink);border-bottom:1px solid var(--ink)}
+.revs td{padding:24px 12px;border-bottom:1px solid var(--hair);vertical-align:top}
+.revs td.rev{font:850 2rem/1 var(--font-head);font-stretch:125%;color:var(--cobalt);width:76px}
+.revs td.when{color:var(--graphite);font-size:14.5px;width:190px;white-space:nowrap}
+.revs td.role h3{font-size:1.35rem;font-stretch:112%;letter-spacing:-.01em;line-height:1.15}
+.revs td.role div{color:var(--graphite);font-size:14.5px;margin-top:6px}
+.revs ul{list-style:none;display:grid;gap:8px;max-width:62ch}
+.revs li{position:relative;padding-left:18px;font-size:15.5px}
+.revs li::before{content:"";position:absolute;left:0;top:.7em;width:7px;height:1px;background:var(--ink)}
+@media (max-width:860px){
+  .revs thead{display:none}
+  .revs,.revs tbody,.revs tr{display:block}
+  .revs tr{display:grid;grid-template-columns:56px 1fr;border-bottom:1px solid var(--hair);padding:20px 0}
+  .revs td{border:0;padding:0}
+  .revs td.rev{grid-row:span 3;width:auto}
+  .revs td.when{width:auto;margin-bottom:4px}
+  .revs td.notes{margin-top:12px}
+}
 
-/* experience */
-.timeline{border-left:1px solid var(--line-2);margin-left:6px;padding-left:28px;display:grid;gap:36px}
-.job{position:relative}
-.job::before{content:"";position:absolute;left:-34px;top:6px;width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px var(--glow)}
-.job .when{font-family:var(--font-mono);font-size:.78rem;color:var(--dim)}
-.job h3{font-size:1.35rem;margin:6px 0 2px}
-.job .org{color:var(--accent);font-weight:600;margin-bottom:12px}
-.job ul{list-style:none;display:grid;gap:8px;margin-bottom:14px}
-.job li{color:var(--muted);font-size:.95rem;padding-left:18px;position:relative}
-.job li::before{content:"▸";position:absolute;left:0;color:var(--accent)}
-
-/* skills */
-.skill-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-@media (max-width:900px){.skill-grid{grid-template-columns:1fr 1fr}}
-@media (max-width:520px){.skill-grid{grid-template-columns:1fr}}
-.sk{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
-.sk h4{font-family:var(--font-head);font-size:1rem;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.sk h4::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--accent)}
-.sk .tags{gap:6px}
+/* specification */
+.spec{border-top:2px solid var(--ink)}
+.spec div{display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px;padding:16px 0;border-bottom:1px solid var(--hair)}
+.spec dt{font-weight:600}
+.spec dd{color:var(--graphite)}
+@media (max-width:600px){.spec div{grid-template-columns:1fr;gap:4px}}
 
 /* contact */
-.contact{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:56px 40px;text-align:center;position:relative;overflow:hidden}
-.contact::before{content:"";position:absolute;inset:auto 0 -60% 0;height:120%;background:radial-gradient(ellipse at center,var(--glow),transparent 60%);pointer-events:none}
-.contact h2{font-size:clamp(2rem,5vw,3.4rem);margin:16px 0 14px;position:relative}
-.contact p{color:var(--muted);max-width:560px;margin:0 auto 28px;position:relative}
-.contact .hero-ctas{justify-content:center;position:relative}
-.contact .eyebrow{justify-content:center}
-.contact .eyebrow::after{content:"";width:28px;height:1px;background:var(--accent)}
-@media (max-width:600px){.contact{padding:40px 20px}}
-/* ============ motion layer ============ */
-.progress{position:fixed;top:0;left:0;right:0;height:2px;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--accent),var(--accent-2));z-index:60;pointer-events:none}
-nav{transition:transform .4s cubic-bezier(.2,.8,.2,1)}
-nav.nav-hide{transform:translateY(-100%)}
-.nav-links{position:relative}
-.nav-links a{transition:color .25s}
-.nav-links a.active{color:var(--text)}
-.nav-ind{position:absolute;bottom:-8px;left:0;height:2px;width:0;border-radius:2px;background:var(--accent);opacity:0;transition:left .45s cubic-bezier(.2,.8,.2,1),width .45s cubic-bezier(.2,.8,.2,1),opacity .25s}
-.status i{position:relative}
-.status i::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--ok);animation:ping 1.8s cubic-bezier(0,0,.2,1) infinite}
-@keyframes ping{75%,100%{transform:scale(2.6);opacity:0}}
-.hero::after{content:"";position:absolute;inset:0;background-image:radial-gradient(var(--line-2) 1px,transparent 1px);background-size:28px 28px;-webkit-mask-image:radial-gradient(ellipse at 70% 30%,#000 5%,transparent 60%);mask-image:radial-gradient(ellipse at 70% 30%,#000 5%,transparent 60%);opacity:.55;pointer-events:none}
-.hero>.wrap,.hero>.marquee{position:relative;z-index:1}
-.hero-glow{position:absolute;left:0;top:0;width:560px;height:560px;margin:-280px 0 0 -280px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 62%);pointer-events:none;z-index:0;opacity:0;transition:opacity .6s}
-.hero:hover .hero-glow{opacity:1}
-.w{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .02em .1em;margin:0 -.02em -.1em}
-.w>span{display:inline-block;will-change:transform}
-.shine{background-size:200% auto!important;animation:shine 5s linear infinite}
-@keyframes shine{to{background-position:-200% center}}
-.eyebrow::before{width:var(--ew,28px)}
-.pcard,.mcard,.sk,.step,.pillar,.profile,.stat{position:relative;isolation:isolate}
-.pcard::after,.mcard::after,.sk::after,.step::after,.pillar::after,.profile::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .35s;background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),color-mix(in srgb,var(--accent) 11%,transparent),transparent 45%)}
-.pcard:hover::after,.mcard:hover::after,.sk:hover::after,.step:hover::after,.pillar:hover::after,.profile:hover::after{opacity:1}
-.pcard:hover,.mcard:hover,.sk:hover,.step:hover,.pillar:hover{border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
-.mcard,.sk,.step,.pillar{transition:border-color .3s}
-.gsap .btn,.gsap .icon-btn{transition:background .2s,border-color .2s,color .2s}
-.gsap .btn:hover{transform:none}
-.gsap .pcard{transition:border-color .2s}
-.gsap .pcard:hover{transform:none}
-.pcard{transform-style:preserve-3d}
-.timeline{position:relative}
-.steps{position:relative;padding-top:22px}
-.steps-line{position:absolute;left:0;right:0;top:0;height:2px;background:var(--line);border-radius:2px;overflow:hidden}
-.steps-line i{position:absolute;inset:0;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--accent),var(--accent-2))}
-@media (max-width:960px){.steps-line{display:none}.steps{padding-top:0}}
-.marquee:hover{cursor:default}
-.gsap .reveal{opacity:1;transform:none;transition:none}
-::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
-@media (prefers-reduced-motion:reduce){.status i::after,.shine{animation:none}.hero-glow{display:none}}
+.contact{padding:clamp(100px,14vw,190px) 0}
+.contact h2{font-size:clamp(2.8rem,7.4vw,6.6rem);line-height:.92;max-width:13ch;letter-spacing:-.035em}
+.contact p{color:var(--graphite);max-width:52ch;font-size:1.1rem;margin:30px 0 36px}
+#contactBtns{display:flex;gap:12px;flex-wrap:wrap}
+
+/* ============ curtain footer ============ */
+:root{--fh:560px}
+.curtain{margin-bottom:var(--fh);box-shadow:0 40px 70px -30px rgba(10,20,50,.45)}
+footer{position:fixed;left:0;right:0;bottom:0;z-index:0;overflow:hidden}
+.foot-inner{position:relative;display:flex;flex-direction:column;padding-top:72px}
+.foot-top{display:grid;grid-template-columns:1.4fr 1fr .8fr;gap:40px}
+.foot-sign{font-size:1.5rem;line-height:1.3;font-weight:500;max-width:24ch;letter-spacing:-.01em}
+.foot-col h5{font-size:12px;font-weight:500;font-stretch:85%;color:var(--bp-dim);margin-bottom:12px}
+.foot-links{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;font-size:15px}
+.foot-links a,.foot-col a{color:var(--bp-dim);transition:color .2s}
+.foot-links a:hover,.foot-col a:hover{color:var(--bp-ink)}
+.clock{font:400 13px var(--font-mono)}
+.clock i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#5EE3A0;margin-right:9px;vertical-align:1px}
+.totop{display:inline-block;margin-top:20px;font-size:15px}
+.foot-big{display:flex;justify-content:space-between;font-family:var(--font-head);font-stretch:125%;font-weight:850;font-size:clamp(2.6rem,9.4vw,9.6rem);line-height:.8;letter-spacing:-.045em;margin-top:auto;padding-top:48px;user-select:none;white-space:nowrap}
+.foot-big > span{display:inline-block;overflow:hidden;padding:0 .01em .05em}
+.foot-big > span > i{display:inline-block;font-style:normal;will-change:transform}
+.foot-big .sp{width:.22em}
+.foot-bottom{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--bp-line);padding:18px 0 22px;font-size:13px;color:var(--bp-dim)}
+@media (max-width:860px){.foot-top{grid-template-columns:1fr 1fr}.foot-sign{grid-column:1/-1}.foot-inner{padding-top:48px}}
+@media (max-width:520px){.foot-top{grid-template-columns:1fr}.foot-sign{font-size:1.25rem}}
 
 /* ============ hover previews ============ */
 .pv{position:fixed;left:0;top:0;width:360px;z-index:80;pointer-events:none;opacity:0;transform:translate3d(0,0,0) scale(.94);transform-origin:0 0;transition:opacity .2s ease,transform .25s cubic-bezier(.2,.8,.2,1);background:var(--card);border:1px solid var(--line-2);border-radius:14px;overflow:hidden;box-shadow:0 30px 70px -20px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.02)}
@@ -350,542 +376,399 @@ nav.nav-hide{transform:translateY(-100%)}
 .m-legend i{display:inline-block;width:10px;height:3px;border-radius:2px;margin-right:4px;vertical-align:middle}
 @media (prefers-reduced-motion:reduce){.m-bars i,.m-hbar div i,.m-card,.m-msg,.m-box,.m-flow .e.f{animation:none}}
 
-/* ============ curtain footer ============ */
-:root{--fh:560px}
-.curtain{position:relative;z-index:1;background:var(--bg);margin-bottom:var(--fh);border-radius:0 0 28px 28px;box-shadow:0 40px 70px -30px rgba(0,0,0,.75)}
-:root[data-theme="light"] .curtain{box-shadow:0 30px 60px -30px rgba(60,40,10,.28)}
-@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .curtain{box-shadow:0 30px 60px -30px rgba(60,40,10,.28)}}
-footer{position:fixed;left:0;right:0;bottom:0;z-index:0;overflow:hidden;background:var(--bg-2);color:var(--muted);display:flex}
-footer::before{content:"";position:absolute;inset:auto -10% -55% -10%;height:90%;background:radial-gradient(ellipse at center,var(--glow),transparent 62%);pointer-events:none}
-.foot-inner{position:relative;flex:1;display:flex;flex-direction:column;padding-top:72px}
-.foot-top{display:grid;grid-template-columns:1.3fr 1fr .9fr;gap:40px}
-.foot-sign{font-family:var(--font-mono);font-size:.85rem;color:var(--dim)}
-.foot-sign b{color:var(--accent);font-weight:500}
-.foot-sign p{font-family:var(--font-body);font-size:1.6rem;line-height:1.25;color:var(--text);margin-top:14px;max-width:16ch;font-weight:600;letter-spacing:-.01em}
-.foot-col h5{font:500 .72rem var(--font-mono);color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
-.foot-links{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;font-size:.92rem}
-.foot-links a,.foot-col a{color:var(--muted);transition:color .2s}
-.foot-links a:hover,.foot-col a:hover{color:var(--accent)}
-.foot-col .clock{font:500 .92rem var(--font-mono);color:var(--text)}
-.foot-col .clock i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;margin-right:8px;vertical-align:1px;box-shadow:0 0 0 4px rgba(74,222,128,.15)}
-.foot-col .totop{display:inline-block;margin-top:22px;font:500 .85rem var(--font-mono)}
-.foot-big{display:flex;justify-content:center;font-family:var(--font-head);font-weight:700;font-size:clamp(5.5rem,23vw,24rem);line-height:.78;letter-spacing:-.055em;color:var(--text);margin-top:auto;padding-top:40px;user-select:none;white-space:nowrap}
-.foot-big > span{display:inline-block;overflow:hidden;padding:0 .02em .04em}
-.foot-big > span > i{display:inline-block;font-style:normal;will-change:transform}
-.foot-big .dot i{color:var(--accent)}
-.foot-bottom{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding:18px 0 22px;font:400 .8rem var(--font-mono);color:var(--dim)}
-@media (max-width:860px){.foot-top{grid-template-columns:1fr 1fr}.foot-sign{grid-column:1/-1}.foot-inner{padding-top:48px}}
-@media (max-width:520px){.foot-top{grid-template-columns:1fr}.foot-sign p{font-size:1.3rem}}
-
-/* ============ wavy timeline ============ */
-.timeline.tl-wavy{border-left-color:transparent}
-.tl-svg{position:absolute;left:-26px;top:0;width:52px;overflow:visible;pointer-events:none}
-.tl-svg path{fill:none;stroke-width:2;stroke-linecap:round}
-.tl-svg .base{stroke:var(--line-2)}
-.tl-wavy .job::before{background:var(--bg);border:2px solid var(--line-2);box-shadow:none;transition:background .35s,border-color .35s,box-shadow .35s,transform .35s cubic-bezier(.3,1.6,.5,1);box-sizing:border-box;top:3.5px;left:-35.5px;width:15px;height:15px}
-.tl-wavy .job.lit::before{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 6px var(--glow);transform:scale(1.15)}
-.hero h1{position:relative}
-.hero h1 .h1-echo{position:absolute;inset:0;margin:0;color:var(--accent);pointer-events:none;opacity:0}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}.fig .pk-g{display:none}}
 </style>
-<noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
 </head>
 <body>
-<div class="progress" aria-hidden="true"></div>
-
-<nav>
+<header class="bar" id="bar">
   <div class="wrap">
-    <a href="#top" class="logo"><b>&gt;_</b> rahul.dev</a>
-    <div class="nav-links">
-      <a href="#about">About</a><a href="#work">Work</a><a href="#systems">Systems</a><a href="#experience">Experience</a><a href="#skills">Skills</a><a href="#contact">Contact</a>
-    </div>
-    <div class="nav-right">
-      <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">◐</button>
-      <a class="btn primary" id="navResume" href="Rahul_Gurav_Resume.pdf" download>Resume ↓</a>
+    <a class="brand" href="#top">Rahul Gurav</a>
+    <nav class="links" aria-label="Sections"><a href="#about">About</a><a href="#work">Work</a><a href="#systems">Systems</a><a href="#method">Method</a><a href="#experience">Experience</a><a href="#contact">Contact</a></nav>
+    <div class="bar-tools">
+      <button class="icon-btn" id="themeBtn" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17A8.5 8.5 0 0 0 12 3.5z" fill="currentColor"/></svg></button>
+      <a class="btn" id="navResume" href="Rahul_Gurav_Resume.pdf" download>Résumé</a>
     </div>
   </div>
-</nav>
-
-<main class="curtain" id="curtain">
-<header class="hero" id="top">
-  <div class="wrap hero-grid">
-    <div class="reveal">
-      <span class="status"><i></i> Open to full-time roles</span>
-      <h1>I turn messy business operations into <span class="grad">AI-powered software.</span></h1>
-      <p class="lead" id="heroLead">I design, code and ship complete products: AI agents with RAG and tool calling, full-stack React + Node apps and n8n automation pipelines that teams use every day.</p>
-      <div class="hero-ctas">
-        <a href="#work" class="btn primary">See my work →</a>
-        <a href="#contact" class="btn">Let's talk</a>
-      </div>
-      <div class="hero-tags"><span>AI agents &amp; RAG</span><span>Full-stack React / Node</span><span>n8n &amp; Apps Script automation</span></div>
-    </div>
-    <div class="term reveal" aria-hidden="true">
-      <div class="term-bar"><i></i><i></i><i></i><span>~/rahul/systems</span></div>
-      <div class="term-body" id="term"><div><span class="p">$ </span><span class="">whoami</span></div><div><span class=""></span><span class="">rahul gurav — ai engineer</span></div><div><span class="p">$ </span><span class="">ls ./shipped --count</span></div><div><span class="ok"></span><span class="ok">15 flagship · 31 supporting · all in production</span></div><div><span class="p">$ </span><span class="">cat stack.txt</span></div><div><span class="d"></span><span class="d">react · node · langgraph · n8n · python</span></div><div><span class="p">$ </span><span class="">./agent ask "pending import POs?"</span></div><div><span class="ok">✓ </span><span class="ok">3 POs in transit · ₹ landed cost ready</span></div><div><span class="p">$ </span><span class="">status</span></div><div><span class="ok">● </span><span class="ok">open to work</span></div><span class="p">$ </span></div>
-    </div>
-  </div>
-  <div class="wrap" style="margin-top:64px">
-    <div class="stats reveal" id="stats"><div class="stat"><b><span data-count="15">15</span><em></em></b><span>Flagship systems</span></div><div class="stat"><b><span data-count="40">40</span><em>+</em></b><span>Tools in daily use</span></div><div class="stat"><b><span data-count="7">7</span><em></em></b><span>Departments served</span></div><div class="stat"><b><span data-count="179">179</span><em></em></b><span>Nodes in my largest n8n workflow</span></div></div>
-  </div>
-  <div class="marquee"><div class="marquee-track" id="marquee"><span>Python</span><span>TypeScript</span><span>React</span><span>Node.js</span><span>Express</span><span>FastAPI</span><span>LangGraph</span><span>RAG</span><span>Tool calling</span><span>OpenRouter</span><span>Claude</span><span>ChatGPT</span><span>Gemini</span><span>n8n</span><span>Google Apps Script</span><span>Google Sheets API</span><span>REST APIs</span><span>Tailwind</span><span>Three.js</span><span>Postman</span><span>Git</span><span>Render</span><span>Python</span><span>TypeScript</span><span>React</span><span>Node.js</span><span>Express</span><span>FastAPI</span><span>LangGraph</span><span>RAG</span><span>Tool calling</span><span>OpenRouter</span><span>Claude</span><span>ChatGPT</span><span>Gemini</span><span>n8n</span><span>Google Apps Script</span><span>Google Sheets API</span><span>REST APIs</span><span>Tailwind</span><span>Three.js</span><span>Postman</span><span>Git</span><span>Render</span></div></div>
 </header>
 
-<section id="about">
-  <div class="wrap about-grid">
-    <div class="about-text reveal">
-      <div class="eyebrow">01 · About</div>
-      <h2 style="font-size:clamp(1.9rem,4vw,2.8rem);margin:14px 0 22px">I build the software a manufacturing company runs on.</h2>
-      <p>At <strong>Biopapro Cutleries</strong>, a manufacturer of paper straws and wooden cutlery, I build internal software end to end. I talk to the people who do the work, map the process, and then ship the tool myself: front end, back end, data, AI and deployment.</p>
-      <p>That covers <strong>40+ systems across Sales, Production, Purchase, Order-to-Delivery, Stock, Finance and Admin</strong>. They include an AI procurement agent, a full CRM, n8n AI agents and dozens of Apps Script tools. Teams use them every day.</p>
-      <p>I'm now looking to bring that range to a product or IT team, or to build the same thing for clients.</p>
-      <div class="pillars">
-        <div class="pillar"><h4>End-to-end ownership</h4><p>Requirements → UI → API → data → AI → deploy → support.</p></div>
-        <div class="pillar"><h4>Real users, daily</h4><p>Sales, finance, production and management all run on these tools.</p></div>
-        <div class="pillar"><h4>Automate the boring</h4><p>Triggers, webhooks, schedulers and agents replace manual work.</p></div>
+<main class="curtain" id="curtain">
+<section class="hero bp" id="top" aria-label="Introduction">
+  <div class="frame" aria-hidden="true">
+    <div class="zones x"><span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span><span>G</span><span>H</span></div>
+    <div class="zones y"><span>1</span><span>2</span><span>3</span><span>4</span></div>
+  </div>
+  <div class="cad" aria-hidden="true"><i class="cx"></i><i class="cy"></i><b></b></div>
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="copy">
+        <div class="name-box">
+          <div class="dim" aria-hidden="true"><span>AI engineer, Mumbai</span></div>
+          <h1 class="name"><span class="ln">Rahul</span><span class="ln">Gurav</span></h1>
+        </div>
+        <p class="lead">I turn a factory's spreadsheets, WhatsApp chats and paper forms into AI agents and apps its teams use every day.</p>
+        <div class="ctas"><a class="btn solid" href="#work">See the work</a><a class="btn" href="#contact">Get in touch</a></div>
       </div>
+      <figure class="fig" id="fig" aria-label="Diagram: messy inputs flow through an AI agent layer into the apps teams use">
+        <svg viewBox="0 0 580 470" role="img">
+          <g class="ins">
+            <rect class="ln box draw" x="22" y="40" width="150" height="40" rx="3"/><text class="lbl fade" x="36" y="65">WhatsApp chats</text>
+            <rect class="ln box draw" x="22" y="130" width="150" height="40" rx="3"/><text class="lbl fade" x="36" y="155">Google Sheets</text>
+            <rect class="ln box draw" x="22" y="220" width="150" height="40" rx="3"/><text class="lbl fade" x="36" y="245">Paper forms</text>
+            <rect class="ln box draw" x="22" y="310" width="150" height="40" rx="3"/><text class="lbl fade" x="36" y="335">Supplier emails</text>
+          </g>
+          <g class="wires">
+            <path id="w1" class="ln thin draw" d="M172 60 C 225 60, 215 196, 240 200"/>
+            <path id="w2" class="ln thin draw" d="M172 150 C 210 150, 215 197, 238 202"/>
+            <path id="w3" class="ln thin draw" d="M172 240 C 210 240, 215 208, 238 206"/>
+            <path id="w4" class="ln thin draw" d="M172 330 C 225 330, 215 214, 240 210"/>
+            <path id="w5" class="ln thin draw" d="M360 200 C 385 196, 375 60, 420 60"/>
+            <path id="w6" class="ln thin draw" d="M362 202 C 390 197, 380 150, 420 150"/>
+            <path id="w7" class="ln thin draw" d="M362 206 C 390 208, 380 240, 420 240"/>
+            <path id="w8" class="ln thin draw" d="M360 210 C 385 214, 375 330, 420 330"/>
+          </g>
+          <g class="core">
+            <line class="ln cl draw" x1="300" y1="110" x2="300" y2="300"/>
+            <line class="ln cl draw" x1="210" y1="205" x2="390" y2="205"/>
+            <circle class="ln draw" cx="300" cy="205" r="62"/>
+            <circle class="ln thin draw" cx="300" cy="205" r="48"/>
+            <text class="core-lbl fade" x="300" y="200" text-anchor="middle">Agent</text>
+            <text class="ann fade" x="300" y="219" text-anchor="middle">tools + RAG</text>
+          </g>
+          <g class="outs">
+            <rect class="ln box draw" x="420" y="40" width="140" height="40" rx="3"/><text class="lbl fade" x="434" y="65">CRM &amp; dispatch</text>
+            <rect class="ln box draw" x="420" y="130" width="140" height="40" rx="3"/><text class="lbl fade" x="434" y="155">Dashboards</text>
+            <rect class="ln box draw" x="420" y="220" width="140" height="40" rx="3"/><text class="lbl fade" x="434" y="245">Daily AI brief</text>
+            <rect class="ln box draw" x="420" y="310" width="140" height="40" rx="3"/><text class="lbl fade" x="434" y="335">WhatsApp replies</text>
+          </g>
+          <g class="dims">
+            <path class="ln thin draw" d="M22 392 V 410 M560 392 V 410 M22 402 H 560"/>
+            <text class="ann fade" x="291" y="428" text-anchor="middle">40+ tools and apps in daily use</text>
+            <path class="ln thin draw" d="M8 40 H 16 M8 350 H 16 M12 40 V 350"/>
+            <text class="ann fade" transform="translate(4 195) rotate(-90)" text-anchor="middle">messy inputs</text>
+            <path class="ln thin draw" d="M566 40 H 574 M566 350 H 574 M570 40 V 350"/>
+            <text class="ann fade" transform="translate(582 195) rotate(90)" text-anchor="middle">7 departments</text>
+            <path class="ln thin draw" d="M344 160 L 392 112 H 470"/>
+            <text class="ann fade" x="398" y="104">179-node n8n workflow</text>
+          </g>
+          <g class="pk-g">
+            <circle class="pk" r="3"><animateMotion dur="3.2s" repeatCount="indefinite"><mpath href="#w1"/></animateMotion></circle>
+            <circle class="pk" r="3"><animateMotion dur="2.6s" begin=".8s" repeatCount="indefinite"><mpath href="#w3"/></animateMotion></circle>
+            <circle class="pk" r="3"><animateMotion dur="3s" begin="1.4s" repeatCount="indefinite"><mpath href="#w4"/></animateMotion></circle>
+            <circle class="pk" r="3"><animateMotion dur="2.8s" begin=".4s" repeatCount="indefinite"><mpath href="#w5"/></animateMotion></circle>
+            <circle class="pk" r="3"><animateMotion dur="2.4s" begin="1.1s" repeatCount="indefinite"><mpath href="#w7"/></animateMotion></circle>
+            <circle class="pk" r="3"><animateMotion dur="3.4s" begin="1.9s" repeatCount="indefinite"><mpath href="#w8"/></animateMotion></circle>
+          </g>
+        </svg>
+      </figure>
+      <dl class="tb" id="tb">
+        <div class="full"><dt>Portfolio of</dt><dd>Rahul Gurav</dd></div>
+        <div><dt>Role</dt><dd>AI Engineer</dd></div>
+        <div><dt>Based in</dt><dd>Parel, Mumbai</dd></div>
+        <div><dt>Company</dt><dd>Biopapro Cutleries</dd></div>
+        <div><dt>Education</dt><dd>M.Sc. Computer Science</dd></div>
+        <div><dt>Status</dt><dd><span class="live-dot"></span>Open to full-time roles</dd></div>
+        <div><dt>Résumé</dt><dd><a href="Rahul_Gurav_Resume.pdf" download style="text-decoration:underline;text-underline-offset:3px">Download PDF</a></dd></div>
+      </dl>
     </div>
-    <aside class="profile reveal" id="profile">
-  <div class="avatar">RG</div>
-  <h3>Rahul Gurav</h3>
-  <div class="role">AI Engineer</div>
-  <dl class="kv">
-    <dt>company</dt><dd>Biopapro Cutleries Pvt. Ltd</dd>
-    <dt>focus</dt><dd>AI agents, full-stack apps, automation</dd>
-    <dt>domain</dt><dd>Manufacturing ops (in-house tech)</dd>
-    <dt>education</dt><dd>M.Sc. Computer Science, 2025</dd>
-    <dt>experience</dt><dd>AI Engineer since 2025 + 6-month traineeship</dd>
-    <dt>location</dt><dd>Parel, Mumbai</dd>
-  </dl>
-  <div class="btns"><a class="btn primary" href="mailto:rahulgurav866@gmail.com">Email me</a><a class="btn" href="https://www.linkedin.com/in/rahul-gurav-77a987241/" target="_blank" rel="noopener">LinkedIn</a></div></aside>
   </div>
 </section>
 
-<section id="work" style="background:var(--bg-2)">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <div class="eyebrow">02 · Selected work</div>
-      <h2>Flagship systems</h2>
-      <p>Each one began as a real problem inside the business. The card shows what was broken, what I built, and what changed.</p>
+<section class="sec" id="about">
+  <div class="wrap about">
+    <div>
+      <h2 class="sr">About</h2>
+      <p class="big">At Biopapro Cutleries, a manufacturer of paper straws and wooden cutlery, I build the internal software end to end.</p>
+      <div class="rest">
+        <p>I talk to the people who do the work, map the process, and then ship the tool myself: front end, back end, data, AI and deployment.</p>
+        <p>That covers <strong>40+ systems across sales, production, purchase, order-to-delivery, stock, finance and admin</strong>. They include an AI procurement agent, a full CRM, n8n AI agents and dozens of Apps Script tools that teams open every day.</p>
+        <p>I'm now looking to bring that range to a product or IT team.</p>
+      </div>
     </div>
-    <div class="filters" id="featFilters"><button class="filter active" data-c="All">All<small>15</small></button><button class="filter" data-c="AI">AI<small>2</small></button><button class="filter" data-c="Full-Stack">Full-Stack<small>4</small></button><button class="filter" data-c="ML">ML<small>3</small></button><button class="filter" data-c="Automation">Automation<small>3</small></button><button class="filter" data-c="Dashboards">Dashboards<small>3</small></button></div>
-    <div class="feat-grid" id="featGrid">
-    <article class="pcard reveal in">
-      <div class="top"><span class="cat">AI</span><span><span class="pv-hint">hover · preview</span><span class="num">01</span></span></div>
-      <h3>Procurement AI Agent</h3>
-      <div class="metric"><strong>11</strong><span>agent tools over POs, imports, landed cost, payments, docs and a knowledge graph</span></div>
-      <div class="pbr">
-        <div><b>PROBLEM</b><span>Stock, targets, in-transit goods, import POs, payments and landed cost were scattered across many sheets. Answering a simple purchase question meant digging by hand.</span></div>
-        <div><b>BUILT</b><span>A full-stack procurement platform with planning, import-PO, payment, landed-cost, vendor-comparison and QC dashboards, plus a LangGraph tool-calling agent backed by local RAG search and a procurement knowledge graph.</span></div>
-        <div class="res"><b>RESULT</b><span>The purchase team plans, tracks imports and asks questions in plain English instead of hunting through sheets.</span></div>
-      </div>
-      <div class="tags"><span class="chip">React</span><span class="chip">TypeScript</span><span class="chip">Node.js</span><span class="chip">LangGraph</span><span class="chip">RAG</span><span class="chip">Recharts</span><span class="chip">Sheets API</span><span class="chip">Vitest</span></div>
-      <div class="plinks"><a href="demos/procurement-agent/" target="_blank" rel="noopener">▶ Live demo</a></div>
-    </article>
-    <article class="pcard reveal in">
-      <div class="top"><span class="cat">AI</span><span><span class="pv-hint">hover · preview</span><span class="num">02</span></span></div>
-      <h3>FactoIntel: Factory Intelligence Platform</h3>
-      <div class="metric"><strong>6</strong><span>spreadsheets audited daily, with a root cause on every negative balance</span></div>
-      <div class="pbr">
-        <div><b>PROBLEM</b><span>Production, stock and labour data lived across many Google Sheets, and stock errors such as negative balances or IMS edits with no matching entry surfaced days later.</span></div>
-        <div><b>BUILT</b><span>A React + TypeScript and Express app that reads 6 spreadsheets. It has dashboards for all five production departments, a GRN batch tracker, and FG/RM IMS audits that compare form entries with the IMS sheet day by day and label the root cause of every negative balance. It also covers labour and machine capacity, monthly targets, stock-cover forecasts, and an AI layer (daily brief, anomaly scan, chat) via OpenRouter.</span></div>
-        <div class="res"><b>RESULT</b><span>Stock problems show up with a root cause attached (e.g. 'dispatch beyond available stock'), and one health score covers inventory, production, labour, machines and data integrity.</span></div>
-      </div>
-      <div class="tags"><span class="chip">React</span><span class="chip">TypeScript</span><span class="chip">Express</span><span class="chip">Google Sheets API</span><span class="chip">OpenRouter</span><span class="chip">Recharts</span><span class="chip">Tailwind</span></div>
-      <div class="plinks"><a href="demos/factointel/" target="_blank" rel="noopener">▶ Live demo</a></div>
-    </article>
-    <article class="pcard reveal in">
-      <div class="top"><span class="cat">Full-Stack</span><span><span class="pv-hint">hover · preview</span><span class="num">03</span></span></div>
-      <h3>Sales CRM with Role-Based Access</h3>
-      
-      <div class="pbr">
-        <div><b>PROBLEM</b><span>Orders, dispatch, follow-ups, grievances and leads lived in separate sheets and forms, and anyone could see everything.</span></div>
-        <div><b>BUILT</b><span>A 24-page CRM with Google login and admin / CRM / dispatch roles. It covers order entry with auto IDs and stock checks, dispatch with photo upload, reorder-risk prediction, pipeline, grievances, WhatsApp, reports and an AI assistant for lead generation.</span></div>
-        <div class="res"><b>RESULT</b><span>Sales, CRM and dispatch work in one system, and each role sees only what it needs.</span></div>
-      </div>
-      <div class="tags"><span class="chip">React</span><span class="chip">Vite</span><span class="chip">Node.js</span><span class="chip">Express</span><span class="chip">Google OAuth</span><span class="chip">OpenRouter</span><span class="chip">node-cron</span></div>
-      <div class="plinks"><a href="demos/crm/" target="_blank" rel="noopener">▶ Live demo</a></div>
-    </article>
-    <article class="pcard reveal in">
-      <div class="top"><span class="cat">ML</span><span><span class="pv-hint">hover · preview</span><span class="num">04</span></span></div>
-      <h3>Demand Forecasting: 6 Models, One Backtest</h3>
-      <div class="metric"><strong>11.9%</strong><span>WAPE (−18% vs seasonal naive)</span></div>
-      <div class="pbr">
-        <div><b>PROBLEM</b><span>Purchase and production planning need demand forecasts weeks ahead, and the right method isn't obvious until you test them all on the same data.</span></div>
-        <div><b>BUILT</b><span>A browser app that simulates 3 years of weekly demand for 10 SKUs (trend, seasonality, a festive-season bump, promotions) and compares six hand-written models: naive, seasonal naive, moving average, Holt-Winters, ridge regression on lag and calendar features, and an ensemble. It runs a 4-fold rolling-origin backtest over an 8-week horizon and includes an automated leakage test.</span></div>
-        <div class="res"><b>RESULT</b><span>On the sample data the Holt-Winters + ridge ensemble reaches 11.9% WAPE, 18% less error than seasonal naive, and every model passes the leakage test.</span></div>
-      </div>
-      <div class="tags"><span class="chip">JavaScript</span><span class="chip">Holt-Winters</span><span class="chip">Ridge regression</span><span class="chip">Time series</span><span class="chip">Chart.js</span></div>
-      <div class="plinks"><a href="demos/demand-forecasting/" target="_blank" rel="noopener">▶ Live demo</a></div>
-    </article>
-    <article class="pcard reveal in">
-      <div class="top"><span class="cat">ML</span><span><span class="pv-hint">hover · preview</span><span class="num">05</span></span></div>
-      <h3>B2B Churn Prediction + RFM</h3>
-      <div class="metric"><strong>77%</strong><span>of churners reached in the top 20%</span></div>
-      <div class="pbr">
-        <div><b>PROBLEM</b><span>A sales team can only call so many customers a week, so it needs to know which active accounts are about to go quiet.</span></div>
-        <div><b>BUILT</b><span>Simulates 520 B2B customers with their own ordering rhythms, takes monthly snapshots with seven behavioural features, and trains a logistic regression in the browser on a time-based split. It compares the model with a 60-day inactivity rule, recency ranking and RFM segments, and explains each risk score.</span></div>
-        <div class="res"><b>RESULT</b><span>On the test snapshot, calling the riskiest 20% reaches 77% of churners and 62% of revenue at risk (AUC 0.95), against 61% when ranking by days since last order.</span></div>
-      </div>
-      <div class="tags"><span class="chip">JavaScript</span><span class="chip">Logistic regression</span><span class="chip">RFM</span><span class="chip">Chart.js</span></div>
-      <div class="plinks"><a href="demos/churn-rfm/" target="_blank" rel="noopener">▶ Live demo</a></div>
-    </article>
-    <article class="pcard reveal in">
-      <div class="top"><span class="cat">Automation</span><span><span class="pv-hint">hover · preview</span><span class="num">06</span></span></div>
-      <h3>AI Marketing Team (n8n, 179 nodes)</h3>
-      <div class="metric"><strong>4</strong><span>channels published from one approvals dashboard</span></div>
-      <div class="pbr">
-        <div><b>PROBLEM</b><span>Planning, writing, designing and posting content every day took hours, and nobody tracked results.</span></div>
-        <div><b>BUILT</b><span>An n8n workflow that acts as a full marketing team. An AI strategist plans the week, a copywriter drafts posts, images are generated and reviewed by an AI art director, and videos are made with Google Veo. Approved posts go out to LinkedIn, Instagram, Facebook and WhatsApp from an approvals dashboard.</span></div>
-        <div class="res"><b>RESULT</b><span>Content goes from plan to published in one click, and performance, AI cost and errors are reported automatically.</span></div>
-      </div>
-      <div class="tags"><span class="chip">n8n</span><span class="chip">OpenAI</span><span class="chip">Gemini / Veo</span><span class="chip">Meta Graph API</span><span class="chip">LinkedIn API</span><span class="chip">WhatsApp Cloud API</span></div>
-      <div class="plinks"><a href="demos/n8n/#marketing" target="_blank" rel="noopener">▶ Live demo</a></div>
-    </article>
-    <article class="pcard reveal in">
-      <div class="top"><span class="cat">Automation</span><span><span class="pv-hint">hover · preview</span><span class="num">07</span></span></div>
-      <h3>WhatsApp AI Lead Qualifier (n8n)</h3>
-      <div class="metric"><strong>45</strong><span>nodes · text, voice notes and images, with human takeover</span></div>
-      <div class="pbr">
-        <div><b>PROBLEM</b><span>WhatsApp enquiries arrived at all hours, and new leads waited too long for a reply.</span></div>
-        <div><b>BUILT</b><span>A 45-node AI agent that handles text, voice notes (transcribed) and images. It tells existing customers apart from new leads, qualifies them with chat memory, updates the CRM sheet and books calendar slots, with a human-takeover switch.</span></div>
-        <div class="res"><b>RESULT</b><span>Every enquiry gets an instant reply, and the sales team can step in on any chat.</span></div>
-      </div>
-      <div class="tags"><span class="chip">n8n</span><span class="chip">OpenAI</span><span class="chip">WhatsApp Cloud API</span><span class="chip">Google Calendar</span><span class="chip">Sheets</span></div>
-      <div class="plinks"><a href="demos/n8n/#whatsapp" target="_blank" rel="noopener">▶ Live demo</a></div>
-    </article>
-    <article class="pcard reveal in">
-      <div class="top"><span class="cat">Automation</span><span><span class="pv-hint">hover · preview</span><span class="num">08</span></span></div>
-      <h3>Export Lead Generator (n8n)</h3>
-      <div class="metric"><strong>43</strong><span>nodes · scrape, enrich and de-duplicate, country by country</span></div>
-      <div class="pbr">
-        <div><b>PROBLEM</b><span>The founder's "Dream 100" export list needed qualified overseas buyers, and finding them by hand was slow.</span></div>
-        <div><b>BUILT</b><span>An n8n pipeline that scrapes B2B buyer leads country by country through SerpApi, enriches contacts with RocketReach, de-duplicates them and feeds a prospecting sheet.</span></div>
-        <div class="res"><b>RESULT</b><span>A steady, de-duplicated stream of export prospects with no manual searching.</span></div>
-      </div>
-      <div class="tags"><span class="chip">n8n</span><span class="chip">SerpApi</span><span class="chip">RocketReach</span><span class="chip">Google Sheets</span></div>
-      <div class="plinks"><a href="demos/n8n/#export" target="_blank" rel="noopener">▶ Live demo</a></div>
-    </article>
-    <article class="pcard reveal in">
-      <div class="top"><span class="cat">Full-Stack</span><span><span class="pv-hint">hover · preview</span><span class="num">09</span></span></div>
-      <h3>Export O2D &amp; Sales Tracker</h3>
-      <div class="metric"><strong>10</strong><span>SLA-timed hand-offs tracked per order and per person</span></div>
-      <div class="pbr">
-        <div><b>PROBLEM</b><span>Export orders went through 10 hand-offs (stock checks, packing material, QC, container booking and dispatch) across five people and several sheets. Nobody could see which step an order was stuck on.</span></div>
-        <div><b>BUILT</b><span>An Apps Script web app with two modules. Export O2D tracks every order through 10 SLA-timed steps with planned vs actual dates, holiday-aware due dates, per-person task lists, email hand-offs and a dispatch form. Export Sales generates commercial invoices and packing lists, ready to print as PDFs.</span></div>
-        <div class="res"><b>RESULT</b><span>Each person sees only their pending steps, delays are visible per order and per person, and export paperwork comes out of the same data.</span></div>
-      </div>
-      <div class="tags"><span class="chip">Google Apps Script</span><span class="chip">JavaScript</span><span class="chip">HTML/CSS</span><span class="chip">Google Sheets</span><span class="chip">Gmail</span></div>
-      <div class="plinks"><a href="demos/export-tracker/" target="_blank" rel="noopener">▶ Live demo</a></div>
-    </article>
-    <article class="pcard reveal in">
-      <div class="top"><span class="cat">Dashboards</span><span><span class="pv-hint">hover · preview</span><span class="num">10</span></span></div>
-      <h3>CEO Command Center: FastAPI Migration</h3>
-      
-      <div class="pbr">
-        <div><b>PROBLEM</b><span>The CEO dashboard, originally built by a colleague, ran on a single Node/Express server that read 8 Google Sheets, and its AI chat slowed down every startup.</span></div>
-        <div><b>BUILT</b><span>I ported every endpoint to FastAPI as separate, tested Python services. I kept the original's exact number handling (JS-style rounding, header lookups, fallbacks) so no figure changed. I also lazy-loaded the LangGraph chat, added a one-click Render blueprint, narrowed the production sheet reads, and did a full design pass on the UI.</span></div>
-        <div class="res"><b>RESULT</b><span>Same numbers, now on a typed, testable Python back end that is easier to extend.</span></div>
-      </div>
-      <div class="tags"><span class="chip">FastAPI</span><span class="chip">Python</span><span class="chip">LangGraph</span><span class="chip">Google Sheets API</span><span class="chip">Render</span><span class="chip">pytest</span></div>
-      <div class="plinks"><a href="demos/ceo-command-center/" target="_blank" rel="noopener">▶ Live demo</a></div>
-    </article>
-    <article class="pcard reveal in">
-      <div class="top"><span class="cat">Full-Stack</span><span><span class="pv-hint">hover · preview</span><span class="num">11</span></span></div>
-      <h3>Packaging Design Studio (3D)</h3>
-      
-      <div class="pbr">
-        <div><b>PROBLEM</b><span>Every box, wrapper and export carton needed a designer plus separate print and loading calculations.</span></div>
-        <div><b>BUILT</b><span>A browser design tool. You pick a product, size the box, edit text and colours, and see a live 3D mockup with a fold animation. It exports print-ready PDF, SVG and DXF die-lines, and includes a wrapping-paper designer and a 3D container-loading planner.</span></div>
-        <div class="res"><b>RESULT</b><span>Designs, printer files and loading plans take minutes, with no designer needed.</span></div>
-      </div>
-      <div class="tags"><span class="chip">Three.js</span><span class="chip">JavaScript</span><span class="chip">jsPDF</span><span class="chip">JSZip</span><span class="chip">SVG / DXF</span></div>
-      <div class="plinks"><a href="demos/pack-studio/" target="_blank" rel="noopener">▶ Live demo</a></div>
-    </article>
-    <article class="pcard reveal in">
-      <div class="top"><span class="cat">Full-Stack</span><span><span class="pv-hint">hover · preview</span><span class="num">12</span></span></div>
-      <h3>TDS &amp; Spec Sheet Generator</h3>
-      
-      <div class="pbr">
-        <div><b>PROBLEM</b><span>Every customer enquiry needed a technical data sheet and a dimensioned drawing, made by hand in Word.</span></div>
-        <div><b>BUILT</b><span>A standalone tool that generates branded TDS sheets, dimensioned product drawings and customer spec documents for straws and wooden cutlery from a few inputs.</span></div>
-        <div class="res"><b>RESULT</b><span>Spec documents go out the same day instead of after a design round-trip.</span></div>
-      </div>
-      <div class="tags"><span class="chip">JavaScript</span><span class="chip">SVG</span><span class="chip">HTML/CSS</span><span class="chip">PDF</span></div>
-      <div class="plinks"><a href="demos/tds-generator/" target="_blank" rel="noopener">▶ Live demo</a></div>
-    </article>
-    <article class="pcard reveal in">
-      <div class="top"><span class="cat">ML</span><span><span class="pv-hint">hover · preview</span><span class="num">13</span></span></div>
-      <h3>Sales Intelligence &amp; Forecasting</h3>
-      
-      <div class="pbr">
-        <div><b>PROBLEM</b><span>Sales data usually ends up in monthly reports, with no view of trends, expected revenue or which customers matter most.</span></div>
-        <div><b>BUILT</b><span>A dashboard over 24 months of simulated orders: revenue trend with a 3-month Holt-Winters forecast and 80% band, product growth, top customers, RFM segments and a state filter. A question box maps plain-English questions to exact queries. It's rule-based, not an LLM.</span></div>
-        <div class="res"><b>RESULT</b><span>Questions like 'top 5 customers last 3 months' or 'forecast next quarter' get exact answers from the data in one step.</span></div>
-      </div>
-      <div class="tags"><span class="chip">JavaScript</span><span class="chip">Holt-Winters</span><span class="chip">RFM</span><span class="chip">Chart.js</span></div>
-      <div class="plinks"><a href="demos/sales-intelligence/" target="_blank" rel="noopener">▶ Live demo</a></div>
-    </article>
-    <article class="pcard reveal in">
-      <div class="top"><span class="cat">Dashboards</span><span><span class="pv-hint">hover · preview</span><span class="num">14</span></span></div>
-      <h3>Production Pulse</h3>
-      <div class="metric"><strong>5</strong><span>departments, plan vs actual pro-rated to the time of day</span></div>
-      <div class="pbr">
-        <div><b>PROBLEM</b><span>Daily production plans and actual output are often tracked separately, so shortfalls only show up the next day.</span></div>
-        <div><b>BUILT</b><span>A single-page app for five departments: enter the day's plan per department and compare it with shift output pro-rated to the time of day. It shows on track / behind / critical status, a 14-day attainment trend, machine downtime and labour panels, and saved shift-handover notes.</span></div>
-        <div class="res"><b>RESULT</b><span>Supervisors can see which department is falling behind while the shift is still running.</span></div>
-      </div>
-      <div class="tags"><span class="chip">JavaScript</span><span class="chip">Chart.js</span><span class="chip">localStorage</span></div>
-      <div class="plinks"><a href="demos/production-pulse/" target="_blank" rel="noopener">▶ Live demo</a></div>
-    </article>
-    <article class="pcard reveal in">
-      <div class="top"><span class="cat">Dashboards</span><span><span class="pv-hint">hover · preview</span><span class="num">15</span></span></div>
-      <h3>O2D Order Tracking System</h3>
-      <div class="metric"><strong>8</strong><span>stages from confirmation to payment, planned vs actual</span></div>
-      <div class="pbr">
-        <div><b>PROBLEM</b><span>Orders pass through many hand-offs, and it's hard to see where each one is or which stage is slipping.</span></div>
-        <div><b>BUILT</b><span>Tracks every order through 8 stages from confirmation to payment. Planned dates come from per-stage SLAs in working days and ripple forward when a stage slips. It has list and board views, late and due-today filters, a per-order timeline with one-click 'mark done', and a new-order form.</span></div>
-        <div class="res"><b>RESULT</b><span>Late orders, and the exact stage they're stuck at, are visible at a glance along with on-time performance per stage.</span></div>
-      </div>
-      <div class="tags"><span class="chip">JavaScript</span><span class="chip">HTML/CSS</span><span class="chip">localStorage</span></div>
-      <div class="plinks"><a href="demos/o2d-tracker/" target="_blank" rel="noopener">▶ Live demo</a></div>
-    </article></div>
+    <dl class="facts">
+      <div><dt>Company</dt><dd>Biopapro Cutleries Pvt. Ltd</dd></div>
+      <div><dt>Focus</dt><dd>AI agents, full-stack apps, automation</dd></div>
+      <div><dt>Experience</dt><dd>AI Engineer since 2025, after a 6-month traineeship</dd></div>
+      <div><dt>Education</dt><dd>M.Sc. Computer Science, 2025</dd></div>
+      <div><dt>Location</dt><dd>Parel, Mumbai</dd></div>
+      <div class="acts" style="display:flex;border:0"><a class="btn solid" href="mailto:rahulgurav866@gmail.com">Email me</a><a class="btn" href="https://www.linkedin.com/in/rahul-gurav-77a987241/" target="_blank" rel="noopener">LinkedIn</a></div>
+    </dl>
   </div>
 </section>
 
-<section id="systems">
+<section class="sec" id="work">
   <div class="wrap">
-    <div class="sec-head reveal">
-      <div class="eyebrow">03 · Full scope</div>
+    <div class="sec-head">
+      <h2>Selected work</h2>
+      <p>Fifteen systems, each started as a real problem inside the business. Open one to see what was broken, what I built and what changed. Every one has a live demo with sample data.</p>
+    </div>
+    <div class="wl" id="workList"><article class="ws open">
+  <h3 class="ws-h"><button class="ws-row" aria-expanded="true" aria-controls="ws-0"><span class="ws-ref">S-01</span><span class="ws-ttl">Procurement AI Agent</span><span class="ws-stack">React, TypeScript, Node.js</span><span class="ws-cat">AI</span><span class="ws-plus" aria-hidden="true"></span></button></h3>
+  <div class="ws-panel" id="ws-0" role="region" aria-label="Procurement AI Agent"><div><div class="ws-body">
+    <figure class="shot"><span class="dx" aria-hidden="true"><span>React + TypeScript + Node.js + LangGraph</span></span><span class="dy" aria-hidden="true"><span>AI</span></span><img loading="lazy" src="img/previews/procurement.webp" alt="Screenshot of the Procurement AI Agent demo" width="720" height="440"></figure>
+    <div class="pbr">
+      <p class="met"><b>11</b>agent tools over POs, imports, landed cost, payments, docs and a knowledge graph</p>
+      <h4>Problem</h4><p>Stock, targets, in-transit goods, import POs, payments and landed cost were scattered across many sheets. Answering a simple purchase question meant digging by hand.</p>
+      <h4>What I built</h4><p>A full-stack procurement platform with planning, import-PO, payment, landed-cost, vendor-comparison and QC dashboards, plus a LangGraph tool-calling agent backed by local RAG search and a procurement knowledge graph.</p>
+      <h4>Result</h4><p>The purchase team plans, tracks imports and asks questions in plain English instead of hunting through sheets.</p>
+      <p class="stack">Built with React, TypeScript, Node.js, LangGraph, RAG, Recharts, Sheets API, Vitest</p>
+      <a class="btn solid" href="demos/procurement-agent/" target="_blank" rel="noopener">Open live demo</a>
+    </div>
+  </div></div></div>
+</article><article class="ws">
+  <h3 class="ws-h"><button class="ws-row" aria-expanded="false" aria-controls="ws-1"><span class="ws-ref">S-02</span><span class="ws-ttl">FactoIntel: Factory Intelligence Platform</span><span class="ws-stack">React, TypeScript, Express</span><span class="ws-cat">AI</span><span class="ws-plus" aria-hidden="true"></span></button></h3>
+  <div class="ws-panel" id="ws-1" role="region" aria-label="FactoIntel: Factory Intelligence Platform"><div><div class="ws-body">
+    <figure class="shot"><span class="dx" aria-hidden="true"><span>React + TypeScript + Express + Google Sheets API</span></span><span class="dy" aria-hidden="true"><span>AI</span></span><img loading="lazy" src="img/previews/factointel.webp" alt="Screenshot of the FactoIntel: Factory Intelligence Platform demo" width="720" height="440"></figure>
+    <div class="pbr">
+      <p class="met"><b>6</b>spreadsheets audited daily, with a root cause on every negative balance</p>
+      <h4>Problem</h4><p>Production, stock and labour data lived across many Google Sheets, and stock errors such as negative balances or IMS edits with no matching entry surfaced days later.</p>
+      <h4>What I built</h4><p>A React + TypeScript and Express app that reads 6 spreadsheets. It has dashboards for all five production departments, a GRN batch tracker, and FG/RM IMS audits that compare form entries with the IMS sheet day by day and label the root cause of every negative balance. It also covers labour and machine capacity, monthly targets, stock-cover forecasts, and an AI layer (daily brief, anomaly scan, chat) via OpenRouter.</p>
+      <h4>Result</h4><p>Stock problems show up with a root cause attached (e.g. 'dispatch beyond available stock'), and one health score covers inventory, production, labour, machines and data integrity.</p>
+      <p class="stack">Built with React, TypeScript, Express, Google Sheets API, OpenRouter, Recharts, Tailwind</p>
+      <a class="btn solid" href="demos/factointel/" target="_blank" rel="noopener">Open live demo</a>
+    </div>
+  </div></div></div>
+</article><article class="ws">
+  <h3 class="ws-h"><button class="ws-row" aria-expanded="false" aria-controls="ws-2"><span class="ws-ref">S-03</span><span class="ws-ttl">Sales CRM with Role-Based Access</span><span class="ws-stack">React, Vite, Node.js</span><span class="ws-cat">Full-Stack</span><span class="ws-plus" aria-hidden="true"></span></button></h3>
+  <div class="ws-panel" id="ws-2" role="region" aria-label="Sales CRM with Role-Based Access"><div><div class="ws-body">
+    <figure class="shot"><span class="dx" aria-hidden="true"><span>React + Vite + Node.js + Express</span></span><span class="dy" aria-hidden="true"><span>Full-Stack</span></span><img loading="lazy" src="img/previews/crm.webp" alt="Screenshot of the Sales CRM with Role-Based Access demo" width="720" height="440"></figure>
+    <div class="pbr">
+      
+      <h4>Problem</h4><p>Orders, dispatch, follow-ups, grievances and leads lived in separate sheets and forms, and anyone could see everything.</p>
+      <h4>What I built</h4><p>A 24-page CRM with Google login and admin / CRM / dispatch roles. It covers order entry with auto IDs and stock checks, dispatch with photo upload, reorder-risk prediction, pipeline, grievances, WhatsApp, reports and an AI assistant for lead generation.</p>
+      <h4>Result</h4><p>Sales, CRM and dispatch work in one system, and each role sees only what it needs.</p>
+      <p class="stack">Built with React, Vite, Node.js, Express, Google OAuth, OpenRouter, node-cron</p>
+      <a class="btn solid" href="demos/crm/" target="_blank" rel="noopener">Open live demo</a>
+    </div>
+  </div></div></div>
+</article><article class="ws">
+  <h3 class="ws-h"><button class="ws-row" aria-expanded="false" aria-controls="ws-3"><span class="ws-ref">S-04</span><span class="ws-ttl">Demand Forecasting: 6 Models, One Backtest</span><span class="ws-stack">JavaScript, Holt-Winters, Ridge regression</span><span class="ws-cat">ML</span><span class="ws-plus" aria-hidden="true"></span></button></h3>
+  <div class="ws-panel" id="ws-3" role="region" aria-label="Demand Forecasting: 6 Models, One Backtest"><div><div class="ws-body">
+    <figure class="shot"><span class="dx" aria-hidden="true"><span>JavaScript + Holt-Winters + Ridge regression + Time series</span></span><span class="dy" aria-hidden="true"><span>ML</span></span><img loading="lazy" src="img/previews/forecasting.webp" alt="Screenshot of the Demand Forecasting: 6 Models, One Backtest demo" width="720" height="440"></figure>
+    <div class="pbr">
+      <p class="met"><b>11.9%</b>WAPE (−18% vs seasonal naive)</p>
+      <h4>Problem</h4><p>Purchase and production planning need demand forecasts weeks ahead, and the right method isn't obvious until you test them all on the same data.</p>
+      <h4>What I built</h4><p>A browser app that simulates 3 years of weekly demand for 10 SKUs (trend, seasonality, a festive-season bump, promotions) and compares six hand-written models: naive, seasonal naive, moving average, Holt-Winters, ridge regression on lag and calendar features, and an ensemble. It runs a 4-fold rolling-origin backtest over an 8-week horizon and includes an automated leakage test.</p>
+      <h4>Result</h4><p>On the sample data the Holt-Winters + ridge ensemble reaches 11.9% WAPE, 18% less error than seasonal naive, and every model passes the leakage test.</p>
+      <p class="stack">Built with JavaScript, Holt-Winters, Ridge regression, Time series, Chart.js</p>
+      <a class="btn solid" href="demos/demand-forecasting/" target="_blank" rel="noopener">Open live demo</a>
+    </div>
+  </div></div></div>
+</article><article class="ws">
+  <h3 class="ws-h"><button class="ws-row" aria-expanded="false" aria-controls="ws-4"><span class="ws-ref">S-05</span><span class="ws-ttl">B2B Churn Prediction + RFM</span><span class="ws-stack">JavaScript, Logistic regression, RFM</span><span class="ws-cat">ML</span><span class="ws-plus" aria-hidden="true"></span></button></h3>
+  <div class="ws-panel" id="ws-4" role="region" aria-label="B2B Churn Prediction + RFM"><div><div class="ws-body">
+    <figure class="shot"><span class="dx" aria-hidden="true"><span>JavaScript + Logistic regression + RFM + Chart.js</span></span><span class="dy" aria-hidden="true"><span>ML</span></span><img loading="lazy" src="img/previews/churn.webp" alt="Screenshot of the B2B Churn Prediction + RFM demo" width="720" height="440"></figure>
+    <div class="pbr">
+      <p class="met"><b>77%</b>of churners reached in the top 20%</p>
+      <h4>Problem</h4><p>A sales team can only call so many customers a week, so it needs to know which active accounts are about to go quiet.</p>
+      <h4>What I built</h4><p>Simulates 520 B2B customers with their own ordering rhythms, takes monthly snapshots with seven behavioural features, and trains a logistic regression in the browser on a time-based split. It compares the model with a 60-day inactivity rule, recency ranking and RFM segments, and explains each risk score.</p>
+      <h4>Result</h4><p>On the test snapshot, calling the riskiest 20% reaches 77% of churners and 62% of revenue at risk (AUC 0.95), against 61% when ranking by days since last order.</p>
+      <p class="stack">Built with JavaScript, Logistic regression, RFM, Chart.js</p>
+      <a class="btn solid" href="demos/churn-rfm/" target="_blank" rel="noopener">Open live demo</a>
+    </div>
+  </div></div></div>
+</article><article class="ws">
+  <h3 class="ws-h"><button class="ws-row" aria-expanded="false" aria-controls="ws-5"><span class="ws-ref">S-06</span><span class="ws-ttl">AI Marketing Team (n8n, 179 nodes)</span><span class="ws-stack">n8n, OpenAI, Gemini / Veo</span><span class="ws-cat">Automation</span><span class="ws-plus" aria-hidden="true"></span></button></h3>
+  <div class="ws-panel" id="ws-5" role="region" aria-label="AI Marketing Team (n8n, 179 nodes)"><div><div class="ws-body">
+    <figure class="shot"><span class="dx" aria-hidden="true"><span>n8n + OpenAI + Gemini / Veo + Meta Graph API</span></span><span class="dy" aria-hidden="true"><span>Automation</span></span><img loading="lazy" src="img/previews/marketing.webp" alt="Screenshot of the AI Marketing Team (n8n, 179 nodes) demo" width="720" height="440"></figure>
+    <div class="pbr">
+      <p class="met"><b>4</b>channels published from one approvals dashboard</p>
+      <h4>Problem</h4><p>Planning, writing, designing and posting content every day took hours, and nobody tracked results.</p>
+      <h4>What I built</h4><p>An n8n workflow that acts as a full marketing team. An AI strategist plans the week, a copywriter drafts posts, images are generated and reviewed by an AI art director, and videos are made with Google Veo. Approved posts go out to LinkedIn, Instagram, Facebook and WhatsApp from an approvals dashboard.</p>
+      <h4>Result</h4><p>Content goes from plan to published in one click, and performance, AI cost and errors are reported automatically.</p>
+      <p class="stack">Built with n8n, OpenAI, Gemini / Veo, Meta Graph API, LinkedIn API, WhatsApp Cloud API</p>
+      <a class="btn solid" href="demos/n8n/#marketing" target="_blank" rel="noopener">Open live demo</a>
+    </div>
+  </div></div></div>
+</article><article class="ws">
+  <h3 class="ws-h"><button class="ws-row" aria-expanded="false" aria-controls="ws-6"><span class="ws-ref">S-07</span><span class="ws-ttl">WhatsApp AI Lead Qualifier (n8n)</span><span class="ws-stack">n8n, OpenAI, WhatsApp Cloud API</span><span class="ws-cat">Automation</span><span class="ws-plus" aria-hidden="true"></span></button></h3>
+  <div class="ws-panel" id="ws-6" role="region" aria-label="WhatsApp AI Lead Qualifier (n8n)"><div><div class="ws-body">
+    <figure class="shot"><span class="dx" aria-hidden="true"><span>n8n + OpenAI + WhatsApp Cloud API + Google Calendar</span></span><span class="dy" aria-hidden="true"><span>Automation</span></span><img loading="lazy" src="img/previews/whatsapp.webp" alt="Screenshot of the WhatsApp AI Lead Qualifier (n8n) demo" width="720" height="440"></figure>
+    <div class="pbr">
+      <p class="met"><b>45</b>nodes · text, voice notes and images, with human takeover</p>
+      <h4>Problem</h4><p>WhatsApp enquiries arrived at all hours, and new leads waited too long for a reply.</p>
+      <h4>What I built</h4><p>A 45-node AI agent that handles text, voice notes (transcribed) and images. It tells existing customers apart from new leads, qualifies them with chat memory, updates the CRM sheet and books calendar slots, with a human-takeover switch.</p>
+      <h4>Result</h4><p>Every enquiry gets an instant reply, and the sales team can step in on any chat.</p>
+      <p class="stack">Built with n8n, OpenAI, WhatsApp Cloud API, Google Calendar, Sheets</p>
+      <a class="btn solid" href="demos/n8n/#whatsapp" target="_blank" rel="noopener">Open live demo</a>
+    </div>
+  </div></div></div>
+</article><article class="ws">
+  <h3 class="ws-h"><button class="ws-row" aria-expanded="false" aria-controls="ws-7"><span class="ws-ref">S-08</span><span class="ws-ttl">Export Lead Generator (n8n)</span><span class="ws-stack">n8n, SerpApi, RocketReach</span><span class="ws-cat">Automation</span><span class="ws-plus" aria-hidden="true"></span></button></h3>
+  <div class="ws-panel" id="ws-7" role="region" aria-label="Export Lead Generator (n8n)"><div><div class="ws-body">
+    <figure class="shot"><span class="dx" aria-hidden="true"><span>n8n + SerpApi + RocketReach + Google Sheets</span></span><span class="dy" aria-hidden="true"><span>Automation</span></span><img loading="lazy" src="img/previews/export-leads.webp" alt="Screenshot of the Export Lead Generator (n8n) demo" width="720" height="440"></figure>
+    <div class="pbr">
+      <p class="met"><b>43</b>nodes · scrape, enrich and de-duplicate, country by country</p>
+      <h4>Problem</h4><p>The founder's "Dream 100" export list needed qualified overseas buyers, and finding them by hand was slow.</p>
+      <h4>What I built</h4><p>An n8n pipeline that scrapes B2B buyer leads country by country through SerpApi, enriches contacts with RocketReach, de-duplicates them and feeds a prospecting sheet.</p>
+      <h4>Result</h4><p>A steady, de-duplicated stream of export prospects with no manual searching.</p>
+      <p class="stack">Built with n8n, SerpApi, RocketReach, Google Sheets</p>
+      <a class="btn solid" href="demos/n8n/#export" target="_blank" rel="noopener">Open live demo</a>
+    </div>
+  </div></div></div>
+</article><article class="ws">
+  <h3 class="ws-h"><button class="ws-row" aria-expanded="false" aria-controls="ws-8"><span class="ws-ref">S-09</span><span class="ws-ttl">Export O2D &amp; Sales Tracker</span><span class="ws-stack">Google Apps Script, JavaScript, HTML/CSS</span><span class="ws-cat">Full-Stack</span><span class="ws-plus" aria-hidden="true"></span></button></h3>
+  <div class="ws-panel" id="ws-8" role="region" aria-label="Export O2D &amp; Sales Tracker"><div><div class="ws-body">
+    <figure class="shot"><span class="dx" aria-hidden="true"><span>Google Apps Script + JavaScript + HTML/CSS + Google Sheets</span></span><span class="dy" aria-hidden="true"><span>Full-Stack</span></span><img loading="lazy" src="img/previews/export-tracker.webp" alt="Screenshot of the Export O2D &amp; Sales Tracker demo" width="720" height="440"></figure>
+    <div class="pbr">
+      <p class="met"><b>10</b>SLA-timed hand-offs tracked per order and per person</p>
+      <h4>Problem</h4><p>Export orders went through 10 hand-offs (stock checks, packing material, QC, container booking and dispatch) across five people and several sheets. Nobody could see which step an order was stuck on.</p>
+      <h4>What I built</h4><p>An Apps Script web app with two modules. Export O2D tracks every order through 10 SLA-timed steps with planned vs actual dates, holiday-aware due dates, per-person task lists, email hand-offs and a dispatch form. Export Sales generates commercial invoices and packing lists, ready to print as PDFs.</p>
+      <h4>Result</h4><p>Each person sees only their pending steps, delays are visible per order and per person, and export paperwork comes out of the same data.</p>
+      <p class="stack">Built with Google Apps Script, JavaScript, HTML/CSS, Google Sheets, Gmail</p>
+      <a class="btn solid" href="demos/export-tracker/" target="_blank" rel="noopener">Open live demo</a>
+    </div>
+  </div></div></div>
+</article><article class="ws">
+  <h3 class="ws-h"><button class="ws-row" aria-expanded="false" aria-controls="ws-9"><span class="ws-ref">S-10</span><span class="ws-ttl">CEO Command Center: FastAPI Migration</span><span class="ws-stack">FastAPI, Python, LangGraph</span><span class="ws-cat">Dashboards</span><span class="ws-plus" aria-hidden="true"></span></button></h3>
+  <div class="ws-panel" id="ws-9" role="region" aria-label="CEO Command Center: FastAPI Migration"><div><div class="ws-body">
+    <figure class="shot"><span class="dx" aria-hidden="true"><span>FastAPI + Python + LangGraph + Google Sheets API</span></span><span class="dy" aria-hidden="true"><span>Dashboards</span></span><img loading="lazy" src="img/previews/ceo.webp" alt="Screenshot of the CEO Command Center: FastAPI Migration demo" width="720" height="440"></figure>
+    <div class="pbr">
+      
+      <h4>Problem</h4><p>The CEO dashboard, originally built by a colleague, ran on a single Node/Express server that read 8 Google Sheets, and its AI chat slowed down every startup.</p>
+      <h4>What I built</h4><p>I ported every endpoint to FastAPI as separate, tested Python services. I kept the original's exact number handling (JS-style rounding, header lookups, fallbacks) so no figure changed. I also lazy-loaded the LangGraph chat, added a one-click Render blueprint, narrowed the production sheet reads, and did a full design pass on the UI.</p>
+      <h4>Result</h4><p>Same numbers, now on a typed, testable Python back end that is easier to extend.</p>
+      <p class="stack">Built with FastAPI, Python, LangGraph, Google Sheets API, Render, pytest</p>
+      <a class="btn solid" href="demos/ceo-command-center/" target="_blank" rel="noopener">Open live demo</a>
+    </div>
+  </div></div></div>
+</article><article class="ws">
+  <h3 class="ws-h"><button class="ws-row" aria-expanded="false" aria-controls="ws-10"><span class="ws-ref">S-11</span><span class="ws-ttl">Packaging Design Studio (3D)</span><span class="ws-stack">Three.js, JavaScript, jsPDF</span><span class="ws-cat">Full-Stack</span><span class="ws-plus" aria-hidden="true"></span></button></h3>
+  <div class="ws-panel" id="ws-10" role="region" aria-label="Packaging Design Studio (3D)"><div><div class="ws-body">
+    <figure class="shot"><span class="dx" aria-hidden="true"><span>Three.js + JavaScript + jsPDF + JSZip</span></span><span class="dy" aria-hidden="true"><span>Full-Stack</span></span><img loading="lazy" src="img/previews/pack-studio.webp" alt="Screenshot of the Packaging Design Studio (3D) demo" width="720" height="440"></figure>
+    <div class="pbr">
+      
+      <h4>Problem</h4><p>Every box, wrapper and export carton needed a designer plus separate print and loading calculations.</p>
+      <h4>What I built</h4><p>A browser design tool. You pick a product, size the box, edit text and colours, and see a live 3D mockup with a fold animation. It exports print-ready PDF, SVG and DXF die-lines, and includes a wrapping-paper designer and a 3D container-loading planner.</p>
+      <h4>Result</h4><p>Designs, printer files and loading plans take minutes, with no designer needed.</p>
+      <p class="stack">Built with Three.js, JavaScript, jsPDF, JSZip, SVG / DXF</p>
+      <a class="btn solid" href="demos/pack-studio/" target="_blank" rel="noopener">Open live demo</a>
+    </div>
+  </div></div></div>
+</article><article class="ws">
+  <h3 class="ws-h"><button class="ws-row" aria-expanded="false" aria-controls="ws-11"><span class="ws-ref">S-12</span><span class="ws-ttl">TDS &amp; Spec Sheet Generator</span><span class="ws-stack">JavaScript, SVG, HTML/CSS</span><span class="ws-cat">Full-Stack</span><span class="ws-plus" aria-hidden="true"></span></button></h3>
+  <div class="ws-panel" id="ws-11" role="region" aria-label="TDS &amp; Spec Sheet Generator"><div><div class="ws-body">
+    <figure class="shot"><span class="dx" aria-hidden="true"><span>JavaScript + SVG + HTML/CSS + PDF</span></span><span class="dy" aria-hidden="true"><span>Full-Stack</span></span><img loading="lazy" src="img/previews/tds.webp" alt="Screenshot of the TDS &amp; Spec Sheet Generator demo" width="720" height="440"></figure>
+    <div class="pbr">
+      
+      <h4>Problem</h4><p>Every customer enquiry needed a technical data sheet and a dimensioned drawing, made by hand in Word.</p>
+      <h4>What I built</h4><p>A standalone tool that generates branded TDS sheets, dimensioned product drawings and customer spec documents for straws and wooden cutlery from a few inputs.</p>
+      <h4>Result</h4><p>Spec documents go out the same day instead of after a design round-trip.</p>
+      <p class="stack">Built with JavaScript, SVG, HTML/CSS, PDF</p>
+      <a class="btn solid" href="demos/tds-generator/" target="_blank" rel="noopener">Open live demo</a>
+    </div>
+  </div></div></div>
+</article><article class="ws">
+  <h3 class="ws-h"><button class="ws-row" aria-expanded="false" aria-controls="ws-12"><span class="ws-ref">S-13</span><span class="ws-ttl">Sales Intelligence &amp; Forecasting</span><span class="ws-stack">JavaScript, Holt-Winters, RFM</span><span class="ws-cat">ML</span><span class="ws-plus" aria-hidden="true"></span></button></h3>
+  <div class="ws-panel" id="ws-12" role="region" aria-label="Sales Intelligence &amp; Forecasting"><div><div class="ws-body">
+    <figure class="shot"><span class="dx" aria-hidden="true"><span>JavaScript + Holt-Winters + RFM + Chart.js</span></span><span class="dy" aria-hidden="true"><span>ML</span></span><img loading="lazy" src="img/previews/sales-intel.webp" alt="Screenshot of the Sales Intelligence &amp; Forecasting demo" width="720" height="440"></figure>
+    <div class="pbr">
+      
+      <h4>Problem</h4><p>Sales data usually ends up in monthly reports, with no view of trends, expected revenue or which customers matter most.</p>
+      <h4>What I built</h4><p>A dashboard over 24 months of simulated orders: revenue trend with a 3-month Holt-Winters forecast and 80% band, product growth, top customers, RFM segments and a state filter. A question box maps plain-English questions to exact queries. It's rule-based, not an LLM.</p>
+      <h4>Result</h4><p>Questions like 'top 5 customers last 3 months' or 'forecast next quarter' get exact answers from the data in one step.</p>
+      <p class="stack">Built with JavaScript, Holt-Winters, RFM, Chart.js</p>
+      <a class="btn solid" href="demos/sales-intelligence/" target="_blank" rel="noopener">Open live demo</a>
+    </div>
+  </div></div></div>
+</article><article class="ws">
+  <h3 class="ws-h"><button class="ws-row" aria-expanded="false" aria-controls="ws-13"><span class="ws-ref">S-14</span><span class="ws-ttl">Production Pulse</span><span class="ws-stack">JavaScript, Chart.js, localStorage</span><span class="ws-cat">Dashboards</span><span class="ws-plus" aria-hidden="true"></span></button></h3>
+  <div class="ws-panel" id="ws-13" role="region" aria-label="Production Pulse"><div><div class="ws-body">
+    <figure class="shot"><span class="dx" aria-hidden="true"><span>JavaScript + Chart.js + localStorage</span></span><span class="dy" aria-hidden="true"><span>Dashboards</span></span><img loading="lazy" src="img/previews/production.webp" alt="Screenshot of the Production Pulse demo" width="720" height="440"></figure>
+    <div class="pbr">
+      <p class="met"><b>5</b>departments, plan vs actual pro-rated to the time of day</p>
+      <h4>Problem</h4><p>Daily production plans and actual output are often tracked separately, so shortfalls only show up the next day.</p>
+      <h4>What I built</h4><p>A single-page app for five departments: enter the day's plan per department and compare it with shift output pro-rated to the time of day. It shows on track / behind / critical status, a 14-day attainment trend, machine downtime and labour panels, and saved shift-handover notes.</p>
+      <h4>Result</h4><p>Supervisors can see which department is falling behind while the shift is still running.</p>
+      <p class="stack">Built with JavaScript, Chart.js, localStorage</p>
+      <a class="btn solid" href="demos/production-pulse/" target="_blank" rel="noopener">Open live demo</a>
+    </div>
+  </div></div></div>
+</article><article class="ws">
+  <h3 class="ws-h"><button class="ws-row" aria-expanded="false" aria-controls="ws-14"><span class="ws-ref">S-15</span><span class="ws-ttl">O2D Order Tracking System</span><span class="ws-stack">JavaScript, HTML/CSS, localStorage</span><span class="ws-cat">Dashboards</span><span class="ws-plus" aria-hidden="true"></span></button></h3>
+  <div class="ws-panel" id="ws-14" role="region" aria-label="O2D Order Tracking System"><div><div class="ws-body">
+    <figure class="shot"><span class="dx" aria-hidden="true"><span>JavaScript + HTML/CSS + localStorage</span></span><span class="dy" aria-hidden="true"><span>Dashboards</span></span><img loading="lazy" src="img/previews/o2d.webp" alt="Screenshot of the O2D Order Tracking System demo" width="720" height="440"></figure>
+    <div class="pbr">
+      <p class="met"><b>8</b>stages from confirmation to payment, planned vs actual</p>
+      <h4>Problem</h4><p>Orders pass through many hand-offs, and it's hard to see where each one is or which stage is slipping.</p>
+      <h4>What I built</h4><p>Tracks every order through 8 stages from confirmation to payment. Planned dates come from per-stage SLAs in working days and ripple forward when a stage slips. It has list and board views, late and due-today filters, a per-order timeline with one-click 'mark done', and a new-order form.</p>
+      <h4>Result</h4><p>Late orders, and the exact stage they're stuck at, are visible at a glance along with on-time performance per stage.</p>
+      <p class="stack">Built with JavaScript, HTML/CSS, localStorage</p>
+      <a class="btn solid" href="demos/o2d-tracker/" target="_blank" rel="noopener">Open live demo</a>
+    </div>
+  </div></div></div>
+</article></div>
+  </div>
+</section>
+
+<section class="sec" id="systems">
+  <div class="wrap">
+    <div class="sec-head">
       <h2><span id="moreCount">31</span> more systems in production</h2>
-      <p>Operational tools, dashboards, reconciliations and factory automations. These are the smaller pieces that keep the business running.</p>
+      <p>The smaller tools that keep each department running, mostly Google Apps Script on top of the sheets teams already use. Hover a row for a preview.</p>
     </div>
-    <div class="filters" id="moreFilters"><button class="filter active" data-c="All">All<small>31</small></button><button class="filter" data-c="Stock &amp; Purchase">Stock &amp; Purchase<small>8</small></button><button class="filter" data-c="Sales &amp; Finance">Sales &amp; Finance<small>10</small></button><button class="filter" data-c="Production">Production<small>6</small></button><button class="filter" data-c="Operations">Operations<small>7</small></button></div>
-    <div class="more-grid" id="moreGrid">
-  <div class="mcard" data-c="Stock &amp; Purchase">
-    <div class="cat"><span>Stock &amp; Purchase</span><em>● LIVE</em></div>
-    <h4>CEO Stock Dashboard</h4><p>FG and RM stock valued at cost from the stock and SKU-cost sheets.</p><div class="out">Stock value at a glance for management.</div>
-    <div class="tags"><span class="chip">Apps Script</span><span class="chip">HTML/CSS</span></div>
-  </div>
-  <div class="mcard" data-c="Stock &amp; Purchase">
-    <div class="cat"><span>Stock &amp; Purchase</span><em>● LIVE</em></div>
-    <h4>IMS Stock Dashboard</h4><p>Combines finished-goods and raw-material sheets with SKU costing and galla (location) tracking.</p><div class="out">One view of all inventory.</div>
-    <div class="tags"><span class="chip">Apps Script</span><span class="chip">HTML/CSS</span></div>
-  </div>
-  <div class="mcard" data-c="Stock &amp; Purchase">
-    <div class="cat"><span>Stock &amp; Purchase</span><em>● LIVE</em></div>
-    <h4>IMS In/Out Dashboard</h4><p>Logs every FG/RM in and out entry plus dispatch responses.</p><div class="out">Daily stock movement in one place.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Stock &amp; Purchase">
-    <div class="cat"><span>Stock &amp; Purchase</span><em>● LIVE</em></div>
-    <h4>Stock &amp; Dispatch MIS</h4><p>Dispatch vs monthly targets with fuzzy product-name mapping and an unmatched-items log.</p><div class="out">Target tracking with data-quality checks.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Stock &amp; Purchase">
-    <div class="cat"><span>Stock &amp; Purchase</span><em>● LIVE</em></div>
-    <h4>Import Purchase Management</h4><p>The whole import PO lifecycle: suppliers, POs, PIs, SOB dates, advances and payments.</p><div class="out">Imports and payments tracked end to end.</div>
-    <div class="tags"><span class="chip">Apps Script</span><span class="chip">HTML/CSS</span></div>
-  </div>
-  <div class="mcard" data-c="Stock &amp; Purchase">
-    <div class="cat"><span>Stock &amp; Purchase</span><em>● LIVE</em></div>
-    <h4>Procurement Stock Snapshots</h4><p>Saves a daily FG/RM snapshot to build stock history.</p><div class="out">Day-by-day stock trend for planning.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Stock &amp; Purchase">
-    <div class="cat"><span>Stock &amp; Purchase</span><em>● LIVE</em></div>
-    <h4>Indent Tracker</h4><p>Manager and team indent requests with an inbox, PO-number search and auto-generated keys.</p><div class="out">No lost purchase requests.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Stock &amp; Purchase">
-    <div class="cat"><span>Stock &amp; Purchase</span><em>● LIVE</em></div>
-    <h4>Job Work Tracker</h4><p>Outward and inward job-work entries linked to GRNs from the RM inventory.</p><div class="out">Material at vendors always accounted for.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Sales &amp; Finance">
-    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
-    <h4>Sales Dashboard + Customer Scoring</h4><p>A sales dashboard with an MIS score page that ranks customers.</p><div class="out">Customers ranked by value.</div>
-    <div class="tags"><span class="chip">Apps Script</span><span class="chip">JavaScript</span></div>
-  </div>
-  <div class="mcard" data-c="Sales &amp; Finance">
-    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
-    <h4>Sales Head Portal</h4><p>A portal covering General Trade and Institutional channels.</p><div class="out">Channel-wise sales view.</div>
-    <div class="tags"><span class="chip">Apps Script</span><span class="chip">HTML/CSS</span></div>
-  </div>
-  <div class="mcard" data-c="Sales &amp; Finance">
-    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
-    <h4>OS Ageing Dashboard</h4><p>Outstanding receivables in 0–30 / 31–60 / 61–90 / 90+ day buckets.</p><div class="out">Overdue invoices surfaced early.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Sales &amp; Finance">
-    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
-    <h4>Gross Margin Dashboard</h4><p>Gross margin per product from dispatch data and SKU costs.</p><div class="out">Margin by product.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Sales &amp; Finance">
-    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
-    <h4>Invoice Matching System</h4><p>Fuzzy invoice-number matching across sheets with value-mismatch analysis.</p><div class="out">Mismatches listed automatically.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Sales &amp; Finance">
-    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
-    <h4>Enquiry Capture Tracker</h4><p>A sales enquiry tracker migrated from Apps Script to a Node.js app on the same sheet.</p><div class="out">Faster, standalone enquiry tracking.</div>
-    <div class="tags"><span class="chip">Node.js</span><span class="chip">Express</span><span class="chip">Sheets API</span></div>
-  </div>
-  <div class="mcard" data-c="Sales &amp; Finance">
-    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
-    <h4>Old Customer Lead Tracker</h4><p>Re-contact tracker with last-sale date and contact details.</p><div class="out">Structured win-back calls.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Sales &amp; Finance">
-    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
-    <h4>NBD Tracker</h4><p>New business development tracked as incoming and outgoing streams.</p><div class="out">Pipeline split by direction.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Sales &amp; Finance">
-    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
-    <h4>Cost Budgeting &amp; Cash Voucher Apps</h4><p>Cost budgeting, a founder finance dashboard and a digital cash voucher book.</p><div class="out">Spend tracked against budget.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Sales &amp; Finance">
-    <div class="cat"><span>Sales &amp; Finance</span><em>● LIVE</em></div>
-    <h4>Wastage Sale Records</h4><p>Waste-material sale challans in a 17-column register.</p><div class="out">Scrap revenue fully recorded.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Production">
-    <div class="cat"><span>Production</span><em>● LIVE</em></div>
-    <h4>5-Form Production Suite</h4><p>Packing, Cutter, Selection, Automatic and Cutlery entry forms with SKU-filtered product lists.</p><div class="out">Clean, consistent shop-floor data.</div>
-    <div class="tags"><span class="chip">Apps Script</span><span class="chip">HTML/CSS</span></div>
-  </div>
-  <div class="mcard" data-c="Production">
-    <div class="cat"><span>Production</span><em>● LIVE</em></div>
-    <h4>Straw Production Tracking</h4><p>A 5-stage flow (Slitting → Production → Sharp Edge → Wrapping → Packing) with reference IDs and GRNs.</p><div class="out">Batch traceable through every stage.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Production">
-    <div class="cat"><span>Production</span><em>● LIVE</em></div>
-    <h4>Production Machine Dashboard</h4><p>Machine-wise output with a summary and a built-in user guide.</p><div class="out">Machine output in one view.</div>
-    <div class="tags"><span class="chip">Apps Script</span><span class="chip">HTML/CSS</span></div>
-  </div>
-  <div class="mcard" data-c="Production">
-    <div class="cat"><span>Production</span><em>● LIVE</em></div>
-    <h4>Labour &amp; Attendance Dashboard</h4><p>Labour targets, output and attendance from the labour sheet.</p><div class="out">Output vs target per worker.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Production">
-    <div class="cat"><span>Production</span><em>● LIVE</em></div>
-    <h4>Capacity Assessment</h4><p>Machine and manpower capacity mapping across the factory.</p><div class="out">Real capacity numbers for planning.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Production">
-    <div class="cat"><span>Production</span><em>● LIVE</em></div>
-    <h4>Wrapping Machine Form</h4><p>Production entries that post RM usage out of stock and FG into stock.</p><div class="out">Stock updated straight from production.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Operations">
-    <div class="cat"><span>Operations</span><em>● LIVE</em></div>
-    <h4>O2D Dispatch Form</h4><p>A dispatch web app with split-GRN support that writes to the IMS ledger.</p><div class="out">Dispatch and stock always in sync.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Operations">
-    <div class="cat"><span>Operations</span><em>● LIVE</em></div>
-    <h4>CRM O2D Task Tracker</h4><p>An order-to-delivery task view over FMS sheets on a 5-minute trigger.</p><div class="out">Order tasks visible to the CRM team.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Operations">
-    <div class="cat"><span>Operations</span><em>● LIVE</em></div>
-    <h4>New CRM FMS</h4><p>A Node.js rebuild of the CRM covering order and invoice steps.</p><div class="out">Faster, beyond Apps Script limits.</div>
-    <div class="tags"><span class="chip">Node.js</span><span class="chip">Express</span><span class="chip">Sheets API</span></div>
-  </div>
-  <div class="mcard" data-c="Operations">
-    <div class="cat"><span>Operations</span><em>● LIVE</em></div>
-    <h4>FMS → CRM Sync Scripts</h4><p>Copies order and payment follow-up blocks between FMS sheets by Order ID.</p><div class="out">No double entry.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Operations">
-    <div class="cat"><span>Operations</span><em>● LIVE</em></div>
-    <h4>Sheet Sync Agent</h4><p>A standalone timer that pulls new orders and invoices into 4 FMS sheets.</p><div class="out">Sync runs even when web apps sleep.</div>
-    <div class="tags"><span class="chip">Apps Script</span></div>
-  </div>
-  <div class="mcard" data-c="Operations">
-    <div class="cat"><span>Operations</span><em>● LIVE</em></div>
-    <h4>React FMS Tracker</h4><p>FMS tasks (sample requests, purchase) by member with deadlines.</p><div class="out">Overdue, today and upcoming per person.</div>
-    <div class="tags"><span class="chip">React</span><span class="chip">Vite</span><span class="chip">Node.js</span></div>
-  </div>
-  <div class="mcard" data-c="Operations">
-    <div class="cat"><span>Operations</span><em>● LIVE</em></div>
-    <h4>Daily Task FMS</h4><p>A daily task tracker with caching and per-employee report pages.</p><div class="out">Team task status in one place.</div>
-    <div class="tags"><span class="chip">Apps Script</span><span class="chip">Node.js</span><span class="chip">MongoDB</span></div>
-  </div></div>
+    <div class="filters" id="moreFilters"><button class="filter active" data-c="All" aria-pressed="true">All<small>31</small></button><button class="filter" data-c="Stock &amp; Purchase" aria-pressed="false">Stock &amp; Purchase<small>8</small></button><button class="filter" data-c="Sales &amp; Finance" aria-pressed="false">Sales &amp; Finance<small>10</small></button><button class="filter" data-c="Production" aria-pressed="false">Production<small>6</small></button><button class="filter" data-c="Operations" aria-pressed="false">Operations<small>7</small></button></div>
+    <table class="parts" id="parts"><thead><tr><th>Item</th><th>System</th><th>What it does</th><th>Department</th><th>Built with</th></tr></thead><tbody><tr class="part" data-c="Stock &amp; Purchase" data-t="CEO Stock Dashboard"><td class="no">01</td><td class="sys">CEO Stock Dashboard</td><td class="what">FG and RM stock valued at cost from the stock and SKU-cost sheets. <i>Stock value at a glance for management.</i></td><td class="dept">Stock &amp; Purchase</td><td class="mat">Apps Script, HTML/CSS</td></tr><tr class="part" data-c="Stock &amp; Purchase" data-t="IMS Stock Dashboard"><td class="no">02</td><td class="sys">IMS Stock Dashboard</td><td class="what">Combines finished-goods and raw-material sheets with SKU costing and galla (location) tracking. <i>One view of all inventory.</i></td><td class="dept">Stock &amp; Purchase</td><td class="mat">Apps Script, HTML/CSS</td></tr><tr class="part" data-c="Stock &amp; Purchase" data-t="IMS In/Out Dashboard"><td class="no">03</td><td class="sys">IMS In/Out Dashboard</td><td class="what">Logs every FG/RM in and out entry plus dispatch responses. <i>Daily stock movement in one place.</i></td><td class="dept">Stock &amp; Purchase</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Stock &amp; Purchase" data-t="Stock &amp; Dispatch MIS"><td class="no">04</td><td class="sys">Stock &amp; Dispatch MIS</td><td class="what">Dispatch vs monthly targets with fuzzy product-name mapping and an unmatched-items log. <i>Target tracking with data-quality checks.</i></td><td class="dept">Stock &amp; Purchase</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Stock &amp; Purchase" data-t="Import Purchase Management"><td class="no">05</td><td class="sys">Import Purchase Management</td><td class="what">The whole import PO lifecycle: suppliers, POs, PIs, SOB dates, advances and payments. <i>Imports and payments tracked end to end.</i></td><td class="dept">Stock &amp; Purchase</td><td class="mat">Apps Script, HTML/CSS</td></tr><tr class="part" data-c="Stock &amp; Purchase" data-t="Procurement Stock Snapshots"><td class="no">06</td><td class="sys">Procurement Stock Snapshots</td><td class="what">Saves a daily FG/RM snapshot to build stock history. <i>Day-by-day stock trend for planning.</i></td><td class="dept">Stock &amp; Purchase</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Stock &amp; Purchase" data-t="Indent Tracker"><td class="no">07</td><td class="sys">Indent Tracker</td><td class="what">Manager and team indent requests with an inbox, PO-number search and auto-generated keys. <i>No lost purchase requests.</i></td><td class="dept">Stock &amp; Purchase</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Stock &amp; Purchase" data-t="Job Work Tracker"><td class="no">08</td><td class="sys">Job Work Tracker</td><td class="what">Outward and inward job-work entries linked to GRNs from the RM inventory. <i>Material at vendors always accounted for.</i></td><td class="dept">Stock &amp; Purchase</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Sales &amp; Finance" data-t="Sales Dashboard + Customer Scoring"><td class="no">09</td><td class="sys">Sales Dashboard + Customer Scoring</td><td class="what">A sales dashboard with an MIS score page that ranks customers. <i>Customers ranked by value.</i></td><td class="dept">Sales &amp; Finance</td><td class="mat">Apps Script, JavaScript</td></tr><tr class="part" data-c="Sales &amp; Finance" data-t="Sales Head Portal"><td class="no">10</td><td class="sys">Sales Head Portal</td><td class="what">A portal covering General Trade and Institutional channels. <i>Channel-wise sales view.</i></td><td class="dept">Sales &amp; Finance</td><td class="mat">Apps Script, HTML/CSS</td></tr><tr class="part" data-c="Sales &amp; Finance" data-t="OS Ageing Dashboard"><td class="no">11</td><td class="sys">OS Ageing Dashboard</td><td class="what">Outstanding receivables in 0–30 / 31–60 / 61–90 / 90+ day buckets. <i>Overdue invoices surfaced early.</i></td><td class="dept">Sales &amp; Finance</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Sales &amp; Finance" data-t="Gross Margin Dashboard"><td class="no">12</td><td class="sys">Gross Margin Dashboard</td><td class="what">Gross margin per product from dispatch data and SKU costs. <i>Margin by product.</i></td><td class="dept">Sales &amp; Finance</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Sales &amp; Finance" data-t="Invoice Matching System"><td class="no">13</td><td class="sys">Invoice Matching System</td><td class="what">Fuzzy invoice-number matching across sheets with value-mismatch analysis. <i>Mismatches listed automatically.</i></td><td class="dept">Sales &amp; Finance</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Sales &amp; Finance" data-t="Enquiry Capture Tracker"><td class="no">14</td><td class="sys">Enquiry Capture Tracker</td><td class="what">A sales enquiry tracker migrated from Apps Script to a Node.js app on the same sheet. <i>Faster, standalone enquiry tracking.</i></td><td class="dept">Sales &amp; Finance</td><td class="mat">Node.js, Express, Sheets API</td></tr><tr class="part" data-c="Sales &amp; Finance" data-t="Old Customer Lead Tracker"><td class="no">15</td><td class="sys">Old Customer Lead Tracker</td><td class="what">Re-contact tracker with last-sale date and contact details. <i>Structured win-back calls.</i></td><td class="dept">Sales &amp; Finance</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Sales &amp; Finance" data-t="NBD Tracker"><td class="no">16</td><td class="sys">NBD Tracker</td><td class="what">New business development tracked as incoming and outgoing streams. <i>Pipeline split by direction.</i></td><td class="dept">Sales &amp; Finance</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Sales &amp; Finance" data-t="Cost Budgeting &amp; Cash Voucher Apps"><td class="no">17</td><td class="sys">Cost Budgeting &amp; Cash Voucher Apps</td><td class="what">Cost budgeting, a founder finance dashboard and a digital cash voucher book. <i>Spend tracked against budget.</i></td><td class="dept">Sales &amp; Finance</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Sales &amp; Finance" data-t="Wastage Sale Records"><td class="no">18</td><td class="sys">Wastage Sale Records</td><td class="what">Waste-material sale challans in a 17-column register. <i>Scrap revenue fully recorded.</i></td><td class="dept">Sales &amp; Finance</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Production" data-t="5-Form Production Suite"><td class="no">19</td><td class="sys">5-Form Production Suite</td><td class="what">Packing, Cutter, Selection, Automatic and Cutlery entry forms with SKU-filtered product lists. <i>Clean, consistent shop-floor data.</i></td><td class="dept">Production</td><td class="mat">Apps Script, HTML/CSS</td></tr><tr class="part" data-c="Production" data-t="Straw Production Tracking"><td class="no">20</td><td class="sys">Straw Production Tracking</td><td class="what">A 5-stage flow (Slitting → Production → Sharp Edge → Wrapping → Packing) with reference IDs and GRNs. <i>Batch traceable through every stage.</i></td><td class="dept">Production</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Production" data-t="Production Machine Dashboard"><td class="no">21</td><td class="sys">Production Machine Dashboard</td><td class="what">Machine-wise output with a summary and a built-in user guide. <i>Machine output in one view.</i></td><td class="dept">Production</td><td class="mat">Apps Script, HTML/CSS</td></tr><tr class="part" data-c="Production" data-t="Labour &amp; Attendance Dashboard"><td class="no">22</td><td class="sys">Labour &amp; Attendance Dashboard</td><td class="what">Labour targets, output and attendance from the labour sheet. <i>Output vs target per worker.</i></td><td class="dept">Production</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Production" data-t="Capacity Assessment"><td class="no">23</td><td class="sys">Capacity Assessment</td><td class="what">Machine and manpower capacity mapping across the factory. <i>Real capacity numbers for planning.</i></td><td class="dept">Production</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Production" data-t="Wrapping Machine Form"><td class="no">24</td><td class="sys">Wrapping Machine Form</td><td class="what">Production entries that post RM usage out of stock and FG into stock. <i>Stock updated straight from production.</i></td><td class="dept">Production</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Operations" data-t="O2D Dispatch Form"><td class="no">25</td><td class="sys">O2D Dispatch Form</td><td class="what">A dispatch web app with split-GRN support that writes to the IMS ledger. <i>Dispatch and stock always in sync.</i></td><td class="dept">Operations</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Operations" data-t="CRM O2D Task Tracker"><td class="no">26</td><td class="sys">CRM O2D Task Tracker</td><td class="what">An order-to-delivery task view over FMS sheets on a 5-minute trigger. <i>Order tasks visible to the CRM team.</i></td><td class="dept">Operations</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Operations" data-t="New CRM FMS"><td class="no">27</td><td class="sys">New CRM FMS</td><td class="what">A Node.js rebuild of the CRM covering order and invoice steps. <i>Faster, beyond Apps Script limits.</i></td><td class="dept">Operations</td><td class="mat">Node.js, Express, Sheets API</td></tr><tr class="part" data-c="Operations" data-t="FMS → CRM Sync Scripts"><td class="no">28</td><td class="sys">FMS → CRM Sync Scripts</td><td class="what">Copies order and payment follow-up blocks between FMS sheets by Order ID. <i>No double entry.</i></td><td class="dept">Operations</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Operations" data-t="Sheet Sync Agent"><td class="no">29</td><td class="sys">Sheet Sync Agent</td><td class="what">A standalone timer that pulls new orders and invoices into 4 FMS sheets. <i>Sync runs even when web apps sleep.</i></td><td class="dept">Operations</td><td class="mat">Apps Script</td></tr><tr class="part" data-c="Operations" data-t="React FMS Tracker"><td class="no">30</td><td class="sys">React FMS Tracker</td><td class="what">FMS tasks (sample requests, purchase) by member with deadlines. <i>Overdue, today and upcoming per person.</i></td><td class="dept">Operations</td><td class="mat">React, Vite, Node.js</td></tr><tr class="part" data-c="Operations" data-t="Daily Task FMS"><td class="no">31</td><td class="sys">Daily Task FMS</td><td class="what">A daily task tracker with caching and per-employee report pages. <i>Team task status in one place.</i></td><td class="dept">Operations</td><td class="mat">Apps Script, Node.js, MongoDB</td></tr></tbody></table>
   </div>
 </section>
 
-<section id="process" style="background:var(--bg-2)">
+<section class="sec" id="method">
   <div class="wrap">
-    <div class="sec-head reveal">
-      <div class="eyebrow">04 · How I build</div>
-      <h2>From a messy spreadsheet to a live system</h2>
-      <p>I use the same five steps whether it's a 50-line Apps Script or a full-stack AI agent.</p>
+    <div class="sec-head">
+      <h2>How I work</h2>
+      <p>The same five steps for a WhatsApp agent or a stock dashboard.</p>
     </div>
-    <div class="steps" id="steps"><div class="step reveal"><h4>Sit with the users</h4><p>Shadow the people doing the work, map the current process and define the decisions the tool has to support.</p></div><div class="step reveal"><h4>Wire up the data</h4><p>Connect sheets, databases and APIs. Clean the data, validate it and give every record a single key.</p></div><div class="step reveal"><h4>Model &amp; analyse</h4><p>Add the logic: KPIs, forecasts, churn scores, matching rules, or an LLM agent with tools and RAG.</p></div><div class="step reveal"><h4>Build the interface</h4><p>Ship a dashboard, a web app or a chat/WhatsApp agent, designed for the person using it at 9 AM.</p></div><div class="step reveal"><h4>Automate &amp; hand off</h4><p>Triggers, schedulers, alerts and deploy on Render or Apps Script, then document it and support it.</p></div></div>
+    <ol class="steps" id="steps"><li><h3>Sit with the users</h3><p>Shadow the people doing the work, map the current process and define the decisions the tool has to support.</p></li><li><h3>Wire up the data</h3><p>Connect sheets, databases and APIs. Clean the data, validate it and give every record a single key.</p></li><li><h3>Model &amp; analyse</h3><p>Add the logic: KPIs, forecasts, churn scores, matching rules, or an LLM agent with tools and RAG.</p></li><li><h3>Build the interface</h3><p>Ship a dashboard, a web app or a chat/WhatsApp agent, designed for the person using it at 9 AM.</p></li><li><h3>Automate &amp; hand off</h3><p>Triggers, schedulers, alerts and deploy on Render or Apps Script, then document it and support it.</p></li></ol>
   </div>
 </section>
 
-<section id="experience">
+<section class="sec" id="experience">
   <div class="wrap">
-    <div class="sec-head reveal">
-      <div class="eyebrow">05 · Experience</div>
-      <h2>Where I've worked</h2>
+    <div class="sec-head">
+      <h2>Experience</h2>
+      <p>Latest first.</p>
     </div>
-    <div class="timeline" id="timeline">
-  <div class="job reveal"><div class="when">2025 – Present</div><h3>AI Engineer</h3><div class="org">Biopapro Cutleries Pvt. Ltd (BCPL) · Mumbai</div>
-  <ul><li>Build internal software across sales, production, purchase, order-to-dispatch, stock and finance: 40+ tools and apps in daily use.</li><li>Shipped a LangGraph procurement agent with tool calling and RAG, plus a role-based CRM with order-to-dispatch, SCOT tracking and an in-app AI assistant.</li><li>Built FactoIntel, a factory-intelligence app with day-by-day IMS audits, root-cause labels for negative stock and an AI daily brief.</li><li>Built AI automations in n8n: a 179-node marketing team, a WhatsApp lead qualifier and an export lead generator.</li></ul><div class="tags"><span class="chip">React</span><span class="chip">Node.js</span><span class="chip">LangGraph</span><span class="chip">OpenRouter</span><span class="chip">n8n</span><span class="chip">Apps Script</span><span class="chip">Python</span></div></div>
-  <div class="job reveal"><div class="when">May 2025 – Oct 2025</div><h3>Nets &amp; Security App Trainee</h3><div class="org">Proceedit Company</div>
-  <ul><li>Performed security assessments and backend analysis for enterprise applications.</li><li>Wrote Python scripts to support backend analysis and automation.</li><li>Tested and validated APIs with Postman, and prepared technical documentation and improvement reports.</li><li>Researched Hyperledger FireFly and AWS blockchain technologies.</li></ul><div class="tags"><span class="chip">Python</span><span class="chip">Postman</span><span class="chip">API testing</span><span class="chip">Security assessment</span></div></div>
-  <div class="job reveal"><div class="when">2023 – 2025</div><h3>M.Sc. Computer Science</h3><div class="org">N G Acharya &amp; D K Marathe College, Mumbai</div>
-  <ul><li>B.Sc. Computer Science from the same college (2019 – 2022).</li></ul><div class="tags"></div></div></div>
+    <table class="revs" id="revs"><thead><tr><th>Rev</th><th>When</th><th>Role</th><th>Notes</th></tr></thead><tbody><tr><td class="rev">C</td><td class="when">2025 – Present</td><td class="role"><h3>AI Engineer</h3><div>Biopapro Cutleries Pvt. Ltd (BCPL) · Mumbai</div></td><td class="notes"><ul><li>Build internal software across sales, production, purchase, order-to-dispatch, stock and finance: 40+ tools and apps in daily use.</li><li>Shipped a LangGraph procurement agent with tool calling and RAG, plus a role-based CRM with order-to-dispatch, SCOT tracking and an in-app AI assistant.</li><li>Built FactoIntel, a factory-intelligence app with day-by-day IMS audits, root-cause labels for negative stock and an AI daily brief.</li><li>Built AI automations in n8n: a 179-node marketing team, a WhatsApp lead qualifier and an export lead generator.</li></ul></td></tr><tr><td class="rev">B</td><td class="when">May 2025 – Oct 2025</td><td class="role"><h3>Nets &amp; Security App Trainee</h3><div>Proceedit Company</div></td><td class="notes"><ul><li>Performed security assessments and backend analysis for enterprise applications.</li><li>Wrote Python scripts to support backend analysis and automation.</li><li>Tested and validated APIs with Postman, and prepared technical documentation and improvement reports.</li><li>Researched Hyperledger FireFly and AWS blockchain technologies.</li></ul></td></tr><tr><td class="rev">A</td><td class="when">2023 – 2025</td><td class="role"><h3>M.Sc. Computer Science</h3><div>N G Acharya &amp; D K Marathe College, Mumbai</div></td><td class="notes"><ul><li>B.Sc. Computer Science from the same college (2019 – 2022).</li></ul></td></tr></tbody></table>
   </div>
 </section>
 
-<section id="skills" style="background:var(--bg-2)">
+<section class="sec" id="skills">
   <div class="wrap">
-    <div class="sec-head reveal">
-      <div class="eyebrow">06 · Stack</div>
-      <h2>Tools I ship with</h2>
+    <div class="sec-head">
+      <h2>Tools I use</h2>
+      <p>What the systems above are built with.</p>
     </div>
-    <div class="skill-grid" id="skillGrid"><div class="sk reveal"><h4>AI &amp; LLM</h4><div class="tags"><span class="chip">Prompt engineering</span><span class="chip">Agentic AI</span><span class="chip">Tool calling</span><span class="chip">LLM workflows</span><span class="chip">LangGraph</span><span class="chip">RAG</span><span class="chip">OpenRouter</span><span class="chip">Claude</span><span class="chip">ChatGPT</span><span class="chip">Gemini</span></div></div><div class="sk reveal"><h4>Automation</h4><div class="tags"><span class="chip">n8n</span><span class="chip">Google Apps Script</span><span class="chip">Google Workspace</span><span class="chip">Webhooks</span><span class="chip">WhatsApp Cloud API</span></div></div><div class="sk reveal"><h4>Frontend</h4><div class="tags"><span class="chip">React</span><span class="chip">TypeScript</span><span class="chip">Tailwind</span><span class="chip">Recharts</span><span class="chip">Three.js</span><span class="chip">HTML/CSS</span></div></div><div class="sk reveal"><h4>Backend</h4><div class="tags"><span class="chip">Node.js</span><span class="chip">Express</span><span class="chip">FastAPI</span><span class="chip">Python</span><span class="chip">REST APIs</span><span class="chip">Google Sheets API</span></div></div><div class="sk reveal"><h4>Programming</h4><div class="tags"><span class="chip">Python</span><span class="chip">JavaScript</span><span class="chip">TypeScript</span><span class="chip">Google Apps Script</span></div></div><div class="sk reveal"><h4>Data &amp; ML</h4><div class="tags"><span class="chip">Time-series forecasting</span><span class="chip">Logistic regression</span><span class="chip">RFM segmentation</span></div></div><div class="sk reveal"><h4>Testing &amp; security</h4><div class="tags"><span class="chip">Postman</span><span class="chip">API testing</span><span class="chip">Security assessment</span></div></div><div class="sk reveal"><h4>Ship &amp; run</h4><div class="tags"><span class="chip">Git</span><span class="chip">GitHub</span><span class="chip">Render</span></div></div></div>
+    <dl class="spec" id="spec"><div><dt>AI &amp; LLM</dt><dd>Prompt engineering, Agentic AI, Tool calling, LLM workflows, LangGraph, RAG, OpenRouter, Claude, ChatGPT, Gemini</dd></div><div><dt>Automation</dt><dd>n8n, Google Apps Script, Google Workspace, Webhooks, WhatsApp Cloud API</dd></div><div><dt>Frontend</dt><dd>React, TypeScript, Tailwind, Recharts, Three.js, HTML/CSS</dd></div><div><dt>Backend</dt><dd>Node.js, Express, FastAPI, Python, REST APIs, Google Sheets API</dd></div><div><dt>Programming</dt><dd>Python, JavaScript, TypeScript, Google Apps Script</dd></div><div><dt>Data &amp; ML</dt><dd>Time-series forecasting, Logistic regression, RFM segmentation</dd></div><div><dt>Testing &amp; security</dt><dd>Postman, API testing, Security assessment</dd></div><div><dt>Ship &amp; run</dt><dd>Git, GitHub, Render</dd></div></dl>
   </div>
 </section>
 
-<section id="contact">
+<section class="sec contact" id="contact">
   <div class="wrap">
-    <div class="contact reveal">
-      <div class="eyebrow">07 · Contact</div>
-      <h2>Have a process that should <span class="grad">run itself?</span></h2>
-      <p>I'm looking for a full-time role building AI agents, automation, internal tools and dashboards. Tell me what your team needs and I'll show you how I'd build it.</p>
-      <div class="hero-ctas" id="contactBtns"><a class="btn primary" href="mailto:rahulgurav866@gmail.com">Email me</a><a class="btn" href="https://www.linkedin.com/in/rahul-gurav-77a987241/" target="_blank" rel="noopener">LinkedIn</a><a class="btn" href="https://github.com/Raul1100" target="_blank" rel="noopener">GitHub</a><a class="btn" href="Rahul_Gurav_Resume.pdf" download="">Resume ↓</a></div>
-    </div>
+    <h2>Have a process that should run itself?</h2>
+    <p>I'm looking for a full-time role building AI agents, automation, internal tools and dashboards. Tell me what your team needs and I'll show you how I'd build it.</p>
+    <div id="contactBtns"><a class="btn solid" href="mailto:rahulgurav866@gmail.com">Email me</a><a class="btn" href="https://www.linkedin.com/in/rahul-gurav-77a987241/" target="_blank" rel="noopener">LinkedIn</a><a class="btn" href="https://github.com/Raul1100" target="_blank" rel="noopener">GitHub</a><a class="btn" href="Rahul_Gurav_Resume.pdf" download="">Download résumé</a></div>
   </div>
 </section>
-
 </main>
 
-<footer id="siteFoot">
+<footer id="siteFoot" class="bp">
   <div class="wrap foot-inner">
     <div class="foot-top">
-      <div class="foot-sign"><span><b>~/rahul $</b> exit</span><p>Thanks for scrolling all the way down.</p></div>
-      <div class="foot-col"><h5>Explore</h5><div class="foot-links"><a href="#about">About</a><a href="#work">Work</a><a href="#systems">Systems</a><a href="#experience">Experience</a><a href="#skills">Skills</a><a href="#contact">Contact</a></div></div>
-      <div class="foot-col"><h5>Based in</h5><div class="clock"><i></i>Mumbai · <span id="footClock">IST</span></div><a class="totop" href="#top">Back to top ↑</a></div>
+      <p class="foot-sign">Thanks for reading. If something here looks like a problem your team has, I'd like to hear about it.</p>
+      <nav class="foot-col" aria-label="Footer"><h5>Sections</h5><div class="foot-links"><a href="#about">About</a><a href="#work">Work</a><a href="#systems">Systems</a><a href="#method">Method</a><a href="#experience">Experience</a><a href="#contact">Contact</a></div></nav>
+      <div class="foot-col"><h5>Mumbai</h5><div class="clock"><i></i><span id="footClock">IST</span></div><a class="totop" href="#top">Back to top</a></div>
     </div>
-    <div class="foot-big" aria-label="Rahul"><span><i>R</i></span><span><i>A</i></span><span><i>H</i></span><span><i>U</i></span><span><i>L</i></span><span class="dot"><i>.</i></span></div>
-    <div class="foot-bottom"><span id="foot">© 2026 Rahul Gurav</span><span>Designed &amp; built by hand</span></div>
+    <div class="foot-big" aria-label="Rahul Gurav"><span><i>R</i></span><span><i>A</i></span><span><i>H</i></span><span><i>U</i></span><span><i>L</i></span><span class="sp"></span><span><i>G</i></span><span><i>U</i></span><span><i>R</i></span><span><i>A</i></span><span><i>V</i></span></div>
+    <div class="foot-bottom"><span id="foot">© 2026 Rahul Gurav</span><span>Drawn and built by hand in Mumbai</span></div>
   </div>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script>
 /* =====================================================================
    CONFIG: everything you'll want to edit lives below.
-   Leave a link as "" and its button is hidden automatically.
+   After editing, run `python _build/prerender.py` to refresh the static HTML.
    ===================================================================== */
 const ME = {
   name: "Rahul Gurav",
@@ -1068,160 +951,101 @@ const SKILLS = [
   ["Ship & run",["Git","GitHub","Render"]]
 ];
 
-/* ===================== RENDER (no need to edit) ===================== */
-const $ = s => document.querySelector(s);
+/* ===================== RENDER ===================== */
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const chips = arr => arr.map(t => `<span class="chip">${esc(t)}</span>`).join('');
+const SHOT_MAP = {
+  'Procurement AI Agent': 'procurement', 'Sales CRM with Role-Based Access': 'crm', 'FactoIntel: Factory Intelligence Platform': 'factointel',
+  'Demand Forecasting: 6 Models, One Backtest': 'forecasting', 'B2B Churn Prediction + RFM': 'churn',
+  'AI Marketing Team (n8n, 179 nodes)': 'marketing', 'WhatsApp AI Lead Qualifier (n8n)': 'whatsapp', 'Export Lead Generator (n8n)': 'export-leads',
+  'Export O2D & Sales Tracker': 'export-tracker', 'CEO Command Center: FastAPI Migration': 'ceo', 'Packaging Design Studio (3D)': 'pack-studio',
+  'TDS & Spec Sheet Generator': 'tds', 'Sales Intelligence & Forecasting': 'sales-intel', 'Production Pulse': 'production', 'O2D Order Tracking System': 'o2d',
+};
 
-document.title = `${ME.name} | ${ME.title}`;
-$('#heroLead').textContent = ME.lead;
 $('#foot').textContent = `© ${new Date().getFullYear()} ${ME.name}`;
 const siteFoot = $('#siteFoot');
 const setFh = () => document.documentElement.style.setProperty('--fh', siteFoot.offsetHeight + 'px');
 new ResizeObserver(setFh).observe(siteFoot); setFh();
 const tickClock = () => { $('#footClock').textContent = new Date().toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: false }) + ' IST'; };
 tickClock(); setInterval(tickClock, 30000);
-const navResume = $('#navResume');
-if (ME.resume) navResume.href = ME.resume; else navResume.style.display = 'none';
 
-$('#stats').innerHTML = STATS.map(s => `<div class="stat"><b><span data-count="${s.n}">${s.n}</span><em>${s.s}</em></b><span>${s.l}</span></div>`).join('');
-$('#marquee').innerHTML = [...STACK, ...STACK].map(t => `<span>${esc(t)}</span>`).join('');
+/* selected work: an index of drawing sheets that open in place */
+$('#workList').innerHTML = FEATURED.map((p, i) => {
+  const id = 'ws-' + i, open = i === 0, shot = SHOT_MAP[p.title];
+  return `<article class="ws${open ? ' open' : ''}">
+  <h3 class="ws-h"><button class="ws-row" aria-expanded="${open}" aria-controls="${id}"><span class="ws-ref">S-${String(i + 1).padStart(2, '0')}</span><span class="ws-ttl">${esc(p.title)}</span><span class="ws-stack">${esc(p.tags.slice(0, 3).join(', '))}</span><span class="ws-cat">${esc(p.cat)}</span><span class="ws-plus" aria-hidden="true"></span></button></h3>
+  <div class="ws-panel" id="${id}" role="region" aria-label="${esc(p.title)}"><div><div class="ws-body">
+    ${shot ? `<figure class="shot"><span class="dx" aria-hidden="true"><span>${esc(p.tags.slice(0, 4).join(' + '))}</span></span><span class="dy" aria-hidden="true"><span>${esc(p.cat)}</span></span><img loading="lazy" src="img/previews/${shot}.webp" alt="Screenshot of the ${esc(p.title)} demo" width="720" height="440"></figure>` : '<div></div>'}
+    <div class="pbr">
+      ${p.metric ? `<p class="met"><b>${esc(p.metric[0])}</b>${esc(p.metric[1])}</p>` : ''}
+      <h4>Problem</h4><p>${esc(p.p)}</p>
+      <h4>What I built</h4><p>${esc(p.b)}</p>
+      <h4>Result</h4><p>${esc(p.r)}</p>
+      <p class="stack">Built with ${esc(p.tags.join(', '))}</p>
+      ${p.demo ? `<a class="btn solid" href="${esc(p.demo)}" target="_blank" rel="noopener">Open live demo</a>` : ''}
+    </div>
+  </div></div></div>
+</article>`;
+}).join('');
+$('#workList').addEventListener('click', e => {
+  const b = e.target.closest('.ws-row'); if (!b) return;
+  const ws = b.closest('.ws'), open = !ws.classList.contains('open');
+  ws.classList.toggle('open', open); b.setAttribute('aria-expanded', open);
+  setTimeout(() => window.ScrollTrigger && ScrollTrigger.refresh(), 650);
+});
 
-const links = [
-  ME.email && `<a class="btn primary" href="mailto:${esc(ME.email)}">Email me</a>`,
+/* more systems: a parts list */
+$('#moreCount').textContent = MORE.length;
+$('#parts').innerHTML = `<thead><tr><th>Item</th><th>System</th><th>What it does</th><th>Department</th><th>Built with</th></tr></thead><tbody>${MORE.map(([cat, t, d, o, tg], i) =>
+  `<tr class="part" data-c="${esc(cat)}" data-t="${esc(t)}"><td class="no">${String(i + 1).padStart(2, '0')}</td><td class="sys">${esc(t)}</td><td class="what">${esc(d)} <i>${esc(o)}</i></td><td class="dept">${esc(cat)}</td><td class="mat">${esc(tg.join(', '))}</td></tr>`).join('')}</tbody>`;
+const mCounts = MORE.reduce((m, x) => (m[x[0]] = (m[x[0]] || 0) + 1, m), { All: MORE.length });
+const mf = $('#moreFilters');
+mf.innerHTML = Object.keys(mCounts).map((c, i) => `<button class="filter${i ? '' : ' active'}" data-c="${esc(c)}" aria-pressed="${!i}">${esc(c)}<small>${mCounts[c]}</small></button>`).join('');
+mf.addEventListener('click', e => {
+  const b = e.target.closest('.filter'); if (!b) return;
+  mf.querySelectorAll('.filter').forEach(x => { x.classList.toggle('active', x === b); x.setAttribute('aria-pressed', x === b); });
+  $$('#parts tr.part').forEach(r => r.classList.toggle('hidden', b.dataset.c !== 'All' && r.dataset.c !== b.dataset.c));
+  window.ScrollTrigger && ScrollTrigger.refresh();
+});
+
+$('#steps').innerHTML = STEPS.map(([h, p]) => `<li><h3>${esc(h)}</h3><p>${esc(p)}</p></li>`).join('');
+$('#revs').innerHTML = `<thead><tr><th>Rev</th><th>When</th><th>Role</th><th>Notes</th></tr></thead><tbody>${JOBS.map((j, i) =>
+  `<tr><td class="rev">${String.fromCharCode(64 + JOBS.length - i)}</td><td class="when">${esc(j.when)}</td><td class="role"><h3>${esc(j.role)}</h3><div>${esc(j.org)}</div></td><td class="notes"><ul>${j.pts.map(x => `<li>${esc(x)}</li>`).join('')}</ul></td></tr>`).join('')}</tbody>`;
+$('#spec').innerHTML = SKILLS.map(([h, t]) => `<div><dt>${esc(h)}</dt><dd>${esc(t.join(', '))}</dd></div>`).join('');
+$('#contactBtns').innerHTML = [
+  ME.email && `<a class="btn solid" href="mailto:${esc(ME.email)}">Email me</a>`,
   ME.linkedin && `<a class="btn" href="${esc(ME.linkedin)}" target="_blank" rel="noopener">LinkedIn</a>`,
   ME.github && `<a class="btn" href="${esc(ME.github)}" target="_blank" rel="noopener">GitHub</a>`,
-  ME.resume && `<a class="btn" href="${esc(ME.resume)}" download>Resume ↓</a>`
-].filter(Boolean);
-$('#contactBtns').innerHTML = links.join('') || `<span class="chip">Add email / LinkedIn / GitHub in the ME config</span>`;
+  ME.resume && `<a class="btn" href="${esc(ME.resume)}" download>Download résumé</a>`
+].filter(Boolean).join('');
 
-$('#profile').innerHTML = `
-  <div class="avatar">${esc(ME.initials)}</div>
-  <h3>${esc(ME.name)}</h3>
-  <div class="role">${esc(ME.title)}</div>
-  <dl class="kv">
-    <dt>company</dt><dd>${esc(ME.company)}</dd>
-    <dt>focus</dt><dd>AI agents, full-stack apps, automation</dd>
-    <dt>domain</dt><dd>Manufacturing ops (in-house tech)</dd>
-    <dt>education</dt><dd>${esc(ME.education)}</dd>
-    <dt>experience</dt><dd>${esc(ME.experience)}</dd>
-    <dt>location</dt><dd>${esc(ME.location)}</dd>
-  </dl>
-  <div class="btns">${links.slice(0,2).join('')}</div>`;
+/* nav: turns solid once the blueprint hero is behind it; marks the current section */
+const bar = $('#bar');
+new IntersectionObserver(([e]) => bar.classList.toggle('solid', !e.isIntersecting), { rootMargin: '-64px 0px 0px 0px' }).observe($('.hero'));
+const navLinks = $$('.links a');
+const secIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) navLinks.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id)); }), { rootMargin: '-45% 0px -50% 0px' });
+$$('main section[id]').forEach(s => secIO.observe(s));
 
-/* featured */
-function renderFeatured(filter){
-  $('#featGrid').innerHTML = FEATURED.map((p,i) => ({p,i})).filter(({p}) => filter==='All' || p.cat===filter).map(({p,i}) => `
-    <article class="pcard reveal in">
-      <div class="top"><span class="cat">${esc(p.cat)}</span><span style="display:flex;gap:8px;align-items:center"><span class="pv-hint">hover · preview</span><span class="num">${String(i+1).padStart(2,'0')}</span></span></div>
-      <h3>${esc(p.title)}</h3>
-      ${p.metric ? `<div class="metric"><strong>${esc(p.metric[0])}</strong><span>${esc(p.metric[1])}</span></div>` : ''}
-      <div class="pbr">
-        <div><b>PROBLEM</b><span>${esc(p.p)}</span></div>
-        <div><b>BUILT</b><span>${esc(p.b)}</span></div>
-        <div class="res"><b>RESULT</b><span>${esc(p.r)}</span></div>
-      </div>
-      <div class="tags">${chips(p.tags)}</div>
-      ${(p.demo||p.code) ? `<div class="plinks">${p.demo?`<a href="${esc(p.demo)}" target="_blank" rel="noopener">▶ Live demo</a>`:''}${p.code?`<a href="${esc(p.code)}" target="_blank" rel="noopener">&lt;/&gt; Code</a>`:''}</div>` : ''}
-    </article>`).join('');
-}
-function filterBar(el, cats, counts, onPick){
-  el.innerHTML = cats.map((c,i) => `<button class="filter${i?'':' active'}" data-c="${esc(c)}">${esc(c)}<small>${counts[c]}</small></button>`).join('');
-  el.addEventListener('click', e => {
-    const b = e.target.closest('.filter'); if(!b) return;
-    el.querySelectorAll('.filter').forEach(x => x.classList.toggle('active', x===b));
-    onPick(b.dataset.c);
-  });
-}
-const count = (arr, key) => arr.reduce((m,x) => (m[key(x)] = (m[key(x)]||0)+1, m), {All:arr.length});
-const fCounts = count(FEATURED, p => p.cat);
-filterBar($('#featFilters'), Object.keys(fCounts), fCounts, renderFeatured);
-renderFeatured('All');
-
-/* more */
-$('#moreCount').textContent = MORE.length;
-$('#moreGrid').innerHTML = MORE.map(([cat,t,d,o,tg]) => `
-  <div class="mcard" data-c="${esc(cat)}">
-    <div class="cat"><span>${esc(cat)}</span><em>● LIVE</em></div>
-    <h4>${esc(t)}</h4><p>${esc(d)}</p><div class="out">${esc(o)}</div>
-    <div class="tags">${chips(tg)}</div>
-  </div>`).join('');
-const mCounts = count(MORE, m => m[0]);
-filterBar($('#moreFilters'), Object.keys(mCounts), mCounts, c => {
-  document.querySelectorAll('.mcard').forEach(m => m.classList.toggle('hidden', c!=='All' && m.dataset.c!==c));
+/* theme */
+const root = document.documentElement;
+try { const t = localStorage.getItem('theme'); if (t) root.dataset.theme = t; } catch (e) {}
+$('#themeBtn').addEventListener('click', () => {
+  const cur = root.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  root.dataset.theme = cur === 'dark' ? 'light' : 'dark';
+  try { localStorage.setItem('theme', root.dataset.theme); } catch (e) {}
 });
 
-$('#steps').innerHTML = STEPS.map(([h,p]) => `<div class="step reveal"><h4>${esc(h)}</h4><p>${esc(p)}</p></div>`).join('');
-$('#timeline').innerHTML = JOBS.map(j => `
-  <div class="job reveal"><div class="when">${esc(j.when)}</div><h3>${esc(j.role)}</h3><div class="org">${esc(j.org)}</div>
-  <ul>${j.pts.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="tags">${chips(j.tags)}</div></div>`).join('');
-$('#skillGrid').innerHTML = SKILLS.map(([h,t]) => `<div class="sk reveal"><h4>${esc(h)}</h4><div class="tags">${chips(t)}</div></div>`).join('');
-
-/* terminal typing */
-const TERM = [
-  ['p','$ ','whoami'], ['', '', ME.name.toLowerCase()+' — '+ME.title.toLowerCase()],
-  ['p','$ ','ls ./shipped --count'], ['ok','',`${FEATURED.length} flagship · ${MORE.length} supporting · all in production`],
-  ['p','$ ','cat stack.txt'], ['d','','react · node · langgraph · n8n · python'],
-  ['p','$ ','./agent ask "pending import POs?"'], ['ok','✓ ','3 POs in transit · ₹ landed cost ready'],
-  ['p','$ ','status'], ['ok','● ','open to work']
-];
-(function typeTerm(){
-  const el = $('#term'); el.innerHTML = ''; let line = 0;
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function next(){
-    if(line >= TERM.length){ el.insertAdjacentHTML('beforeend','<span class="p">$ </span><span class="caret"></span>'); return; }
-    const [cls,pre,txt] = TERM[line++];
-    const row = document.createElement('div');
-    row.innerHTML = `<span class="${cls}">${esc(pre)}</span><span class="${cls==='p'?'':cls}"></span>`;
-    el.appendChild(row);
-    const span = row.lastChild;
-    if(reduce || cls!=='p'){ span.textContent = txt; setTimeout(next, reduce?0:260); return; }
-    let i=0; (function t(){ span.textContent = txt.slice(0,++i); i<txt.length ? setTimeout(t,28) : setTimeout(next,220); })();
-  }
-  next();
-})();
-
-/* reveal + counters (fallback when GSAP is unavailable or motion is reduced) */
 const PRERENDER = /[?&]prerender\b/.test(location.search);
 const MOTION = !PRERENDER && !!window.gsap && !matchMedia('(prefers-reduced-motion: reduce)').matches;
-if (!MOTION) {
-const io = new IntersectionObserver(es => es.forEach(e => {
-  if(!e.isIntersecting) return;
-  e.target.classList.add('in');
-  e.target.querySelectorAll('[data-count]').forEach(c => {
-    const end = +c.dataset.count, t0 = performance.now();
-    (function tick(t){ const k = Math.min(1,(t-t0)/1100); c.textContent = Math.round(end*(1-Math.pow(1-k,3))); if(k<1) requestAnimationFrame(tick); })(t0);
-  });
-  io.unobserve(e.target);
-}), {threshold:.12});
-document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-}
-
-/* theme — circular reveal from the button where View Transitions are supported */
-const root = document.documentElement;
-try { const t = localStorage.getItem('theme'); if(t) root.dataset.theme = t; } catch(e){}
-$('#themeBtn').addEventListener('click', e => {
-  const apply = () => {
-    const cur = root.dataset.theme || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-    root.dataset.theme = cur === 'light' ? 'dark' : 'light';
-    try { localStorage.setItem('theme', root.dataset.theme); } catch(e){}
-  };
-  if (!document.startViewTransition || !MOTION) return apply();
-  const x = e.clientX, y = e.clientY, r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
-  document.startViewTransition(apply).ready.then(() => root.animate(
-    { clipPath: [`circle(0 at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
-    { duration: 650, easing: 'cubic-bezier(.4,0,.2,1)', pseudoElement: '::view-transition-new(root)' }));
-});
+if (!MOTION) $('#fig').classList.add('live');
 </script>
 
 <script src="demos/n8n/graphs.js"></script>
 <script>
-/* ===================== HOVER PREVIEWS =====================
-   Each system gets a small mock UI + 3 highlights. n8n projects draw their real graph. */
+/* ===================== HOVER PREVIEWS (systems list) ===================== */
 (function () {
   if (!matchMedia('(pointer: fine)').matches) return;
   const E = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-
   /* ---- renderers ---- */
   const R = {
     img: s => `<img src="${s.src}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top left">`,
@@ -1315,8 +1139,6 @@ $('#themeBtn').addEventListener('click', e => {
   const shotSrc = t => SHOT[t] && 'img/previews/' + SHOT[t] + '.webp';
   const preload = () => Object.keys(SHOT).forEach(t => { const i = new Image(); i.src = shotSrc(t); });
   if (window.requestIdleCallback) requestIdleCallback(preload, { timeout: 3000 }); else setTimeout(preload, 1500);
-
-  /* ---- popover ---- */
   const pv = document.createElement('div'); pv.className = 'pv'; pv.setAttribute('aria-hidden', 'true'); document.body.appendChild(pv);
   let curKey = null, px = 0, py = 0, tx = 0, ty = 0, raf = 0;
   const place = () => { px += (tx - px) * .22; py += (ty - py) * .22; pv.style.transform = `translate3d(${px}px,${py}px,0) scale(${pv.classList.contains('on') ? 1 : .94})`; if (Math.abs(tx - px) + Math.abs(ty - py) > .5) raf = requestAnimationFrame(place); else raf = 0; };
@@ -1326,30 +1148,23 @@ $('#themeBtn').addEventListener('click', e => {
     ty = Math.min(Math.max(12, e.clientY - h / 2), innerHeight - h - 12);
     if (!raf) raf = requestAnimationFrame(place);
   }
-  function show(key, title, spec, hl, live, e) {
+  function show(key, title, spec, hl, e) {
     if (curKey !== key) {
       curKey = key;
-      pv.innerHTML = `<div class="pv-bar"><i></i><i></i><i></i><span>${E(title)}</span></div><div class="pv-body"${spec.k === 'img' ? ' style="padding:0;height:205px"' : ''}>${R[spec.k](spec)}</div>
-        <div class="pv-foot"><h5>${E(title)}</h5><ul>${hl.map(x => `<li>${E(x)}</li>`).join('')}</ul>
-        <span class="pv-tag ${live ? 'live' : ''}">${live ? '▶ screenshot of the live app · open it with "Live demo"' : 'illustration · sample data'}</span></div>`;
+      pv.innerHTML = `<div class="pv-bar"><i></i><i></i><i></i><span>${E(title)}</span></div><div class="pv-body">${R[spec.k](spec)}</div>
+        <div class="pv-foot"><h5>${E(title)}</h5><ul>${hl.map(x => `<li>${E(x)}</li>`).join('')}</ul><span class="pv-tag">Illustration with sample data</span></div>`;
       if (!pv.classList.contains('on')) { const w = 360; px = tx = e.clientX + 18 + w > innerWidth ? e.clientX - w - 18 : e.clientX + 18; py = ty = e.clientY - 170; }
     }
     pv.classList.add('on'); target(e);
   }
   const hide = () => { pv.classList.remove('on'); curKey = null; if (!raf) raf = requestAnimationFrame(place); };
-
   document.addEventListener('pointermove', e => {
-    const fc = e.target.closest('#featGrid .pcard'), mc = !fc && e.target.closest('.mcard');
-    if (fc) {
-      const title = fc.querySelector('h3').textContent, p = FEATURED.find(x => x.title === title), spec = FEAT[title];
-      if (spec) return show('f:' + title, title, shotSrc(title) ? { k: 'img', src: shotSrc(title) } : spec, spec.hl, !!(p && p.demo), e);
-    } else if (mc) {
-      const title = mc.querySelector('h4').textContent, m = MORE.find(x => x[1] === title);
-      if (m) return show('m:' + title, title, moreSpec(m[0], m[1], m[2], m[3]), [m[2], m[3]], false, e);
-    }
+    const row = e.target.closest('tr.part');
+    if (row) { const m = MORE.find(x => x[1] === row.dataset.t); if (m) return show('m:' + m[1], m[1], moreSpec(m[0], m[1], m[2], m[3]), [m[2], m[3]], e); }
     if (curKey) hide();
   }, { passive: true });
   addEventListener('scroll', () => curKey && hide(), { passive: true });
+  addEventListener('wheel', () => curKey && hide(), { passive: true });
 })();
 </script>
 
@@ -1358,214 +1173,62 @@ $('#themeBtn').addEventListener('click', e => {
 (function () {
   if (!MOTION) return;
   gsap.registerPlugin(ScrollTrigger);
-  root.classList.add('gsap');
   const fine = matchMedia('(pointer: fine)').matches;
-  const ease = 'power3.out';
 
-  // Split text into masked words; words inside .grad keep the gradient.
-  function split(el) {
-    const words = [];
-    const walk = (node, grad) => [...node.childNodes].forEach(n => {
-      if (n.nodeType === 3) {
-        const frag = document.createDocumentFragment();
-        n.textContent.split(/(\s+)/).forEach(p => {
-          if (!p) return;
-          if (/^\s+$/.test(p)) { frag.appendChild(document.createTextNode(' ')); return; }
-          const w = document.createElement('span'), i = document.createElement('span');
-          w.className = 'w'; if (grad) i.className = 'grad shine'; i.textContent = p;
-          w.appendChild(i); frag.appendChild(w); words.push(i);
-        });
-        n.replaceWith(frag);
-      } else if (n.nodeType === 1 && !n.classList.contains('w')) {
-        const g = grad || n.classList.contains('grad');
-        n.classList.remove('grad'); walk(n, g);
-      }
+  /* smooth scrolling, wired into ScrollTrigger; in-page links glide */
+  let lenis = null;
+  if (window.Lenis) {
+    lenis = new Lenis({ lerp: .11 });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(t => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0);
+    document.addEventListener('click', e => {
+      const a = e.target.closest('a[href^="#"]'); if (!a) return;
+      const el = document.querySelector(a.getAttribute('href')); if (!el) return;
+      e.preventDefault(); lenis.scrollTo(el, { offset: a.getAttribute('href') === '#top' ? 0 : -64, duration: 1.4 });
     });
-    walk(el, false);
-    return words;
   }
 
-  // Decode-style text scramble for mono labels.
-  function scramble(el) {
-    const final = el.textContent, chars = '!<>-_\\/[]{}=+*^?#01';
-    const o = { p: 0 };
-    gsap.to(o, { p: 1, duration: .9, ease: 'none', onUpdate() {
-      const n = Math.floor(o.p * final.length);
-      el.textContent = final.slice(0, n) + [...final.slice(n)].map(c => c === ' ' ? ' ' : chars[Math.random() * chars.length | 0]).join('');
-    }, onComplete() { el.textContent = final; } });
-  }
-  const eyebrowText = el => [...el.childNodes].find(n => n.nodeType === 3 && n.textContent.trim());
-
-  /* ---- scroll progress + nav ---- */
-  gsap.to('.progress', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: .3 } });
-  const nav = $('nav');
-  ScrollTrigger.create({ start: 'top -120', end: 'max', onUpdate: s => nav.classList.toggle('nav-hide', s.direction === 1 && s.scroll() > 120) });
-  ScrollTrigger.create({ start: 0, end: 120, onLeaveBack: () => nav.classList.remove('nav-hide') });
-  const navLinks = $('.nav-links'), ind = document.createElement('span');
-  ind.className = 'nav-ind'; navLinks.appendChild(ind);
-  const moveInd = a => { if (!a) { ind.style.opacity = 0; return; } ind.style.left = a.offsetLeft + 'px'; ind.style.width = a.offsetWidth + 'px'; ind.style.opacity = 1; };
-  const allLinks = navLinks.querySelectorAll('a');
-  allLinks.forEach((a, i) => {
-    const sec = document.querySelector(a.getAttribute('href')); if (!sec) return;
-    const last = i === allLinks.length - 1; // the last section can't scroll up to mid-screen
-    ScrollTrigger.create({ trigger: sec, start: last ? 'top 85%' : 'top 45%', end: last ? 'max' : 'bottom 45%', onToggle: s => {
-      if (s.isActive) { navLinks.querySelectorAll('a').forEach(x => x.classList.toggle('active', x === a)); moveInd(a); }
-      else if (a.classList.contains('active')) { a.classList.remove('active'); moveInd(null); }
-    } });
-  });
-
-  /* ---- hero intro ---- */
-  const h1 = $('.hero h1'), echo = h1.cloneNode(true);
-  echo.className = 'h1-echo'; echo.setAttribute('aria-hidden', 'true'); echo.querySelectorAll('.grad').forEach(g => g.classList.remove('grad'));
-  const h1Words = split(h1); h1.appendChild(echo);
-  const intro = gsap.timeline({ defaults: { ease: 'power4.out' } });
-  setTimeout(() => intro.progress(1), 3500); // never leave the hero half-drawn on throttled renderers
+  /* ---- the one big moment: the sheet gets drawn ---- */
+  const fig = $('#fig');
+  $$('.name .ln').forEach(l => { l.innerHTML = [...l.textContent].map(c => `<span class="ch">${c}</span>`).join(''); });
+  const strokes = $$('#fig .draw');
+  strokes.forEach(s => { const L = s.getTotalLength(); s.style.strokeDasharray = L; s.style.strokeDashoffset = L; });
+  const intro = gsap.timeline({ defaults: { ease: 'expo.out' }, onComplete: () => fig.classList.add('live') });
+  setTimeout(() => intro.progress(1), 4500); // never leave the sheet half-drawn on throttled renderers
   intro
-    .from('.status', { y: 14, opacity: 0, duration: .6 })
-    .from(h1Words, { yPercent: 120, scaleY: 1.5, filter: 'blur(10px)', transformOrigin: '50% 100%', duration: 1, stagger: .055, ease: 'expo.out' }, '-=.35')
-    .fromTo(echo, { opacity: .45, y: 26, filter: 'blur(6px)' }, { opacity: 0, y: 0, filter: 'blur(0px)', duration: 1.1, ease: 'power2.out' }, '<.35')
-    .from('#heroLead', { y: 18, opacity: 0, duration: .8 }, '-=.75')
-    .from('.hero .hero-ctas .btn', { y: 18, opacity: 0, duration: .6, stagger: .08 }, '-=.6')
-    .from('.hero-tags span', { x: -12, opacity: 0, duration: .5, stagger: .07 }, '-=.45')
-    .from('.term', { y: 50, opacity: 0, rotateX: 14, transformPerspective: 1000, duration: 1.2 }, .35);
-  gsap.to('.term', { yPercent: -10, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+    .from('.frame', { opacity: 0, duration: .8, ease: 'power2.out' })
+    .from('.dim', { scaleX: 0, duration: 1.1 }, .1)
+    .from('.name .ch', { yPercent: 110, duration: 1.1, stagger: .035 }, .15)
+    .from('.lead, .ctas', { y: 18, opacity: 0, duration: .9, stagger: .1 }, .6)
+    .to(strokes, { strokeDashoffset: 0, duration: 1.3, stagger: .035, ease: 'power2.inOut' }, .35)
+    .from('#fig .fade', { opacity: 0, duration: .6, stagger: .03, ease: 'power1.out' }, 1.1)
+    .from('#tb > div', { opacity: 0, y: 10, duration: .5, stagger: .05, ease: 'power2.out' }, 1.3);
 
-  // cursor-following glow
-  const hero = $('.hero'), glow = document.createElement('div');
-  glow.className = 'hero-glow'; hero.prepend(glow);
+  /* CAD crosshair with live coordinates */
+  const hero = $('.hero'), cad = $('.cad'), cx = cad.querySelector('.cx'), cy = cad.querySelector('.cy'), rd = cad.querySelector('b');
   if (fine) {
-    const gx = gsap.quickTo(glow, 'x', { duration: .8, ease }), gy = gsap.quickTo(glow, 'y', { duration: .8, ease });
-    hero.addEventListener('pointermove', e => { const r = hero.getBoundingClientRect(); gx(e.clientX - r.left); gy(e.clientY - r.top); });
+    hero.addEventListener('pointermove', e => {
+      const r = hero.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+      hero.classList.add('aim');
+      cx.style.transform = `translateY(${y}px)`; cy.style.transform = `translateX(${x}px)`;
+      rd.style.transform = `translate(${x + 14}px,${y + 14}px)`; rd.textContent = `X ${String(Math.round(x)).padStart(4, '0')}   Y ${String(Math.round(y)).padStart(4, '0')}`;
+    });
+    hero.addEventListener('pointerleave', () => hero.classList.remove('aim'));
   }
-
-  /* ---- stats + counters ---- */
-  gsap.from('.stat', { y: 24, opacity: 0, duration: .8, stagger: .08, ease, scrollTrigger: { trigger: '#stats', start: 'top 92%' } });
-  document.querySelectorAll('[data-count]').forEach(c => {
-    const o = { v: 0 };
-    gsap.to(o, { v: +c.dataset.count, duration: 1.8, ease: 'power2.out', scrollTrigger: { trigger: c, start: 'top 95%' }, onUpdate: () => c.textContent = Math.round(o.v) });
-  });
-
-  /* ---- marquee reacts to scroll velocity ---- */
-  const track = $('#marquee'); track.style.animation = 'none';
-  let mx = 0, half = 0, boost = 0, base = .55;
-  const measure = () => half = track.scrollWidth / 2;
-  measure(); addEventListener('resize', measure); document.fonts?.ready.then(measure);
-  ScrollTrigger.create({ onUpdate: s => boost = gsap.utils.clamp(-10, 10, s.getVelocity() / 220) });
-  $('.marquee').addEventListener('pointerenter', () => base = .12);
-  $('.marquee').addEventListener('pointerleave', () => base = .55);
-  gsap.ticker.add((t, dt) => {
-    mx -= (base + Math.abs(boost)) * dt / 16; boost *= .93;
-    if (half && -mx >= half) mx += half;
-    track.style.transform = `translate3d(${mx}px,0,0) skewX(${(-boost * .8).toFixed(2)}deg)`;
-  });
-
-  /* ---- section headings ---- */
-  document.querySelectorAll('.eyebrow').forEach(eb => {
-    const t = eyebrowText(eb);
-    gsap.fromTo(eb, { '--ew': '0px', opacity: 0 }, { '--ew': '28px', opacity: 1, duration: .9, ease,
-      scrollTrigger: { trigger: eb, start: 'top 88%', onEnter: () => t && scramble(t) } });
-  });
-  document.querySelectorAll('.sec-head h2, #about h2, .contact h2').forEach(h => {
-    const words = split(h);
-    gsap.from(words, { yPercent: 115, rotate: 4, duration: 1, stagger: .04, ease: 'power4.out', scrollTrigger: { trigger: h, start: 'top 88%' } });
-  });
-  gsap.utils.toArray('.sec-head p, .about-text p').forEach(p =>
-    gsap.from(p, { y: 22, opacity: 0, duration: .9, ease, scrollTrigger: { trigger: p, start: 'top 90%' } }));
-
-  /* ---- staggered blocks ---- */
-  const batch = (sel, from) => {
-    gsap.set(sel, from);
-    ScrollTrigger.batch(sel, { start: 'top 90%', once: true,
-      onEnter: els => gsap.to(els, { y: 0, x: 0, opacity: 1, scale: 1, duration: .85, ease, stagger: .08, overwrite: true }) });
-  };
-  batch('.pillar', { y: 30, opacity: 0 });
-  batch('.profile', { y: 40, opacity: 0 });
-  batch('.filters', { y: 16, opacity: 0 });
-  batch('#featGrid .pcard', { y: 50, opacity: 0, scale: .97 });
-  batch('.mcard', { y: 30, opacity: 0 });
-  batch('.step', { y: 30, opacity: 0 });
-  batch('.sk', { y: 30, opacity: 0 });
-  batch('.job', { x: -20, opacity: 0 });
-  gsap.from('.contact', { scale: .95, opacity: 0, duration: 1, ease, scrollTrigger: { trigger: '.contact', start: 'top 85%' } });
-  gsap.from('#contactBtns > *', { y: 16, opacity: 0, duration: .6, stagger: .08, ease, scrollTrigger: { trigger: '#contactBtns', start: 'top 98%' } });
-
-  // re-animate cards whenever a filter swaps them
-  new MutationObserver(() => gsap.fromTo('#featGrid .pcard', { y: 26, opacity: 0, scale: .97 }, { y: 0, opacity: 1, scale: 1, duration: .6, stagger: .05, ease, overwrite: true }))
-    .observe($('#featGrid'), { childList: true });
-  $('#moreFilters').addEventListener('click', e => {
-    if (!e.target.closest('.filter')) return;
-    requestAnimationFrame(() => gsap.fromTo('.mcard:not(.hidden)', { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: .5, stagger: .03, ease, overwrite: true }));
-  });
-
-  /* ---- process line + timeline draw ---- */
-  const sl = document.createElement('div'); sl.className = 'steps-line'; sl.innerHTML = '<i></i>'; $('#steps').prepend(sl);
-  gsap.to('.steps-line i', { scaleX: 1, ease: 'none', scrollTrigger: { trigger: '#steps', start: 'top 85%', end: 'bottom 55%', scrub: .5 } });
-  // A wave that passes through every job's dot, drawn as you scroll; each dot lights up when the line reaches it.
-  const tl = $('#timeline'), NS = 'http://www.w3.org/2000/svg';
-  tl.classList.add('tl-wavy');
-  const svg = document.createElementNS(NS, 'svg'); svg.classList.add('tl-svg');
-  svg.innerHTML = '<defs><linearGradient id="tlg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent-2)"/></linearGradient></defs><path class="base"/><path class="draw" stroke="url(#tlg)"/>';
-  tl.prepend(svg);
-  const [basePath, drawPath] = svg.querySelectorAll('path'), jobs = [...tl.querySelectorAll('.job')];
-  let len = 0, dotsAt = [];
-  const buildWave = () => {
-    const H = tl.offsetHeight, X = 26, A = 13, top = tl.getBoundingClientRect().top;
-    const ys = jobs.map(j => j.getBoundingClientRect().top - top + 11);
-    const pts = [0, ...ys, H]; let d = `M${X},0`, side = 1;
-    for (let i = 0; i < pts.length - 1; i++) {
-      const y0 = pts[i], y1 = pts[i + 1], n = Math.max(1, Math.round((y1 - y0) / 150)), step = (y1 - y0) / n;
-      for (let k = 0; k < n; k++) { const a = y0 + k * step; d += ` C${X + A * side},${a + step * .33} ${X + A * side},${a + step * .67} ${X},${a + step}`; side = -side; }
-    }
-    svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 52 ${H}`);
-    basePath.setAttribute('d', d); drawPath.setAttribute('d', d);
-    len = drawPath.getTotalLength(); drawPath.style.strokeDasharray = len;
-    dotsAt = ys.map(y => y / H);
-  };
-  buildWave();
-  new ResizeObserver(() => { buildWave(); ScrollTrigger.refresh(); }).observe(tl);
-  ScrollTrigger.create({ trigger: tl, start: 'top 75%', end: 'bottom 60%', scrub: .6,
-    onUpdate: st => { drawPath.style.strokeDashoffset = len * (1 - st.progress); jobs.forEach((j, i) => j.classList.toggle('lit', st.progress >= dotsAt[i] - .01)); },
-    onRefresh: st => { drawPath.style.strokeDashoffset = len * (1 - st.progress); } });
+  gsap.to('.hero .wrap', { yPercent: -8, opacity: .35, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
 
   /* ---- curtain footer: the page lifts away, the name rises, letters follow the cursor ---- */
   const footReveal = { trigger: '#curtain', start: () => `bottom-=${siteFoot.offsetHeight} bottom`, end: 'bottom bottom', scrub: .4, invalidateOnRefresh: true };
   gsap.fromTo('.foot-inner', { y: () => -siteFoot.offsetHeight * .3 }, { y: 0, ease: 'none', scrollTrigger: footReveal });
-  gsap.fromTo('.foot-big i', { yPercent: 105 }, { yPercent: 0, stagger: .06, ease: 'power3.out', scrollTrigger: { ...footReveal, start: () => `bottom-=${siteFoot.offsetHeight * .7} bottom` } });
+  gsap.fromTo('.foot-big i', { yPercent: 105 }, { yPercent: 0, stagger: .05, ease: 'power3.out', scrollTrigger: { ...footReveal, start: () => `bottom-=${siteFoot.offsetHeight * .7} bottom` } });
   gsap.fromTo('.foot-top > *', { y: 30, opacity: 0 }, { y: 0, opacity: 1, stagger: .08, ease: 'power2.out', scrollTrigger: { ...footReveal, end: () => `bottom-=${siteFoot.offsetHeight * .35} bottom` } });
   if (fine) {
-    const big = $('.foot-big'), letters = [...big.querySelectorAll('span')];
+    const big = $('.foot-big'), letters = [...big.querySelectorAll('span:not(.sp)')];
     const lift = letters.map(l => gsap.quickTo(l, 'y', { duration: .5, ease: 'power3.out' }));
-    big.addEventListener('pointermove', e => letters.forEach((l, i) => { const r = l.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2); lift[i](-Math.max(0, 1 - Math.abs(dx) / 260) * 28); }));
+    big.addEventListener('pointermove', e => letters.forEach((l, i) => { const r = l.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2); lift[i](-Math.max(0, 1 - Math.abs(dx) / 240) * 26); }));
     big.addEventListener('pointerleave', () => lift.forEach(f => f(0)));
   }
-
-  /* ---- pointer effects: spotlight, tilt, magnetic ---- */
-  if (!fine) return;
-  document.addEventListener('pointermove', e => {
-    const c = e.target.closest('.pcard,.mcard,.sk,.step,.pillar,.profile'); if (!c) return;
-    const r = c.getBoundingClientRect();
-    c.style.setProperty('--mx', `${e.clientX - r.left}px`); c.style.setProperty('--my', `${e.clientY - r.top}px`);
-  }, { passive: true });
-
-  const tilt = (el, max) => {
-    el.addEventListener('pointermove', e => {
-      const r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
-      gsap.to(el, { rotateY: px * max, rotateX: -py * max, transformPerspective: 900, duration: .5, ease: 'power2.out' });
-    });
-    el.addEventListener('pointerleave', () => gsap.to(el, { rotateX: 0, rotateY: 0, duration: .8, ease: 'elastic.out(1,.5)' }));
-  };
-  tilt($('.term'), 8);
-  $('#featGrid').addEventListener('pointerover', e => {
-    const c = e.target.closest('.pcard'); if (c && !c.dataset.tilt) { c.dataset.tilt = 1; tilt(c, 4); }
-  });
-
-  document.querySelectorAll('.btn, .icon-btn').forEach(b => {
-    b.addEventListener('pointermove', e => {
-      const r = b.getBoundingClientRect();
-      gsap.to(b, { x: (e.clientX - r.left - r.width / 2) * .25, y: (e.clientY - r.top - r.height / 2) * .35, duration: .4, ease: 'power2.out' });
-    });
-    b.addEventListener('pointerleave', () => gsap.to(b, { x: 0, y: 0, duration: .7, ease: 'elastic.out(1,.4)' }));
-  });
+  addEventListener('load', () => ScrollTrigger.refresh());
 })();
 </script>
 </body>
