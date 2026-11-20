@@ -1268,8 +1268,8 @@ if (HERO3D) { root.classList.add('h3d'); setTimeout(() => { if (!window.__h3dRea
 /* ===================== 3D =====================
    1) Hero: the production line as a live technical drawing, with data streaming through the agent
       and a scroll sequence that dives into the core.
-   2) Background: the factory's own products (spoons, forks, knives, scoops, paper straws) drifting
-      as wireframe drawings behind the paper sections.
+   2) Background: the building blocks of the work (server, database, chat, workflow gear, LLM chip,
+      documents) drifting as annotated wireframe drawings behind the paper sections.
    Desktop + motion only; the drawn SVG diagram stays as the fallback. */
 if (typeof HERO3D !== 'undefined' && HERO3D) try {
   const THREE = await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js');
@@ -1407,34 +1407,38 @@ if (typeof HERO3D !== 'undefined' && HERO3D) try {
     g.font = '400 30px "Martian Mono", ui-monospace, monospace'; g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(txt, 160, 32);
     const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv), transparent: true, opacity: .6, depthWrite: false })); sp.scale.set(1.9, .38, 1); sprites.push(sp); return sp;
   };
-  const ex = shape => new THREE.ExtrudeGeometry(shape, { depth: .07, bevelEnabled: false, curveSegments: 28 });
-  const shapes = {
-    spoon: () => { const s = new THREE.Shape(); s.moveTo(-.13, 0); s.quadraticCurveTo(0, -.12, .13, 0); s.lineTo(.075, 2.45); s.absellipse(0, 3.2, .52, .78, -Math.PI / 2 + .35, Math.PI * 1.5 - .35, false); s.lineTo(-.075, 2.45); s.lineTo(-.13, 0); return [ex(s), 4, '160 mm']; },
-    fork: () => { const p = [[-.13, 0], [.13, 0], [.075, 2.35], [.3, 2.7], [.3, 3.95], [.2, 3.95], [.2, 3.2], [.15, 3.2], [.15, 3.95], [.05, 3.95], [.05, 3.2], [-.05, 3.2], [-.05, 3.95], [-.15, 3.95], [-.15, 3.2], [-.2, 3.2], [-.2, 3.95], [-.3, 3.95], [-.3, 2.7], [-.075, 2.35]]; return [ex(new THREE.Shape(p.map(([x, y]) => new THREE.Vector2(x, y)))), 3.95, '160 mm']; },
-    knife: () => { const s = new THREE.Shape(); s.moveTo(-.13, 0); s.quadraticCurveTo(0, -.12, .13, 0); s.lineTo(.08, 2.2); s.lineTo(.2, 2.32); s.lineTo(.2, 3.55); s.quadraticCurveTo(.2, 4.05, -.06, 4.05); s.lineTo(-.18, 3.8); s.lineTo(-.18, 2.32); s.lineTo(-.08, 2.2); s.lineTo(-.13, 0); return [ex(s), 4.05, '160 mm']; },
-    scoop: () => { const s = new THREE.Shape(); s.moveTo(-.17, 0); s.quadraticCurveTo(0, -.08, .17, 0); s.lineTo(.13, 1.3); s.absellipse(0, 1.85, .36, .58, -Math.PI / 2 + .42, Math.PI * 1.5 - .42, false); s.lineTo(-.13, 1.3); s.lineTo(-.17, 0); return [ex(s), 2.43, '95 mm']; },
+  const ex = (shape, depth = .12) => new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false, curveSegments: 24 });
+  const wire = (g, geo) => { g.add(new THREE.Mesh(geo, pFace)); g.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 20), pLine)); };
+  const pbox = (g, w, h, d, x = 0, y = 0, z = 0) => { const geo = new THREE.BoxGeometry(w, h, d); geo.translate(x, y, z); wire(g, geo); };
+  const segs = (g, pts) => g.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts.map(p => new THREE.Vector3(...p))), pLine));
+  const roundRect = (w, h, r) => { const s = new THREE.Shape(), x = -w / 2, y = -h / 2; s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r); s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h); s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r); s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y); return s; };
+  const BUILD = {
+    // server rack: a cabinet with four units and status lights
+    server: g => { pbox(g, 1.7, 3.0, 1.2); for (let i = 0; i < 4; i++) { const y = -1.05 + i * .7; pbox(g, 1.45, .5, .08, 0, y, .62); segs(g, [[-.55, y, .67], [.15, y, .67]]); [.38, .55].forEach(x => { const c = new THREE.CircleGeometry(.05, 10); c.translate(x, y, .67); g.add(new THREE.LineSegments(new THREE.EdgesGeometry(c), pLine)); }); } return [1.2, 'Render']; },
+    // database: three stacked discs
+    db: g => { [-1, 0, 1].forEach(y => { const c = new THREE.CylinderGeometry(.95, .95, .72, 28); c.translate(0, y * .82, 0); wire(g, c); }); return [1.1, 'Google Sheets']; },
+    // chat bubble with a tail and typing dots
+    chat: g => { const s = roundRect(2.6, 1.7, .45); s.moveTo(-.7, -.85); const b = roundRect(2.6, 1.7, .45); const tail = new THREE.Shape([new THREE.Vector2(-.75, -.84), new THREE.Vector2(-.95, -1.45), new THREE.Vector2(-.25, -.84)]); const geo = ex(b); geo.translate(0, 0, -.06); wire(g, geo); const tg = ex(tail); tg.translate(0, 0, -.06); wire(g, tg); [-.6, 0, .6].forEach(x => { const c = new THREE.CircleGeometry(.14, 16); c.translate(x, 0, .08); g.add(new THREE.LineSegments(new THREE.EdgesGeometry(c), pLine)); }); return [1.4, 'WhatsApp agent']; },
+    // gear with ten teeth and a hub
+    gear: g => { const s = new THREE.Shape(), T = 10, R = 1.25, r = 1.0; for (let i = 0; i < T * 2; i++) { const a0 = i / (T * 2) * Math.PI * 2, a1 = (i + 1) / (T * 2) * Math.PI * 2, rr = i % 2 ? r : R; const p0 = [Math.cos(a0 + .06) * rr, Math.sin(a0 + .06) * rr], p1 = [Math.cos(a1 - .06) * rr, Math.sin(a1 - .06) * rr]; if (i === 0) s.moveTo(...p0); else s.lineTo(...p0); s.lineTo(...p1); } s.closePath(); const h = new THREE.Path(); h.absarc(0, 0, .38, 0, Math.PI * 2, true); s.holes.push(h); const geo = ex(s, .3); geo.translate(0, 0, -.15); wire(g, geo); return [1.35, 'n8n workflow']; },
+    // chip: a die with pins on every side
+    chip: g => { pbox(g, 2.0, .22, 2.0); pbox(g, 1.1, .08, 1.1, 0, .15, 0); for (let i = 0; i < 6; i++) { const o = -.75 + i * .3; pbox(g, .1, .06, .3, o, 0, 1.15); pbox(g, .1, .06, .3, o, 0, -1.15); pbox(g, .3, .06, .1, 1.15, 0, o); pbox(g, .3, .06, .1, -1.15, 0, o); } g.rotation.x = .9; return [1.3, 'LLM']; },
+    // a stack of documents: POs and invoices
+    docs: g => { [2, 1, 0].forEach(i => { const s = new THREE.Shape([new THREE.Vector2(-.85, -1.15), new THREE.Vector2(.85, -1.15), new THREE.Vector2(.85, .75), new THREE.Vector2(.45, 1.15), new THREE.Vector2(-.85, 1.15)]); const geo = ex(s, .04); geo.translate(i * .22, i * .22, -i * .25); wire(g, geo); }); [.6, .3, 0, -.3, -.6].forEach((y, k) => segs(g, [[-.6, y, .06], [k === 0 ? .1 : .55, y, .06]])); return [1.2, 'POs & invoices']; },
   };
   const product = (kind, side) => {
-    const g = new THREE.Group(); let len;
-    if (kind === 'straw') {
-      len = 4.4; const r = .15, cyl = new THREE.CylinderGeometry(r, r, len, 20, 1, true); cyl.translate(0, len / 2, 0);
-      g.add(new THREE.Mesh(cyl, pFace)); g.add(new THREE.LineSegments(new THREE.EdgesGeometry(cyl, 20), pLine));
-      const hel = []; for (let i = 0; i <= 260; i++) { const t = i / 260, a = t * Math.PI * 2 * 9; hel.push(new THREE.Vector3(Math.cos(a) * r, t * len, Math.sin(a) * r)); }
-      g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(hel), pLine));
-      [-r, r].forEach(x => g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x, 0, 0), new THREE.Vector3(x, len, 0)]), pLine)));
-      kind = '8 mm paper straw';
-    } else {
-      const [geo, l, lab] = shapes[kind](); len = l; g.add(new THREE.Mesh(geo, pFace)); g.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 20), pLine)); kind = lab;
-    }
-    // dimension line with ticks and a label, like on the TDS drawings
-    const sg = side > 0 ? -1 : 1, x = .85 * sg, dim = [[x - .12, 0, 0], [x + .12, 0, 0], [x - .12, len, 0], [x + .12, len, 0], [x, 0, 0], [x, len, 0], [.3 * sg, 0, 0], [x + .05 * sg, 0, 0], [.3 * sg, len, 0], [x + .05 * sg, len, 0]];
-    g.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(dim.map(p => new THREE.Vector3(...p))), pLine));
-    const t = tag(kind); t.position.set(x + 1.15 * sg, len / 2, 0); g.add(t);
-    g.children.forEach(ch => { ch.position.y -= len / 2; });
+    const g = new THREE.Group(), body = new THREE.Group(); g.add(body);
+    const [reach, label] = BUILD[kind](body);
+    // callout: a leader line from the object out to its label, like a drawing annotation
+    const sg = side > 0 ? -1 : 1, x0 = reach * sg, x1 = (reach + .6) * sg, x2 = (reach + 1.4) * sg;
+    segs(g, [[x0, .5, 0], [x1, 1.2, 0], [x1, 1.2, 0], [x2, 1.2, 0]]);
+    const dot = new THREE.CircleGeometry(.06, 10); dot.translate(x0, .5, 0); g.add(new THREE.Mesh(dot, new THREE.MeshBasicMaterial({ color: pLine.color })));
+    const t = tag(label); t.position.set(x2 + 1.0 * sg, 1.2, 0); g.add(t);
+    g.userData.dot = dot;
     return g;
   };
-  const KINDS = ['spoon', 'straw', 'fork', 'scoop', 'knife', 'straw', 'spoon', 'fork', 'scoop', 'straw', 'knife', 'spoon', 'fork', 'straw'];
-  const items = KINDS.map((k, i) => { const g = product(k, i % 2 ? 1 : -1); g.userData = { side: i % 2 ? 1 : -1, f: (i + .5) / KINDS.length, z: rand(-5, 2), s: rand(.62, .9), rx: rand(-.12, .12), ry: rand(.06, .16) * (Math.random() < .5 ? -1 : 1), ph: rand(0, 6) }; g.rotation.set(rand(-.5, .5), rand(-.5, .5), rand(-.45, .45)); g.userData.base = g.rotation.clone(); g.scale.setScalar(g.userData.s); s2.add(g); return g; });
+  const KINDS = ['server', 'chat', 'db', 'gear', 'chip', 'docs', 'chat', 'server', 'gear', 'db', 'docs', 'chip', 'server', 'chat'];
+  const items = KINDS.map((k, i) => { const g = product(k, i % 2 ? 1 : -1); g.userData = { side: i % 2 ? 1 : -1, f: (i + .5) / KINDS.length, z: rand(-5, 2), s: rand(.5, .7), rx: rand(-.12, .12), ry: rand(.06, .16) * (Math.random() < .5 ? -1 : 1), ph: rand(0, 6) }; g.rotation.set(rand(-.5, .5), rand(-.5, .5), rand(-.45, .45)); g.userData.base = g.rotation.clone(); g.scale.setScalar(g.userData.s); s2.add(g); return g; });
   const PAR = .42; let bw = 1, bh = 1, vis0 = 1, kpx = 1;
   const layout = () => {
     bw = innerWidth; bh = innerHeight; bgR.setSize(bw, bh, false); c2.aspect = bw / bh; c2.updateProjectionMatrix();
@@ -1517,7 +1521,7 @@ if (typeof HERO3D !== 'undefined' && HERO3D) try {
       L.forEach(({ v: p, el }) => { v.copy(p).applyMatrix4(world.matrixWorld).project(cam); el.style.transform = `translate(${(v.x + 1) / 2 * W}px,${(1 - v.y) / 2 * H}px)`; el.style.opacity = S.labels; });
     }
 
-    // background products, only where the paper sections are on screen
+    // background objects, only where the paper sections are on screen
     const hb = hero.getBoundingClientRect().bottom, cb = curtain.getBoundingClientRect().bottom;
     if (hb < bh && cb > 0) {
       bgHost.style.clipPath = `inset(${Math.max(0, hb)}px 0 ${Math.max(0, bh - cb)}px 0)`;
