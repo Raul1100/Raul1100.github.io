@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8b7cff"/>
+      <stop offset="1" stop-color="#4fe3c8"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".28"/>
+      <stop offset=".5" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="eye" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c9c2ff"/>
+      <stop offset="1" stop-color="#7ff5dd"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>
+  </defs>
+  <rect x="48" y="48" width="928" height="928" rx="224" fill="url(#bg)"/>
+  <rect x="48" y="48" width="928" height="928" rx="224" fill="url(#shine)"/>
+  <path d="M250 430 L250 238 Q250 214 272 224 L420 318 Q512 296 604 318 L752 224 Q774 214 774 238 L774 430 Q806 574 716 690 Q512 806 308 690 Q218 574 250 430 Z" fill="#0c0d18"/>
+  <g filter="url(#glow)" opacity=".7"><ellipse cx="412" cy="520" rx="52" ry="62" fill="#8b7cff"/><ellipse cx="612" cy="520" rx="52" ry="62" fill="#5eead4"/></g>
+  <ellipse cx="412" cy="520" rx="46" ry="56" fill="url(#eye)"/>
+  <ellipse cx="612" cy="520" rx="46" ry="56" fill="url(#eye)"/>
+  <ellipse cx="426" cy="504" rx="14" ry="18" fill="#0c0d18"/>
+  <ellipse cx="626" cy="504" rx="14" ry="18" fill="#0c0d18"/>
+  <path d="M488 612 L536 612 L512 640 Z" fill="#8b7cff"/>
+</svg>
