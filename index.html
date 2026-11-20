@@ -259,7 +259,6 @@ nav.nav-hide{transform:translateY(-100%)}
 .gsap .pcard:hover{transform:none}
 .pcard{transform-style:preserve-3d}
 .timeline{position:relative}
-.tl-fill{position:absolute;left:-1px;top:0;width:2px;height:100%;transform-origin:top;transform:scaleY(0);background:linear-gradient(var(--accent),var(--accent-2))}
 .steps{position:relative;padding-top:22px}
 .steps-line{position:absolute;left:0;right:0;top:0;height:2px;background:var(--line);border-radius:2px;overflow:hidden}
 .steps-line i{position:absolute;inset:0;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--accent),var(--accent-2))}
@@ -351,8 +350,42 @@ nav.nav-hide{transform:translateY(-100%)}
 .m-legend i{display:inline-block;width:10px;height:3px;border-radius:2px;margin-right:4px;vertical-align:middle}
 @media (prefers-reduced-motion:reduce){.m-bars i,.m-hbar div i,.m-card,.m-msg,.m-box,.m-flow .e.f{animation:none}}
 
-footer{padding:36px 0;color:var(--dim);font-size:.85rem;font-family:var(--font-mono)}
-footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+/* ============ curtain footer ============ */
+:root{--fh:560px}
+.curtain{position:relative;z-index:1;background:var(--bg);margin-bottom:var(--fh);border-radius:0 0 28px 28px;box-shadow:0 40px 70px -30px rgba(0,0,0,.75)}
+:root[data-theme="light"] .curtain{box-shadow:0 30px 60px -30px rgba(60,40,10,.28)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .curtain{box-shadow:0 30px 60px -30px rgba(60,40,10,.28)}}
+footer{position:fixed;left:0;right:0;bottom:0;z-index:0;overflow:hidden;background:var(--bg-2);color:var(--muted);display:flex}
+footer::before{content:"";position:absolute;inset:auto -10% -55% -10%;height:90%;background:radial-gradient(ellipse at center,var(--glow),transparent 62%);pointer-events:none}
+.foot-inner{position:relative;flex:1;display:flex;flex-direction:column;padding-top:72px}
+.foot-top{display:grid;grid-template-columns:1.3fr 1fr .9fr;gap:40px}
+.foot-sign{font-family:var(--font-mono);font-size:.85rem;color:var(--dim)}
+.foot-sign b{color:var(--accent);font-weight:500}
+.foot-sign p{font-family:var(--font-body);font-size:1.6rem;line-height:1.25;color:var(--text);margin-top:14px;max-width:16ch;font-weight:600;letter-spacing:-.01em}
+.foot-col h5{font:500 .72rem var(--font-mono);color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
+.foot-links{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;font-size:.92rem}
+.foot-links a,.foot-col a{color:var(--muted);transition:color .2s}
+.foot-links a:hover,.foot-col a:hover{color:var(--accent)}
+.foot-col .clock{font:500 .92rem var(--font-mono);color:var(--text)}
+.foot-col .clock i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;margin-right:8px;vertical-align:1px;box-shadow:0 0 0 4px rgba(74,222,128,.15)}
+.foot-col .totop{display:inline-block;margin-top:22px;font:500 .85rem var(--font-mono)}
+.foot-big{display:flex;justify-content:center;font-family:var(--font-head);font-weight:700;font-size:clamp(5.5rem,23vw,24rem);line-height:.78;letter-spacing:-.055em;color:var(--text);margin-top:auto;padding-top:40px;user-select:none;white-space:nowrap}
+.foot-big > span{display:inline-block;overflow:hidden;padding:0 .02em .04em}
+.foot-big > span > i{display:inline-block;font-style:normal;will-change:transform}
+.foot-big .dot i{color:var(--accent)}
+.foot-bottom{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding:18px 0 22px;font:400 .8rem var(--font-mono);color:var(--dim)}
+@media (max-width:860px){.foot-top{grid-template-columns:1fr 1fr}.foot-sign{grid-column:1/-1}.foot-inner{padding-top:48px}}
+@media (max-width:520px){.foot-top{grid-template-columns:1fr}.foot-sign p{font-size:1.3rem}}
+
+/* ============ wavy timeline ============ */
+.timeline.tl-wavy{border-left-color:transparent}
+.tl-svg{position:absolute;left:-26px;top:0;width:52px;overflow:visible;pointer-events:none}
+.tl-svg path{fill:none;stroke-width:2;stroke-linecap:round}
+.tl-svg .base{stroke:var(--line-2)}
+.tl-wavy .job::before{background:var(--bg);border:2px solid var(--line-2);box-shadow:none;transition:background .35s,border-color .35s,box-shadow .35s,transform .35s cubic-bezier(.3,1.6,.5,1);box-sizing:border-box;top:3.5px;left:-35.5px;width:15px;height:15px}
+.tl-wavy .job.lit::before{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 6px var(--glow);transform:scale(1.15)}
+.hero h1{position:relative}
+.hero h1 .h1-echo{position:absolute;inset:0;margin:0;color:var(--accent);pointer-events:none;opacity:0}
 </style>
 <noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
 </head>
@@ -372,6 +405,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
   </div>
 </nav>
 
+<main class="curtain" id="curtain">
 <header class="hero" id="top">
   <div class="wrap hero-grid">
     <div class="reveal">
@@ -832,7 +866,19 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
   </div>
 </section>
 
-<footer><div class="wrap"><span id="foot">© 2026 Rahul Gurav</span><span>Built by hand · <a href="#top">back to top ↑</a></span></div></footer>
+</main>
+
+<footer id="siteFoot">
+  <div class="wrap foot-inner">
+    <div class="foot-top">
+      <div class="foot-sign"><span><b>~/rahul $</b> exit</span><p>Thanks for scrolling all the way down.</p></div>
+      <div class="foot-col"><h5>Explore</h5><div class="foot-links"><a href="#about">About</a><a href="#work">Work</a><a href="#systems">Systems</a><a href="#experience">Experience</a><a href="#skills">Skills</a><a href="#contact">Contact</a></div></div>
+      <div class="foot-col"><h5>Based in</h5><div class="clock"><i></i>Mumbai · <span id="footClock">IST</span></div><a class="totop" href="#top">Back to top ↑</a></div>
+    </div>
+    <div class="foot-big" aria-label="Rahul"><span><i>R</i></span><span><i>A</i></span><span><i>H</i></span><span><i>U</i></span><span><i>L</i></span><span class="dot"><i>.</i></span></div>
+    <div class="foot-bottom"><span id="foot">© 2026 Rahul Gurav</span><span>Designed &amp; built by hand</span></div>
+  </div>
+</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -1030,6 +1076,11 @@ const chips = arr => arr.map(t => `<span class="chip">${esc(t)}</span>`).join(''
 document.title = `${ME.name} | ${ME.title}`;
 $('#heroLead').textContent = ME.lead;
 $('#foot').textContent = `© ${new Date().getFullYear()} ${ME.name}`;
+const siteFoot = $('#siteFoot');
+const setFh = () => document.documentElement.style.setProperty('--fh', siteFoot.offsetHeight + 'px');
+new ResizeObserver(setFh).observe(siteFoot); setFh();
+const tickClock = () => { $('#footClock').textContent = new Date().toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: false }) + ' IST'; };
+tickClock(); setInterval(tickClock, 30000);
 const navResume = $('#navResume');
 if (ME.resume) navResume.href = ME.resume; else navResume.style.display = 'none';
 
@@ -1364,12 +1415,15 @@ $('#themeBtn').addEventListener('click', e => {
   });
 
   /* ---- hero intro ---- */
-  const h1Words = split($('.hero h1'));
+  const h1 = $('.hero h1'), echo = h1.cloneNode(true);
+  echo.className = 'h1-echo'; echo.setAttribute('aria-hidden', 'true'); echo.querySelectorAll('.grad').forEach(g => g.classList.remove('grad'));
+  const h1Words = split(h1); h1.appendChild(echo);
   const intro = gsap.timeline({ defaults: { ease: 'power4.out' } });
   setTimeout(() => intro.progress(1), 3500); // never leave the hero half-drawn on throttled renderers
   intro
     .from('.status', { y: 14, opacity: 0, duration: .6 })
-    .from(h1Words, { yPercent: 115, rotate: 5, duration: 1.1, stagger: .045 }, '-=.35')
+    .from(h1Words, { yPercent: 120, scaleY: 1.5, filter: 'blur(10px)', transformOrigin: '50% 100%', duration: 1, stagger: .055, ease: 'expo.out' }, '-=.35')
+    .fromTo(echo, { opacity: .45, y: 26, filter: 'blur(6px)' }, { opacity: 0, y: 0, filter: 'blur(0px)', duration: 1.1, ease: 'power2.out' }, '<.35')
     .from('#heroLead', { y: 18, opacity: 0, duration: .8 }, '-=.75')
     .from('.hero .hero-ctas .btn', { y: 18, opacity: 0, duration: .6, stagger: .08 }, '-=.6')
     .from('.hero-tags span', { x: -12, opacity: 0, duration: .5, stagger: .07 }, '-=.45')
@@ -1446,8 +1500,44 @@ $('#themeBtn').addEventListener('click', e => {
   /* ---- process line + timeline draw ---- */
   const sl = document.createElement('div'); sl.className = 'steps-line'; sl.innerHTML = '<i></i>'; $('#steps').prepend(sl);
   gsap.to('.steps-line i', { scaleX: 1, ease: 'none', scrollTrigger: { trigger: '#steps', start: 'top 85%', end: 'bottom 55%', scrub: .5 } });
-  const tf = document.createElement('div'); tf.className = 'tl-fill'; $('#timeline').prepend(tf);
-  gsap.to(tf, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '#timeline', start: 'top 75%', end: 'bottom 55%', scrub: .5 } });
+  // A wave that passes through every job's dot, drawn as you scroll; each dot lights up when the line reaches it.
+  const tl = $('#timeline'), NS = 'http://www.w3.org/2000/svg';
+  tl.classList.add('tl-wavy');
+  const svg = document.createElementNS(NS, 'svg'); svg.classList.add('tl-svg');
+  svg.innerHTML = '<defs><linearGradient id="tlg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent-2)"/></linearGradient></defs><path class="base"/><path class="draw" stroke="url(#tlg)"/>';
+  tl.prepend(svg);
+  const [basePath, drawPath] = svg.querySelectorAll('path'), jobs = [...tl.querySelectorAll('.job')];
+  let len = 0, dotsAt = [];
+  const buildWave = () => {
+    const H = tl.offsetHeight, X = 26, A = 13, top = tl.getBoundingClientRect().top;
+    const ys = jobs.map(j => j.getBoundingClientRect().top - top + 11);
+    const pts = [0, ...ys, H]; let d = `M${X},0`, side = 1;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const y0 = pts[i], y1 = pts[i + 1], n = Math.max(1, Math.round((y1 - y0) / 150)), step = (y1 - y0) / n;
+      for (let k = 0; k < n; k++) { const a = y0 + k * step; d += ` C${X + A * side},${a + step * .33} ${X + A * side},${a + step * .67} ${X},${a + step}`; side = -side; }
+    }
+    svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 52 ${H}`);
+    basePath.setAttribute('d', d); drawPath.setAttribute('d', d);
+    len = drawPath.getTotalLength(); drawPath.style.strokeDasharray = len;
+    dotsAt = ys.map(y => y / H);
+  };
+  buildWave();
+  new ResizeObserver(() => { buildWave(); ScrollTrigger.refresh(); }).observe(tl);
+  ScrollTrigger.create({ trigger: tl, start: 'top 75%', end: 'bottom 60%', scrub: .6,
+    onUpdate: st => { drawPath.style.strokeDashoffset = len * (1 - st.progress); jobs.forEach((j, i) => j.classList.toggle('lit', st.progress >= dotsAt[i] - .01)); },
+    onRefresh: st => { drawPath.style.strokeDashoffset = len * (1 - st.progress); } });
+
+  /* ---- curtain footer: the page lifts away, the name rises, letters follow the cursor ---- */
+  const footReveal = { trigger: '#curtain', start: () => `bottom-=${siteFoot.offsetHeight} bottom`, end: 'bottom bottom', scrub: .4, invalidateOnRefresh: true };
+  gsap.fromTo('.foot-inner', { y: () => -siteFoot.offsetHeight * .3 }, { y: 0, ease: 'none', scrollTrigger: footReveal });
+  gsap.fromTo('.foot-big i', { yPercent: 105 }, { yPercent: 0, stagger: .06, ease: 'power3.out', scrollTrigger: { ...footReveal, start: () => `bottom-=${siteFoot.offsetHeight * .7} bottom` } });
+  gsap.fromTo('.foot-top > *', { y: 30, opacity: 0 }, { y: 0, opacity: 1, stagger: .08, ease: 'power2.out', scrollTrigger: { ...footReveal, end: () => `bottom-=${siteFoot.offsetHeight * .35} bottom` } });
+  if (fine) {
+    const big = $('.foot-big'), letters = [...big.querySelectorAll('span')];
+    const lift = letters.map(l => gsap.quickTo(l, 'y', { duration: .5, ease: 'power3.out' }));
+    big.addEventListener('pointermove', e => letters.forEach((l, i) => { const r = l.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2); lift[i](-Math.max(0, 1 - Math.abs(dx) / 260) * 28); }));
+    big.addEventListener('pointerleave', () => lift.forEach(f => f(0)));
+  }
 
   /* ---- pointer effects: spotlight, tilt, magnetic ---- */
   if (!fine) return;
