@@ -119,6 +119,15 @@ h1,h2,h3,h4{font-family:var(--font-head);font-stretch:125%;font-weight:800;lette
 .fig .pk{fill:var(--bp-accent)}
 .fig .pk-g{opacity:0;transition:opacity .6s}
 .fig.live .pk-g{opacity:1}
+.hero{z-index:2}
+.sec{position:relative;z-index:1}
+.hero3d{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity 1.2s}
+.h3d-ready .hero3d{opacity:1}
+.hero3d canvas{width:100%;height:100%;display:block;-webkit-mask-image:linear-gradient(90deg,transparent 0,rgba(0,0,0,.3) 30%,#000 56%);mask-image:linear-gradient(90deg,transparent 0,rgba(0,0,0,.3) 30%,#000 56%)}
+.h3d .fig{visibility:hidden}
+.bg3d{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .5s}
+.bg3d.on{opacity:1}
+.bg3d canvas{width:100%;height:100%;display:block}
 .fig3d{position:absolute;inset:-6% -3% -4% -8%;pointer-events:none;opacity:0;transition:opacity .8s}
 .fig3d canvas{width:100%;height:100%;display:block}
 .fig.is3d .fig3d{opacity:1}
@@ -413,6 +422,7 @@ footer{position:fixed;left:0;right:0;bottom:0;z-index:0;overflow:hidden}
     <div class="zones x"><span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span><span>G</span><span>H</span></div>
     <div class="zones y"><span>1</span><span>2</span><span>3</span><span>4</span></div>
   </div>
+  <div class="hero3d" id="hero3d" aria-hidden="true"></div>
   <div class="cad" aria-hidden="true"><i class="cx"></i><i class="cy"></i><b></b></div>
   <div class="wrap">
     <div class="hero-grid">
@@ -475,7 +485,6 @@ footer{position:fixed;left:0;right:0;bottom:0;z-index:0;overflow:hidden}
             <circle class="pk" r="3"><animateMotion dur="3.4s" begin="1.9s" repeatCount="indefinite"><mpath href="#w8"/></animateMotion></circle>
           </g>
         </svg>
-        <div class="fig3d" id="fig3d" aria-hidden="true"></div>
       </figure>
       <dl class="tb" id="tb">
         <div class="full"><dt>Portfolio of</dt><dd>Rahul Gurav</dd></div>
@@ -489,6 +498,7 @@ footer{position:fixed;left:0;right:0;bottom:0;z-index:0;overflow:hidden}
     </div>
   </div>
 </section>
+<div class="bg3d" id="bg3d" aria-hidden="true"></div>
 
 <section class="sec" id="about">
   <div class="wrap about">
@@ -1059,6 +1069,8 @@ $('#themeBtn').addEventListener('click', () => {
 const PRERENDER = /[?&]prerender\b/.test(location.search);
 const MOTION = !PRERENDER && !!window.gsap && !matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (!MOTION) $('#fig').classList.add('live');
+const HERO3D = MOTION && matchMedia('(min-width: 981px)').matches && (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } })();
+if (HERO3D) { root.classList.add('h3d'); setTimeout(() => { if (!window.__h3dReady) root.classList.remove('h3d'); }, 8000); }
 </script>
 
 <script src="demos/n8n/graphs.js"></script>
@@ -1236,7 +1248,7 @@ if (!MOTION) $('#fig').classList.add('live');
     });
     hero.addEventListener('pointerleave', () => hero.classList.remove('aim'));
   }
-  gsap.to('.hero .wrap', { yPercent: -8, opacity: .35, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
+  if (!HERO3D) gsap.to('.hero .wrap', { yPercent: -8, opacity: .35, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
 
   /* ---- curtain footer: the page lifts away, the name rises, letters follow the cursor ---- */
   const footReveal = { trigger: '#curtain', start: () => `bottom-=${siteFoot.offsetHeight} bottom`, end: 'bottom bottom', scrub: .4, invalidateOnRefresh: true };
@@ -1253,153 +1265,269 @@ if (!MOTION) $('#fig').classList.add('live');
 })();
 </script>
 <script type="module">
-/* ===================== 3D HERO: a wireframe production line =====================
-   Messy inputs ride a conveyor into the agent, and come out as the apps teams use.
+/* ===================== 3D =====================
+   1) Hero: the production line as a live technical drawing, with data streaming through the agent
+      and a scroll sequence that dives into the core.
+   2) Background: the factory's own products (spoons, forks, knives, scoops, paper straws) drifting
+      as wireframe drawings behind the paper sections.
    Desktop + motion only; the drawn SVG diagram stays as the fallback. */
-const fig = document.getElementById('fig'), host = document.getElementById('fig3d');
-const canGL = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } })();
-if (typeof MOTION !== 'undefined' && MOTION && canGL && matchMedia('(min-width: 981px)').matches) {
+if (typeof HERO3D !== 'undefined' && HERO3D) try {
   const THREE = await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js');
   const root = document.documentElement, css = n => getComputedStyle(root).getPropertyValue(n).trim();
+  const hero = document.querySelector('.hero'), host = document.getElementById('hero3d');
   const INK = new THREE.Color(css('--bp-ink') || '#EEF3FF'), ACC = new THREE.Color(css('--bp-accent') || '#9FD8FF');
+  const rand = (a, b) => a + Math.random() * (b - a);
 
+  /* ---------------- hero scene ---------------- */
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   host.prepend(renderer.domElement);
   const scene = new THREE.Scene();
-  const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, .1, 100);
-  cam.position.set(11, 8.6, 11); cam.lookAt(0, 1.3, 0);
+  const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, .1, 200);
+  const VIEW = new THREE.Vector3(11, 8.6, 11).normalize().multiplyScalar(40), target = new THREE.Vector3(0, 1.3, 0);
   const world = new THREE.Group(); scene.add(world);
 
   const lineMat = new THREE.LineBasicMaterial({ color: INK, transparent: true, opacity: .92 });
-  const faintMat = new THREE.LineBasicMaterial({ color: INK, transparent: true, opacity: .14 });
+  const faintMat = new THREE.LineBasicMaterial({ color: INK, transparent: true, opacity: .12 });
   const dimMat = new THREE.LineBasicMaterial({ color: INK, transparent: true, opacity: .42 });
   const accMat = new THREE.LineBasicMaterial({ color: ACC, transparent: true, opacity: 1 });
   const faceMat = new THREE.MeshBasicMaterial({ color: 0x1a428f, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
-  const setFace = () => faceMat.color.set(css('--bp') || '#163A82').lerp(new THREE.Color('#ffffff'), .05);
-  setFace(); new MutationObserver(setFace).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
 
-  // a solid with hidden lines removed: filled faces in the sheet colour, crisp edges on top
-  const solid = (geo, mat = lineMat) => { const g = new THREE.Group(); g.add(new THREE.Mesh(geo, faceMat)); g.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 25), mat)); return g; };
+  const solid = (geo, mat = lineMat, face = faceMat) => { const g = new THREE.Group(); g.add(new THREE.Mesh(geo, face)); g.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 25), mat)); return g; };
   const box = (w, h, d, x, y, z, mat) => { const s = solid(new THREE.BoxGeometry(w, h, d), mat); s.position.set(x, y, z); return s; };
   const lines = (pts, mat = dimMat) => new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts.map(p => new THREE.Vector3(...p))), mat);
   const parts = []; const add = (o, intro = true) => { world.add(o); if (intro) parts.push(o); return o; };
 
-  // ground grid
-  const grid = []; for (let i = -7; i <= 7; i++) { grid.push([i, 0, -4], [i, 0, 4]); } for (let k = -4; k <= 4; k++) { grid.push([-7, 0, k], [7, 0, k]); }
+  const grid = []; for (let i = -9; i <= 9; i++) grid.push([i, 0, -5], [i, 0, 5]); for (let k = -5; k <= 5; k++) grid.push([-9, 0, k], [9, 0, k]);
   add(lines(grid, faintMat), false);
 
-  // conveyors (in and out)
-  const conveyor = cx => {
-    const g = new THREE.Group();
-    g.add(box(3.3, .12, 1.1, cx, .75, 0));
-    [-.58, .58].forEach(z => g.add(box(3.3, .1, .05, cx, .86, z)));
-    [-1.45, 1.45].forEach(dx => [-.45, .45].forEach(z => g.add(box(.08, .7, .08, cx + dx, .35, z))));
-    return g;
-  };
+  const conveyor = cx => { const g = new THREE.Group(); g.add(box(3.3, .12, 1.1, cx, .75, 0)); [-.58, .58].forEach(z => g.add(box(3.3, .1, .05, cx, .86, z))); [-1.45, 1.45].forEach(dx => [-.45, .45].forEach(z => g.add(box(.08, .7, .08, cx + dx, .35, z)))); return g; };
   add(conveyor(-2.95)); add(conveyor(2.95));
 
-  // the machine: the agent
   const machine = new THREE.Group();
   machine.add(box(2.4, 1.9, 2.0, 0, .95, 0));
   [-1.23, 1.23].forEach(x => machine.add(box(.06, .55, .8, x, .9, 0)));
-  const top = solid(new THREE.CylinderGeometry(.75, .75, .35, 18)); top.position.y = 2.07; machine.add(top);
+  const topC = solid(new THREE.CylinderGeometry(.75, .75, .35, 18)); topC.position.y = 2.07; machine.add(topC);
   add(machine);
-  const core = new THREE.Group(); core.position.y = 3.05;
+  const CORE = new THREE.Vector3(0, 3.05, 0);
+  const core = new THREE.Group(); core.position.copy(CORE);
   const ico = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(.52, 0)), accMat); core.add(ico);
-  const ring = (r, rx, ry) => { const pts = []; for (let i = 0; i < 64; i++) { const a = i / 64 * Math.PI * 2; pts.push(new THREE.Vector3(Math.cos(a) * r, 0, Math.sin(a) * r)); } const l = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts), lineMat); l.rotation.set(rx, ry, 0); return l; };
-  const r1 = ring(1.0, .35, 0), r2 = ring(1.0, -.35, Math.PI / 2); core.add(r1, r2);
+  const ring = (r, rx, ry) => { const pts = []; for (let i = 0; i < 72; i++) { const a = i / 72 * Math.PI * 2; pts.push(new THREE.Vector3(Math.cos(a) * r, 0, Math.sin(a) * r)); } const l = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts), lineMat); l.rotation.set(rx, ry, 0); return l; };
+  const r1 = ring(1.0, .35, 0), r2 = ring(1.0, -.35, Math.PI / 2), r3 = ring(1.35, Math.PI / 2, 0); r3.material = dimMat; core.add(r1, r2, r3);
+  // soft glow behind the core
+  const gc = document.createElement('canvas'); gc.width = gc.height = 128; const gx = gc.getContext('2d'), grd = gx.createRadialGradient(64, 64, 0, 64, 64, 64);
+  grd.addColorStop(0, 'rgba(159,216,255,.9)'); grd.addColorStop(.35, 'rgba(159,216,255,.25)'); grd.addColorStop(1, 'rgba(159,216,255,0)'); gx.fillStyle = grd; gx.fillRect(0, 0, 128, 128);
+  const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(gc), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: .55 }));
+  glow.scale.set(3.4, 3.4, 1); core.add(glow);
   add(core);
-  const axis = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 4.3, 0)]), new THREE.LineDashedMaterial({ color: INK, transparent: true, opacity: .45, dashSize: .32, gapSize: .1 }));
+  const axis = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 4.6, 0)]), new THREE.LineDashedMaterial({ color: INK, transparent: true, opacity: .4, dashSize: .32, gapSize: .1 }));
   axis.computeLineDistances(); add(axis, false);
 
-  // input station: a pile of paperwork and a phone full of chats
   const inputs = new THREE.Group();
   inputs.add(box(1.4, .5, 1.6, -5.6, .25, 0));
   for (let i = 0; i < 5; i++) { const s = box(.9, .045, .65, -5.75 + (i % 2) * .06, .53 + i * .055, -.25 + (i % 3) * .03); s.rotation.y = (i - 2) * .09; inputs.add(s); }
   const phone = box(.36, .68, .06, -5.25, .84, .45); phone.rotation.y = .5; inputs.add(phone);
   add(inputs);
 
-  // output station: three screens with a chart, bars and a list
-  const outputs = new THREE.Group();
-  [[-1.05, 'line'], [0, 'bars'], [1.05, 'list']].forEach(([z, kind]) => {
+  const MON_Z = [-1.05, 0, 1.05], outputs = new THREE.Group();
+  MON_Z.forEach((z, j) => {
     const m = new THREE.Group(); m.position.set(5.6, 0, z); m.rotation.y = Math.PI / 4;
     m.add(box(.36, .03, .26, 0, .02, 0)); m.add(box(.06, .5, .06, 0, .27, 0)); m.add(box(1.0, .66, .05, 0, .85, 0));
     const f = [], zf = .03;
-    if (kind === 'line') { const ys = [.0, .12, .06, .2, .16, .28]; ys.forEach((y, i) => i && f.push([-.4 + (i - 1) * .16, .62 + ys[i - 1], zf], [-.4 + i * .16, .62 + y, zf])); }
-    if (kind === 'bars') [.12, .22, .16, .3, .24].forEach((h, i) => f.push([-.36 + i * .18, .6, zf], [-.36 + i * .18, .6 + h, zf]));
-    if (kind === 'list') [.0, .1, .2, .3].forEach(dy => f.push([-.38, .66 + dy, zf], [.2 - dy * .4, .66 + dy, zf]));
+    if (j === 0) { const ys = [0, .12, .06, .2, .16, .28]; ys.forEach((y, i) => i && f.push([-.4 + (i - 1) * .16, .62 + ys[i - 1], zf], [-.4 + i * .16, .62 + y, zf])); }
+    if (j === 1) [.12, .22, .16, .3, .24].forEach((h, i) => f.push([-.36 + i * .18, .6, zf], [-.36 + i * .18, .6 + h, zf]));
+    if (j === 2) [0, .1, .2, .3].forEach(dy => f.push([-.38, .66 + dy, zf], [.2 - dy * .4, .66 + dy, zf]));
     m.add(lines(f, accMat)); outputs.add(m);
   });
   add(outputs);
+  const dz = 2.3; add(lines([[-6.4, 0, dz], [6.4, 0, dz], [-6.4, 0, dz - .18], [-6.4, 0, dz + .18], [6.4, 0, dz - .18], [6.4, 0, dz + .18]]), false);
 
-  // dimension line along the front edge
-  const dz = 2.2; add(lines([[-6.4, 0, dz], [6.4, 0, dz], [-6.4, 0, dz - .18], [-6.4, 0, dz + .18], [6.4, 0, dz - .18], [6.4, 0, dz + .18]]), false);
-
-  // work in progress on the belts
-  const flat = new THREE.BoxGeometry(.42, .05, .5), card = new THREE.BoxGeometry(.5, .05, .36);
-  const pool = [], live = [];
-  const spawn = (kind) => {
+  // work items on the belts
+  const flat = new THREE.BoxGeometry(.42, .05, .5), card = new THREE.BoxGeometry(.5, .05, .36), pool = [], live = [];
+  const spawn = kind => {
     let it = pool.find(p => !p.visible && p.userData.kind === kind);
     if (!it) { it = kind === 'in' ? solid(flat) : solid(card, accMat); it.userData.kind = kind; world.add(it); pool.push(it); }
-    it.visible = true; it.position.set(kind === 'in' ? -4.45 : 1.3, .86, (Math.random() - .5) * .45); it.rotation.y = kind === 'in' ? (Math.random() - .5) * .9 : 0;
-    live.push(it);
+    it.visible = true; it.position.set(kind === 'in' ? -4.45 : 1.3, .86, rand(-.22, .22)); it.rotation.y = kind === 'in' ? rand(-.45, .45) : 0; live.push(it);
   };
 
-  // HTML labels pinned to points in the scene
+  // data streams: inputs -> up into the core -> down to the screens; white before the agent, blue after
+  const STREAMS = Array.from({ length: 9 }, (_, k) => {
+    const c = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(rand(-6.1, -5.1), rand(.6, 1.3), rand(-.7, .7)), new THREE.Vector3(rand(-3.6, -2.4), rand(1.5, 2.6), rand(-1, 1)),
+      CORE.clone().add(new THREE.Vector3(rand(-.15, .15), rand(-.1, .1), rand(-.15, .15))),
+      new THREE.Vector3(rand(2.4, 3.6), rand(1.5, 2.6), rand(-1, 1)), new THREE.Vector3(5.6 + rand(-.2, .2), rand(.7, 1.0), MON_Z[k % 3] + rand(-.2, .2))]);
+    return c.getSpacedPoints(240);
+  });
+  const N = 1150, P = new Float32Array(N * 3), C = new Float32Array(N * 3), T = new Float32Array(N), SP = new Float32Array(N), SI = new Uint8Array(N), J = new Float32Array(N * 3), D = new Float32Array(N * 3);
+  for (let i = 0; i < N; i++) { T[i] = Math.random(); SP[i] = rand(.05, .11); SI[i] = i % STREAMS.length; J[i * 3] = rand(-.06, .06); J[i * 3 + 1] = rand(-.06, .06); J[i * 3 + 2] = rand(-.06, .06); }
+  const pg = new THREE.BufferGeometry(); pg.setAttribute('position', new THREE.BufferAttribute(P, 3)); pg.setAttribute('color', new THREE.BufferAttribute(C, 3));
+  const pMat = new THREE.PointsMaterial({ size: 2.3 * Math.min(devicePixelRatio, 2), sizeAttenuation: false, vertexColors: true, transparent: true, opacity: .95, depthWrite: false, blending: THREE.AdditiveBlending });
+  const stream = new THREE.Points(pg, pMat); world.add(stream);
+  // ambient dust floating in the room
+  const M = 520, DP = new Float32Array(M * 3);
+  for (let i = 0; i < M; i++) { DP[i * 3] = rand(-9, 9); DP[i * 3 + 1] = rand(0, 7); DP[i * 3 + 2] = rand(-5, 5); }
+  const dg = new THREE.BufferGeometry(); dg.setAttribute('position', new THREE.BufferAttribute(DP, 3));
+  const dust = new THREE.Points(dg, new THREE.PointsMaterial({ color: INK, size: 1.6 * Math.min(devicePixelRatio, 2), sizeAttenuation: false, transparent: true, opacity: .3, depthWrite: false }));
+  world.add(dust);
+
   const L = [
-    [[-5.6, 1.75, 0], '<b>Inputs</b>WhatsApp, Sheets, paper forms'],
-    [[0, 4.45, 0], '<b>Agent</b>Tools, RAG, 179-node workflows'],
+    [[-5.6, 1.85, 0], '<b>Inputs</b>WhatsApp, Sheets, paper forms'],
+    [[0, 4.75, 0], '<b>Agent</b>Tools, RAG, 179-node workflows'],
     [[5.0, 2.5, .4], '<b>Apps teams use</b>CRM, dashboards, daily brief'],
     [[0, 0, dz + .35], '40+ tools and apps in daily use', 'dim'],
   ].map(([p, html, cls]) => { const el = document.createElement('div'); el.className = 'l3d' + (cls ? ' ' + cls : ''); el.innerHTML = html; host.appendChild(el); return { v: new THREE.Vector3(...p), el }; });
 
+  const setFaces = () => { faceMat.color.set(css('--bp') || '#163A82').lerp(new THREE.Color('#ffffff'), .05); };
+
+  // camera framing: S drives the scroll sequence
+  const S = { zoom: 1, fx: .735, fy: .41, ty: 1.3, spin: 0, speed: 1, labels: 1 };
   let W = 1, H = 1;
-  const resize = () => {
-    W = host.clientWidth; H = host.clientHeight; renderer.setSize(W, H, false);
-    const a = W / H, vh = Math.max(7.8, 12.6 / a); cam.left = -vh * a / 2; cam.right = vh * a / 2; cam.top = vh / 2; cam.bottom = -vh / 2; cam.updateProjectionMatrix();
+  const frame = () => {
+    const a = W / H, vh = Math.max(10.8, 23.5 / a) / S.zoom, ww = vh * a;
+    cam.left = -S.fx * ww; cam.right = (1 - S.fx) * ww; cam.top = S.fy * vh; cam.bottom = -(1 - S.fy) * vh; cam.updateProjectionMatrix();
+    target.set(0, S.ty, 0); cam.position.copy(target).add(VIEW); cam.lookAt(target);
   };
+  const resize = () => { W = host.clientWidth; H = host.clientHeight; renderer.setSize(W, H, false); };
   new ResizeObserver(resize).observe(host); resize();
 
-  // pointer parallax over the hero
-  let tx = 0, ty = 0;
-  const hero = document.querySelector('.hero');
-  hero.addEventListener('pointermove', e => { const r = hero.getBoundingClientRect(); tx = ((e.clientX - r.left) / r.width - .5); ty = ((e.clientY - r.top) / r.height - .5); });
-  hero.addEventListener('pointerleave', () => { tx = 0; ty = 0; });
+  // pointer: parallax + particles scatter away from the cursor
+  let tx = 0, ty = 0, aiming = false; const ndc = new THREE.Vector2(), ray = new THREE.Raycaster(), plane = new THREE.Plane(), hit = new THREE.Vector3(), viewDir = new THREE.Vector3();
+  hero.addEventListener('pointermove', e => { const r = hero.getBoundingClientRect(); tx = (e.clientX - r.left) / r.width - .5; ty = (e.clientY - r.top) / r.height - .5; ndc.set(((e.clientX - r.left) / W) * 2 - 1, -((e.clientY - r.top) / H) * 2 + 1); aiming = true; });
+  hero.addEventListener('pointerleave', () => { tx = 0; ty = 0; aiming = false; });
 
-  // intro: parts drop into place, then the line starts running
+  /* ---------------- background scene: the products ---------------- */
+  const bgHost = document.getElementById('bg3d'), curtain = document.getElementById('curtain');
+  const bgR = new THREE.WebGLRenderer({ antialias: true, alpha: true }); bgR.setPixelRatio(Math.min(devicePixelRatio, 1.75)); bgHost.appendChild(bgR.domElement);
+  const s2 = new THREE.Scene(), c2 = new THREE.PerspectiveCamera(32, 1, .1, 100); c2.position.z = 22;
+  const pLine = new THREE.LineBasicMaterial({ color: 0x1f44c7, transparent: true, opacity: .3 });
+  const pFace = new THREE.MeshBasicMaterial({ color: 0xe9edf0, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
+  const sprites = [];
+  const tag = txt => {
+    const cv = document.createElement('canvas'); cv.width = 320; cv.height = 64; const g = cv.getContext('2d');
+    g.font = '400 30px "Martian Mono", ui-monospace, monospace'; g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(txt, 160, 32);
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv), transparent: true, opacity: .6, depthWrite: false })); sp.scale.set(1.9, .38, 1); sprites.push(sp); return sp;
+  };
+  const ex = shape => new THREE.ExtrudeGeometry(shape, { depth: .07, bevelEnabled: false, curveSegments: 28 });
+  const shapes = {
+    spoon: () => { const s = new THREE.Shape(); s.moveTo(-.13, 0); s.quadraticCurveTo(0, -.12, .13, 0); s.lineTo(.075, 2.45); s.absellipse(0, 3.2, .52, .78, -Math.PI / 2 + .35, Math.PI * 1.5 - .35, false); s.lineTo(-.075, 2.45); s.lineTo(-.13, 0); return [ex(s), 4, '160 mm']; },
+    fork: () => { const p = [[-.13, 0], [.13, 0], [.075, 2.35], [.3, 2.7], [.3, 3.95], [.2, 3.95], [.2, 3.2], [.15, 3.2], [.15, 3.95], [.05, 3.95], [.05, 3.2], [-.05, 3.2], [-.05, 3.95], [-.15, 3.95], [-.15, 3.2], [-.2, 3.2], [-.2, 3.95], [-.3, 3.95], [-.3, 2.7], [-.075, 2.35]]; return [ex(new THREE.Shape(p.map(([x, y]) => new THREE.Vector2(x, y)))), 3.95, '160 mm']; },
+    knife: () => { const s = new THREE.Shape(); s.moveTo(-.13, 0); s.quadraticCurveTo(0, -.12, .13, 0); s.lineTo(.08, 2.2); s.lineTo(.2, 2.32); s.lineTo(.2, 3.55); s.quadraticCurveTo(.2, 4.05, -.06, 4.05); s.lineTo(-.18, 3.8); s.lineTo(-.18, 2.32); s.lineTo(-.08, 2.2); s.lineTo(-.13, 0); return [ex(s), 4.05, '160 mm']; },
+    scoop: () => { const s = new THREE.Shape(); s.moveTo(-.17, 0); s.quadraticCurveTo(0, -.08, .17, 0); s.lineTo(.13, 1.3); s.absellipse(0, 1.85, .36, .58, -Math.PI / 2 + .42, Math.PI * 1.5 - .42, false); s.lineTo(-.13, 1.3); s.lineTo(-.17, 0); return [ex(s), 2.43, '95 mm']; },
+  };
+  const product = (kind, side) => {
+    const g = new THREE.Group(); let len;
+    if (kind === 'straw') {
+      len = 4.4; const r = .15, cyl = new THREE.CylinderGeometry(r, r, len, 20, 1, true); cyl.translate(0, len / 2, 0);
+      g.add(new THREE.Mesh(cyl, pFace)); g.add(new THREE.LineSegments(new THREE.EdgesGeometry(cyl, 20), pLine));
+      const hel = []; for (let i = 0; i <= 260; i++) { const t = i / 260, a = t * Math.PI * 2 * 9; hel.push(new THREE.Vector3(Math.cos(a) * r, t * len, Math.sin(a) * r)); }
+      g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(hel), pLine));
+      [-r, r].forEach(x => g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x, 0, 0), new THREE.Vector3(x, len, 0)]), pLine)));
+      kind = '8 mm paper straw';
+    } else {
+      const [geo, l, lab] = shapes[kind](); len = l; g.add(new THREE.Mesh(geo, pFace)); g.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 20), pLine)); kind = lab;
+    }
+    // dimension line with ticks and a label, like on the TDS drawings
+    const sg = side > 0 ? -1 : 1, x = .85 * sg, dim = [[x - .12, 0, 0], [x + .12, 0, 0], [x - .12, len, 0], [x + .12, len, 0], [x, 0, 0], [x, len, 0], [.3 * sg, 0, 0], [x + .05 * sg, 0, 0], [.3 * sg, len, 0], [x + .05 * sg, len, 0]];
+    g.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(dim.map(p => new THREE.Vector3(...p))), pLine));
+    const t = tag(kind); t.position.set(x + 1.15 * sg, len / 2, 0); g.add(t);
+    g.children.forEach(ch => { ch.position.y -= len / 2; });
+    return g;
+  };
+  const KINDS = ['spoon', 'straw', 'fork', 'scoop', 'knife', 'straw', 'spoon', 'fork', 'scoop', 'straw', 'knife', 'spoon', 'fork', 'straw'];
+  const items = KINDS.map((k, i) => { const g = product(k, i % 2 ? 1 : -1); g.userData = { side: i % 2 ? 1 : -1, f: (i + .5) / KINDS.length, z: rand(-5, 2), s: rand(.62, .9), rx: rand(-.12, .12), ry: rand(.06, .16) * (Math.random() < .5 ? -1 : 1), ph: rand(0, 6) }; g.rotation.set(rand(-.5, .5), rand(-.5, .5), rand(-.45, .45)); g.userData.base = g.rotation.clone(); g.scale.setScalar(g.userData.s); s2.add(g); return g; });
+  const PAR = .42; let bw = 1, bh = 1, vis0 = 1, kpx = 1;
+  const layout = () => {
+    bw = innerWidth; bh = innerHeight; bgR.setSize(bw, bh, false); c2.aspect = bw / bh; c2.updateProjectionMatrix();
+    vis0 = 2 * 22 * Math.tan(THREE.MathUtils.degToRad(16)); kpx = vis0 / bh;
+    const span = (document.documentElement.scrollHeight) * kpx * PAR, vw = vis0 * c2.aspect;
+    items.forEach(g => { const u = g.userData, persp = (22 - u.z) / 22; g.position.set(u.side * vw / 2 * rand(.8, .9) * persp, -u.f * span + rand(-1, 1) - vis0 * .3, u.z); });
+  };
+  addEventListener('resize', layout); layout(); setTimeout(layout, 1500);
+
+  const themeSync = () => {
+    setFaces();
+    const dark = (root.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark';
+    pLine.color.set(css('--cobalt') || '#1F44C7'); pLine.opacity = dark ? .34 : .28; pFace.color.set(css('--paper') || '#E9EDF0');
+    sprites.forEach(s => { s.material.color.set(css('--cobalt') || '#1F44C7'); s.material.opacity = dark ? .7 : .6; });
+  };
+  themeSync(); new MutationObserver(themeSync).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+
+  /* ---------------- motion ---------------- */
   let running = false;
   if (window.gsap) {
-    parts.forEach((p, i) => gsap.from(p.position, { y: p.position.y + 2.2, duration: 1.2, ease: 'expo.out', delay: .25 + i * .09 }));
-    gsap.from([lineMat, accMat], { opacity: 0, duration: 1, delay: .2 });
-    gsap.from(L.map(l => l.el), { opacity: 0, duration: .6, stagger: .08, delay: 1.2, onComplete: () => { running = true; } });
-    setTimeout(() => { running = true; }, 3000);
+    parts.forEach((p, i) => gsap.from(p.position, { y: p.position.y + 2.4, duration: 1.3, ease: 'expo.out', delay: .25 + i * .09 }));
+    gsap.from([lineMat, accMat, pMat], { opacity: 0, duration: 1.2, delay: .2 });
+    gsap.from(L.map(l => l.el), { opacity: 0, duration: .6, stagger: .08, delay: 1.3, onComplete: () => { running = true; } });
+    setTimeout(() => { running = true; }, 3200);
+    // scroll sequence: the hero holds while the camera orbits and dives into the agent core
+    if (window.ScrollTrigger) {
+      const seq = gsap.timeline({ scrollTrigger: { trigger: hero, start: 'top top', end: '+=120%', pin: true, scrub: .8, anticipatePin: 1 } });
+      seq.to(S, { zoom: 3.1, fx: .5, fy: .5, ty: CORE.y, spin: 1.15, speed: 3.2, labels: 0, ease: 'power2.inOut', duration: 1 }, 0)
+         .to('.hero .copy, #tb', { y: -70, opacity: 0, ease: 'power2.in', duration: .45 }, 0)
+         .to('.hero .frame', { opacity: 0, duration: .4 }, .1)
+         .to(glow.material, { opacity: 1, duration: .6 }, .4);
+    }
   } else running = true;
+  root.classList.add('h3d-ready'); window.__h3dReady = true;
 
-  let visible = true; new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(hero);
-  const clock = new THREE.Clock(); let acc = 0; const v = new THREE.Vector3();
+  let heroVisible = true; new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; }).observe(hero);
+  const clock = new THREE.Clock(); let acc = 0; const v = new THREE.Vector3(), q = new THREE.Vector3();
   const tick = () => {
     requestAnimationFrame(tick);
-    if (!visible || document.hidden) { clock.getDelta(); return; }
     const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
-    world.rotation.y += ((tx * .32 + Math.sin(t * .25) * .05) - world.rotation.y) * .05;
-    world.rotation.x += ((ty * .06) - world.rotation.x) * .05;
-    ico.rotation.y += dt * .6; ico.rotation.x += dt * .25; r1.rotation.y += dt * .5; r2.rotation.y -= dt * .4;
-    if (running) {
-      acc += dt; if (acc > 1.15) { acc = 0; spawn('in'); }
-      for (let i = live.length - 1; i >= 0; i--) {
-        const it = live[i]; it.position.x += dt * 1.15;
-        if (it.userData.kind === 'in' && it.position.x > -1.3) { it.visible = false; live.splice(i, 1); setTimeout(() => spawn('out'), 650); }
-        else if (it.userData.kind === 'out' && it.position.x > 4.55) { it.visible = false; live.splice(i, 1); }
+    if (document.hidden) return;
+
+    if (heroVisible) {
+      frame();
+      world.rotation.y += ((tx * .3 + Math.sin(t * .22) * .05 + S.spin) - world.rotation.y) * .06;
+      world.rotation.x += ((ty * .05) - world.rotation.x) * .05;
+      ico.rotation.y += dt * .6 * S.speed; ico.rotation.x += dt * .25; r1.rotation.y += dt * .5 * S.speed; r2.rotation.y -= dt * .4 * S.speed; r3.rotation.z += dt * .15;
+      const pulse = 1 + Math.sin(t * 2.4) * .06; ico.scale.setScalar(pulse * (1 + (S.speed - 1) * .12)); glow.scale.setScalar(3.4 * pulse);
+      if (running) {
+        acc += dt; if (acc > 1.15) { acc = 0; spawn('in'); }
+        for (let i = live.length - 1; i >= 0; i--) {
+          const it = live[i]; it.position.x += dt * 1.15;
+          if (it.userData.kind === 'in' && it.position.x > -1.3) { it.visible = false; live.splice(i, 1); setTimeout(() => spawn('out'), 650); }
+          else if (it.userData.kind === 'out' && it.position.x > 4.55) { it.visible = false; live.splice(i, 1); }
+        }
       }
+      // particles
+      world.updateMatrixWorld();
+      let hx = 0, hy = 0, hz = 0, has = false;
+      if (aiming) { cam.getWorldDirection(viewDir); plane.setFromNormalAndCoplanarPoint(viewDir, target); ray.setFromCamera(ndc, cam); if (ray.ray.intersectPlane(plane, hit)) { q.copy(hit); world.worldToLocal(q); hx = q.x; hy = q.y; hz = q.z; has = true; } }
+      const vd = viewDir.clone().applyQuaternion(world.quaternion.clone().invert());
+      for (let i = 0; i < N; i++) {
+        T[i] += SP[i] * dt * S.speed; if (T[i] > 1) T[i] -= 1;
+        const pts = STREAMS[SI[i]], p = pts[(T[i] * 240) | 0], i3 = i * 3;
+        let x = p.x + J[i3], y = p.y + J[i3 + 1], z = p.z + J[i3 + 2];
+        if (has) {
+          let ex2 = x - hx, ey = y - hy, ez = z - hz; const along = ex2 * vd.x + ey * vd.y + ez * vd.z; ex2 -= vd.x * along; ey -= vd.y * along; ez -= vd.z * along;
+          const d = Math.sqrt(ex2 * ex2 + ey * ey + ez * ez);
+          if (d < 1.6 && d > .001) { const f = (1.6 - d) / 1.6 * .5; D[i3] += ex2 / d * f; D[i3 + 1] += ey / d * f; D[i3 + 2] += ez / d * f; }
+        }
+        D[i3] *= .9; D[i3 + 1] *= .9; D[i3 + 2] *= .9;
+        P[i3] = x + D[i3]; P[i3 + 1] = y + D[i3 + 1]; P[i3 + 2] = z + D[i3 + 2];
+        const c = T[i] < .5 ? INK : ACC, fade = Math.min(1, T[i] * 12, (1 - T[i]) * 12);
+        C[i3] = c.r * fade; C[i3 + 1] = c.g * fade; C[i3 + 2] = c.b * fade;
+      }
+      pg.attributes.position.needsUpdate = true; pg.attributes.color.needsUpdate = true;
+      for (let i = 0; i < M; i++) { DP[i * 3 + 1] += dt * .12; if (DP[i * 3 + 1] > 7) DP[i * 3 + 1] = 0; }
+      dg.attributes.position.needsUpdate = true;
+      renderer.render(scene, cam);
+      L.forEach(({ v: p, el }) => { v.copy(p).applyMatrix4(world.matrixWorld).project(cam); el.style.transform = `translate(${(v.x + 1) / 2 * W}px,${(1 - v.y) / 2 * H}px)`; el.style.opacity = S.labels; });
     }
-    renderer.render(scene, cam);
-    world.updateMatrixWorld();
-    L.forEach(({ v: p, el }) => { v.copy(p).applyMatrix4(world.matrixWorld).project(cam); el.style.transform = `translate(${(v.x + 1) / 2 * W}px,${(1 - v.y) / 2 * H}px)`; });
-    if (!fig.classList.contains('is3d')) fig.classList.add('is3d');
+
+    // background products, only where the paper sections are on screen
+    const hb = hero.getBoundingClientRect().bottom, cb = curtain.getBoundingClientRect().bottom;
+    if (hb < bh && cb > 0) {
+      bgHost.style.clipPath = `inset(${Math.max(0, hb)}px 0 ${Math.max(0, bh - cb)}px 0)`;
+      c2.position.y = -scrollY * kpx * PAR; c2.position.x += ((tx * .6) - c2.position.x) * .05;
+      items.forEach(g => { const u = g.userData; g.rotation.y = u.base.y + Math.sin(t * Math.abs(u.ry) * 3 + u.ph) * .7; g.rotation.x = u.base.x + Math.sin(t * .2 + u.ph) * .15; g.rotation.z = u.base.z + Math.cos(t * .17 + u.ph) * .12; });
+      bgR.render(s2, c2); bgHost.classList.add('on');
+    } else bgHost.classList.remove('on');
   };
   tick();
-}
+} catch (err) { console.warn('3D scene unavailable, using the flat diagram', err); document.documentElement.classList.remove('h3d'); }
 </script>
 </body>
 </html>
