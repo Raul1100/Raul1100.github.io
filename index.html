@@ -119,6 +119,13 @@ h1,h2,h3,h4{font-family:var(--font-head);font-stretch:125%;font-weight:800;lette
 .fig .pk{fill:var(--bp-accent)}
 .fig .pk-g{opacity:0;transition:opacity .6s}
 .fig.live .pk-g{opacity:1}
+.fig3d{position:absolute;inset:-6% -3% -4% -8%;pointer-events:none;opacity:0;transition:opacity .8s}
+.fig3d canvas{width:100%;height:100%;display:block}
+.fig.is3d .fig3d{opacity:1}
+.fig.is3d svg{visibility:hidden}
+.l3d{position:absolute;left:0;top:0;font-size:12.5px;line-height:1.35;color:var(--bp-dim);white-space:nowrap;translate:-50% -100%;text-align:center}
+.l3d b{display:block;font:700 14px var(--font-head);font-stretch:118%;color:var(--bp-ink)}
+.l3d.dim{font:400 10.5px var(--font-mono);translate:-50% 0}
 .tb{grid-area:tb;justify-self:end;width:min(100%,460px);border:1px solid var(--bp-line);display:grid;grid-template-columns:1fr 1fr;background:rgba(8,26,70,.45);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
 .tb > div{padding:9px 13px;border-bottom:1px solid var(--bp-line)}
 .tb > div:nth-child(even){border-left:1px solid var(--bp-line)}
@@ -258,6 +265,15 @@ h1,h2,h3,h4{font-family:var(--font-head);font-stretch:125%;font-weight:800;lette
   .revs td.when{width:auto;margin-bottom:4px}
   .revs td.notes{margin-top:12px}
 }
+
+/* tools: logo grid */
+.logos{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));border-top:2px solid var(--ink);border-left:1px solid var(--hair);margin-bottom:56px}
+.logo{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;aspect-ratio:1/1;border-right:1px solid var(--hair);border-bottom:1px solid var(--hair);color:var(--ink);padding:10px;text-align:center;transition:background .25s,color .25s}
+.logo i{width:36px;height:36px;background:currentColor;-webkit-mask:var(--ic) center/contain no-repeat;mask:var(--ic) center/contain no-repeat;transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+.logo span{font-size:13px;color:var(--graphite)}
+.logo:hover{color:var(--cobalt);background:color-mix(in srgb,var(--cobalt) 5%,transparent)}
+.logo:hover i{transform:scale(1.12)}
+@media (max-width:980px){.logos{grid-template-columns:repeat(4,minmax(0,1fr))}.logo i{width:30px;height:30px}}
 
 /* specification */
 .spec{border-top:2px solid var(--ink)}
@@ -459,6 +475,7 @@ footer{position:fixed;left:0;right:0;bottom:0;z-index:0;overflow:hidden}
             <circle class="pk" r="3"><animateMotion dur="3.4s" begin="1.9s" repeatCount="indefinite"><mpath href="#w8"/></animateMotion></circle>
           </g>
         </svg>
+        <div class="fig3d" id="fig3d" aria-hidden="true"></div>
       </figure>
       <dl class="tb" id="tb">
         <div class="full"><dt>Portfolio of</dt><dd>Rahul Gurav</dd></div>
@@ -735,8 +752,9 @@ footer{position:fixed;left:0;right:0;bottom:0;z-index:0;overflow:hidden}
   <div class="wrap">
     <div class="sec-head">
       <h2>Tools I use</h2>
-      <p>What the systems above are built with.</p>
+      <p>What the systems above are built with, from the agent framework down to the sheets.</p>
     </div>
+    <div class="logos" id="logos"><div class="logo"><i aria-hidden="true"></i><span>Python</span></div><div class="logo"><i aria-hidden="true"></i><span>TypeScript</span></div><div class="logo"><i aria-hidden="true"></i><span>React</span></div><div class="logo"><i aria-hidden="true"></i><span>Node.js</span></div><div class="logo"><i aria-hidden="true"></i><span>Express</span></div><div class="logo"><i aria-hidden="true"></i><span>FastAPI</span></div><div class="logo"><i aria-hidden="true"></i><span>LangGraph</span></div><div class="logo"><i aria-hidden="true"></i><span>OpenAI</span></div><div class="logo"><i aria-hidden="true"></i><span>Claude</span></div><div class="logo"><i aria-hidden="true"></i><span>Gemini</span></div><div class="logo"><i aria-hidden="true"></i><span>n8n</span></div><div class="logo"><i aria-hidden="true"></i><span>Apps Script</span></div><div class="logo"><i aria-hidden="true"></i><span>Sheets API</span></div><div class="logo"><i aria-hidden="true"></i><span>WhatsApp API</span></div><div class="logo"><i aria-hidden="true"></i><span>Three.js</span></div><div class="logo"><i aria-hidden="true"></i><span>Render</span></div></div>
     <dl class="spec" id="spec"><div><dt>AI &amp; LLM</dt><dd>Prompt engineering, Agentic AI, Tool calling, LLM workflows, LangGraph, RAG, OpenRouter, Claude, ChatGPT, Gemini</dd></div><div><dt>Automation</dt><dd>n8n, Google Apps Script, Google Workspace, Webhooks, WhatsApp Cloud API</dd></div><div><dt>Frontend</dt><dd>React, TypeScript, Tailwind, Recharts, Three.js, HTML/CSS</dd></div><div><dt>Backend</dt><dd>Node.js, Express, FastAPI, Python, REST APIs, Google Sheets API</dd></div><div><dt>Programming</dt><dd>Python, JavaScript, TypeScript, Google Apps Script</dd></div><div><dt>Data &amp; ML</dt><dd>Time-series forecasting, Logistic regression, RFM segmentation</dd></div><div><dt>Testing &amp; security</dt><dd>Postman, API testing, Security assessment</dd></div><div><dt>Ship &amp; run</dt><dd>Git, GitHub, Render</dd></div></dl>
   </div>
 </section>
@@ -1011,6 +1029,9 @@ mf.addEventListener('click', e => {
 $('#steps').innerHTML = STEPS.map(([h, p]) => `<li><h3>${esc(h)}</h3><p>${esc(p)}</p></li>`).join('');
 $('#revs').innerHTML = `<thead><tr><th>Rev</th><th>When</th><th>Role</th><th>Notes</th></tr></thead><tbody>${JOBS.map((j, i) =>
   `<tr><td class="rev">${String.fromCharCode(64 + JOBS.length - i)}</td><td class="when">${esc(j.when)}</td><td class="role"><h3>${esc(j.role)}</h3><div>${esc(j.org)}</div></td><td class="notes"><ul>${j.pts.map(x => `<li>${esc(x)}</li>`).join('')}</ul></td></tr>`).join('')}</tbody>`;
+const LOGOS = [['python', 'Python'], ['typescript', 'TypeScript'], ['react', 'React'], ['nodedotjs', 'Node.js'], ['express', 'Express'], ['fastapi', 'FastAPI'], ['langchain', 'LangGraph'], ['openai', 'OpenAI'],
+  ['anthropic', 'Claude'], ['googlegemini', 'Gemini'], ['n8n', 'n8n'], ['googleappsscript', 'Apps Script'], ['googlesheets', 'Sheets API'], ['whatsapp', 'WhatsApp API'], ['threedotjs', 'Three.js'], ['render', 'Render']];
+$('#logos').innerHTML = LOGOS.map(([k, n]) => `<div class="logo"><i style="--ic:url('https://cdn.jsdelivr.net/npm/simple-icons@13.0.0/icons/${k}.svg')" aria-hidden="true"></i><span>${n}</span></div>`).join('');
 $('#spec').innerHTML = SKILLS.map(([h, t]) => `<div><dt>${esc(h)}</dt><dd>${esc(t.join(', '))}</dd></div>`).join('');
 $('#contactBtns').innerHTML = [
   ME.email && `<a class="btn solid" href="mailto:${esc(ME.email)}">Email me</a>`,
@@ -1230,6 +1251,155 @@ if (!MOTION) $('#fig').classList.add('live');
   }
   addEventListener('load', () => ScrollTrigger.refresh());
 })();
+</script>
+<script type="module">
+/* ===================== 3D HERO: a wireframe production line =====================
+   Messy inputs ride a conveyor into the agent, and come out as the apps teams use.
+   Desktop + motion only; the drawn SVG diagram stays as the fallback. */
+const fig = document.getElementById('fig'), host = document.getElementById('fig3d');
+const canGL = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } })();
+if (typeof MOTION !== 'undefined' && MOTION && canGL && matchMedia('(min-width: 981px)').matches) {
+  const THREE = await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js');
+  const root = document.documentElement, css = n => getComputedStyle(root).getPropertyValue(n).trim();
+  const INK = new THREE.Color(css('--bp-ink') || '#EEF3FF'), ACC = new THREE.Color(css('--bp-accent') || '#9FD8FF');
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  host.prepend(renderer.domElement);
+  const scene = new THREE.Scene();
+  const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, .1, 100);
+  cam.position.set(11, 8.6, 11); cam.lookAt(0, 1.3, 0);
+  const world = new THREE.Group(); scene.add(world);
+
+  const lineMat = new THREE.LineBasicMaterial({ color: INK, transparent: true, opacity: .92 });
+  const faintMat = new THREE.LineBasicMaterial({ color: INK, transparent: true, opacity: .14 });
+  const dimMat = new THREE.LineBasicMaterial({ color: INK, transparent: true, opacity: .42 });
+  const accMat = new THREE.LineBasicMaterial({ color: ACC, transparent: true, opacity: 1 });
+  const faceMat = new THREE.MeshBasicMaterial({ color: 0x1a428f, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
+  const setFace = () => faceMat.color.set(css('--bp') || '#163A82').lerp(new THREE.Color('#ffffff'), .05);
+  setFace(); new MutationObserver(setFace).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+
+  // a solid with hidden lines removed: filled faces in the sheet colour, crisp edges on top
+  const solid = (geo, mat = lineMat) => { const g = new THREE.Group(); g.add(new THREE.Mesh(geo, faceMat)); g.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 25), mat)); return g; };
+  const box = (w, h, d, x, y, z, mat) => { const s = solid(new THREE.BoxGeometry(w, h, d), mat); s.position.set(x, y, z); return s; };
+  const lines = (pts, mat = dimMat) => new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts.map(p => new THREE.Vector3(...p))), mat);
+  const parts = []; const add = (o, intro = true) => { world.add(o); if (intro) parts.push(o); return o; };
+
+  // ground grid
+  const grid = []; for (let i = -7; i <= 7; i++) { grid.push([i, 0, -4], [i, 0, 4]); } for (let k = -4; k <= 4; k++) { grid.push([-7, 0, k], [7, 0, k]); }
+  add(lines(grid, faintMat), false);
+
+  // conveyors (in and out)
+  const conveyor = cx => {
+    const g = new THREE.Group();
+    g.add(box(3.3, .12, 1.1, cx, .75, 0));
+    [-.58, .58].forEach(z => g.add(box(3.3, .1, .05, cx, .86, z)));
+    [-1.45, 1.45].forEach(dx => [-.45, .45].forEach(z => g.add(box(.08, .7, .08, cx + dx, .35, z))));
+    return g;
+  };
+  add(conveyor(-2.95)); add(conveyor(2.95));
+
+  // the machine: the agent
+  const machine = new THREE.Group();
+  machine.add(box(2.4, 1.9, 2.0, 0, .95, 0));
+  [-1.23, 1.23].forEach(x => machine.add(box(.06, .55, .8, x, .9, 0)));
+  const top = solid(new THREE.CylinderGeometry(.75, .75, .35, 18)); top.position.y = 2.07; machine.add(top);
+  add(machine);
+  const core = new THREE.Group(); core.position.y = 3.05;
+  const ico = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(.52, 0)), accMat); core.add(ico);
+  const ring = (r, rx, ry) => { const pts = []; for (let i = 0; i < 64; i++) { const a = i / 64 * Math.PI * 2; pts.push(new THREE.Vector3(Math.cos(a) * r, 0, Math.sin(a) * r)); } const l = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts), lineMat); l.rotation.set(rx, ry, 0); return l; };
+  const r1 = ring(1.0, .35, 0), r2 = ring(1.0, -.35, Math.PI / 2); core.add(r1, r2);
+  add(core);
+  const axis = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 4.3, 0)]), new THREE.LineDashedMaterial({ color: INK, transparent: true, opacity: .45, dashSize: .32, gapSize: .1 }));
+  axis.computeLineDistances(); add(axis, false);
+
+  // input station: a pile of paperwork and a phone full of chats
+  const inputs = new THREE.Group();
+  inputs.add(box(1.4, .5, 1.6, -5.6, .25, 0));
+  for (let i = 0; i < 5; i++) { const s = box(.9, .045, .65, -5.75 + (i % 2) * .06, .53 + i * .055, -.25 + (i % 3) * .03); s.rotation.y = (i - 2) * .09; inputs.add(s); }
+  const phone = box(.36, .68, .06, -5.25, .84, .45); phone.rotation.y = .5; inputs.add(phone);
+  add(inputs);
+
+  // output station: three screens with a chart, bars and a list
+  const outputs = new THREE.Group();
+  [[-1.05, 'line'], [0, 'bars'], [1.05, 'list']].forEach(([z, kind]) => {
+    const m = new THREE.Group(); m.position.set(5.6, 0, z); m.rotation.y = Math.PI / 4;
+    m.add(box(.36, .03, .26, 0, .02, 0)); m.add(box(.06, .5, .06, 0, .27, 0)); m.add(box(1.0, .66, .05, 0, .85, 0));
+    const f = [], zf = .03;
+    if (kind === 'line') { const ys = [.0, .12, .06, .2, .16, .28]; ys.forEach((y, i) => i && f.push([-.4 + (i - 1) * .16, .62 + ys[i - 1], zf], [-.4 + i * .16, .62 + y, zf])); }
+    if (kind === 'bars') [.12, .22, .16, .3, .24].forEach((h, i) => f.push([-.36 + i * .18, .6, zf], [-.36 + i * .18, .6 + h, zf]));
+    if (kind === 'list') [.0, .1, .2, .3].forEach(dy => f.push([-.38, .66 + dy, zf], [.2 - dy * .4, .66 + dy, zf]));
+    m.add(lines(f, accMat)); outputs.add(m);
+  });
+  add(outputs);
+
+  // dimension line along the front edge
+  const dz = 2.2; add(lines([[-6.4, 0, dz], [6.4, 0, dz], [-6.4, 0, dz - .18], [-6.4, 0, dz + .18], [6.4, 0, dz - .18], [6.4, 0, dz + .18]]), false);
+
+  // work in progress on the belts
+  const flat = new THREE.BoxGeometry(.42, .05, .5), card = new THREE.BoxGeometry(.5, .05, .36);
+  const pool = [], live = [];
+  const spawn = (kind) => {
+    let it = pool.find(p => !p.visible && p.userData.kind === kind);
+    if (!it) { it = kind === 'in' ? solid(flat) : solid(card, accMat); it.userData.kind = kind; world.add(it); pool.push(it); }
+    it.visible = true; it.position.set(kind === 'in' ? -4.45 : 1.3, .86, (Math.random() - .5) * .45); it.rotation.y = kind === 'in' ? (Math.random() - .5) * .9 : 0;
+    live.push(it);
+  };
+
+  // HTML labels pinned to points in the scene
+  const L = [
+    [[-5.6, 1.75, 0], '<b>Inputs</b>WhatsApp, Sheets, paper forms'],
+    [[0, 4.45, 0], '<b>Agent</b>Tools, RAG, 179-node workflows'],
+    [[5.0, 2.5, .4], '<b>Apps teams use</b>CRM, dashboards, daily brief'],
+    [[0, 0, dz + .35], '40+ tools and apps in daily use', 'dim'],
+  ].map(([p, html, cls]) => { const el = document.createElement('div'); el.className = 'l3d' + (cls ? ' ' + cls : ''); el.innerHTML = html; host.appendChild(el); return { v: new THREE.Vector3(...p), el }; });
+
+  let W = 1, H = 1;
+  const resize = () => {
+    W = host.clientWidth; H = host.clientHeight; renderer.setSize(W, H, false);
+    const a = W / H, vh = Math.max(7.8, 12.6 / a); cam.left = -vh * a / 2; cam.right = vh * a / 2; cam.top = vh / 2; cam.bottom = -vh / 2; cam.updateProjectionMatrix();
+  };
+  new ResizeObserver(resize).observe(host); resize();
+
+  // pointer parallax over the hero
+  let tx = 0, ty = 0;
+  const hero = document.querySelector('.hero');
+  hero.addEventListener('pointermove', e => { const r = hero.getBoundingClientRect(); tx = ((e.clientX - r.left) / r.width - .5); ty = ((e.clientY - r.top) / r.height - .5); });
+  hero.addEventListener('pointerleave', () => { tx = 0; ty = 0; });
+
+  // intro: parts drop into place, then the line starts running
+  let running = false;
+  if (window.gsap) {
+    parts.forEach((p, i) => gsap.from(p.position, { y: p.position.y + 2.2, duration: 1.2, ease: 'expo.out', delay: .25 + i * .09 }));
+    gsap.from([lineMat, accMat], { opacity: 0, duration: 1, delay: .2 });
+    gsap.from(L.map(l => l.el), { opacity: 0, duration: .6, stagger: .08, delay: 1.2, onComplete: () => { running = true; } });
+    setTimeout(() => { running = true; }, 3000);
+  } else running = true;
+
+  let visible = true; new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(hero);
+  const clock = new THREE.Clock(); let acc = 0; const v = new THREE.Vector3();
+  const tick = () => {
+    requestAnimationFrame(tick);
+    if (!visible || document.hidden) { clock.getDelta(); return; }
+    const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
+    world.rotation.y += ((tx * .32 + Math.sin(t * .25) * .05) - world.rotation.y) * .05;
+    world.rotation.x += ((ty * .06) - world.rotation.x) * .05;
+    ico.rotation.y += dt * .6; ico.rotation.x += dt * .25; r1.rotation.y += dt * .5; r2.rotation.y -= dt * .4;
+    if (running) {
+      acc += dt; if (acc > 1.15) { acc = 0; spawn('in'); }
+      for (let i = live.length - 1; i >= 0; i--) {
+        const it = live[i]; it.position.x += dt * 1.15;
+        if (it.userData.kind === 'in' && it.position.x > -1.3) { it.visible = false; live.splice(i, 1); setTimeout(() => spawn('out'), 650); }
+        else if (it.userData.kind === 'out' && it.position.x > 4.55) { it.visible = false; live.splice(i, 1); }
+      }
+    }
+    renderer.render(scene, cam);
+    world.updateMatrixWorld();
+    L.forEach(({ v: p, el }) => { v.copy(p).applyMatrix4(world.matrixWorld).project(cam); el.style.transform = `translate(${(v.x + 1) / 2 * W}px,${(1 - v.y) / 2 * H}px)`; });
+    if (!fig.classList.contains('is3d')) fig.classList.add('is3d');
+  };
+  tick();
+}
 </script>
 </body>
 </html>
