@@ -319,6 +319,55 @@ footer{position:fixed;left:0;right:0;bottom:0;z-index:0;overflow:hidden}
 @media (max-width:860px){.foot-top{grid-template-columns:1fr 1fr}.foot-sign{grid-column:1/-1}.foot-inner{padding-top:48px}}
 @media (max-width:520px){.foot-top{grid-template-columns:1fr}.foot-sign{font-size:1.25rem}}
 
+
+/* ============ loader ============ */
+.loader{position:fixed;inset:0;z-index:200;display:grid;place-items:center;clip-path:inset(0 0 0 0);transition:clip-path 1s cubic-bezier(.76,0,.24,1)}
+.loader.done{clip-path:inset(0 0 100% 0)}
+.ld{display:grid;justify-items:center;gap:22px;width:min(340px,80vw)}
+.ld svg{width:150px;height:150px;overflow:visible}
+.ld svg .f{fill:none;stroke:var(--bp-ink);stroke-width:1.2;stroke-dasharray:600;stroke-dashoffset:600;animation:ldDraw 1.3s cubic-bezier(.6,0,.2,1) forwards}
+.ld svg .c{fill:none;stroke:var(--bp-dim);stroke-width:.8;stroke-dasharray:14 4 2 4}
+.ld svg text{fill:var(--bp-ink);font:850 52px var(--font-head);font-stretch:125%;letter-spacing:-.04em;opacity:0;animation:ldIn .6s .7s forwards}
+.ld-row{width:100%;display:flex;justify-content:space-between;font:400 11.5px var(--font-mono);color:var(--bp-dim)}
+.ld-row b{color:var(--bp-ink);font-weight:400}
+.ld-bar{width:100%;height:1px;background:var(--bp-line);position:relative;overflow:hidden}
+.ld-bar i{position:absolute;inset:0;background:var(--bp-accent);transform-origin:0 50%;transform:scaleX(0)}
+@keyframes ldDraw{to{stroke-dashoffset:0}}
+@keyframes ldIn{to{opacity:1}}
+
+/* ============ custom cursor ============ */
+.has-cur,.has-cur *{cursor:none!important}
+.cur{position:fixed;left:0;top:0;z-index:150;pointer-events:none;mix-blend-mode:difference;color:#fff}
+.cur i{position:fixed;left:0;top:0;border-radius:50%;translate:-50% -50%}
+.cur-dot{width:6px;height:6px;background:#fff}
+.cur-ring{width:36px;height:36px;border:1px solid #fff;display:grid;place-items:center;transition:width .35s cubic-bezier(.2,.8,.2,1),height .35s cubic-bezier(.2,.8,.2,1),background .25s,opacity .25s}
+.cur-ring b{font:600 12px var(--font-body);font-stretch:110%;color:#000;opacity:0;transition:opacity .2s;white-space:nowrap}
+.cur.link .cur-ring{width:58px;height:58px}
+.cur.label .cur-ring{width:84px;height:84px;background:#fff}
+.cur.label .cur-ring b{opacity:1}
+.cur.aim .cur-ring{opacity:0}
+.cur.gone{opacity:0}
+
+/* ============ floating work preview ============ */
+.wprev{position:fixed;left:0;top:0;z-index:70;width:380px;pointer-events:none;opacity:0;scale:.85;transition:opacity .25s,scale .35s cubic-bezier(.2,.8,.2,1)}
+.wprev.on{opacity:1;scale:1}
+.wprev img{width:100%;height:auto;border:1px solid var(--ink);box-shadow:0 30px 60px -20px rgba(10,20,50,.45);background:var(--card)}
+
+/* ============ sheet counter ============ */
+.sheetno{position:fixed;left:22px;bottom:22px;z-index:55;display:grid;grid-template-columns:auto auto;border:1px solid var(--hair);background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-size:12px;color:var(--graphite);opacity:0;translate:0 10px;transition:opacity .4s,translate .4s}
+.sheetno.on{opacity:1;translate:0 0}
+.sheetno > span{padding:7px 11px}
+.sheetno > span + span{border-left:1px solid var(--hair)}
+.sheetno b{font:400 12px var(--font-mono);color:var(--ink);margin-right:6px}
+.sheetno .nm{color:var(--ink);font-weight:600;min-width:118px}
+.sheetno i{grid-column:1/-1;height:2px;background:var(--hair);position:relative}
+.sheetno em{position:absolute;inset:0;background:var(--cobalt);transform-origin:0 50%;transform:scaleX(0)}
+@media (max-width:860px),(pointer:coarse){.sheetno,.cur,.wprev{display:none}}
+
+/* heading reveal masks */
+.wm{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
+.wm > span{display:inline-block}
+
 /* ============ hover previews ============ */
 .pv{position:fixed;left:0;top:0;width:360px;z-index:80;pointer-events:none;opacity:0;transform:translate3d(0,0,0) scale(.94);transform-origin:0 0;transition:opacity .2s ease,transform .25s cubic-bezier(.2,.8,.2,1);background:var(--card);border:1px solid var(--line-2);border-radius:14px;overflow:hidden;box-shadow:0 30px 70px -20px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.02)}
 .pv.on{opacity:1}
@@ -405,6 +454,21 @@ footer{position:fixed;left:0;right:0;bottom:0;z-index:0;overflow:hidden}
 </style>
 </head>
 <body>
+<script>
+(function () {
+  if (/[?&]prerender\b/.test(location.search) || matchMedia('(prefers-reduced-motion: reduce)').matches) { window.__introReady = Promise.resolve(); return; }
+  document.body.insertAdjacentHTML('afterbegin', '<div class="loader bp" id="loader" aria-hidden="true"><div class="ld"><svg viewBox="0 0 150 150"><line class="c" x1="75" y1="-12" x2="75" y2="162"/><line class="c" x1="-12" y1="75" x2="162" y2="75"/><rect class="f" x="8" y="8" width="134" height="134"/><text x="75" y="93" text-anchor="middle">RG</text></svg><div class="ld-row"><span>Plotting sheet 01 of 08</span><b id="ldNum">000</b></div><div class="ld-bar"><i id="ldBar"></i></div></div></div>');
+  let done; window.__introReady = new Promise(r => done = r);
+  const num = document.getElementById('ldNum'), bar = document.getElementById('ldBar'), t0 = performance.now(), MIN = 1500, MAX = 3200;
+  let loaded = false; addEventListener('load', () => loaded = true);
+  (function step(t) {
+    const el = t - t0, k = Math.min(1, el / MIN), cap = loaded || el > MAX ? 1 : .9, v = Math.min(cap, 1 - Math.pow(1 - k, 3));
+    num.textContent = String(Math.round(v * 100)).padStart(3, '0'); bar.style.transform = `scaleX(${v})`;
+    if (v < 1) return requestAnimationFrame(step);
+    const L = document.getElementById('loader'); L.classList.add('done'); setTimeout(done, 250); setTimeout(() => L.remove(), 1100);
+  })(t0);
+})();
+</script>
 <header class="bar" id="bar">
   <div class="wrap">
     <a class="brand" href="#top">Rahul Gurav</a>
@@ -416,6 +480,9 @@ footer{position:fixed;left:0;right:0;bottom:0;z-index:0;overflow:hidden}
   </div>
 </header>
 
+<div class="cur" id="cur" aria-hidden="true"><i class="cur-dot"></i><i class="cur-ring"><b></b></i></div>
+<div class="wprev" id="wprev" aria-hidden="true"><img alt=""></div>
+<div class="sheetno" id="sheetno" aria-hidden="true"><span><b id="snNum">01</b>of 08</span><span class="nm" id="snName">Introduction</span><i><em id="snBar"></em></i></div>
 <main class="curtain" id="curtain">
 <section class="hero bp" id="top" aria-label="Introduction">
   <div class="frame" aria-hidden="true">
@@ -1073,6 +1140,77 @@ const HERO3D = MOTION && matchMedia('(min-width: 981px)').matches && (() => { tr
 if (HERO3D) { root.classList.add('h3d'); setTimeout(() => { if (!window.__h3dReady) root.classList.remove('h3d'); }, 8000); }
 </script>
 
+
+<script>
+/* ===================== SIGNATURE INTERACTIONS ===================== */
+(function () {
+  if (!MOTION) return;
+  const fine = matchMedia('(pointer: fine)').matches && innerWidth > 860;
+
+  /* section headings rise line by line through a mask */
+  const wrapWords = el => {
+    [...el.childNodes].forEach(n => {
+      if (n.nodeType === 3) { const f = document.createDocumentFragment(); n.textContent.split(/(\s+)/).forEach(w => { if (!w) return; if (/^\s+$/.test(w)) return f.appendChild(document.createTextNode(' ')); const o = document.createElement('span'), i = document.createElement('span'); o.className = 'wm'; i.textContent = w; o.appendChild(i); f.appendChild(o); }); n.replaceWith(f); }
+      else if (n.nodeType === 1) { const o = document.createElement('span'); o.className = 'wm'; n.replaceWith(o); const i = document.createElement('span'); i.appendChild(n); o.appendChild(i); }
+    });
+  };
+  $$('.sec-head h2, .contact h2').forEach(h => { wrapWords(h); gsap.from(h.querySelectorAll('.wm > span'), { yPercent: 110, duration: 1.1, stagger: .06, ease: 'expo.out', scrollTrigger: { trigger: h, start: 'top 85%', once: true } }); });
+
+  /* sheet counter */
+  const SHEETS = [['top', 'Introduction'], ['about', 'About'], ['work', 'Selected work'], ['systems', 'Systems'], ['method', 'How I work'], ['experience', 'Experience'], ['skills', 'Tools'], ['contact', 'Contact']];
+  const sn = $('#sheetno'), snNum = $('#snNum'), snName = $('#snName'), snBar = $('#snBar'), curtainEl = $('#curtain');
+  const snIO = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; const i = SHEETS.findIndex(x => x[0] === e.target.id); if (i < 0) return; snNum.textContent = String(i + 1).padStart(2, '0'); snName.textContent = SHEETS[i][1]; }), { rootMargin: '-45% 0px -50% 0px' });
+  SHEETS.forEach(([id]) => { const el = document.getElementById(id); el && snIO.observe(el); });
+  const onScroll = () => {
+    const max = document.documentElement.scrollHeight - innerHeight, p = max > 0 ? scrollY / max : 0;
+    snBar.style.transform = `scaleX(${p})`;
+    sn.classList.toggle('on', scrollY > innerHeight * .6 && curtainEl.getBoundingClientRect().bottom > innerHeight + 40);
+  };
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  if (!fine) return;
+
+  /* custom cursor */
+  const cur = $('#cur'), dot = cur.querySelector('.cur-dot'), ringEl = cur.querySelector('.cur-ring'), lbl = ringEl.querySelector('b');
+  document.documentElement.classList.add('has-cur');
+  const dx = gsap.quickTo(dot, 'x', { duration: .08 }), dy = gsap.quickTo(dot, 'y', { duration: .08 });
+  const rx = gsap.quickTo(ringEl, 'x', { duration: .45, ease: 'power3.out' }), ry = gsap.quickTo(ringEl, 'y', { duration: .45, ease: 'power3.out' });
+  addEventListener('pointermove', e => {
+    dx(e.clientX); dy(e.clientY); rx(e.clientX); ry(e.clientY); cur.classList.remove('gone');
+    const t = e.target, row = t.closest && t.closest('.ws-row'), demo = t.closest && t.closest('.pbr .btn');
+    const inHero = t.closest && t.closest('.hero') && !t.closest('a,button');
+    const text = row ? (row.getAttribute('aria-expanded') === 'true' ? 'Close' : 'Open') : demo ? 'Demo' : '';
+    cur.classList.toggle('label', !!text); if (text) lbl.textContent = text;
+    cur.classList.toggle('link', !text && !!(t.closest && t.closest('a,button,.filter,tr.part')));
+    cur.classList.toggle('aim', !!inHero);
+  }, { passive: true });
+  document.addEventListener('pointerleave', () => cur.classList.add('gone'));
+  addEventListener('blur', () => cur.classList.add('gone'));
+
+  /* floating screenshot over collapsed project rows, tilting with speed */
+  const wp = $('#wprev'), wimg = wp.querySelector('img');
+  const wx = gsap.quickTo(wp, 'x', { duration: .55, ease: 'power3.out' }), wy = gsap.quickTo(wp, 'y', { duration: .55, ease: 'power3.out' }), wr = gsap.quickTo(wp, 'rotation', { duration: .6, ease: 'power3.out' });
+  let lastX = 0, curSrc = '';
+  Object.values(SHOT_MAP).forEach(k => { const i = new Image(); i.src = `img/previews/${k}.webp`; });
+  $('#workList').addEventListener('pointermove', e => {
+    const row = e.target.closest('.ws-row'), ws = row && row.closest('.ws');
+    if (!row || ws.classList.contains('open')) { wp.classList.remove('on'); return; }
+    const title = row.querySelector('.ws-ttl').textContent, src = `img/previews/${SHOT_MAP[title]}.webp`;
+    if (src !== curSrc) { curSrc = src; wimg.src = src; }
+    wp.classList.add('on'); wx(e.clientX + 28); wy(e.clientY - 120); wr(gsap.utils.clamp(-9, 9, (e.clientX - lastX) * .6)); lastX = e.clientX;
+  });
+  $('#workList').addEventListener('pointerleave', () => wp.classList.remove('on'));
+  $('#workList').addEventListener('click', () => wp.classList.remove('on'));
+  addEventListener('scroll', () => wp.classList.remove('on'), { passive: true });
+
+  /* buttons lean toward the cursor */
+  $$('.ctas .btn, #contactBtns .btn, .pbr .btn').forEach(b => {
+    const bx = gsap.quickTo(b, 'x', { duration: .4, ease: 'power3.out' }), by = gsap.quickTo(b, 'y', { duration: .4, ease: 'power3.out' });
+    b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); bx((e.clientX - r.left - r.width / 2) * .25); by((e.clientY - r.top - r.height / 2) * .35); });
+    b.addEventListener('pointerleave', () => { bx(0); by(0); });
+  });
+})();
+</script>
 <script src="demos/n8n/graphs.js"></script>
 <script>
 /* ===================== HOVER PREVIEWS (systems list) ===================== */
@@ -1226,8 +1364,8 @@ if (HERO3D) { root.classList.add('h3d'); setTimeout(() => { if (!window.__h3dRea
   $$('.name .ln').forEach(l => { l.innerHTML = [...l.textContent].map(c => `<span class="ch">${c}</span>`).join(''); });
   const strokes = $$('#fig .draw');
   strokes.forEach(s => { const L = s.getTotalLength(); s.style.strokeDasharray = L; s.style.strokeDashoffset = L; });
-  const intro = gsap.timeline({ defaults: { ease: 'expo.out' }, onComplete: () => fig.classList.add('live') });
-  setTimeout(() => intro.progress(1), 4500); // never leave the sheet half-drawn on throttled renderers
+  const intro = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' }, onComplete: () => fig.classList.add('live') });
+  (window.__introReady || Promise.resolve()).then(() => { intro.play(); setTimeout(() => intro.progress(1), 4500); }); // never leave the sheet half-drawn on throttled renderers
   intro
     .from('.frame', { opacity: 0, duration: .8, ease: 'power2.out' })
     .from('.dim', { scaleX: 0, duration: 1.1 }, .1)
@@ -1458,6 +1596,7 @@ if (typeof HERO3D !== 'undefined' && HERO3D) try {
 
   /* ---------------- motion ---------------- */
   let running = false;
+  await (window.__introReady || Promise.resolve());
   if (window.gsap) {
     parts.forEach((p, i) => gsap.from(p.position, { y: p.position.y + 2.4, duration: 1.3, ease: 'expo.out', delay: .25 + i * .09 }));
     gsap.from([lineMat, accMat, pMat], { opacity: 0, duration: 1.2, delay: .2 });
