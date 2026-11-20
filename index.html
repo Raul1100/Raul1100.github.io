@@ -128,6 +128,27 @@ h1,h2,h3,h4{font-family:var(--font-head);font-stretch:125%;font-weight:800;lette
 .hero3d.in-fig{inset:-8% -4% -4%}
 .hero3d.in-fig canvas{-webkit-mask-image:none;mask-image:none}
 @media (max-width:600px){.l3d{display:none}}
+.rl{position:absolute;top:0;right:0;z-index:5;display:none;width:236px;font:400 11.5px var(--font-mono);color:var(--bp-dim);pointer-events:auto}
+.h3d-ready .rl{display:block}
+.rl-tog{margin-left:auto;display:flex;align-items:center;gap:9px;padding:8px 12px;background:rgba(10,30,80,.55);border:1px solid var(--bp-line);color:var(--bp-ink);font:inherit;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.rl-tog i{width:7px;height:7px;border-radius:50%;background:var(--bp-accent);box-shadow:0 0 0 0 var(--bp-accent);animation:rlPing 2.4s infinite}
+@keyframes rlPing{0%{box-shadow:0 0 0 0 rgba(159,216,255,.6)}70%,100%{box-shadow:0 0 0 8px rgba(159,216,255,0)}}
+.rl.open .rl-tog i{animation:none}
+.rl-tog:hover,.rl-tog:focus-visible{border-color:var(--bp-ink)}
+.rl-body{margin-top:6px;padding:12px 14px 10px;background:rgba(10,30,80,.72);border:1px solid var(--bp-line);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:grid;gap:10px}
+.rl-body[hidden]{display:none}
+.rl label{display:grid;gap:5px}
+.rl label span{display:flex;justify-content:space-between}
+.rl label b{color:var(--bp-ink);font-weight:400}
+.rl input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:16px;background:transparent;margin:0;cursor:pointer}
+.rl input[type=range]::-webkit-slider-runnable-track{height:1px;background:var(--bp-line)}
+.rl input[type=range]::-moz-range-track{height:1px;background:var(--bp-line)}
+.rl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;margin-top:-5px;border:1px solid var(--bp-ink);background:var(--bp-accent);transform:rotate(45deg)}
+.rl input[type=range]::-moz-range-thumb{width:9px;height:9px;border:1px solid var(--bp-ink);border-radius:0;background:var(--bp-accent);transform:rotate(45deg)}
+.rl input[type=range]:focus-visible{outline:1px dashed var(--bp-ink);outline-offset:3px}
+.rl-foot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--bp-line);padding-top:8px}
+.rl-reset{background:none;border:0;color:var(--bp-ink);font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:0}
+@media (max-width:980px){.rl{top:-6px;right:-4px}}
 .bg3d{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .5s}
 .bg3d.on{opacity:1}
 .bg3d canvas{width:100%;height:100%;display:block}
@@ -1232,7 +1253,7 @@ if (HERO3D) { root.classList.add('h3d'); (window.__introReady || Promise.resolve
   addEventListener('pointermove', e => {
     dx(e.clientX); dy(e.clientY); rx(e.clientX); ry(e.clientY); cur.classList.remove('gone');
     const t = e.target, row = t.closest && t.closest('.ws-row'), demo = t.closest && t.closest('.pbr .btn');
-    const inHero = t.closest && t.closest('.hero') && !t.closest('a,button');
+    const inHero = t.closest && t.closest('.hero') && !t.closest('a,button,.rl');
     const text = row ? (row.getAttribute('aria-expanded') === 'true' ? 'Close' : 'Open') : demo ? 'Demo' : '';
     cur.classList.toggle('label', !!text); if (text) lbl.textContent = text;
     cur.classList.toggle('link', !text && !!(t.closest && t.closest('a,button,.filter,tr.part')));
@@ -1285,6 +1306,7 @@ if (HERO3D) { root.classList.add('h3d'); (window.__introReady || Promise.resolve
     { g: 'Actions', l: 'Open GitHub', h: 'new tab', run: () => window.open(ME.github, '_blank', 'noopener') },
     { g: 'Actions', l: 'Switch light / dark theme', run: () => $('#themeBtn').click() },
     { g: 'Actions', l: 'Back to the top', run: () => go($('#top')) },
+    { g: 'Actions', l: 'Run the production line', h: 'try the 3D', run: () => { go($('#top')); setTimeout(() => { const t = document.querySelector('.rl-tog'); if (t && getComputedStyle(t.parentNode).display !== 'none') { if (t.getAttribute('aria-expanded') !== 'true') t.click(); t.focus(); } else __toast('The production line needs the 3D view: open this on a browser with WebGL.'); }, 900); } },
     { g: 'Secret', l: 'Overload the agent', h: 'easter egg', run: () => { go($('#top')); setTimeout(() => window.__overload ? window.__overload() : __toast('The agent needs the 3D view: open this on a desktop browser.'), 900); } },
   ];
   let shown = [], sel = 0, lastFocus = null;
@@ -1626,6 +1648,29 @@ if (typeof HERO3D !== 'undefined' && HERO3D) try {
 
   // camera framing: S drives the scroll sequence
   const S = { zoom: 1, fx: .735, fy: .41, ty: 1.3, spin: 0, speed: 1, labels: 1 };
+  // 'Run the line': visitor controls (U) layered on top of the scripted values (S); __runline marker
+  const U = { vol: 1, speed: 1, belt: 1 };
+  const rl = document.createElement('div'); rl.className = 'rl';
+  rl.innerHTML = `<button class="rl-tog" type="button" aria-expanded="false" aria-controls="rlBody"><i></i>Run the line</button>
+  <div class="rl-body" id="rlBody" hidden>
+    <label><span>Incoming data <b id="rlV1">100%</b></span><input type="range" min="10" max="100" value="100" data-k="vol"></label>
+    <label><span>Agent speed <b id="rlV2">1.0x</b></span><input type="range" min="25" max="300" value="100" data-k="speed"></label>
+    <label><span>Conveyor <b id="rlV3">1.0x</b></span><input type="range" min="30" max="300" value="100" data-k="belt"></label>
+    <div class="rl-foot"><span id="rlOut"></span><button type="button" class="rl-reset">Reset</button></div>
+  </div>`;
+  document.getElementById('fig').appendChild(rl);
+  const rlTog = rl.querySelector('.rl-tog'), rlBody = rl.querySelector('.rl-body'), rlOut = rl.querySelector('#rlOut');
+  const rlShow = () => {
+    rl.querySelector('#rlV1').textContent = Math.round(U.vol * 100) + '%';
+    rl.querySelector('#rlV2').textContent = U.speed.toFixed(1) + 'x';
+    rl.querySelector('#rlV3').textContent = U.belt.toFixed(1) + 'x';
+    rlOut.textContent = Math.round(N * U.vol) + ' packets';
+  };
+  rlTog.addEventListener('click', () => { const open = rlBody.hidden; rlBody.hidden = !open; rlTog.setAttribute('aria-expanded', open); rl.classList.toggle('open', open); });
+  rl.querySelectorAll('input').forEach(inp => inp.addEventListener('input', () => { U[inp.dataset.k] = inp.value / 100; rlShow(); }));
+  rl.querySelector('.rl-reset').addEventListener('click', () => { rl.querySelectorAll('input').forEach(inp => { inp.value = 100; U[inp.dataset.k] = 1; }); rlShow(); });
+  ['pointerdown', 'pointermove'].forEach(ev => rl.addEventListener(ev, e => e.stopPropagation()));
+  rlShow(); window.__runline = U;
   // wide: the scene fills the hero behind the copy; stacked (<=980px): it takes the diagram slot under the copy
   const figEl = document.getElementById('fig'); let stacked = null;
   const placeHost = () => {
@@ -1758,12 +1803,12 @@ if (typeof HERO3D !== 'undefined' && HERO3D) try {
       frame();
       world.rotation.y += ((tx * .3 + Math.sin(t * .22) * .05 + S.spin) - world.rotation.y) * .06;
       world.rotation.x += ((ty * .05) - world.rotation.x) * .05;
-      ico.rotation.y += dt * .6 * S.speed; ico.rotation.x += dt * .25; r1.rotation.y += dt * .5 * S.speed; r2.rotation.y -= dt * .4 * S.speed; r3.rotation.z += dt * .15;
-      const pulse = 1 + Math.sin(t * 2.4) * .06; boost *= .95; ico.scale.setScalar(pulse * (1 + (S.speed - 1) * .06 + boost * .5)); glow.scale.setScalar(3.4 * pulse * (1 + boost * .8));
+      const SPD = S.speed * U.speed; ico.rotation.y += dt * .6 * SPD; ico.rotation.x += dt * .25; r1.rotation.y += dt * .5 * SPD; r2.rotation.y -= dt * .4 * SPD; r3.rotation.z += dt * .15;
+      const pulse = 1 + Math.sin(t * 2.4) * .06; boost *= .95; ico.scale.setScalar(pulse * (1 + (SPD - 1) * .06 + boost * .5)); glow.scale.setScalar(3.4 * pulse * (1 + boost * .8));
       if (running) {
-        acc += dt; if (acc > 1.15) { acc = 0; spawn('in'); }
+        acc += dt * U.belt; if (acc > 1.15) { acc = 0; spawn('in'); }
         for (let i = live.length - 1; i >= 0; i--) {
-          const it = live[i]; it.position.x += dt * 1.15;
+          const it = live[i]; it.position.x += dt * 1.15 * Math.min(U.belt, 1.8);
           if (it.userData.kind === 'in' && it.position.x > -1.3) { it.visible = false; live.splice(i, 1); setTimeout(() => spawn('out'), 650); }
           else if (it.userData.kind === 'out' && it.position.x > 4.55) { it.visible = false; live.splice(i, 1); }
         }
@@ -1774,7 +1819,7 @@ if (typeof HERO3D !== 'undefined' && HERO3D) try {
       if (aiming) { cam.getWorldDirection(viewDir); plane.setFromNormalAndCoplanarPoint(viewDir, target); ray.setFromCamera(ndc, cam); if (ray.ray.intersectPlane(plane, hit)) { q.copy(hit); world.worldToLocal(q); hx = q.x; hy = q.y; hz = q.z; has = true; } }
       const vd = viewDir.clone().applyQuaternion(world.quaternion.clone().invert());
       for (let i = 0; i < N; i++) {
-        T[i] += SP[i] * dt * S.speed; if (T[i] > 1) T[i] -= 1;
+        T[i] += SP[i] * dt * SPD; if (T[i] > 1) T[i] -= 1;
         const pts = STREAMS[SI[i]], p = pts[(T[i] * 240) | 0], i3 = i * 3;
         let x = p.x + J[i3], y = p.y + J[i3 + 1], z = p.z + J[i3 + 2];
         if (has) {
@@ -1784,14 +1829,15 @@ if (typeof HERO3D !== 'undefined' && HERO3D) try {
         }
         D[i3] *= .9; D[i3 + 1] *= .9; D[i3 + 2] *= .9;
         P[i3] = x + D[i3]; P[i3 + 1] = y + D[i3 + 1]; P[i3 + 2] = z + D[i3 + 2];
-        const c = T[i] < .5 ? INK : ACC, fade = Math.min(1, T[i] * 12, (1 - T[i]) * 12);
+        const c = T[i] < .5 ? INK : ACC, fade = i < N * U.vol ? Math.min(1, T[i] * 12, (1 - T[i]) * 12) : 0;
         C[i3] = c.r * fade; C[i3 + 1] = c.g * fade; C[i3 + 2] = c.b * fade;
       }
       pg.attributes.position.needsUpdate = true; pg.attributes.color.needsUpdate = true;
       for (let i = 0; i < M; i++) { DP[i * 3 + 1] += dt * .12; if (DP[i * 3 + 1] > 7) DP[i * 3 + 1] = 0; }
       dg.attributes.position.needsUpdate = true;
       renderer.render(scene, cam);
-      L.forEach(({ v: p, el }) => { v.copy(p).applyMatrix4(world.matrixWorld).project(cam); el.style.transform = `translate(${(v.x + 1) / 2 * W}px,${(1 - v.y) / 2 * H}px)`; el.style.opacity = S.labels; });
+      L.forEach(({ v: p, el }) => { v.copy(p).applyMatrix4(world.matrixWorld).project(cam); el.style.transform = `translate(${(v.x + 1) / 2 * W}px,${(1 - v.y) / 2 * H}px)`; el.style.opacity = S.labels * (rl.classList.contains('open') ? .22 : 1); });
+      rl.style.opacity = S.labels; rl.style.visibility = S.labels < .05 ? 'hidden' : '';
     }
 
     // background objects, only where the paper sections are on screen
